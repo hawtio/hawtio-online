@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: hawtio-online
+parameters:
+- name: ROUTE_HOSTNAME
+  description: The external hostname to access Hawtio at
+  required: true
+message: |-
+  Hawtio is deployed to ${ROUTE_HOSTNAME}.
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: hawtio-online
+    labels:
+      app: hawtio
+      component: online
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker.io/astefanutti/hawtio:latest
+      importPolicy:
+        scheduled: true
+      name: latest
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: hawtio
+      component: online
+    name: hawtio-online
+  spec:
+    replicas: 1
+    selector:
+      app: hawtio
+      component: online
+      deploymentconfig: hawtio-online
+    strategy:
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: hawtio
+          component: online
+          deploymentconfig: hawtio-online
+      spec:
+        containers:
+        - image: ' '
+          imagePullPolicy: Always
+          name: hawtio-online
+          ports:
+          - containerPort: 2015
+          - containerPort: 443
+          - containerPort: 80
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - hawtio-online
+        from:
+          kind: ImageStreamTag
+          name: hawtio-online:latest
+        lastTriggeredImage: ""
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: hawtio
+      component: online
+    name: hawtio-online
+  spec:
+    ports:
+    - port: 2015
+      protocol: TCP
+      targetPort: 2015
+    selector:
+      app: hawtio
+      component: online
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: hawtio
+      component: online
+    name: hawtio-online
+  spec:
+    host: ${ROUTE_HOSTNAME}
+    port:
+      targetPort: 2015
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: hawtio-online
