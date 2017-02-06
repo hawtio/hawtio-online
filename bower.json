@@ -1,0 +1,31 @@
+{
+  "name": "hawtio-online",
+  "keywords": [
+    "hawtio"
+  ],
+  "main": [
+    "dist/hawtio-online.css",
+    "dist/hawtio-online.js"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "libs",
+    "test",
+    "tests",
+    "plugins"
+  ],
+  "dependencies": {
+    "hawtio-integration": "https://github.com/hawtio/hawtio-integration.git#2ecbce36a06202388bd700f855602499f545a467",
+    "hawtio-kubernetes-api": "~2.0.46",
+    "hawtio-kubernetes": "~2.1.278",
+    "hawtio-oauth": "~2.0.21"
+  },
+  "devDependencies": {
+    "hawtio-core-dts": "~2.0.0",
+    "angular-mocks": "~1.5.0",
+    "hawtio-preferences": "~2.0.0",
+    "hawtio-extension-service": "~2.0.0"
+  }
+}
