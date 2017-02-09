@@ -20,7 +20,8 @@
     "hawtio-integration": "https://github.com/hawtio/hawtio-integration.git#b083a2552548b43e1914362630c0d9732d59c0da",
     "hawtio-kubernetes-api": "~2.0.46",
     "hawtio-kubernetes": "~2.1.278",
-    "hawtio-oauth": "~2.0.21"
+    "hawtio-oauth": "~2.0.21",
+    "angular-drag-and-drop-lists": "~2.1.0"
   },
   "devDependencies": {
     "hawtio-core-dts": "~2.0.0",

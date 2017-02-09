@@ -2,7 +2,7 @@
 module Openshift {
 
   export const pluginName   = 'openshift';
-  export const _module      = angular.module(pluginName, []);
+  export const _module      = angular.module(pluginName, ['patternfly']);
   export const templatePath = 'plugins/' + pluginName + '/html/';
 
   _module.config(['$routeProvider', ($routeProvider: ng.route.IRouteProvider) => {

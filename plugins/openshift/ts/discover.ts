@@ -15,5 +15,21 @@ module Openshift {
           console.log('kubernetesModelUpdated');
         });
 
+        $scope.config = {
+          selectItems       : false,
+          multiSelect       : false,
+          dblClick          : false,
+          dragEnabled       : false,
+          selectionMatchProp: 'name',
+          selectedItems     : [],
+          showSelectBox     : true,
+          useExpandingRows  : false
+        };
+
+        $scope.items = [
+          {
+            name: 'Jolokia pod'
+          }
+        ];
       }]);
 }
