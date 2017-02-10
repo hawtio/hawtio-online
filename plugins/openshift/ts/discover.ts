@@ -13,7 +13,8 @@ module Openshift {
 
         const kubernetes = client.create('pods');
         const handle     = kubernetes.watch(pods => {
-          $scope.pods = _.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0);
+          $scope.pods.length = 0;
+          $scope.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
           // have to kick off a $digest here
           $scope.$apply();
         });
