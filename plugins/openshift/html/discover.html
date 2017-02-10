@@ -2,9 +2,14 @@
   <div class="col-md-12 list-view-container">
     <div pf-list-view class="example-list-view" id="exampleListView"
          config="config" items="pods" action-buttons="actions">
-      <div class="list-view-pf-description">
-        <div class="list-group-item-heading">
-          {{item.metadata.name}}
+      <div class="list-view-pf-body">
+        <div class="list-view-pf-description">
+          <div class="list-group-item-heading">
+            {{item.metadata.name}}
+          </div>
+          <div class="list-group-item-text">
+            {{item.metadata.namespace}}
+          </div>
         </div>
       </div>
     </div>
