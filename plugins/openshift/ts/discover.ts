@@ -41,7 +41,7 @@ module Openshift {
             .segment('pods')
             .segment(`https:${pod.metadata.name}:8778`)
             .segment('proxy/jolokia');
-          const connectUrl = new URI().path(UrlHelpers.join(HawtioCore.documentBase(), '/java/index.html'));
+          const connectUrl = new URI().path('/jmx');
           const returnTo   = new URI().toString();
           const title      = pod.metadata.name || 'Untitled Container';
           const token      = userDetails.token || '';
