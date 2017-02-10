@@ -6,8 +6,8 @@ module Openshift {
   import K8SClientFactory = KubernetesAPI.K8SClientFactory;
 
   _module.controller('Openshift.DiscoverController',
-    ['$scope', '$location', '$element', 'K8SClientFactory', 'jsonpath',
-      ($scope, $location, $element, client: K8SClientFactory, jsonpath) => {
+    ['$scope', '$location', '$element', 'K8SClientFactory', 'jsonpath', 'userDetails',
+      ($scope, $location, $element, client: K8SClientFactory, jsonpath, userDetails) => {
 
         $scope.pods = [];
 
@@ -34,6 +34,33 @@ module Openshift {
           showSelectBox     : true,
           useExpandingRows  : false
         };
+
+        const connect = (action, pod) => {
+          const jolokiaUrl = new URI(KubernetesAPI.masterUrl).segment('api/v1/namespaces')
+            .segment(pod.metadata.namespace)
+            .segment('pods')
+            .segment(`https:${pod.metadata.name}:8778`)
+            .segment('proxy/jolokia');
+          const connectUrl = new URI().path(UrlHelpers.join(HawtioCore.documentBase(), '/java/index.html'));
+          const returnTo   = new URI().toString();
+          const title      = pod.metadata.name || 'Untitled Container';
+          const token      = userDetails.token || '';
+          connectUrl.hash(token).query({
+            jolokiaUrl: jolokiaUrl,
+            title     : title,
+            returnTo  : returnTo
+          });
+          window.open(connectUrl.toString());
+        };
+
+        $scope.actions = [
+          {
+            name    : 'Connect',
+            class   : 'btn-primary',
+            title   : 'Open the JVM console',
+            actionFn: connect
+          },
+        ];
 
         kubernetes.connect();
       }]);
