@@ -2,8 +2,12 @@
 module Openshift {
 
   export const pluginName   = 'openshift';
-  export const _module      = angular.module(pluginName, ['patternfly']);
+  export const _module      = angular.module(pluginName, ['patternfly', 'KubernetesAPI']);
   export const templatePath = 'plugins/' + pluginName + '/html/';
+
+  declare const jsonpath: any;
+  // Expose jsonpath as constant for injection
+  _module.constant('jsonpath', jsonpath);
 
   _module.config(['$routeProvider', ($routeProvider: ng.route.IRouteProvider) => {
 

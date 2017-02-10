@@ -3,17 +3,25 @@
 
 module Openshift {
 
-  import KubernetesModelService = Kubernetes.KubernetesModelService;
+  import K8SClientFactory = KubernetesAPI.K8SClientFactory;
 
   _module.controller('Openshift.DiscoverController',
-    ['$scope', '$location', 'KubernetesModel',
-      ($scope, $location, kubernetes: KubernetesModelService) => {
+    ['$scope', '$location', '$element', 'K8SClientFactory', 'jsonpath',
+      ($scope, $location, $element, client: K8SClientFactory, jsonpath) => {
 
-        console.log(kubernetes.pods);
+        $scope.pods = [];
 
-        $scope.$on('kubernetesModelUpdated', () => {
-          console.log('kubernetesModelUpdated');
+        const kubernetes = client.create('pods');
+        const handle     = kubernetes.watch(pods => {
+          $scope.pods = _.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0);
+          // have to kick off a $digest here
+          $scope.$apply();
         });
+
+        // client instances to an object collection are shared, important to use
+        // the factory to destroy instances and avoid leaking memory
+        $element.on('$destroy', _ => $scope.$destroy());
+        $scope.$on('$destroy', _ => K8SClientFactory.destroy(kubernetes, handle));
 
         $scope.config = {
           selectItems       : false,
@@ -26,10 +34,6 @@ module Openshift {
           useExpandingRows  : false
         };
 
-        $scope.items = [
-          {
-            name: 'Jolokia pod'
-          }
-        ];
+        kubernetes.connect();
       }]);
 }
