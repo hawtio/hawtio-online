@@ -1,11 +1,11 @@
 /// <reference path="../../includes.ts"/>
-/// <reference path="openshiftPlugin.ts"/>
+/// <reference path="onlinePlugin.ts"/>
 
-module Openshift {
+module Online {
 
   import K8SClientFactory = KubernetesAPI.K8SClientFactory;
 
-  _module.controller('Openshift.DiscoverController',
+  _module.controller('Online.DiscoverController',
     ['$scope', '$location', '$element', 'K8SClientFactory', 'jsonpath', 'userDetails',
       ($scope, $location, $element, client: K8SClientFactory, jsonpath, userDetails) => {
 

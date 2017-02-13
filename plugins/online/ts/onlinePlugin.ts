@@ -1,7 +1,7 @@
 /// <reference path="../../includes.ts"/>
-module Openshift {
+module Online {
 
-  export const pluginName   = 'openshift';
+  export const pluginName   = 'online';
   export const _module      = angular.module(pluginName, ['patternfly', 'KubernetesAPI']);
   export const templatePath = 'plugins/' + pluginName + '/html/';
 
@@ -12,8 +12,8 @@ module Openshift {
   _module.config(['$routeProvider', ($routeProvider: ng.route.IRouteProvider) => {
 
     $routeProvider
-      .when('/openshift', {redirectTo: '/openshift/discover'})
-      .when('/openshift/discover', {templateUrl: UrlHelpers.join(templatePath, 'discover.html')});
+      .when('/online', {redirectTo: '/online/discover'})
+      .when('/online/discover', {templateUrl: UrlHelpers.join(templatePath, 'discover.html')});
   }]);
 
   _module.run(['HawtioNav', (nav: HawtioMainNav.Registry) => {
@@ -27,15 +27,15 @@ module Openshift {
     });
 
     const builder = nav.builder();
-    const tab     = builder.id('openshift')
-      .title(() => 'OpenShift')
+    const tab     = builder.id('online')
+      .title(() => 'Online')
       .defaultPage({
         rank   : 15,
         isValid: (yes, no) => {
           yes();
         }
       })
-      .href(() => '/openshift/discover')
+      .href(() => '/online/discover')
       .isValid(() => true)
       .build();
 
