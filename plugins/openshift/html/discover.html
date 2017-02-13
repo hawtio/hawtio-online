@@ -1,17 +1,26 @@
 <div ng-controller="Openshift.DiscoverController">
-  <div class="col-md-12 list-view-container">
-    <div pf-list-view class="example-list-view" id="exampleListView"
-         config="config" items="pods" action-buttons="actions">
+
+  <div pf-toolbar class="row" id="exampleToolbar" config="toolbarConfig"></div>
+
+  <div pf-list-view
+       class="list-view-pf list-view-pf-view  list-view-pf-stacked list-view-pf-top-align"
+       config="listConfig" items="filteredPods" action-buttons="podActions">
+    <div class="list-view-pf-main-info">
+      <div class="list-view-pf-left">
+        <span
+            class="pficon pficon-ok list-view-pf-icon-md list-view-pf-icon-success"></span>
+      </div>
       <div class="list-view-pf-body">
         <div class="list-view-pf-description">
           <div class="list-group-item-heading">
             {{item.metadata.name}}
           </div>
           <div class="list-group-item-text">
-            {{item.metadata.namespace}}
+            <small>Namespace: {{item.metadata.namespace}}</small>
           </div>
         </div>
       </div>
     </div>
   </div>
+
 </div>
