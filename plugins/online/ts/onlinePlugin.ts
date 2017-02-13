@@ -42,5 +42,42 @@ module Online {
     nav.add(tab);
   }]);
 
+  declare const LabelSelector: any;
+
+  _module.directive('labels', function ($location, $timeout) {
+    return {
+      restrict   : 'E',
+      scope      : {
+        labels           : '=',
+        // if you specify clickable, then everything below is required unless specified as optional
+        clickable        : "@?",
+        kind             : "@?",
+        projectName      : "@?",
+        limit            : '=?',
+        titleKind        : '@?', // optional, instead of putting kind into that part of the hover
+                                 // title, it will put this string instead, e.g. if you want 'builds for build config foo'
+        navigateUrl      : '@?', // optional to override the default
+        filterCurrentPage: '=?'  //optional don't navigate, just filter here
+      },
+      templateUrl: 'plugins/online/html/labels.html',
+      link       : function (scope: any) {
+        scope.filterAndNavigate = function (key, value) {
+          if (scope.kind && scope.projectName) {
+            if (!scope.filterCurrentPage) {
+              $location.url(scope.navigateUrl || ("/project/" + scope.projectName + "/browse/" + scope.kind));
+            }
+            $timeout(function () {
+              const selector = {};
+              selector[key]  = value;
+              // LabelFilter.setLabelSelector(new LabelSelector(selector, true));
+            }, 1);
+          }
+        };
+      }
+    };
+  });
+
+  _module.filter('hashSize', () => hash => !hash ? 0 : Object.keys(hash).length);
+
   hawtioPluginLoader.addModule(pluginName);
 }

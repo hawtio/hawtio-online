@@ -5,20 +5,23 @@
   <div pf-list-view
        class="list-view-pf list-view-pf-view  list-view-pf-stacked list-view-pf-top-align"
        config="listConfig" items="filteredPods" action-buttons="podActions">
-    <div class="list-view-pf-main-info">
-      <div class="list-view-pf-left">
-        <span
-            class="pficon pficon-ok list-view-pf-icon-md list-view-pf-icon-success"></span>
-      </div>
-      <div class="list-view-pf-body">
-        <div class="list-view-pf-description">
-          <div class="list-group-item-heading">
-            {{item.metadata.name}}
-          </div>
-          <div class="list-group-item-text">
-            <small>Namespace: {{item.metadata.namespace}}</small>
-          </div>
+    <div class="list-view-pf-left">
+        <span class="pficon pficon-ok list-view-pf-icon-md list-view-pf-icon-success"></span>
+    </div>
+    <div class="list-view-pf-body">
+      <div class="list-view-pf-description">
+        <div class="list-group-item-heading">
+          {{item.metadata.name}}
         </div>
+        <div class="list-group-item-text">
+          <labels labels="item.metadata.labels"
+                  project-name="{{item.metadata.namespace}}" limit="3">
+          </labels>
+        </div>
+      </div>
+      <div class="list-view-pf-additional-info-item list-view-pf-additional-info-item-stacked">
+        <small>Namespace</small>
+        {{item.metadata.namespace}}
       </div>
     </div>
   </div>

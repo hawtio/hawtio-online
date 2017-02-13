@@ -1,0 +1,48 @@
+.k8s-label {
+  margin-right: 5px;
+  // A bit more space below the actions button.
+  margin-top: 3px;
+  &:before {
+    content: ' ';
+    white-space: normal;
+  }
+  .label-pair {
+    margin-bottom: 2px;
+    .label {
+      &:first-child {
+        border-radius: 2px 0 0 2px;
+      }
+      &:last-child {
+        border-radius: 0 2px 2px 0;
+      }
+    }
+    .label-key {
+      background-color: #bee1f4;
+      color: #00659c;
+      padding-top: 1px;
+      padding-bottom: 1px;
+      margin-left: 0;
+      font-size: 10px;
+    }
+    // if its a link
+    a.label-key {
+      &:hover, &:focus, &:active {
+        background-color: #00659c;
+        color: #FFFFFF;
+      }
+    }
+    .label-value {
+      background-color: #7dc3e8;
+      color: #FFFFFF;
+      margin-left: 0;
+      padding-top: 1px;
+      padding-bottom: 1px;
+      font-size: 10px;
+    }
+    a.label-value {
+      &:hover, &:focus, &:active {
+        background-color: #00659c;
+      }
+    }
+  }
+}
