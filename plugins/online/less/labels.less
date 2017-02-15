@@ -1,3 +1,5 @@
+@import "../../main.less";
+
 .k8s-label {
   margin-right: 5px;
   // A bit more space below the actions button.
@@ -43,6 +45,19 @@
       &:hover, &:focus, &:active {
         background-color: #00659c;
       }
+    }
+  }
+}
+@media (max-width: @screen-sm-min) {
+  .k8s-label {
+    // enable label to truncate
+    width: 100%;
+    .label {
+      display: block;
+      min-width: 50px;
+    }
+    .label-pair {
+      width: 100%;
     }
   }
 }
