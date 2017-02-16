@@ -17,7 +17,7 @@
     "plugins"
   ],
   "dependencies": {
-    "hawtio-integration": "https://github.com/hawtio/hawtio-integration.git#b083a2552548b43e1914362630c0d9732d59c0da",
+    "hawtio-integration": "https://github.com/hawtio/hawtio-integration.git#dfa366099ff7ff17d11d58b324ff2dc5ec6e15b9",
     "hawtio-kubernetes-api": "~2.0.46",
     "hawtio-oauth": "~2.0.21",
     "angular-drag-and-drop-lists": "~2.1.0",
