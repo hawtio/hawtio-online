@@ -26,8 +26,6 @@
   },
   "devDependencies": {
     "hawtio-core-dts": "~2.0.0",
-    "angular-mocks": "~1.5.0",
-    "hawtio-preferences": "~2.0.0",
     "hawtio-extension-service": "~2.0.0"
   }
 }
