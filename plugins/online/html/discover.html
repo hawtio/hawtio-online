@@ -8,7 +8,23 @@
     <div ng-repeat="pod in filteredPods"
          class="list-group-item list-view-pf-stacked">
       <div class="list-view-pf-actions">
-        <button class="btn btn-primary" ng-click="connect(pod)">Connect</button>
+        <button ng-if="(containers = (pod.spec.containers | jolokiaContainers)).length === 1"
+                class="btn btn-primary" ng-click="connect(pod)">
+          Connect
+        </button>
+        <div ng-if="containers.length > 1" class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+            Connect
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="container in containers" role="presentation">
+              <a role="menuitem" tabindex="-1" href="#" ng-click="connect(pod, (container | jolokiaPort).containerPort)">
+                {{container.name}}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="list-view-pf-main-info">
         <div class="list-view-pf-left">
@@ -37,7 +53,7 @@
             <div class="list-view-pf-additional-info-item">
               <span class="pficon pficon-image"></span>
               <strong>{{pod.spec.containers.length}}</strong>
-              <ng-pluralize count="pod.spec.containers.length" when="{
+              <ng-pluralize count="containers.length" when="{
                      'one': 'container',
                      'other': 'containers'}">
               </ng-pluralize>

@@ -75,11 +75,11 @@ module Online {
             filterConfig: $scope.filterConfig,
           };
 
-          $scope.connect = pod => {
+          $scope.connect = (pod, port = 8778) => {
             const jolokiaUrl = new URI(KubernetesAPI.masterUrl).segment('api/v1/namespaces')
               .segment(pod.metadata.namespace)
               .segment('pods')
-              .segment(`https:${pod.metadata.name}:8778`)
+              .segment(`https:${pod.metadata.name}:${port}`)
               .segment('proxy/jolokia');
             const connectUrl = new URI().path('/jmx');
             const returnTo   = new URI().toString();
@@ -96,5 +96,9 @@ module Online {
           kubernetes.connect();
         }
       ]
-    );
+    )
+    .filter('jolokiaContainers',
+      () => containers => containers.filter(container => container.ports.some(port => port.name === 'jolokia')))
+    .filter('jolokiaPort',
+      () => container => container.ports.find(port => port.name === 'jolokia'));
 }
