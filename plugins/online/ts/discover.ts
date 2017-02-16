@@ -75,18 +75,7 @@ module Online {
             filterConfig: $scope.filterConfig,
           };
 
-          $scope.listConfig = {
-            selectItems       : false,
-            multiSelect       : false,
-            dblClick          : false,
-            dragEnabled       : false,
-            selectionMatchProp: 'name',
-            selectedItems     : [],
-            showSelectBox     : false,
-            useExpandingRows  : false
-          };
-
-          const connect = (action, pod) => {
+          $scope.connect = pod => {
             const jolokiaUrl = new URI(KubernetesAPI.masterUrl).segment('api/v1/namespaces')
               .segment(pod.metadata.namespace)
               .segment('pods')
@@ -103,15 +92,6 @@ module Online {
             });
             window.open(connectUrl.toString());
           };
-
-          $scope.podActions = [
-            {
-              name    : 'Connect',
-              class   : 'btn-primary',
-              title   : 'Open the JVM console',
-              actionFn: connect
-            },
-          ];
 
           kubernetes.connect();
         }

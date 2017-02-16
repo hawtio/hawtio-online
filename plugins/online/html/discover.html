@@ -2,41 +2,50 @@
 
 <div ng-controller="Online.DiscoverController">
 
-  <div pf-toolbar class="row" id="exampleToolbar" config="toolbarConfig"></div>
+  <div pf-toolbar class="row" config="toolbarConfig"></div>
 
-  <div pf-list-view
-       class="list-view-pf list-view-pf-view  list-view-pf-stacked list-view-pf-top-align"
-       config="listConfig" items="filteredPods" action-buttons="podActions">
-    <div class="list-view-pf-left">
-      <span class="pficon pficon-ok list-view-pf-icon-md list-view-pf-icon-success"></span>
-    </div>
-    <div class="list-view-pf-body">
-      <div class="list-view-pf-description">
-        <div class="list-group-item-heading">
-          {{item.metadata.name}}
+  <div class="list-group list-view-pf list-view-pf-view">
+    <div ng-repeat="pod in filteredPods"
+         class="list-group-item list-view-pf-stacked">
+      <div class="list-view-pf-actions">
+        <button class="btn btn-primary" ng-click="connect(pod)">Connect</button>
+      </div>
+      <div class="list-view-pf-main-info">
+        <div class="list-view-pf-left">
+          <span class="pficon pficon-ok list-view-pf-icon-md list-view-pf-icon-success"></span>
         </div>
-        <div class="list-group-item-text">
-          <labels labels="item.metadata.labels"
-                  project-name="{{item.metadata.namespace}}" limit="3">
-          </labels>
+        <div class="list-view-pf-body">
+          <div class="list-view-pf-description">
+            <div class="list-group-item-heading">
+              {{pod.metadata.name}}
+            </div>
+            <div class="list-group-item-text">
+              <labels labels="pod.metadata.labels"
+                      project-name="{{pod.metadata.namespace}}" limit="3">
+              </labels>
+            </div>
+          </div>
+          <div class="list-view-pf-additional-info">
+            <div class="list-view-pf-additional-info-item">
+              <span class="pficon pficon-project"></span>
+              {{pod.metadata.namespace}}
+            </div>
+            <div class="list-view-pf-additional-info-item">
+              <span class="pficon pficon-container-node"></span>
+              {{pod.spec.nodeName || pod.status.hostIP}}
+            </div>
+            <div class="list-view-pf-additional-info-item">
+              <span class="pficon pficon-image"></span>
+              <strong>{{pod.spec.containers.length}}</strong>
+              <ng-pluralize count="pod.spec.containers.length" when="{
+                     'one': 'container',
+                     'other': 'containers'}">
+              </ng-pluralize>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="list-view-pf-additional-info-item">
-        <span class="pficon pficon-project"></span>
-        {{item.metadata.namespace}}
-      </div>
-      <div class="list-view-pf-additional-info-item">
-        <span class="pficon pficon-container-node"></span>
-        {{item.spec.nodeName || item.status.hostIP}}
-      </div>
-      <div class="list-view-pf-additional-info-item">
-        <span class="pficon pficon-image"></span>
-        <ng-pluralize count="item.spec.containers.length" when="{
-                     'one': '1 container',
-                     'other': '{} containers'}">
-        </ng-pluralize>
-      </div>
     </div>
+
   </div>
-
 </div>
