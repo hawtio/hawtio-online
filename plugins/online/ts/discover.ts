@@ -95,6 +95,8 @@ module Online {
             window.open(connectUrl.toString());
           };
 
+          $scope.open = url => window.open(url);
+
           kubernetes.connect();
         }
       ]
@@ -102,5 +104,6 @@ module Online {
     .filter('jolokiaContainers',
       () => containers => containers.filter(container => container.ports.some(port => port.name === 'jolokia')))
     .filter('jolokiaPort',
-      () => container => container.ports.find(port => port.name === 'jolokia'));
+      () => container => container.ports.find(port => port.name === 'jolokia'))
+    .filter('podDetailsUrl', () => pod => UrlHelpers.join(KubernetesAPI.masterUrl, 'console/project', pod.metadata.namespace, 'browse/pods', pod.metadata.name));
 }
