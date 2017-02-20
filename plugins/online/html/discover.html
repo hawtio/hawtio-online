@@ -20,7 +20,7 @@
     <div ng-repeat="pod in filteredPods" class="list-group-item list-view-pf-stacked">
       <div class="list-view-pf-actions">
         <button ng-if="(containers = (pod.spec.containers | jolokiaContainers)).length === 1"
-                class="btn btn-primary" ng-click="open(pod | connectUrl)">
+                class="btn btn-primary" ng-click="open(pod | connectUrl: (containers[0] | jolokiaPort).containerPort)">
           Connect
         </button>
         <div ng-if="containers.length > 1" class="dropdown">
