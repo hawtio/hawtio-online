@@ -7,8 +7,8 @@ module Online {
 
   angular.module(pluginName)
     .controller('Online.DiscoverController',
-      ['$scope', '$location', '$element', 'K8SClientFactory', 'jsonpath', 'userDetails',
-        ($scope, $location, $element, client: K8SClientFactory, jsonpath, userDetails) => {
+      ['$scope', '$location', '$element', 'K8SClientFactory', 'jsonpath',
+        ($scope, $location, $element, client: K8SClientFactory, jsonpath) => {
 
           $scope.pods         = [];
           $scope.filteredPods = [];
@@ -77,24 +77,6 @@ module Online {
             filterConfig: $scope.filterConfig,
           };
 
-          $scope.connect = (pod, port = 8778) => {
-            const jolokiaUrl = new URI(KubernetesAPI.masterUrl).segment('api/v1/namespaces')
-              .segment(pod.metadata.namespace)
-              .segment('pods')
-              .segment(`https:${pod.metadata.name}:${port}`)
-              .segment('proxy/jolokia');
-            const connectUrl = new URI().path('/jmx');
-            const returnTo   = new URI().toString();
-            const title      = pod.metadata.name || 'Untitled Container';
-            const token      = userDetails.token || '';
-            connectUrl.hash(token).query({
-              jolokiaUrl: jolokiaUrl,
-              title     : title,
-              returnTo  : returnTo
-            });
-            window.open(connectUrl.toString());
-          };
-
           $scope.open = url => window.open(url);
 
           kubernetes.connect();
@@ -105,5 +87,17 @@ module Online {
       () => containers => containers.filter(container => container.ports.some(port => port.name === 'jolokia')))
     .filter('jolokiaPort',
       () => container => container.ports.find(port => port.name === 'jolokia'))
+    .filter('connectUrl', (userDetails) => (pod, port = 8778) => new URI().path('/jmx')
+      .hash(userDetails.token || '')
+      .query({
+        jolokiaUrl: new URI(KubernetesAPI.masterUrl)
+          .segment('api/v1/namespaces')
+          .segment(pod.metadata.namespace)
+          .segment('pods')
+          .segment(`https:${pod.metadata.name}:${port}`)
+          .segment('proxy/jolokia'),
+        title     : pod.metadata.name || 'Untitled Container',
+        returnTo  : new URI().toString()
+      }))
     .filter('podDetailsUrl', () => pod => UrlHelpers.join(KubernetesAPI.masterUrl, 'console/project', pod.metadata.namespace, 'browse/pods', pod.metadata.name));
 }
