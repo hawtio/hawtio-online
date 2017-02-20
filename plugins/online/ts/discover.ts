@@ -12,9 +12,11 @@ module Online {
 
           $scope.pods         = [];
           $scope.filteredPods = [];
+          $scope.loading      = true;
 
           const kubernetes = client.create('pods');
           const handle     = kubernetes.watch(pods => {
+            $scope.loading     = false;
             $scope.pods.length = 0;
             $scope.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
             applyFilters($scope.filterConfig.appliedFilters);

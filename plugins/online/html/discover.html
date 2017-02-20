@@ -2,6 +2,20 @@
 
   <div pf-toolbar class="row" config="toolbarConfig"></div>
 
+  <div class="spinner spinner-lg loading-page" ng-if="loading"></div>
+
+  <div class="blank-slate-pf no-border" ng-if="loading === false && pods.length === 0">
+    <div class="blank-slate-pf-icon">
+      <span class="pficon pficon pficon-add-circle-o"></span>
+    </div>
+    <h1>
+      No Hawtio Containers
+    </h1>
+    <p>
+      There are no containers running with a port configured whose name is <code>jolokia</code>.
+    </p>
+  </div>
+
   <div class="list-group list-view-pf list-view-pf-view">
     <div ng-repeat="pod in filteredPods"
          class="list-group-item list-view-pf-stacked">
