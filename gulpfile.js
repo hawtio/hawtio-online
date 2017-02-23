@@ -195,7 +195,7 @@ gulp.task('connect', ['watch'], function () {
       config.master_uri = kubeBase;
       config.openshift  = {
         oauth_authorize_uri: urljoin(kubeBase, '/oauth/authorize'),
-        oauth_client_id    : 'fabric8'
+        oauth_client_id    : 'system:serviceaccount:hawtio:hawtio-oauth-client'
       };
     }
     const answer = "window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = " + stringifyObject(config);
