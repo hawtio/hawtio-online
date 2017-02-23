@@ -246,10 +246,10 @@ gulp.task('root-files', function () {
 });
 
 gulp.task('site-files', ['root-files', 'site-fonts'], function () {
-  return gulp.src(['images/**', 'img/**'], {base: '.'})
+  return gulp.src(['images/**', 'img/**', 'osconsole/config.js'], {base: '.'})
     .pipe(plugins.chmod(0o644))
     .pipe(plugins.dedupe({same: false}))
-    .pipe(plugins.debug({title: 'site images'}))
+    .pipe(plugins.debug({title: 'site files'}))
     .pipe(gulp.dest('site'));
 });
 
