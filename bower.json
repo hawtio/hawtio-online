@@ -19,7 +19,7 @@
   "dependencies": {
     "hawtio-integration": "https://github.com/hawtio/hawtio-integration.git#dfa366099ff7ff17d11d58b324ff2dc5ec6e15b9",
     "hawtio-kubernetes-api": "~2.0.46",
-    "hawtio-oauth": "~2.0.21",
+    "hawtio-oauth": "~2.0.50",
     "jsonpath": "https://github.com/dchester/jsonpath.git#0.2.9",
     "kubernetes-label-selector": "~1.4.2"
   },
