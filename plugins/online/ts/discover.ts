@@ -87,7 +87,7 @@ module Online {
       () => containers => containers.filter(container => container.ports.some(port => port.name === 'jolokia')))
     .filter('jolokiaPort',
       () => container => container.ports.find(port => port.name === 'jolokia'))
-    .filter('connectUrl', (userDetails) => (pod, port = 8778) => new URI().path('/jmx')
+    .filter('connectUrl', ['userDetails', userDetails => (pod, port = 8778) => new URI().path('/jmx')
       .hash(userDetails.token || '')
       .query({
         jolokiaUrl: new URI(KubernetesAPI.masterUrl)
@@ -98,6 +98,6 @@ module Online {
           .segment('proxy/jolokia'),
         title     : pod.metadata.name || 'Untitled Container',
         returnTo  : new URI().toString()
-      }))
+      })])
     .filter('podDetailsUrl', () => pod => UrlHelpers.join(KubernetesAPI.masterUrl, 'console/project', pod.metadata.namespace, 'browse/pods', pod.metadata.name));
 }

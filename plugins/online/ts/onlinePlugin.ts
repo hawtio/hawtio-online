@@ -44,8 +44,8 @@ module Online {
       nav.add(tab);
     }])
 
-    .directive('labels', function ($location, $timeout) {
-      return {
+    .directive('labels', ['$location', '$timeout', ($location, $timeout) => (
+      {
         restrict   : 'E',
         scope      : {
           labels           : '=',
@@ -57,7 +57,7 @@ module Online {
           titleKind        : '@?', // optional, instead of putting kind into that part of the hover
                                    // title, it will put this string instead, e.g. if you want 'builds for build config foo'
           navigateUrl      : '@?', // optional to override the default
-          filterCurrentPage: '=?'  //optional don't navigate, just filter here
+          filterCurrentPage: '=?'  // optional don't navigate, just filter here
         },
         templateUrl: UrlHelpers.join(templatePath, 'labels.html'),
         link       : function (scope: any) {
@@ -74,8 +74,8 @@ module Online {
             }
           };
         }
-      };
-    })
+      }
+    )])
 
     .filter('hashSize', () => hash => !hash ? 0 : Object.keys(hash).length);
 
