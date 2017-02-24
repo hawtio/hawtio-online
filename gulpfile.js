@@ -396,7 +396,7 @@ function configStaticAssets(prefix) {
   return staticAssets;
 }
 
-gulp.task('build', ['bower', 'path-adjust', 'tsc', 'less', 'template', 'concat', 'clean']);
+gulp.task('build', callback => sequence(['bower', 'path-adjust', 'tsc', 'less', 'template', 'concat'], 'clean', callback));
 
 gulp.task('site', callback => sequence('clean', ['site-fonts', 'root-files', 'site-files', 'usemin', 'tweak-urls', '404', 'copy-images', 'write-version-json'], callback));
 
