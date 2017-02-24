@@ -1,4 +1,5 @@
 const gulp            = require('gulp'),
+      sequence        = require('run-sequence'),
       wiredep         = require('wiredep').stream,
       eventStream     = require('event-stream'),
       gulpLoadPlugins = require('gulp-load-plugins'),
@@ -96,8 +97,8 @@ gulp.task('concat', ['template'], function () {
     .pipe(gulp.dest(config.dist));
 });
 
-gulp.task('clean', ['concat'], function () {
-  return del(['templates.js', 'compiled.js']);
+gulp.task('clean', function () {
+  return del(['templates.js', 'compiled.js', './site/']);
 });
 
 gulp.task('less', function () {
@@ -397,9 +398,6 @@ function configStaticAssets(prefix) {
 
 gulp.task('build', ['bower', 'path-adjust', 'tsc', 'less', 'template', 'concat', 'clean']);
 
-gulp.task('site', ['site-fonts', 'root-files', 'site-files', 'usemin', 'tweak-urls', '404', 'copy-images', 'write-version-json']);
+gulp.task('site', callback => sequence('clean', ['site-fonts', 'root-files', 'site-files', 'usemin', 'tweak-urls', '404', 'copy-images', 'write-version-json'], callback));
 
 gulp.task('default', ['connect']);
-
-
-
