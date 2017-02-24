@@ -246,7 +246,7 @@ gulp.task('root-files', function () {
     .pipe(gulp.dest('site'));
 });
 
-gulp.task('site-files', ['root-files', 'site-fonts'], function () {
+gulp.task('site-files', function () {
   return gulp.src(['images/**', 'img/**', 'osconsole/config.js'], {base: '.'})
     .pipe(plugins.chmod(0o644))
     .pipe(plugins.dedupe({same: false}))
@@ -254,7 +254,7 @@ gulp.task('site-files', ['root-files', 'site-fonts'], function () {
     .pipe(gulp.dest('site'));
 });
 
-gulp.task('usemin', ['site-files'], function () {
+gulp.task('usemin', function () {
   return gulp.src('index.html')
     .pipe(plugins.usemin({
       css: [plugins.minifyCss({
@@ -285,13 +285,13 @@ gulp.task('tweak-urls', ['usemin'], function () {
     .pipe(gulp.dest('site'));
 });
 
-gulp.task('404', ['usemin', 'site-files'], function () {
+gulp.task('404', ['usemin'], function () {
   return gulp.src('site/index.html')
     .pipe(plugins.rename('404.html'))
     .pipe(gulp.dest('site'));
 });
 
-gulp.task('copy-images', ['404', 'tweak-urls'], function () {
+gulp.task('copy-images', function () {
   const dirs     = fs.readdirSync('./libs');
   const patterns = [];
   dirs.forEach(function (dir) {
@@ -314,7 +314,7 @@ gulp.task('copy-images', ['404', 'tweak-urls'], function () {
     .pipe(gulp.dest('site/img'));
 });
 
-gulp.task('collect-dep-versions', ['get-commit-id'], function () {
+gulp.task('collect-dep-versions', function () {
   return gulp.src('./libs/**/.bower.json')
     .pipe(plugins.foreach(function (stream, file) {
       const pkg                = JSON.parse(file.contents.toString('utf8'));
@@ -332,7 +332,7 @@ gulp.task('get-commit-id', function (cb) {
   });
 });
 
-gulp.task('write-version-json', ['site-files', 'collect-dep-versions'], function (cb) {
+gulp.task('write-version-json', ['collect-dep-versions', 'get-commit-id'], function (cb) {
   fs.writeFile('site/version.json', getVersionString(), cb);
 });
 
