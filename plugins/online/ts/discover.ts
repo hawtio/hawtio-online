@@ -14,6 +14,7 @@ module Online {
           $scope.filteredPods = [];
           $scope.loading      = true;
 
+          // TODO: support watching for pods cluster-wide with basic-user role
           const kubernetes = client.create('pods');
           const handle     = kubernetes.watch(pods => {
             $scope.loading     = false;
