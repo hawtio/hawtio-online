@@ -81,6 +81,7 @@ var Online;
             $scope.pods = [];
             $scope.filteredPods = [];
             $scope.loading = true;
+            // TODO: support watching for pods cluster-wide with basic-user role
             var kubernetes = client.create('pods', 'hawtio');
             var handle = kubernetes.watch(function (pods) {
                 $scope.loading = false;
