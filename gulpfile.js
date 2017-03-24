@@ -217,6 +217,22 @@ gulp.task('connect', ['watch'], function () {
       next();
     }
   });
+
+  hawtio.use('/img', (req, res) => {
+    // We may want to serve from other dependencies
+    const file = path.join(__dirname, 'libs', 'hawtio-integration', req.originalUrl);
+    if (fs.existsSync(file)) {
+      res.writeHead(200, {
+        'Content-Type'       : 'application/octet-stream',
+        'Content-Disposition': 'attachment; filename=' + file
+      });
+      fs.createReadStream(file).pipe(res);
+    } else {
+      res.writeHead(400, {'Content-Type': 'text/plain'});
+      res.end(`File ${file} does not exist in dependencies`);
+    }
+  });
+
   hawtio.listen(function (server) {
     const host = server.address().address;
     const port = server.address().port;
