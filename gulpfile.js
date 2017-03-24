@@ -362,4 +362,4 @@ gulp.task('build', callback => sequence(['bower', 'path-adjust', 'tsc', 'less', 
 
 gulp.task('site', callback => sequence('clean', ['site-fonts', 'root-files', 'site-files', 'usemin', 'tweak-urls', '404', 'copy-images', 'write-version-json'], callback));
 
-gulp.task('default', ['connect']);
+gulp.task('default', callback => sequence('connect', callback));
