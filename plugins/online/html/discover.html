@@ -4,7 +4,9 @@
     <h1>Hawtio Containers</h1>
   </div>
 
-  <div pf-toolbar class="row" config="toolbarConfig"></div>
+  <div class="row">
+    <pf-toolbar config="toolbarConfig"></pf-toolbar>
+  </div>
 
   <div class="spinner spinner-lg loading-page" ng-if="loading"></div>
 
@@ -68,7 +70,7 @@
           </div>
           <div class="list-view-pf-additional-info">
             <div class="list-view-pf-additional-info-item">
-              <span class="pficon pficon-project"></span>
+              <span class="pficon pficon-home"></span>
               {{pod.metadata.namespace}}
             </div>
             <div class="list-view-pf-additional-info-item">
