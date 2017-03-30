@@ -17,7 +17,7 @@
     "plugins"
   ],
   "dependencies": {
-    "hawtio-integration": "https://github.com/hawtio/hawtio-integration.git#e41fe616af2c7e22af66a83dfbc7807730cd3662",
+    "hawtio-integration": "~3.0.1",
     "hawtio-kubernetes-api": "~2.0.46",
     "hawtio-oauth": "~2.0.51",
     "jsonpath": "https://github.com/dchester/jsonpath.git#0.2.9",
