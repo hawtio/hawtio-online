@@ -76,8 +76,8 @@ var Online;
 (function (Online) {
     var K8SClientFactory = KubernetesAPI.K8SClientFactory;
     angular.module(Online.pluginName)
-        .controller('Online.DiscoverController', ['$scope', '$location', '$element', 'K8SClientFactory', 'jsonpath',
-        function ($scope, $location, $element, client, jsonpath) {
+        .controller('Online.DiscoverController', ['$scope', '$location', '$window', '$element', 'K8SClientFactory', 'jsonpath',
+        function ($scope, $location, $window, $element, client, jsonpath) {
             $scope.pods = [];
             $scope.filteredPods = [];
             $scope.loading = true;
@@ -143,7 +143,10 @@ var Online;
             $scope.toolbarConfig = {
                 filterConfig: $scope.filterConfig,
             };
-            $scope.open = function (url) { return window.open(url); };
+            $scope.open = function (url) {
+                $window.open(url);
+                return true;
+            };
             kubernetes.connect();
         }
     ])
