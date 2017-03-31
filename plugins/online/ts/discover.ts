@@ -7,8 +7,8 @@ module Online {
 
   angular.module(pluginName)
     .controller('Online.DiscoverController',
-      ['$scope', '$location', '$element', 'K8SClientFactory', 'jsonpath',
-        ($scope, $location, $element, client: K8SClientFactory, jsonpath) => {
+      ['$scope', '$location', '$window', '$element', 'K8SClientFactory', 'jsonpath',
+        ($scope, $location, $window, $element, client: K8SClientFactory, jsonpath) => {
 
           $scope.pods         = [];
           $scope.filteredPods = [];
@@ -78,7 +78,10 @@ module Online {
             filterConfig: $scope.filterConfig,
           };
 
-          $scope.open = url => window.open(url);
+          $scope.open = url => {
+            $window.open(url);
+            return true;
+          }
 
           kubernetes.connect();
         }
