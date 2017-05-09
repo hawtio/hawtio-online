@@ -42,9 +42,18 @@ gulp.task('bower', () => gulp.src('index.html')
   .pipe(gulp.dest('.')));
 
 /** Adjust the reference path of any typescript-built plugin this project depends on */
-gulp.task('path-adjust', () => gulp.src('libs/**/includes.d.ts')
-  .pipe(plugins.replace(/"\.\.\/libs/gm, '"../../../libs'))
-  .pipe(gulp.dest('libs')));
+gulp.task("path-adjust", () =>
+  eventStream.merge(
+    gulp
+      .src("libs/**/includes.d.ts")
+      .pipe(plugins.replace(/"\.\.\/libs/gm, '"../../../libs'))
+      .pipe(gulp.dest("libs")),
+    gulp
+      .src("libs/**/defs.d.ts")
+      .pipe(plugins.replace(/"libs/gm, '"../../libs'))
+      .pipe(gulp.dest("libs"))
+  )
+);
 
 gulp.task('clean-defs', () => del('defs.d.ts'));
 
