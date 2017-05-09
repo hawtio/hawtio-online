@@ -9,7 +9,7 @@ module Online {
 
   angular.module(pluginName, ['patternfly', 'KubernetesAPI'])
 
-    .config(['$routeProvider', ($routeProvider: ng.route.IRouteProvider) => {
+    .config(['$routeProvider', ($routeProvider: angular.route.IRouteProvider) => {
       $routeProvider
         .when('/online', {redirectTo: '/online/discover'})
         .when('/online/discover', {templateUrl: UrlHelpers.join(templatePath, 'discover.html')});
