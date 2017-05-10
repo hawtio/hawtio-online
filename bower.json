@@ -24,7 +24,6 @@
     "kubernetes-label-selector": "~1.4.2"
   },
   "devDependencies": {
-    "hawtio-core-dts": "~3.0.0",
-    "hawtio-extension-service": "~2.0.0"
+    "hawtio-core-dts": "~3.0.0"
   }
 }
