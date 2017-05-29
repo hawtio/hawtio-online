@@ -1,3 +1,8 @@
-/// <reference path="d.ts/includes.d.ts"/>
-/// <reference path="d.ts/online/ts/onlinePlugin.d.ts"/>
-/// <reference path="d.ts/online/ts/discover.d.ts"/>
+/// <reference path="libs/hawtio-utilities/defs.d.ts" />
+/// <reference path="libs/hawtio-kubernetes-api/defs.d.ts" />
+declare module Online {
+    const pluginName = "online";
+    const templatePath: string;
+}
+declare module Online {
+}
