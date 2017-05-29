@@ -68,6 +68,7 @@ gulp.task('tsc', ['clean-defs'], function () {
 
   return eventStream.merge(
     tsResult.js
+      .pipe(plugins.ngAnnotate())
       .pipe(gulp.dest('.')),
     tsResult.dts
      .pipe(plugins.rename('defs.d.ts'))
