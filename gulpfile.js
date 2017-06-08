@@ -315,51 +315,29 @@ function getVersionString() {
 }
 
 gulp.task('serve-site', function () {
-  const staticAssets = configStaticAssets('site');
   hawtio.setConfig({
-    port         : 2772,
+    port: 2772,
     staticProxies: [
       {
-        port      : 8080,
-        path      : '/jolokia',
-        targetPath: '/hawtio/jolokia'
+        port       : 8080,
+        path       : '/jolokia',
+        targetPath : '/hawtio/jolokia'
       }
     ],
-    staticAssets : staticAssets,
-    fallback     : 'site/404.html',
-    liveReload   : {
-      enabled: false
+    staticAssets: [
+      {
+        path : '/',
+        dir  : 'site'
+      }
+    ],
+    fallback   : 'site/404.html',
+    liveReload : {
+      enabled  : false
     }
   });
-  return hawtio.listen(server => console.log('started from gulp file at ', server.address().address, ':', server.address().port));
+  return hawtio.listen(server => console.log('started from gulp file at ',
+    server.address().address, ':', server.address().port));
 });
-
-function configStaticAssets(prefix) {
-  const staticAssets = [{
-    path: '/',
-    dir : prefix
-  }];
-  const targetDir    = urljoin(prefix, 'libs');
-  try {
-    if (fs.statSync(targetDir).isDirectory()) {
-      const dirs = fs.readdirSync(targetDir);
-      dirs.forEach(function (dir) {
-        dir = urljoin(prefix, 'libs', dir);
-        console.log('dir: ', dir);
-        if (fs.statSync(dir).isDirectory()) {
-          console.log('Adding directory to search path: ', dir);
-          staticAssets.push({
-            path: '/',
-            dir : dir
-          });
-        }
-      });
-    }
-  } catch (err) {
-    console.log('Nothing in libs to worry about');
-  }
-  return staticAssets;
-}
 
 gulp.task('build', callback => sequence(['bower', 'path-adjust', 'tsc', 'less', 'template', 'concat'], 'clean', callback));
 
