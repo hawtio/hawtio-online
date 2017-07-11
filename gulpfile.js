@@ -82,8 +82,16 @@ gulp.task('watch-less', function () {
   plugins.watch(config.less, () => ['less']);
 });
 
-gulp.task('watch', ['build', 'watch-less'], function () {
-  gulp.watch(['index.html', urljoin(config.dist, '*')], ['reload']);
+gulp.task('watch', ['build', 'watch-less'], function() {
+  gulp.watch(
+    [
+      'node_modules/@hawtio/**/dist/*.js',
+      'node_modules/@hawtio/**/dist/*.css',
+      'index.html',
+      urljoin(config.dist, '*')
+    ],
+    ['reload']
+  );
   gulp.watch([config.ts, config.templates], ['tsc', 'template', 'concat', 'clean']);
 });
 
