@@ -257,14 +257,14 @@ gulp.task('404', ['usemin'], () => gulp.src('site/index.html')
   .pipe(gulp.dest('site')));
 
 gulp.task('copy-images', function () {
-  const dirs     = fs.readdirSync('./node_modules');
+  const dirs     = fs.readdirSync('./node_modules/@hawtio');
   const patterns = [];
   dirs.forEach(function (dir) {
-    const path = './node_modules/' + dir + "/img";
+    const path = './node_modules/@hawtio/' + dir + '/dist/img';
     try {
       if (fs.statSync(path).isDirectory()) {
-        console.log("found image dir: " + path);
-        const pattern = 'node_modules/' + dir + "/img/**";
+        console.log('found image dir: ', path);
+        const pattern = 'node_modules/@hawtio/' + dir + '/dist/img/**';
         patterns.push(pattern);
       }
     } catch (e) {
