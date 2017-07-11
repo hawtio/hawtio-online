@@ -184,7 +184,7 @@ gulp.task('connect', ['watch'], function () {
 
   hawtio.use('/img', (req, res) => {
     // We may want to serve from other dependencies
-    const file = path.join(__dirname, 'node_modules', 'hawtio-integration', req.originalUrl);
+    const file = path.join(__dirname, 'node_modules', '@hawtio', 'integration', 'dist', req.originalUrl);
     if (fs.existsSync(file)) {
       res.writeHead(200, {
         'Content-Type'       : 'application/octet-stream',
