@@ -1,4 +1,3 @@
-/// <reference path="../../includes.ts"/>
 module Online {
 
   export const pluginName   = 'online';

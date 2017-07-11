@@ -1,14 +1,15 @@
-/// <reference path="../../includes.ts"/>
 /// <reference path="onlinePlugin.ts"/>
 
 module Online {
 
-  import K8SClientFactory = KubernetesAPI.K8SClientFactory;
+  // import K8SClientFactory = KubernetesAPI.K8SClientFactory;
+  declare var KubernetesAPI    : any;
+  declare var K8SClientFactory : any;
 
   angular.module(pluginName)
     .controller('Online.DiscoverController',
       ['$scope', '$location', '$window', '$element', 'K8SClientFactory', 'jsonpath',
-        ($scope, $location, $window, $element, client: K8SClientFactory, jsonpath) => {
+        ($scope, $location, $window, $element, client/*: K8SClientFactory*/, jsonpath) => {
 
           $scope.pods         = [];
           $scope.filteredPods = [];
