@@ -6,7 +6,8 @@
     <base href='/'></base>
     <meta charset="UTF8" />
 
-    <!-- CSS -->
+    <!-- build:css style.css -->
+
     <!-- datatables -->
     <link rel="stylesheet" href="node_modules/datatables.net-dt/css/jquery.dataTables.css" />
     <!-- patternfly -->
@@ -31,7 +32,10 @@
     <!-- @hawtio/online -->
     <link rel="stylesheet" href="dist/hawtio-online.css" />
 
-    <!-- JAVASCRIPT -->
+    <!-- endbuild -->
+
+    <!-- build:js libs.js -->
+
     <!-- jquery -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <!-- datatables -->
@@ -135,8 +139,12 @@
     <script src="node_modules/kubernetes-label-selector/labelFilter.js"></script>
     <!-- angular-resource -->
     <script src="node_modules/angular-resource/angular-resource.min.js"></script>
-    <!-- @hawtio/online -->
+
+    <!-- endbuild -->
+    
+    <!-- build:js1 app.js -->
     <script src="dist/hawtio-online.js"></script>
+    <!-- endbuild -->
   </head>
 
   <body>
