@@ -2,68 +2,76 @@
 # yarn lockfile v1
 
 
-"@hawtio/core-dts@^3.0.11", "@hawtio/core-dts@^3.0.12", "@hawtio/core-dts@^3.0.14", "@hawtio/core-dts@^3.0.15":
-  version "3.0.15"
-  resolved "https://registry.yarnpkg.com/@hawtio/core-dts/-/core-dts-3.0.15.tgz#7d9ab2c728e6da6ada125f09933c240aff1ef5f8"
+"@hawtio/core-dts@^3.0.15", "@hawtio/core-dts@~3.0.11", "@hawtio/core-dts@~3.0.12", "@hawtio/core-dts@~3.0.14":
+  version "3.0.16"
+  resolved "https://registry.yarnpkg.com/@hawtio/core-dts/-/core-dts-3.0.16.tgz#c8b532612d38c2e516f27e87524fdba0540dfc84"
   dependencies:
-    "@types/jquery" "^2.0.46"
+    "@types/jquery" "~2.0.46"
 
-"@hawtio/core-navigation@^3.0.14":
-  version "3.0.17"
-  resolved "https://registry.yarnpkg.com/@hawtio/core-navigation/-/core-navigation-3.0.17.tgz#047f2995847508db03c376550c2da25666ec5768"
-  dependencies:
-    "@hawtio/core" "^3.0.4"
-    "@hawtio/core-dts" "^3.0.14"
-    "@types/angular-route" "^1.3.3"
-    "@types/lodash" "^4.14.67"
-    "@types/urijs" "^1.15.33"
-    angular-route "^1.6.4"
-    lodash "^4.17.4"
-    patternfly "^3.25.0"
-    urijs "^1.18.10"
-
-"@hawtio/core@^3.0.10", "@hawtio/core@^3.0.4", "@hawtio/core@^3.0.9":
-  version "3.0.14"
-  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-3.0.14.tgz#b1528a2b68baddd6614536982fef162bda3f1ae9"
-  dependencies:
-    "@hawtio/core-dts" "^3.0.12"
-    "@types/angular" "^1.6.18"
-    angular "^1.6.4"
-    angular-sanitize "^1.6.4"
-    jquery "^2.2.4"
-    js-logger "^1.3.0"
-
-"@hawtio/extension-service@^3.0.1":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@hawtio/extension-service/-/extension-service-3.0.3.tgz#6e53fe24da339b9ecf22c556a86f67a73081164d"
-  dependencies:
-    "@hawtio/core" "^3.0.9"
-    "@types/angular" "^1.6.18"
-
-"@hawtio/forms@^3.0.7", "@hawtio/forms@~3.0.0":
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/@hawtio/forms/-/forms-3.0.9.tgz#169f5248982830570e3396136c7830ae41d8996e"
-  dependencies:
-    "@hawtio/core-dts" "^3.0.12"
-    "@hawtio/ui" "^3.0.25"
-
-"@hawtio/integration@~3.0.11":
+"@hawtio/core-navigation@~3.0.14":
   version "3.0.18"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-3.0.18.tgz#cb4df59b5a43eb1ff360bcbfe8d27bc33ac3da84"
+  resolved "https://registry.yarnpkg.com/@hawtio/core-navigation/-/core-navigation-3.0.18.tgz#f8036ad76aaa126109e3d7c40a2729da042c3a59"
+  dependencies:
+    "@hawtio/core" "~3.0.4"
+    "@hawtio/core-dts" "~3.0.14"
+    "@types/angular-route" "~1.3.3"
+    "@types/jquery" "~2.0.0"
+    "@types/lodash" "~4.14.67"
+    "@types/urijs" "~1.15.33"
+    angular-route "~1.6.4"
+    lodash "~4.17.4"
+    patternfly "~3.25.0"
+    urijs "~1.18.10"
+
+"@hawtio/core@~3.0.10", "@hawtio/core@~3.0.4", "@hawtio/core@~3.0.9":
+  version "3.0.16"
+  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-3.0.16.tgz#7c02fea05191b97c67d9d0724069be14f9f4b0a2"
+  dependencies:
+    "@hawtio/core-dts" "~3.0.12"
+    "@types/angular" "~1.6.18"
+    "@types/jquery" "~2.0.0"
+    angular "~1.6.4"
+    angular-sanitize "~1.6.4"
+    jquery "~2.2.4"
+    js-logger "~1.3.0"
+
+"@hawtio/extension-service@~3.0.1":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@hawtio/extension-service/-/extension-service-3.0.4.tgz#d5edf76ea4a6422297d039ffb4be0d95992404b2"
+  dependencies:
+    "@hawtio/core" "~3.0.9"
+    "@types/angular" "~1.6.18"
+
+"@hawtio/forms@~3.0.0", "@hawtio/forms@~3.0.7":
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/@hawtio/forms/-/forms-3.0.11.tgz#f4f85c26867550ed5429652a3978c2c17d98f320"
+  dependencies:
+    "@hawtio/core-dts" "~3.0.12"
+    "@hawtio/ui" "~3.0.25"
+
+"@hawtio/help@~3.0.0":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@hawtio/help/-/help-3.0.1.tgz#fcf7b6236242297472632fd486ad80276b244799"
+  dependencies:
+    "@hawtio/ui" "~3.0.25"
+
+"@hawtio/integration@^3.0.22":
+  version "3.0.22"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-3.0.22.tgz#67f6066e95940c8b8174445a0cefb34e13bf14df"
   dependencies:
     "@hawtio/core-dts" "^3.0.15"
-    "@hawtio/jmx" "~3.0.0"
+    "@hawtio/jmx" "^3.0.66"
     "@types/jqueryui" "~1.11.34"
     dagre hawtio/dagre#3825485552cb2ebc79afab24f9a90f14c7e1e2df
-    ng-infinite-scroll "^1.3.0"
+    ng-infinite-scroll "~1.3.0"
 
-"@hawtio/jmx@~3.0.0":
-  version "3.0.63"
-  resolved "https://registry.yarnpkg.com/@hawtio/jmx/-/jmx-3.0.63.tgz#3d589ac7820a448dc48fbf74c9e4d0fbab6e3637"
+"@hawtio/jmx@^3.0.66":
+  version "3.0.66"
+  resolved "https://registry.yarnpkg.com/@hawtio/jmx/-/jmx-3.0.66.tgz#77963c67391ebcb4f2866cd6bd8fee9dcabf7b65"
   dependencies:
     "@hawtio/forms" "~3.0.0"
-    "@hawtio/preferences" "~3.0.0"
-    "@hawtio/ui" "~3.0.0"
+    "@hawtio/preferences" "~3.0.8"
+    "@hawtio/ui" "~3.0.28"
     angular-patternfly "^4.0.0"
     angular-resizable "~1.2.0"
     patternfly-bootstrap-treeview "~2.1.1"
@@ -86,68 +94,69 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/preferences@~3.0.0":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@hawtio/preferences/-/preferences-3.0.6.tgz#e5fe77647647f1824886f6135c1ca77a2871ba7b"
+"@hawtio/preferences@~3.0.8":
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/@hawtio/preferences/-/preferences-3.0.10.tgz#a1f02edd32c2ddfe5ba9ba4e3c21d7be1be33d0e"
   dependencies:
-    "@hawtio/extension-service" "^3.0.1"
-    "@hawtio/forms" "^3.0.7"
+    "@hawtio/extension-service" "~3.0.1"
+    "@hawtio/forms" "~3.0.7"
+    "@hawtio/help" "~3.0.0"
 
-"@hawtio/template-cache@^3.0.3":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@hawtio/template-cache/-/template-cache-3.0.4.tgz#2e04b34919ec1981f8bd1f6c30451c3ea63a5c58"
+"@hawtio/template-cache@~3.0.3":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@hawtio/template-cache/-/template-cache-3.0.5.tgz#048c44f694070ce3f7f6644cc7d3ac69ff775d46"
   dependencies:
-    "@hawtio/core" "^3.0.9"
-    "@hawtio/core-dts" "^3.0.12"
-    "@types/angular" "^1.6.18"
-    angular-route "^1.6.4"
+    "@hawtio/core" "~3.0.9"
+    "@hawtio/core-dts" "~3.0.12"
+    "@types/angular" "~1.6.18"
+    angular-route "~1.6.4"
 
-"@hawtio/ui@^3.0.25", "@hawtio/ui@~3.0.0":
-  version "3.0.29"
-  resolved "https://registry.yarnpkg.com/@hawtio/ui/-/ui-3.0.29.tgz#a08538a7e4485f5fe468684ccb1d15986e13c7ab"
+"@hawtio/ui@~3.0.25", "@hawtio/ui@~3.0.28":
+  version "3.0.32"
+  resolved "https://registry.yarnpkg.com/@hawtio/ui/-/ui-3.0.32.tgz#2870bbfd791087907e9ea35e2725c82ec750b3c7"
   dependencies:
-    "@hawtio/core" "^3.0.10"
-    "@hawtio/core-dts" "^3.0.12"
-    "@hawtio/core-navigation" "^3.0.14"
-    "@hawtio/template-cache" "^3.0.3"
-    "@hawtio/utilities" "^3.0.8"
-    "@types/clipboard" "^1.5.34"
+    "@hawtio/core" "~3.0.10"
+    "@hawtio/core-dts" "~3.0.12"
+    "@hawtio/core-navigation" "~3.0.14"
+    "@hawtio/template-cache" "~3.0.3"
+    "@hawtio/utilities" "~3.0.8"
+    "@types/clipboard" "~1.5.34"
     "@types/codemirror" "0.0.40"
     "@types/js-beautify" "0.0.30"
     "@types/marked" "0.0.28"
-    angular-ui-bootstrap "^2.5.0"
-    clipboard "^1.7.1"
-    codemirror "^5.26.0"
-    js-beautify "^1.6.14"
-    lodash "^4.17.4"
-    marked "^0.3.6"
+    angular-ui-bootstrap "~2.5.0"
+    clipboard "~1.7.1"
+    codemirror "~5.26.0"
+    js-beautify "~1.6.14"
+    lodash "~4.17.4"
+    marked "~0.3.6"
 
-"@hawtio/utilities@^3.0.8":
-  version "3.0.10"
-  resolved "https://registry.yarnpkg.com/@hawtio/utilities/-/utilities-3.0.10.tgz#d2962e09015997a6a2d5184d58f7005a838f7021"
+"@hawtio/utilities@~3.0.8":
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/@hawtio/utilities/-/utilities-3.0.11.tgz#7ff61915946f6b935a155937eb7ebc3e3921902b"
   dependencies:
-    "@hawtio/core" "^3.0.9"
-    "@hawtio/core-dts" "^3.0.11"
-    "@types/angular" "^1.6.18"
-    "@types/lodash" "^4.14.65"
-    "@types/urijs" "^1.15.32"
-    angular-file-upload "^2.5.0"
-    human-date "^1.4.0"
-    humanize-duration "^3.10.0"
-    lodash "^4.17.4"
-    urijs "^1.18.10"
+    "@hawtio/core" "~3.0.9"
+    "@hawtio/core-dts" "~3.0.11"
+    "@types/angular" "~1.6.18"
+    "@types/lodash" "~4.14.65"
+    "@types/urijs" "~1.15.32"
+    angular-file-upload "~2.5.0"
+    human-date "~1.4.0"
+    humanize-duration "~3.10.0"
+    lodash "~4.17.4"
+    urijs "~1.18.10"
 
-"@types/angular-route@^1.3.3":
+"@types/angular-route@~1.3.3":
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/@types/angular-route/-/angular-route-1.3.4.tgz#10d3f7eb313fb8a4b832041f9401869803dcd4df"
   dependencies:
     "@types/angular" "*"
 
-"@types/angular@*", "@types/angular@^1.6.18":
-  version "1.6.25"
-  resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.6.25.tgz#d403e94b40e06af3d9b76da5031795a9b929d08a"
+"@types/angular@*", "@types/angular@~1.6.18":
+  version "1.6.26"
+  resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.6.26.tgz#a96cccef648de0bf7435f3b9bad13f2430719305"
 
-"@types/clipboard@^1.5.34":
+"@types/clipboard@~1.5.34":
   version "1.5.34"
   resolved "https://registry.yarnpkg.com/@types/clipboard/-/clipboard-1.5.34.tgz#ee56c752a233dbf539656c22a54d06dfabaaf7ee"
 
@@ -155,7 +164,7 @@
   version "0.0.40"
   resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.40.tgz#0868ed9ba5bf3ef8072de80e245ecf4a8f0bbdfd"
 
-"@types/jquery@*", "@types/jquery@^2.0.46":
+"@types/jquery@*", "@types/jquery@~2.0.0", "@types/jquery@~2.0.46":
   version "2.0.48"
   resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-2.0.48.tgz#3e90d8cde2d29015e5583017f7830cb3975b2eef"
 
@@ -169,19 +178,19 @@
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-0.0.30.tgz#82ffbeb2c2dec592f1d04169e926912eeed567ec"
 
-"@types/lodash@^4.14.65", "@types/lodash@^4.14.67":
-  version "4.14.68"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.68.tgz#754fbab68bd2bbb69547dc8ce7574f7012eed7f6"
+"@types/lodash@~4.14.65", "@types/lodash@~4.14.67":
+  version "4.14.69"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.69.tgz#2bbd48c1565e02506f48ed8d1e8e53ea493fd0e6"
 
 "@types/marked@0.0.28":
   version "0.0.28"
   resolved "https://registry.yarnpkg.com/@types/marked/-/marked-0.0.28.tgz#44ba754e9fa51432583e8eb30a7c4dd249b52faa"
 
 "@types/node@^7.0.31":
-  version "7.0.34"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.34.tgz#eed5c95291a9dddff6b9f5a72ca342b1e72f0ba2"
+  version "7.0.38"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.38.tgz#140ecc61930b328e72914237c58dd62c8829e94d"
 
-"@types/urijs@^1.15.32", "@types/urijs@^1.15.33":
+"@types/urijs@~1.15.32", "@types/urijs@~1.15.33":
   version "1.15.33"
   resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.15.33.tgz#7fa28fb3995c25355a83fbaacaf99ff286f70536"
   dependencies:
@@ -274,7 +283,7 @@ angular-drag-and-drop-lists@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/angular-drag-and-drop-lists/-/angular-drag-and-drop-lists-2.0.0.tgz#a01d44b94cf233c9c2d45a31842cb35a9d0882ca"
 
-angular-file-upload@^2.5.0:
+angular-file-upload@~2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/angular-file-upload/-/angular-file-upload-2.5.0.tgz#0f53c93fbc70ed8ba8340a9a289ba64b680e2167"
 
@@ -309,7 +318,7 @@ angular-resource@~1.6.5:
   version "1.6.5"
   resolved "https://registry.yarnpkg.com/angular-resource/-/angular-resource-1.6.5.tgz#d1e712ab01afa5d2ec649f5e471673a704f2be40"
 
-angular-route@^1.6.4:
+angular-route@~1.6.4:
   version "1.6.5"
   resolved "https://registry.yarnpkg.com/angular-route/-/angular-route-1.6.5.tgz#af45593299f55874d0261018adb11520a3817d2a"
 
@@ -317,7 +326,7 @@ angular-sanitize@1.5.*:
   version "1.5.11"
   resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.5.11.tgz#ebfb3f343e543f9b2ef050fb4c2e9ee048d1772f"
 
-angular-sanitize@^1.6.4:
+angular-sanitize@~1.6.4:
   version "1.6.5"
   resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.6.5.tgz#b5625a817afad2ba58c333e98eef169a1c6f517a"
 
@@ -329,7 +338,7 @@ angular-ui-bootstrap@2.3.x:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/angular-ui-bootstrap/-/angular-ui-bootstrap-2.3.2.tgz#bfec894ed983ade1e5d3f402fc10f8829652ac99"
 
-angular-ui-bootstrap@^2.5.0:
+angular-ui-bootstrap@~2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/angular-ui-bootstrap/-/angular-ui-bootstrap-2.5.0.tgz#2facefb915386655dc5f44150258032517236d01"
 
@@ -337,7 +346,7 @@ angular@1.5.*:
   version "1.5.11"
   resolved "https://registry.yarnpkg.com/angular/-/angular-1.5.11.tgz#8c5ba7386f15965c9acf3429f6881553aada30d6"
 
-angular@>=1.3.0, angular@^1.2.0, angular@^1.6.4:
+angular@>=1.3.0, angular@^1.2.0, angular@~1.6.4:
   version "1.6.5"
   resolved "https://registry.yarnpkg.com/angular/-/angular-1.6.5.tgz#37f788eebec5ce2e3fa02b17bbcb2a231576a0d6"
 
@@ -698,8 +707,8 @@ cjson@~0.2.1:
   resolved "https://registry.yarnpkg.com/cjson/-/cjson-0.2.1.tgz#73cd8aad65d9e1505f9af1744d3b79c1527682a5"
 
 clean-css@^3.3.3:
-  version "3.4.27"
-  resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-3.4.27.tgz#adef75b31c160ffa5d72f4de67966e2660c1a255"
+  version "3.4.28"
+  resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-3.4.28.tgz#bf1945e82fc808f55695e6ddeaec01400efd03ff"
   dependencies:
     commander "2.8.x"
     source-map "0.4.x"
@@ -717,7 +726,7 @@ cli-usage@^0.1.1:
     marked "^0.3.6"
     marked-terminal "^1.6.2"
 
-clipboard@^1.7.1:
+clipboard@~1.7.1:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/clipboard/-/clipboard-1.7.1.tgz#360d6d6946e99a7a1fef395e42ba92b5e9b5a16b"
   dependencies:
@@ -781,9 +790,9 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codemirror@^5.26.0:
-  version "5.27.4"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.27.4.tgz#0e817c839bfea9959dd16cd48ae14acc0e43c3b6"
+codemirror@~5.26.0:
+  version "5.26.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.26.0.tgz#bcbee86816ed123870c260461c2b5c40b68746e5"
 
 color-convert@^1.0.0:
   version "1.9.0"
@@ -792,8 +801,8 @@ color-convert@^1.0.0:
     color-name "^1.1.1"
 
 color-name@^1.1.1:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.2.tgz#5c8ab72b64bd2215d617ae9559ebb148475cf98d"
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
 
 colors@0.5.x:
   version "0.5.1"
@@ -1966,8 +1975,8 @@ gulp-sourcemaps@1.6.0:
     vinyl "^1.0.0"
 
 gulp-typescript@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/gulp-typescript/-/gulp-typescript-3.2.0.tgz#8ddf7be658d130188381f65a6e580c552b64c196"
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/gulp-typescript/-/gulp-typescript-3.2.1.tgz#52cd77e9c6844e3b9a8bddd88e884ceb46a5db79"
   dependencies:
     gulp-util "~3.0.7"
     source-map "~0.5.3"
@@ -2186,11 +2195,11 @@ http-signature@~1.1.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
-human-date@^1.4.0:
+human-date@~1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/human-date/-/human-date-1.4.0.tgz#88bb62bd804d00fd12ee2f47dc3c3bbb1e55f99a"
 
-humanize-duration@^3.10.0:
+humanize-duration@~3.10.0:
   version "3.10.0"
   resolved "https://registry.yarnpkg.com/humanize-duration/-/humanize-duration-3.10.0.tgz#4d15bccaefcb12401b4d80475cf6c49a039e3959"
 
@@ -2359,10 +2368,10 @@ is-plain-obj@^1.0.0:
   resolved "https://registry.yarnpkg.com/is-plain-obj/-/is-plain-obj-1.1.0.tgz#71a50c8429dfca773c92a390a4a03b39fcd51d3e"
 
 is-plain-object@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-2.0.3.tgz#c15bf3e4b66b62d72efaf2925848663ecbc619b6"
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-2.0.4.tgz#2c163b3fafb1b606d9d17928f05c2a1c38e07677"
   dependencies:
-    isobject "^3.0.0"
+    isobject "^3.0.1"
 
 is-posix-bracket@^0.1.0:
   version "0.1.1"
@@ -2430,7 +2439,7 @@ isobject@^2.0.0, isobject@^2.1.0:
   dependencies:
     isarray "1.0.0"
 
-isobject@^3.0.0:
+isobject@^3.0.0, isobject@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 
@@ -2469,7 +2478,7 @@ jquery-match-height@^0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/jquery-match-height/-/jquery-match-height-0.7.2.tgz#f8d9f3ba5314daab109cf07408674be204be5f0e"
 
-"jquery@>= 2.1.x", jquery@>=1.11.0, jquery@>=1.7, jquery@>=1.7.0, jquery@>=1.7.1, jquery@>=1.8, "jquery@^1.8.3 || ^2.0 || ^3.0", jquery@^2.2.4:
+"jquery@>= 2.1.x", jquery@>=1.11.0, jquery@>=1.7, jquery@>=1.7.0, jquery@>=1.7.1, jquery@>=1.8, "jquery@^1.8.3 || ^2.0 || ^3.0", jquery@~2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.4.tgz#2c89d6889b5eac522a7eea32c14521559c6cbf02"
 
@@ -2477,7 +2486,7 @@ jquery@~3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
 
-js-beautify@^1.6.14:
+js-beautify@~1.6.14:
   version "1.6.14"
   resolved "https://registry.yarnpkg.com/js-beautify/-/js-beautify-1.6.14.tgz#d3b8f7322d02b9277d58bd238264c327e58044cd"
   dependencies:
@@ -2490,7 +2499,7 @@ js-logger@^0.9.14:
   version "0.9.14"
   resolved "https://registry.yarnpkg.com/js-logger/-/js-logger-0.9.14.tgz#82700c4b81ad76bdd0db5610cea4c08e2b9643f6"
 
-js-logger@^1.3.0:
+js-logger@^1.3.0, js-logger@~1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/js-logger/-/js-logger-1.3.0.tgz#de1a1143242710f7ce4da20408348a2a93ebf34d"
 
@@ -2884,7 +2893,7 @@ lodash.values@~2.4.1:
   dependencies:
     lodash.keys "~2.4.1"
 
-lodash@4.x, lodash@^4.11.1, lodash@^4.13.1, lodash@^4.14.1, lodash@^4.17.4:
+lodash@4.x, lodash@^4.11.1, lodash@^4.13.1, lodash@^4.14.1, lodash@^4.17.4, lodash@~4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -2945,7 +2954,7 @@ marked-terminal@^1.6.2:
     lodash.assign "^4.2.0"
     node-emoji "^1.4.1"
 
-marked@^0.3.6:
+marked@^0.3.6, marked@~0.3.6:
   version "0.3.6"
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.6.tgz#b2c6c618fccece4ef86c4fc6cb8a7cbf5aeda8d7"
 
@@ -3173,7 +3182,7 @@ ng-idle@~1.3.2:
   dependencies:
     angular "^1.2.0"
 
-ng-infinite-scroll@^1.3.0:
+ng-infinite-scroll@~1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/ng-infinite-scroll/-/ng-infinite-scroll-1.3.0.tgz#c2e98d8fd134b0525a4d2cf58c95d9b583755112"
 
@@ -3428,7 +3437,7 @@ patternfly-bootstrap-treeview@~2.1.0, patternfly-bootstrap-treeview@~2.1.1:
     bootstrap "3.3.x"
     jquery ">= 2.1.x"
 
-patternfly@>=3.25.1, patternfly@^3.25.0:
+patternfly@>=3.25.1, patternfly@~3.25.0:
   version "3.25.1"
   resolved "https://registry.yarnpkg.com/patternfly/-/patternfly-3.25.1.tgz#2cb95924ea0300ff5c720be876b949257befaf9d"
   dependencies:
@@ -4323,7 +4332,7 @@ unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
 
-urijs@^1.17.0, urijs@^1.18.10:
+urijs@^1.17.0, urijs@^1.18.10, urijs@~1.18.10:
   version "1.18.10"
   resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.18.10.tgz#b94463eaba59a1a796036a467bb633c667f221ab"
 
