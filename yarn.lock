@@ -42,7 +42,7 @@
   dependencies:
     "@hawtio/ui" "~3.0.25"
 
-"@hawtio/integration@^3.0.22":
+"@hawtio/integration@^3.0.30":
   version "3.0.30"
   resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-3.0.30.tgz#04e37d9520916c1dc5a21e7a457ffe87bcb1d74e"
   dependencies:
@@ -882,9 +882,9 @@ datatables.net-select@~1.2.0:
     datatables.net "^1.10.15"
     jquery ">=1.7"
 
-datatables.net@1.10.15, datatables.net@1.10.16, datatables.net@>=1.10.9, datatables.net@^1.10.11, datatables.net@^1.10.12, datatables.net@^1.10.15:
-  version "1.10.15"
-  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.10.15.tgz#c789077bbfe385e75ff5a233fa5f23251a72df68"
+datatables.net@1.10.16, datatables.net@>=1.10.9, datatables.net@^1.10.11, datatables.net@^1.10.12, datatables.net@^1.10.15:
+  version "1.10.16"
+  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.10.16.tgz#4b052d1082824261b68eed9d22741b711d3d2469"
   dependencies:
     jquery ">=1.7"
 
