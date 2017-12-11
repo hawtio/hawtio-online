@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: OAuthClient
-metadata:
-  name: hawtio
-redirectURIs:
-- http://localhost:2772
