@@ -20,7 +20,7 @@ objects:
     tags:
     - from:
         kind: DockerImage
-        name: docker.io/astefanutti/hawtio:latest
+        name: docker.io/hawtio/integration:latest
       importPolicy:
         scheduled: true
       name: latest
