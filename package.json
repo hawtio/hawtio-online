@@ -11,7 +11,7 @@
     "build": "gulp build"
   },
   "dependencies": {
-    "@hawtio/integration": "^3.0.30",
+    "@hawtio/integration": "^3.0.31",
     "angular-resource": "~1.6.5",
     "hawtio-kubernetes-api": "hawtio/hawtio-kubernetes-api#2.0.53",
     "hawtio-oauth": "hawtio/hawtio-oauth#2.0.51",
