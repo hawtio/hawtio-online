@@ -221,12 +221,6 @@ gulp.task('site-fonts', () =>
     .pipe(gulp.dest('site/fonts/', { overwrite: false }))
 );
 
-gulp.task('root-files', () => gulp.src(['favicon.ico'], {base: '.'})
-  .pipe(plugins.flatten())
-  .pipe(plugins.debug({title: 'root files'}))
-  .pipe(plugins.chmod(0o644))
-  .pipe(gulp.dest('site')));
-
 gulp.task('site-files', () => gulp.src(['images/**', 'img/**', 'osconsole/config.js'], {base: '.'})
   .pipe(plugins.chmod(0o644))
   .pipe(plugins.dedupe({same: false}))
@@ -306,6 +300,6 @@ gulp.task('serve-site', function () {
 
 gulp.task('build', callback => sequence(['tsc', 'less', 'template', 'concat'], 'clean', callback));
 
-gulp.task('site', callback => sequence('clean', ['site-fonts', 'root-files', 'site-files', 'usemin', 'tweak-urls', '404', 'copy-images'], callback));
+gulp.task('site', callback => sequence('clean', ['site-fonts', 'site-files', 'usemin', 'tweak-urls', '404', 'copy-images'], callback));
 
 gulp.task('default', callback => sequence('connect', callback));
