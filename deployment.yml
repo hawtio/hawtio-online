@@ -68,7 +68,6 @@ objects:
         from:
           kind: ImageStreamTag
           name: hawtio-online:latest
-        lastTriggeredImage: ""
       type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
