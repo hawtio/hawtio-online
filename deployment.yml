@@ -98,3 +98,14 @@ objects:
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: hawtio-oauth-client
+    labels:
+      app: hawtio-online
+    annotations:
+      serviceaccounts.openshift.io/oauth-redirecturi.dev: http://localhost:2772
+      serviceaccounts.openshift.io/oauth-redirecturi.nginx: http://localhost:8080
+      serviceaccounts.openshift.io/oauth-redirecturi.route: https://
+      serviceaccounts.openshift.io/oauth-redirectreference.route: '{"kind": "OAuthRedirectReference", "apiVersion": "v1", "reference": {"kind": "Route","name": "hawtio-online"}}'
