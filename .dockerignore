@@ -1,3 +1,4 @@
 *
 !site
-!Caddyfile
+!nginx.conf
+!nginx.repo
