@@ -1,14 +1,15 @@
 # hawtio-online
 
-This plugin provides deployment and discovery of hawtio apps on OpenShift.
+An Hawtio console deployment that eases the discovery of hawtio-enabled applications on OpenShift.
 
-## Installation
+## Deployment
 
+```sh
+$ oc new-app -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment.yml \
+  -p ROUTE_HOSTNAME=<HOST>
 ```
-yarn add @hawtio/online
-```
 
-## Set up development environment
+## Development
 
 ### Clone the repository
 
