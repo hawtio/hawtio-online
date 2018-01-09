@@ -4,10 +4,10 @@ metadata:
   name: hawtio-online
 parameters:
 - name: ROUTE_HOSTNAME
-  description: The external hostname to access Hawtio at
+  description: The externally-reachable host name that routes to the Hawtio Online service
   required: true
 message: |-
-  Hawtio is deployed to ${ROUTE_HOSTNAME}.
+  Hawtio Online is deployed to ${ROUTE_HOSTNAME}.
 objects:
 - apiVersion: v1
   kind: ImageStream
@@ -53,13 +53,11 @@ objects:
           deploymentconfig: hawtio-online
       spec:
         containers:
-        - image: ' '
+        - image: 'hawtio/integration'
           imagePullPolicy: Always
           name: hawtio-online
           ports:
-          - containerPort: 2015
-          - containerPort: 443
-          - containerPort: 80
+          - containerPort: 8080
     triggers:
     - imageChangeParams:
         automatic: true
@@ -79,9 +77,9 @@ objects:
     name: hawtio-online
   spec:
     ports:
-    - port: 2015
+    - port: 80
       protocol: TCP
-      targetPort: 2015
+      targetPort: 8080
     selector:
       app: hawtio
       component: online
@@ -94,11 +92,9 @@ objects:
     name: hawtio-online
   spec:
     host: ${ROUTE_HOSTNAME}
-    port:
-      targetPort: 2015
-    tls:
-      insecureEdgeTerminationPolicy: Redirect
-      termination: edge
     to:
       kind: Service
       name: hawtio-online
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
