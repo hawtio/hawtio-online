@@ -221,7 +221,7 @@ gulp.task('site-fonts', () =>
     .pipe(gulp.dest('site/fonts/', { overwrite: false }))
 );
 
-gulp.task('site-files', () => gulp.src(['images/**', 'img/**', 'osconsole/config.js'], {base: '.'})
+gulp.task('site-files', () => gulp.src(['images/**', 'img/**'], {base: '.'})
   .pipe(plugins.chmod(0o644))
   .pipe(plugins.dedupe({same: false}))
   .pipe(plugins.debug({title: 'site files'}))

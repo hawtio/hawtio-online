@@ -6,6 +6,7 @@ An Hawtio console deployment that eases the discovery of hawtio-enabled applicat
 
 ```sh
 $ oc new-app -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment.yml \
+  -p OPENSHIFT_MASTER=<URL> \
   -p ROUTE_HOSTNAME=<HOST>
 ```
 
