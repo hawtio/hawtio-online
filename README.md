@@ -21,6 +21,19 @@ ROUTE_HOSTNAME      The externally-reachable host name that routes to the Hawtio
 OPENSHIFT_MASTER    The OpenShift master URL used to obtain OAuth access tokens
 ```
 
+You can obtain the status of your deployment, by running:
+
+```sh
+$ oc status
+In project hawtio on server https://192.168.64.12:8443
+
+https://hawtio-online-hawtio.192.168.64.12.nip.io (redirects) (svc/hawtio-online)
+  dc/hawtio-online deploys istag/hawtio-online:latest 
+    deployment #1 deployed 2 minutes ago - 1 pod
+```
+
+Open the route URL displayed above from your Web browser to access the Hawtio Online console.
+
 ## Development
 
 ### Clone the repository
