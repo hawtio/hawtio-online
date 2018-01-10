@@ -22,7 +22,7 @@ objects:
     tags:
     - from:
         kind: DockerImage
-        name: docker.io/hawtio/integration:latest
+        name: docker.io/hawtio/online:latest
       importPolicy:
         scheduled: true
       name: latest
@@ -55,7 +55,7 @@ objects:
           deploymentconfig: hawtio-online
       spec:
         containers:
-        - image: 'hawtio/integration'
+        - image: 'hawtio/online'
           imagePullPolicy: Always
           name: hawtio-online
           ports:
