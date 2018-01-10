@@ -10,6 +10,17 @@ $ oc new-app -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/de
   -p ROUTE_HOSTNAME=<HOST>
 ```
 
+Note that the `ROUTE_HOSTNAME` parameter can be omitted. In that case, OpenShift automatically generates one for you.
+
+You can obtain more information about the template parameters, by executing the following command:
+
+```sh
+$ oc process --parameters -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment.yml
+NAME                DESCRIPTION                                                                   GENERATOR           VALUE
+ROUTE_HOSTNAME      The externally-reachable host name that routes to the Hawtio Online service
+OPENSHIFT_MASTER    The OpenShift master URL used to obtain OAuth access tokens
+```
+
 ## Development
 
 ### Clone the repository
