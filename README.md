@@ -4,6 +4,11 @@ An Hawtio console deployment that eases the discovery of hawtio-enabled applicat
 
 ## Deployment
 
+You can run the following instructions to deploy the Hawtio Online console on your OpenShift cluster.
+You may want to read how to [Get started with the CLI](https://docs.openshift.org/latest/cli_reference/get_started_cli.html) for more information about the `oc` client tool.
+
+To deploy the Hawtio Online console, execute the following command:
+
 ```sh
 $ oc new-app -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment.yml \
   -p OPENSHIFT_MASTER=<URL> \
