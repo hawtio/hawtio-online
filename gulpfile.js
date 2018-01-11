@@ -96,73 +96,73 @@ gulp.task('watch', ['build', 'watch-less'], function() {
 });
 
 gulp.task('connect', ['watch'], function () {
-  // lets disable unauthorised TLS issues with kube REST API
+  // Lets disable unauthorised TLS for self-signed development certificates
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-  const kubeBase = process.env.KUBERNETES_MASTER || 'https://open.paas.redhat.com/';
-  console.log('==== using KUBERNETES URL: ' + kubeBase);
-  const kube     = uri(urljoin(kubeBase, 'api'));
-  const kubeapis = uri(urljoin(kubeBase, 'apis'));
-  const oapi     = uri(urljoin(kubeBase, 'oapi'));
-  console.log('Connecting to Kubernetes on: ' + kube);
+  const master = process.env.OPENSHIFT_MASTER;
+  if (!master) {
+    console.error('The OPENSHIFT_MASTER environment variable must be set!');
+    process.exit(1);
+  }
+  console.log('Using OpenShift URL:', master);
+  const kube = uri(urljoin(master, 'api'));
+  const kubeapis = uri(urljoin(master, 'apis'));
+  const oapi = uri(urljoin(master, 'oapi'));
 
   hawtio.setConfig({
-    logLevel     : logger.INFO,
-    port         : 2772,
-    staticProxies: [{
-      port      : 8181,
-      path      : '/jolokia',
-      targetPath: '/jolokia'
+    logLevel : logger.INFO,
+    port     : 2772,
+    staticProxies : [{
+      port       : 8181,
+      path       : '/jolokia',
+      targetPath : '/jolokia',
     }],
     staticAssets : [{
-      path: '/',
-      dir : '.'
-
+      path : '/',
+      dir  : '.',
     }],
-    fallback     : 'index.html',
-    liveReload   : {
-      enabled: true
+    fallback   : 'index.html',
+    liveReload : {
+      enabled : true,
     }
   });
 
   const debugLoggingOfProxy = process.env.DEBUG_PROXY === 'true';
-  const useAuthentication   = process.env.DISABLE_OAUTH !== 'true';
-
-  const googleClientId     = process.env.GOOGLE_OAUTH_CLIENT_ID;
+  const useAuthentication = process.env.DISABLE_OAUTH !== 'true';
+  const googleClientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
   const googleClientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
 
   hawtio.use('/osconsole/config.js', function (req, res, next) {
     const config = {
-      api: {
-        openshift: {
-          proto   : oapi.protocol(),
-          hostPort: oapi.host(),
-          prefix  : oapi.path()
+      api : {
+        openshift : {
+          proto    : oapi.protocol(),
+          hostPort : oapi.host(),
+          prefix   : oapi.path(),
         },
-        k8s      : {
-          proto   : kube.protocol(),
-          hostPort: kube.host(),
-          prefix  : kube.path()
+        k8s : {
+          proto    : kube.protocol(),
+          hostPort : kube.host(),
+          prefix   : kube.path(),
         }
       }
     };
     if (googleClientId && googleClientSecret) {
-      config.master_uri = kubeBase;
-      config.google     = {
-        clientId         : googleClientId,
-        clientSecret     : googleClientSecret,
-        authenticationURI: 'https://accounts.google.com/o/oauth2/auth',
-        authorizationURI : 'https://accounts.google.com/o/oauth2/auth',
-        scope            : 'profile',
-        redirectURI      : 'http://localhost:9000'
+      config.master_uri = master;
+      config.google = {
+        clientId          : googleClientId,
+        clientSecret      : googleClientSecret,
+        authenticationURI : 'https://accounts.google.com/o/oauth2/auth',
+        authorizationURI  : 'https://accounts.google.com/o/oauth2/auth',
+        scope             : 'profile',
+        redirectURI       : 'http://localhost:9000',
       };
-
     } else if (useAuthentication) {
-      config.master_uri = kubeBase;
-      config.openshift  = {
-        oauth_authorize_uri: urljoin(kubeBase, '/oauth/authorize'),
-        oauth_client_id    : 'system:serviceaccount:hawtio:hawtio-oauth-client',
-        scope              : 'user:info user:check-access role:edit:hawtio'
+      config.master_uri = master;
+      config.openshift = {
+        oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
+        oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-oauth-client',
+        scope               : 'user:info user:check-access role:edit:hawtio',
       };
     }
     const answer = 'window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ' + stringifyObject(config);
