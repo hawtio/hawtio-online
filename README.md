@@ -51,7 +51,7 @@ You must have the following tools installed:
 
 ### Install
 
-In order to authenticate and obtain OAuth access tokens for the Hawtio console be authorized to watch for _hawtio-enabled_ <sup>[1](#myfootnote1)</sup> applications deployed in your cluster, you have to create an OAuth client by executing the following command:
+In order to authenticate and obtain OAuth access tokens for the Hawtio console be authorized to watch for _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed in your cluster, you have to create an OAuth client by executing the following command:
 
 ```sh
 $ oc new-project hawtio
@@ -74,4 +74,6 @@ $ yarn start
 
 You can access the console at <http://localhost:2772/>.
 
-<a name="f1">1</a> Containers with a configured port named `jolokia` and that exposes the [Jolokia](https://jolokia.org) API.
+---
+
+<a name="f1">1</a>. Containers with a configured port named `jolokia` and that exposes the [Jolokia](https://jolokia.org) API.
