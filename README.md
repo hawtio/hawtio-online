@@ -41,34 +41,24 @@ Open the route URL displayed above from your Web browser to access the Hawtio On
 
 ## Development
 
-### Clone the repository
+### Requirements
 
-```
-git clone https://github.com/hawtio/hawtio-online
-cd hawtio-online
-```
-
-### Install development tools
+You must have the following tools installed:
 
 * [Node.js](http://nodejs.org)
 * [Yarn](https://yarnpkg.com)
 * [gulp](http://gulpjs.com/)
 
-### Install project dependencies
+### Build
 
 ```
-yarn install
+$ yarn install
 ```
 
-### Run the web application
+### Run
 
 ```
-yarn start
+$ yarn start
 ```
 
-### Change the default proxy port
-
-To proxy to a local JVM running on a different port than `8282` specify the `--port` CLI arguement to gulp:
-```
-gulp --port=8181
-```
+You can access the console at <http://localhost:2772/>.
