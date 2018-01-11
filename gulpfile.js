@@ -190,7 +190,7 @@ gulp.task('connect', ['watch'], function () {
     }
   });
 
-  hawtio.listen(server => console.log('started from gulp file at ', server.address().address, ':', server.address().port));
+  return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
 gulp.task('reload', () => gulp.src('.').pipe(hawtio.reload()));
@@ -297,8 +297,7 @@ gulp.task('serve-site', function () {
     res.send(answer);
   });
 
-  return hawtio.listen(server => console.log('started from gulp file at ',
-    server.address().address, ':', server.address().port));
+  return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
 gulp.task('build', callback => sequence(['tsc', 'less', 'template', 'concat'], 'clean', callback));
