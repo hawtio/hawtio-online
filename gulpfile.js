@@ -16,17 +16,15 @@ const gulp            = require('gulp'),
 const plugins  = gulpLoadPlugins({});
 
 const config = {
-  proxyPort     : argv.port || 8282,
-  main          : '.',
-  ts            : ['plugins/**/*.ts'],
-  templates     : ['plugins/**/*.html'],
-  less          : ['plugins/**/*.less'],
-  templateModule: 'hawtio-online-templates',
-  dist          : argv.out || './dist/',
-  js            : 'hawtio-online.js',
-  dts           : 'hawtio-online.d.ts',
-  css           : 'hawtio-online.css',
-  tsProject     : plugins.typescript.createProject('tsconfig.json')
+  main      : '.',
+  ts        : ['plugins/**/*.ts'],
+  templates : ['plugins/**/*.html'],
+  less      : ['plugins/**/*.less'],
+  dist      : argv.out || './dist/',
+  js        : 'hawtio-online.js',
+  dts       : 'hawtio-online.d.ts',
+  css       : 'hawtio-online.css',
+  tsProject : plugins.typescript.createProject('tsconfig.json'),
 };
 
 gulp.task('clean-defs', () => del(config.dist + '*.d.ts'));
@@ -54,8 +52,8 @@ gulp.task('template', ['tsc'], () => gulp.src(config.templates)
     filename      : 'templates.js',
     root          : 'plugins/',
     standalone    : true,
-    module        : config.templateModule,
-    templateFooter: '}]); hawtioPluginLoader.addModule("' + config.templateModule + '");'
+    module        : 'hawtio-online-templates',
+    templateFooter: '}]); hawtioPluginLoader.addModule("hawtio-online-templates");',
   }))
   .pipe(gulp.dest('.')));
 
@@ -112,11 +110,6 @@ gulp.task('connect', ['watch'], function () {
   hawtio.setConfig({
     logLevel : logger.INFO,
     port     : 2772,
-    staticProxies : [{
-      port       : 8181,
-      path       : '/jolokia',
-      targetPath : '/jolokia',
-    }],
     staticAssets : [{
       path : '/',
       dir  : '.',
@@ -251,7 +244,7 @@ gulp.task('404', ['usemin'], () => gulp.src('site/index.html')
   .pipe(gulp.dest('site')));
 
 gulp.task('copy-images', function () {
-  const dirs     = fs.readdirSync('./node_modules/@hawtio');
+  const dirs = fs.readdirSync('./node_modules/@hawtio');
   const patterns = [];
   dirs.forEach(function (dir) {
     const path = './node_modules/@hawtio/' + dir + '/dist/img';
@@ -276,23 +269,14 @@ gulp.task('copy-images', function () {
 gulp.task('serve-site', function () {
   hawtio.setConfig({
     port: 2772,
-    staticProxies: [
-      {
-        port       : 8080,
-        path       : '/jolokia',
-        targetPath : '/hawtio/jolokia'
-      }
-    ],
-    staticAssets: [
-      {
-        path : '/',
-        dir  : 'site'
-      }
-    ],
+    staticAssets: [{
+      path : '/',
+      dir  : 'site',
+    }],
     fallback   : 'site/404.html',
     liveReload : {
-      enabled  : false
-    }
+      enabled : false,
+    },
   });
   return hawtio.listen(server => console.log('started from gulp file at ',
     server.address().address, ':', server.address().port));
