@@ -127,6 +127,9 @@ gulp.task('connect', ['watch'], function () {
 
   hawtio.use('/osconsole/config.js', function (req, res, next) {
     const config = {
+      hawtio : {
+        namespace : 'hawtio',
+      },
       api : {
         openshift : {
           proto    : oapi.protocol(),
@@ -286,11 +289,15 @@ gulp.task('serve-site', function () {
       process.exit(1);
     }
     console.log('Using OpenShift URL:', master);
-    const config = {};
-    config.openshift = {
-      oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
-      oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-dev-oauth-client',
-      scope               : 'user:info user:check-access role:edit:hawtio',
+    const config = {
+      hawtio : {
+        namespace : 'hawtio',
+      },
+      openshift : {
+        oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
+        oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-dev-oauth-client',
+        scope               : 'user:info user:check-access role:edit:hawtio',
+      },
     };
     const answer = 'window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ' + stringifyObject(config);
     res.set('Content-Type', 'application/javascript');
