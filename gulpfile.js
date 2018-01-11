@@ -278,6 +278,25 @@ gulp.task('serve-site', function () {
       enabled : false,
     },
   });
+
+  hawtio.use('/osconsole/config.js', function (_, res, _) {
+    const master = process.env.OPENSHIFT_MASTER;
+    if (!master) {
+      console.error('The OPENSHIFT_MASTER environment variable must be set!');
+      process.exit(1);
+    }
+    console.log('Using OpenShift URL:', master);
+    const config = {};
+    config.openshift = {
+      oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
+      oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-oauth-client',
+      scope               : 'user:info user:check-access role:edit:hawtio',
+    };
+    const answer = 'window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ' + stringifyObject(config);
+    res.set('Content-Type', 'application/javascript');
+    res.send(answer);
+  });
+
   return hawtio.listen(server => console.log('started from gulp file at ',
     server.address().address, ':', server.address().port));
 });
