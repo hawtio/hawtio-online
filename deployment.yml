@@ -109,7 +109,6 @@ objects:
       termination: edge
 - apiVersion: v1
   kind: ServiceAccount
-  # See: https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/authentication.html#service-accounts-as-oauth-clients
   metadata:
     name: hawtio-oauth-client
     labels:
@@ -118,6 +117,3 @@ objects:
       # All HTTPS ingresses for the Hawtio Online route
       serviceaccounts.openshift.io/oauth-redirecturi.route: https://
       serviceaccounts.openshift.io/oauth-redirectreference.route: '{"kind": "OAuthRedirectReference", "apiVersion": "v1", "reference": {"kind": "Route", "name": "hawtio-online"}}'
-      # For development purpose, can be removed otherwise
-      serviceaccounts.openshift.io/oauth-redirecturi.dev: http://localhost:2772
-      serviceaccounts.openshift.io/oauth-redirecturi.nginx: http://localhost:8080

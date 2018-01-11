@@ -5,7 +5,7 @@ An Hawtio console deployment that eases the discovery of hawtio-enabled applicat
 ## Deployment
 
 You can run the following instructions to deploy the Hawtio Online console on your OpenShift cluster.
-You may want to read how to [Get started with the CLI](https://docs.openshift.org/latest/cli_reference/get_started_cli.html) for more information about the `oc` client tool.
+You may want to read how to [get started with the CLI](https://docs.openshift.org/latest/cli_reference/get_started_cli.html) for more information about the `oc` client tool.
 
 To deploy the Hawtio Online console, execute the following command:
 
@@ -41,13 +41,24 @@ Open the route URL displayed above from your Web browser to access the Hawtio On
 
 ## Development
 
-### Requirements
+### Tools
 
 You must have the following tools installed:
 
 * [Node.js](http://nodejs.org)
 * [Yarn](https://yarnpkg.com)
 * [gulp](http://gulpjs.com/)
+
+### Install
+
+In order to authenticate and obtain OAuth access tokens for the Hawtio console be authorized to watch for Hawtio-enabled applications deployed in your cluster, you have to create an OAuth client by executing the following command:
+
+```sh
+$ oc new-project hawtio
+$ oc create -f service-account.yml
+```
+
+See [Service Accounts as OAuth Clients](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/authentication.html#service-accounts-as-oauth-clients) for more information.
 
 ### Build
 
