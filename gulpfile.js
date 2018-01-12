@@ -157,7 +157,7 @@ gulp.task('connect', ['watch'], function () {
       config.master_uri = master;
       config.openshift = {
         oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
-        oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-dev-oauth-client',
+        oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-online-dev',
         scope               : 'user:info user:check-access role:edit:hawtio',
       };
     }
@@ -295,7 +295,7 @@ gulp.task('serve-site', function () {
       },
       openshift : {
         oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
-        oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-dev-oauth-client',
+        oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-online-dev',
         scope               : 'user:info user:check-access role:edit:hawtio',
       },
     };
