@@ -7,6 +7,13 @@ An Hawtio console deployment that eases the discovery of _hawtio-enabled_ <sup>[
 You can run the following instructions to deploy the Hawtio Online console on your OpenShift cluster.
 You may want to read how to [get started with the CLI](https://docs.openshift.org/latest/cli_reference/get_started_cli.html) for more information about the `oc` client tool.
 
+There exist two OpenShift templates to choose from, depending on the following characteristics:
+
+| Template | Descripton |
+| -------- | ---------- |
+| [deployment.yml](https://raw.githubusercontent.com/hawtio/online/master/deployment.yml) | Use an OAuth client that requires the `cluster-admin` role to be created. The Hawtio Online console can discover and connect to _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed across multiple namespaces / projects. |
+| [deployment-restricted.yml](https://raw.githubusercontent.com/hawtio/online/master/deployment-restricted.yml) | Use a service account as OAuth client, which only requires `admin` role in a project to be created. This restricts the Hawtio Online console access to this single project, and as such acts as a single tenant deployment. |
+
 To deploy the Hawtio Online console, execute the following command:
 
 ```sh
@@ -15,7 +22,8 @@ $ oc new-app -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/de
   -p ROUTE_HOSTNAME=<HOST>
 ```
 
-Note that the `ROUTE_HOSTNAME` parameter can be omitted. In that case, OpenShift automatically generates one for you.
+Note that the `ROUTE_HOSTNAME` parameter can be omitted when using the _restricted_ template.
+In that case, OpenShift automatically generates one for you.
 
 You can obtain more information about the template parameters, by executing the following command:
 
