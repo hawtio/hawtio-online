@@ -5,6 +5,7 @@ metadata:
 parameters:
 - name: ROUTE_HOSTNAME
   description: The externally-reachable host name that routes to the Hawtio Online service
+  required: true
 - name: OPENSHIFT_MASTER
   description: The OpenShift master URL used to obtain OAuth access tokens
   required: true
@@ -63,10 +64,8 @@ objects:
           env:
           - name: OPENSHIFT_MASTER
             value: ${OPENSHIFT_MASTER}
-          - name: HAWTIO_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
+          - name: HAWTIO_ONLINE_MODE
+            value: cluster
     triggers:
     - imageChangeParams:
         automatic: true
@@ -108,12 +107,8 @@ objects:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
 - apiVersion: v1
-  kind: ServiceAccount
+  kind: OAuthClient
   metadata:
-    name: hawtio-oauth-client
-    labels:
-      app: hawtio-online
-    annotations:
-      # All HTTPS ingresses for the Hawtio Online route
-      serviceaccounts.openshift.io/oauth-redirecturi.route: https://
-      serviceaccounts.openshift.io/oauth-redirectreference.route: '{"kind": "OAuthRedirectReference", "apiVersion": "v1", "reference": {"kind": "Route", "name": "hawtio-online"}}'
+    name: hawtio-online
+  redirectURIs:
+  - https://${ROUTE_HOSTNAME}
