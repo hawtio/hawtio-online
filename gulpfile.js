@@ -128,6 +128,7 @@ gulp.task('connect', ['watch'], function () {
   hawtio.use('/osconsole/config.js', function (req, res, next) {
     const config = {
       hawtio : {
+        mode      : 'namespace',
         namespace : 'hawtio',
       },
       api : {
@@ -291,6 +292,7 @@ gulp.task('serve-site', function () {
     console.log('Using OpenShift URL:', master);
     const config = {
       hawtio : {
+        mode      : 'namespace',
         namespace : 'hawtio',
       },
       openshift : {
