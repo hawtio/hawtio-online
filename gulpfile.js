@@ -94,6 +94,46 @@ gulp.task('watch', ['build', 'watch-less'], function() {
   gulp.watch([config.ts, config.templates], ['tsc', 'template', 'concat', 'clean']);
 });
 
+function osconsole(_, res, _) {
+  const master = process.env.OPENSHIFT_MASTER;
+  if (!master) {
+    console.error('The OPENSHIFT_MASTER environment variable must be set!');
+    process.exit(1);
+  }
+  console.log('Using OpenShift URL:', master);
+  let client;
+  if (config.mode === 'namespace') {
+    client = {
+      hawtio : {
+        mode      : config.mode,
+        namespace : 'hawtio',
+      },
+      openshift : {
+        oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
+        oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-online-dev',
+        scope               : 'user:info user:check-access role:edit:hawtio',
+      },
+    };
+  } else if (config.mode === 'cluster') {
+    client = {
+      hawtio : {
+        mode : config.mode,
+      },
+      openshift : {
+        oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
+        oauth_client_id     : 'hawtio-online-dev',
+        scope               : 'user:info user:check-access user:list-projects role:edit:*',
+      },
+    };
+  } else {
+    console.error('Invalid value for the Hawtio Online mode, must be one of [cluster, namespace]');
+    process.exit(1);
+  }
+  const answer = 'window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ' + stringifyObject(client);
+  res.set('Content-Type', 'application/javascript');
+  res.send(answer);
+}
+
 gulp.task('connect', ['watch'], function () {
   // Lets disable unauthorised TLS for self-signed development certificates
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -121,63 +161,7 @@ gulp.task('connect', ['watch'], function () {
     }
   });
 
-  const debugLoggingOfProxy = process.env.DEBUG_PROXY === 'true';
-  const useAuthentication = process.env.DISABLE_OAUTH !== 'true';
-  const googleClientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
-  const googleClientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
-
-  hawtio.use('/osconsole/config.js', function (req, res, next) {
-    const client = {
-      hawtio : {
-        mode      : config.mode,
-        namespace : 'hawtio',
-      },
-      api : {
-        openshift : {
-          proto    : oapi.protocol(),
-          hostPort : oapi.host(),
-          prefix   : oapi.path(),
-        },
-        k8s : {
-          proto    : kube.protocol(),
-          hostPort : kube.host(),
-          prefix   : kube.path(),
-        }
-      }
-    };
-    if (googleClientId && googleClientSecret) {
-      client.master_uri = master;
-      client.google = {
-        clientId          : googleClientId,
-        clientSecret      : googleClientSecret,
-        authenticationURI : 'https://accounts.google.com/o/oauth2/auth',
-        authorizationURI  : 'https://accounts.google.com/o/oauth2/auth',
-        scope             : 'profile',
-        redirectURI       : 'http://localhost:9000',
-      };
-    } else if (useAuthentication) {
-      client.master_uri = master;
-      if (config.mode === 'namespace') {
-        client.openshift = {
-          oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
-          oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-online-dev',
-          scope               : 'user:info user:check-access role:edit:hawtio',
-        };
-      } else if (config.mode === 'cluster') {
-        client.openshift = {
-          oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
-          oauth_client_id     : 'hawtio-online-dev',
-          scope               : 'user:info user:check-access user:list-projects role:edit:*',
-        };
-      } else {
-        console.error('Invalid value for the Hawtio Online mode, must be one of [cluster, namespace]');
-        process.exit(1);
-      }
-    }
-    const answer = 'window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ' + stringifyObject(client);
-    res.set('Content-Type', 'application/javascript');
-    res.send(answer);
-  });
+  hawtio.use('/osconsole/config.js', osconsole);
 
   hawtio.use('/', function (req, res, next) {
     const path = req.originalUrl;
@@ -295,45 +279,7 @@ gulp.task('serve-site', function () {
     },
   });
 
-  hawtio.use('/osconsole/config.js', function (_, res, _) {
-    const master = process.env.OPENSHIFT_MASTER;
-    if (!master) {
-      console.error('The OPENSHIFT_MASTER environment variable must be set!');
-      process.exit(1);
-    }
-    console.log('Using OpenShift URL:', master);
-    let client;
-    if (config.mode === 'namespace') {
-      client = {
-        hawtio : {
-          mode      : config.mode,
-          namespace : 'hawtio',
-        },
-        openshift : {
-          oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
-          oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-online-dev',
-          scope               : 'user:info user:check-access role:edit:hawtio',
-        },
-      };
-    } else if (config.mode === 'cluster') {
-      client = {
-        hawtio : {
-          mode : config.mode,
-        },
-        openshift : {
-          oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
-          oauth_client_id     : 'hawtio-online-dev',
-          scope               : 'user:info user:check-access user:list-projects role:edit:*',
-        },
-      };
-    } else {
-      console.error('Invalid value for the Hawtio Online mode, must be one of [cluster, namespace]');
-      process.exit(1);
-    }
-    const answer = 'window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ' + stringifyObject(client);
-    res.set('Content-Type', 'application/javascript');
-    res.send(answer);
-  });
+  hawtio.use('/osconsole/config.js', osconsole);
 
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
