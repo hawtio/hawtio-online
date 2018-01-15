@@ -11,24 +11,24 @@ There exist two OpenShift templates to choose from, depending on the following c
 
 | Template | Descripton |
 | -------- | ---------- |
-| [deployment.yml](https://raw.githubusercontent.com/hawtio/online/master/deployment.yml) | Use an OAuth client that requires the `cluster-admin` role to be created. The Hawtio Online console can discover and connect to _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed across multiple namespaces / projects. |
-| [deployment-restricted.yml](https://raw.githubusercontent.com/hawtio/online/master/deployment-restricted.yml) | Use a service account as OAuth client, which only requires `admin` role in a project to be created. This restricts the Hawtio Online console access to this single project, and as such acts as a single tenant deployment. |
+| [deployment-cluster.yml](https://raw.githubusercontent.com/hawtio/online/master/deployment-cluster.yml) | Use an OAuth client that requires the `cluster-admin` role to be created. The Hawtio Online console can discover and connect to _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed across multiple namespaces / projects. |
+| [deployment-namespace.yml](https://raw.githubusercontent.com/hawtio/online/master/deployment-namespace.yml) | Use a service account as OAuth client, which only requires `admin` role in a project to be created. This restricts the Hawtio Online console access to this single project, and as such acts as a single tenant deployment. |
 
 To deploy the Hawtio Online console, execute the following command:
 
 ```sh
-$ oc new-app -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment.yml \
+$ oc new-app -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-namespace.yml \
   -p OPENSHIFT_MASTER=<URL> \
   -p ROUTE_HOSTNAME=<HOST>
 ```
 
-Note that the `ROUTE_HOSTNAME` parameter can be omitted when using the _restricted_ template.
+Note that the `ROUTE_HOSTNAME` parameter can be omitted when using the `deployment-namespace` template.
 In that case, OpenShift automatically generates one for you.
 
 You can obtain more information about the template parameters, by executing the following command:
 
 ```sh
-$ oc process --parameters -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment.yml
+$ oc process --parameters -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-namespace.yml
 NAME                DESCRIPTION                                                                   GENERATOR           VALUE
 ROUTE_HOSTNAME      The externally-reachable host name that routes to the Hawtio Online service
 OPENSHIFT_MASTER    The OpenShift master URL used to obtain OAuth access tokens
