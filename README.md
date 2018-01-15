@@ -57,27 +57,44 @@ You must have the following tools installed:
 * [Yarn](https://yarnpkg.com)
 * [gulp](http://gulpjs.com/)
 
-### Install
-
-In order to authenticate and obtain OAuth access tokens for the Hawtio console be authorized to watch for _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed in your cluster, you have to create an OAuth client by executing the following command:
-
-```sh
-$ oc new-project hawtio
-$ oc create -f service-account.yml
-```
-
-See [Service Accounts as OAuth Clients](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/authentication.html#service-accounts-as-oauth-clients) for more information.
-
 ### Build
 
 ```
 $ yarn install
 ```
 
+### Install
+
+In order to authenticate and obtain OAuth access tokens for the Hawtio console be authorized to watch for _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed in your cluster, you have to create an OAuth client that matches localhost development URLs.
+
+##### Cluster mode
+
+```sh
+$ oc create -f oauthclient.yml
+```
+
+See [OAuth Clients](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/authentication.html#oauth-clients) for more information.
+
+##### Namespace mode
+
+```sh
+$ oc create -f serviceaccount.yml
+```
+
+See [Service Accounts as OAuth Clients](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/authentication.html#service-accounts-as-oauth-clients) for more information.
+
 ### Run
 
+##### Cluster mode
+
 ```
-$ yarn start
+$  yarn start --mode=cluster
+```
+
+##### Namespace mode
+
+```
+$  yarn start --mode=namespace --namespace=`oc project -q`
 ```
 
 You can access the console at <http://localhost:2772/>.
