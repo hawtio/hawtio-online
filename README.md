@@ -11,8 +11,8 @@ There exist two OpenShift templates to choose from, depending on the following c
 
 | Template | Descripton |
 | -------- | ---------- |
-| [deployment-cluster.yml](https://raw.githubusercontent.com/hawtio/online/master/deployment-cluster.yml) | Use an OAuth client that requires the `cluster-admin` role to be created. The Hawtio Online console can discover and connect to _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed across multiple namespaces / projects. |
-| [deployment-namespace.yml](https://raw.githubusercontent.com/hawtio/online/master/deployment-namespace.yml) | Use a service account as OAuth client, which only requires `admin` role in a project to be created. This restricts the Hawtio Online console access to this single project, and as such acts as a single tenant deployment. |
+| [deployment-cluster.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-cluster.yml) | Use an OAuth client that requires the `cluster-admin` role to be created. The Hawtio Online console can discover and connect to _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed across multiple namespaces / projects. |
+| [deployment-namespace.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-namespace.yml) | Use a service account as OAuth client, which only requires `admin` role in a project to be created. This restricts the Hawtio Online console access to this single project, and as such acts as a single tenant deployment. |
 
 To deploy the Hawtio Online console, execute the following command:
 
