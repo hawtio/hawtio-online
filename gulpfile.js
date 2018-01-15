@@ -16,6 +16,7 @@ const gulp            = require('gulp'),
 const plugins  = gulpLoadPlugins({});
 
 const config = {
+  mode      : argv.mode || 'namespace',
   main      : '.',
   ts        : ['plugins/**/*.ts'],
   templates : ['plugins/**/*.html'],
@@ -126,9 +127,9 @@ gulp.task('connect', ['watch'], function () {
   const googleClientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
 
   hawtio.use('/osconsole/config.js', function (req, res, next) {
-    const config = {
+    const client = {
       hawtio : {
-        mode      : 'namespace',
+        mode      : config.mode,
         namespace : 'hawtio',
       },
       api : {
@@ -145,8 +146,8 @@ gulp.task('connect', ['watch'], function () {
       }
     };
     if (googleClientId && googleClientSecret) {
-      config.master_uri = master;
-      config.google = {
+      client.master_uri = master;
+      client.google = {
         clientId          : googleClientId,
         clientSecret      : googleClientSecret,
         authenticationURI : 'https://accounts.google.com/o/oauth2/auth',
@@ -155,14 +156,25 @@ gulp.task('connect', ['watch'], function () {
         redirectURI       : 'http://localhost:9000',
       };
     } else if (useAuthentication) {
-      config.master_uri = master;
-      config.openshift = {
-        oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
-        oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-online-dev',
-        scope               : 'user:info user:check-access role:edit:hawtio',
-      };
+      client.master_uri = master;
+      if (config.mode === 'namespace') {
+        client.openshift = {
+          oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
+          oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-online-dev',
+          scope               : 'user:info user:check-access role:edit:hawtio',
+        };
+      } else if (config.mode === 'cluster') {
+        client.openshift = {
+          oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
+          oauth_client_id     : 'hawtio-online-dev',
+          scope               : 'user:info user:check-access user:list-projects role:edit:*',
+        };
+      } else {
+        console.error('Invalid value for the Hawtio Online mode, must be one of [cluster, namespace]');
+        process.exit(1);
+      }
     }
-    const answer = 'window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ' + stringifyObject(config);
+    const answer = 'window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ' + stringifyObject(client);
     res.set('Content-Type', 'application/javascript');
     res.send(answer);
   });
@@ -290,18 +302,35 @@ gulp.task('serve-site', function () {
       process.exit(1);
     }
     console.log('Using OpenShift URL:', master);
-    const config = {
-      hawtio : {
-        mode      : 'namespace',
-        namespace : 'hawtio',
-      },
-      openshift : {
-        oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
-        oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-online-dev',
-        scope               : 'user:info user:check-access role:edit:hawtio',
-      },
-    };
-    const answer = 'window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ' + stringifyObject(config);
+    let client;
+    if (config.mode === 'namespace') {
+      client = {
+        hawtio : {
+          mode      : config.mode,
+          namespace : 'hawtio',
+        },
+        openshift : {
+          oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
+          oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-online-dev',
+          scope               : 'user:info user:check-access role:edit:hawtio',
+        },
+      };
+    } else if (config.mode === 'cluster') {
+      client = {
+        hawtio : {
+          mode : config.mode,
+        },
+        openshift : {
+          oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
+          oauth_client_id     : 'hawtio-online-dev',
+          scope               : 'user:info user:check-access user:list-projects role:edit:*',
+        },
+      };
+    } else {
+      console.error('Invalid value for the Hawtio Online mode, must be one of [cluster, namespace]');
+      process.exit(1);
+    }
+    const answer = 'window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ' + stringifyObject(client);
     res.set('Content-Type', 'application/javascript');
     res.send(answer);
   });
