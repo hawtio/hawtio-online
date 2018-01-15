@@ -17,6 +17,7 @@ const plugins  = gulpLoadPlugins({});
 
 const config = {
   mode      : argv.mode || 'namespace',
+  namespace : argv.namespace || 'hawtio',
   main      : '.',
   ts        : ['plugins/**/*.ts'],
   templates : ['plugins/**/*.html'],
@@ -106,12 +107,12 @@ function osconsole(_, res, _) {
     client = {
       hawtio : {
         mode      : config.mode,
-        namespace : 'hawtio',
+        namespace : config.namespace,
       },
       openshift : {
         oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
-        oauth_client_id     : 'system:serviceaccount:hawtio:hawtio-online-dev',
-        scope               : 'user:info user:check-access role:edit:hawtio',
+        oauth_client_id     : `system:serviceaccount:${config.namespace}:hawtio-online-dev`,
+        scope               : `user:info user:check-access role:edit:${config.namespace}`,
       },
     };
   } else if (config.mode === 'cluster') {
