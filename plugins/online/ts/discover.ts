@@ -11,27 +11,14 @@ module Online {
       ['$scope', '$location', '$window', '$element', 'K8SClientFactory', 'jsonpath',
         ($scope, $location, $window, $element, client/*: K8SClientFactory*/, jsonpath) => {
 
-          $scope.pods         = [];
+          let loading = 0;
+
+          $scope.pods = [];
           $scope.filteredPods = [];
-          $scope.loading      = true;
+          $scope.projects = [];
+          $scope.loading = () => loading > 0;
 
-          // TODO: support watching for pods cluster-wide with basic-user role
-          const kubernetes = $window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster'
-            ? client.create('pods') 
-            : client.create('pods', $window.OPENSHIFT_CONFIG.hawtio.namespace);
-          const handle     = kubernetes.watch(pods => {
-            $scope.loading     = false;
-            $scope.pods.length = 0;
-            $scope.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
-            applyFilters($scope.filterConfig.appliedFilters);
-            // have to kick off a $digest here
-            $scope.$apply();
-          });
-
-          // client instances to an object collection are shared, important to use
-          // the factory to destroy instances and avoid leaking memory
           $element.on('$destroy', _ => $scope.$destroy());
-          $scope.$on('$destroy', _ => K8SClientFactory.destroy(kubernetes, handle));
 
           const applyFilters = filters => {
             $scope.filteredPods.length = 0;
@@ -86,7 +73,62 @@ module Online {
             return true;
           }
 
-          kubernetes.connect();
+          if ($window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
+            const projects = client.create('projects');
+            const pods_watches = {};
+            loading++;
+            const projects_watch = projects.watch(projects => {
+              // subscribe to pods update for new projects
+              projects.filter(project => !$scope.projects.find(p => p.metadata.uid === project.metadata.uid))
+                .forEach(project => {
+                  loading++;
+                  const pods = client.create('pods', project.metadata.name);
+                  const pods_watch = pods.watch(pods => {
+                    loading--;
+                    const others = $scope.pods.filter(pod => pod.metadata.namespace !== project.metadata.name);
+                    $scope.pods.length = 0;
+                    $scope.pods.push(...others, ..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
+                    applyFilters($scope.filterConfig.appliedFilters);
+                    // have to kick off a $digest here
+                    $scope.$apply();
+                  });
+                  pods_watches[project.metadata.name] = {
+                    client : pods,
+                    watch  : pods_watch,
+                  };
+                  pods.connect();
+                });
+
+              // handle delete projects
+              $scope.projects.filter(project => !projects.find(p => p.metadata.uid === project.metadata.uid))
+                .forEach(project => {
+                  const handle = pods_watches[project.metadata.name];
+                  K8SClientFactory.destroy(handle.client, handle.watch);
+                  delete pods_watches[project.metadata.name];
+                });
+
+              $scope.projects.length = 0;
+              $scope.projects.push(...projects);
+              loading--;
+            });
+            $scope.$on('$destroy', _ => K8SClientFactory.destroy(projects, projects_watch));
+
+            projects.connect();
+          } else {
+            loading++;
+            const pods = client.create('pods', $window.OPENSHIFT_CONFIG.hawtio.namespace);
+            const pods_watch = pods.watch(pods => {
+              loading--;
+              $scope.pods.length = 0;
+              $scope.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
+              applyFilters($scope.filterConfig.appliedFilters);
+              // have to kick off a $digest here
+              $scope.$apply();
+            });
+            $scope.$on('$destroy', _ => K8SClientFactory.destroy(pods, pods_watch));
+
+            pods.connect();
+          }
         }
       ]
     )
