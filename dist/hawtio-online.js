@@ -190,7 +190,8 @@ var Online;
         .filter('jolokiaPort', function () { return function (container) { return container.ports.find(function (port) { return port.name === 'jolokia'; }); }; })
         .filter('connectUrl', ['userDetails', function (userDetails) { return function (pod, port) {
             if (port === void 0) { port = 8778; }
-            return new URI().path('/jmx')
+            console.log(new URI().toString());
+            return new URI().path('/integration/integration.html')
                 .hash(userDetails.token || '')
                 .query({
                 jolokiaUrl: new URI(KubernetesAPI.masterUrl)
@@ -200,7 +201,7 @@ var Online;
                     .segment("https:" + pod.metadata.name + ":" + port)
                     .segment('proxy/jolokia'),
                 title: pod.metadata.name || 'Untitled Container',
-                returnTo: new URI().toString()
+                returnTo: new URI().toString(),
             });
         }; }])
         .filter('podDetailsUrl', function () { return function (pod) { return UrlHelpers.join(KubernetesAPI.masterUrl, 'console/project', pod.metadata.namespace, 'browse/pods', pod.metadata.name); }; });

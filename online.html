@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html class="layout-pf layout-pf-fixed">
+
+  <head>
+    <title>hawtio-online</title>
+    <base href='/online/'></base>
+    <meta charset="UTF8" />
+
+    <!-- build:css style.css -->
+
+    <!-- patternfly -->
+    <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly.min.css">
+    <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly-additions.min.css">
+    <!-- angular-patternfly -->
+    <link rel="stylesheet" href="node_modules/angular-patternfly/dist/styles/angular-patternfly.min.css" />
+    <!-- @hawtio/online -->
+    <link rel="stylesheet" href="dist/hawtio-online.css" />
+
+    <!-- endbuild -->
+
+    <!-- build:js libs.js -->
+
+    <!-- jquery -->
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <!-- bootstrap -->
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- patternfly -->
+    <script src="node_modules/patternfly/dist/js/patternfly.min.js"></script>
+    <!-- angular -->
+    <script src="node_modules/angular/angular.js"></script>
+    <!-- angular-sanitize -->
+    <script src="node_modules/angular-sanitize/angular-sanitize.js"></script>
+    <!-- angular-route -->
+    <script src="node_modules/angular-route/angular-route.min.js"></script>
+    <!-- angular-file-upload -->
+    <script src="node_modules/angular-file-upload/dist/angular-file-upload.min.js"></script>
+    <!-- angular-ui-bootstrap -->
+    <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+    <!-- angular-drag-and-drop-lists -->
+    <script src="node_modules/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
+    <!-- angular-patternfly -->
+    <script src="node_modules/angular-patternfly/dist/angular-patternfly.js"></script>
+    <!-- lodash -->
+    <script src="node_modules/lodash/lodash.min.js"></script>
+    <!-- urijs -->
+    <script src="node_modules/urijs/src/URI.min.js"></script>
+    <!-- js-logger -->
+    <script src="node_modules/js-logger/src/logger.min.js"></script>
+    <!-- @hawtio/core -->
+    <script src="node_modules/@hawtio/core/dist/hawtio-core.js"></script>
+    <!-- @hawtio/utilities -->
+    <script src="node_modules/@hawtio/utilities/dist/hawtio-utilities.js"></script>
+    <!-- @hawtio-oauth -->
+    <script src="node_modules/hawtio-oauth/dist/hawtio-oauth.js"></script>
+    <script src="node_modules/ng-idle/angular-idle.js"></script>
+    <!-- hawtio-kubernetes-api -->
+    <script src="node_modules/hawtio-kubernetes-api/dist/smokesignals.unminified.js"></script>
+    <script src="node_modules/hawtio-kubernetes-api/dist/hawtio-kubernetes-api.js"></script>
+    <!-- jsonpath -->
+    <script src="node_modules/jsonpath/jsonpath.js"></script>
+    <!-- kubernetes-label-selector -->
+    <script src="node_modules/kubernetes-label-selector/labelSelector.js"></script>
+    <script src="node_modules/kubernetes-label-selector/labelFilter.js"></script>
+    <!-- angular-resource -->
+    <script src="node_modules/angular-resource/angular-resource.min.js"></script>
+
+    <!-- endbuild -->
+    
+    <!-- build:js1 app.js -->
+    <script src="dist/hawtio-online.js"></script>
+    <!-- endbuild -->
+  </head>
+
+  <body>
+    <nav class="navbar navbar-pf-vertical" style="height: 60px"></nav>
+
+    <hawtio-vertical-nav></hawtio-vertical-nav>
+
+    <div id="main" class="container-fluid container-pf-nav-pf-vertical ng-cloak"
+         ng-controller="HawtioNav.ViewController"
+         ng-include src="viewPartial">
+    </div>
+
+    <div hawtio-extension name="hawtio-global"></div>
+  </body>
+</html>

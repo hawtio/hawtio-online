@@ -87,7 +87,8 @@ gulp.task('watch', ['build', 'watch-less'], function() {
     [
       'node_modules/@hawtio/**/dist/*.js',
       'node_modules/@hawtio/**/dist/*.css',
-      'index.html',
+      'integration.html',
+      'online.html',
       urljoin(config.dist, '*')
     ],
     ['reload']
@@ -153,21 +154,27 @@ gulp.task('connect', ['watch'], function () {
     logLevel : logger.INFO,
     port     : 2772,
     staticAssets : [{
-      path : '/',
+      path : '/online',
+      dir  : '.',
+    },
+    {
+      path : '/integration',
       dir  : '.',
     }],
-    fallback   : 'index.html',
+    fallback   : 'online.html',
     liveReload : {
       enabled : true,
     }
   });
 
-  hawtio.use('/osconsole/config.js', osconsole);
+  hawtio.use('/online/osconsole/config.js', osconsole);
 
   hawtio.use('/', function (req, res, next) {
     const path = req.originalUrl;
-    // avoid returning these files, they should get pulled from js
-    if (s.startsWith(path, '/plugins/') && s.endsWith(path, 'html')) {
+    if (path === '/') {
+      res.redirect('/online');
+    } else if (s.startsWith(path, '/plugins/') && s.endsWith(path, 'html')) {
+      // avoid returning these files, they should get pulled from js
       console.log('returning 404 for: ', path);
       res.statusCode = 404;
       res.end();
