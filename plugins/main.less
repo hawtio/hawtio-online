@@ -3,12 +3,33 @@
 @import (reference) "@{pf-less-path}/patternfly.less";
 @import (reference) "@{pf-less-path}/patternfly-additions.less";
 
-#main {
-  //background-color: @color-pf-black-150;
+@pf-padding: @grid-gutter-width / 2;
+
+html {
+  height: 100%;
 }
 
-.no-border {
-  border: none;
+body {
+  height: 100%;
+}
+
+#main {
+  //background-color: @color-pf-black-150;  
+  height: 100%;
+  overflow: auto;
+  padding-left: 0;
+  padding-right: 0;
+
+  & > div[ng-view] {
+    padding-left: @pf-padding;
+    padding-right: @pf-padding;
+  }
+}
+
+pf-toolbar > .container-fluid,
+pf-table-view > .container-fluid {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 div.title {
