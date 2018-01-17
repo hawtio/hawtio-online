@@ -190,7 +190,6 @@ var Online;
         .filter('jolokiaPort', function () { return function (container) { return container.ports.find(function (port) { return port.name === 'jolokia'; }); }; })
         .filter('connectUrl', ['userDetails', function (userDetails) { return function (pod, port) {
             if (port === void 0) { port = 8778; }
-            console.log(new URI().toString());
             return new URI().path('/integration/integration.html')
                 .hash(userDetails.token || '')
                 .query({
