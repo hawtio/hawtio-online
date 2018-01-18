@@ -242,7 +242,6 @@ gulp.task('usemin-online', () => gulp.src('online.html')
   .pipe(plugins.usemin({
     css: [plugins.minifyCss({ keepBreaks: true }), 'concat'],
     js : [plugins.uglify(), plugins.rev()],
-    js1: [plugins.uglify(), plugins.rev()],
   }))
   .pipe(plugins.debug({ title: 'usemin-online' }))
   .pipe(gulp.dest('site/online')));
