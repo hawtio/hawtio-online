@@ -247,7 +247,7 @@ gulp.task('usemin-online', () => gulp.src('online.html')
   .pipe(gulp.dest('site/online')));
 
 gulp.task('tweak-urls-integration', ['usemin-integration'], () => gulp.src('site/integration/style.css')
-  // .pipe(plugins.replace(/url\(\.\.\//g, 'url('))
+  .pipe(plugins.replace(/url\(img\//g, 'url(../img/'))
   // tweak fonts URL coming from PatternFly that does not repackage then in dist
   .pipe(plugins.replace(/url\(\.\.\/components\/font-awesome\//g, 'url(../'))
   .pipe(plugins.replace(/url\(\.\.\/components\/bootstrap\/dist\//g, 'url(../'))
@@ -257,7 +257,7 @@ gulp.task('tweak-urls-integration', ['usemin-integration'], () => gulp.src('site
   .pipe(gulp.dest('site/integration')));
 
 gulp.task('tweak-urls-online', ['usemin-online'], () => gulp.src('site/online/style.css')
-  // .pipe(plugins.replace(/url\(\.\.\//g, 'url('))
+  .pipe(plugins.replace(/url\(img\//g, 'url(../img/'))
   // tweak fonts URL coming from PatternFly that does not repackage then in dist
   .pipe(plugins.replace(/url\(\.\.\/components\/font-awesome\//g, 'url(../'))
   .pipe(plugins.replace(/url\(\.\.\/components\/bootstrap\/dist\//g, 'url(../'))
