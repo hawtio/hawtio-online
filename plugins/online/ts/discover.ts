@@ -136,7 +136,7 @@ module Online {
       () => containers => containers.filter(container => container.ports.some(port => port.name === 'jolokia')))
     .filter('jolokiaPort',
       () => container => container.ports.find(port => port.name === 'jolokia'))
-    .filter('connectUrl', ['userDetails', userDetails => (pod, port = 8778) => new URI().path('/integration/integration.html')
+    .filter('connectUrl', ['userDetails', userDetails => (pod, port = 8778) => new URI().path('/integration')
       .hash(userDetails.token || '')
       .query({
         jolokiaUrl: new URI(KubernetesAPI.masterUrl)

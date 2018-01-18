@@ -190,7 +190,7 @@ var Online;
         .filter('jolokiaPort', function () { return function (container) { return container.ports.find(function (port) { return port.name === 'jolokia'; }); }; })
         .filter('connectUrl', ['userDetails', function (userDetails) { return function (pod, port) {
             if (port === void 0) { port = 8778; }
-            return new URI().path('/integration/integration.html')
+            return new URI().path('/integration')
                 .hash(userDetails.token || '')
                 .query({
                 jolokiaUrl: new URI(KubernetesAPI.masterUrl)
