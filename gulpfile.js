@@ -222,34 +222,50 @@ gulp.task('site-fonts', () =>
     .pipe(gulp.dest('site/fonts/', { overwrite: false }))
 );
 
-gulp.task('site-files', () => gulp.src(['images/**', 'img/**'], {base: '.'})
+gulp.task('site-files', () => gulp.src(['images/**', 'img/**'], { base: '.' })
   .pipe(plugins.chmod(0o644))
-  .pipe(plugins.dedupe({same: false}))
-  .pipe(plugins.debug({title: 'site files'}))
+  .pipe(plugins.dedupe({ same: false }))
+  .pipe(plugins.debug({ title: 'site files' }))
   .pipe(gulp.dest('site')));
 
-gulp.task('usemin', () => gulp.src('index.html')
+gulp.task('usemin-integration', () => gulp.src('integration.html')
+  .pipe(plugins.rename('index.html'))
   .pipe(plugins.usemin({
-    css: [plugins.minifyCss({keepBreaks: true}), 'concat'],
+    css: [plugins.minifyCss({ keepBreaks: true }), 'concat'],
     js : [plugins.uglify(), plugins.rev()],
-    js1: [plugins.uglify(), plugins.rev()]
   }))
-  .pipe(plugins.debug({title: 'usemin'}))
-  .pipe(gulp.dest('site')));
+  .pipe(plugins.debug({ title: 'usemin-integration' }))
+  .pipe(gulp.dest('site/integration')));
 
-gulp.task('tweak-urls', ['usemin'], () => gulp.src('site/style.css')
+gulp.task('usemin-online', () => gulp.src('online.html')
+  .pipe(plugins.rename('index.html'))
+  .pipe(plugins.usemin({
+    css: [plugins.minifyCss({ keepBreaks: true }), 'concat'],
+    js : [plugins.uglify(), plugins.rev()],
+    js1: [plugins.uglify(), plugins.rev()],
+  }))
+  .pipe(plugins.debug({ title: 'usemin-online' }))
+  .pipe(gulp.dest('site/online')));
+
+gulp.task('tweak-urls-integration', ['usemin-integration'], () => gulp.src('site/integration/style.css')
   .pipe(plugins.replace(/url\(\.\.\//g, 'url('))
   // tweak fonts URL coming from PatternFly that does not repackage then in dist
   .pipe(plugins.replace(/url\(\.\.\/components\/font-awesome\//g, 'url('))
   .pipe(plugins.replace(/url\(\.\.\/components\/bootstrap\/dist\//g, 'url('))
   .pipe(plugins.replace(/url\(node_modules\/bootstrap\/dist\//g, 'url('))
   .pipe(plugins.replace(/url\(node_modules\/patternfly\/components\/bootstrap\/dist\//g, 'url('))
-  .pipe(plugins.debug({title: 'tweak-urls'}))
-  .pipe(gulp.dest('site')));
+  .pipe(plugins.debug({ title: 'tweak-urls-integration' }))
+  .pipe(gulp.dest('site/integration')));
 
-gulp.task('404', ['usemin'], () => gulp.src('site/index.html')
-  .pipe(plugins.rename('404.html'))
-  .pipe(gulp.dest('site')));
+gulp.task('tweak-urls-online', ['usemin-online'], () => gulp.src('site/online/style.css')
+  .pipe(plugins.replace(/url\(\.\.\//g, 'url('))
+  // tweak fonts URL coming from PatternFly that does not repackage then in dist
+  .pipe(plugins.replace(/url\(\.\.\/components\/font-awesome\//g, 'url('))
+  .pipe(plugins.replace(/url\(\.\.\/components\/bootstrap\/dist\//g, 'url('))
+  .pipe(plugins.replace(/url\(node_modules\/bootstrap\/dist\//g, 'url('))
+  .pipe(plugins.replace(/url\(node_modules\/patternfly\/components\/bootstrap\/dist\//g, 'url('))
+  .pipe(plugins.debug({ title: 'tweak-urls-online' }))
+  .pipe(gulp.dest('site/online')));
 
 gulp.task('copy-images', function () {
   const dirs = fs.readdirSync('./node_modules/@hawtio');
@@ -281,19 +297,18 @@ gulp.task('serve-site', function () {
       path : '/',
       dir  : 'site',
     }],
-    fallback   : 'site/404.html',
     liveReload : {
       enabled : false,
     },
   });
 
-  hawtio.use('/osconsole/config.js', osconsole);
+  hawtio.use('/online/osconsole/config.js', osconsole);
 
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
 gulp.task('build', callback => sequence(['tsc', 'less', 'template', 'concat'], 'clean', callback));
 
-gulp.task('site', callback => sequence('clean', ['site-fonts', 'site-files', 'usemin', 'tweak-urls', '404', 'copy-images'], callback));
+gulp.task('site', callback => sequence('clean', ['site-fonts', 'site-files', 'usemin-integration', 'usemin-online', 'tweak-urls-integration', 'tweak-urls-online', 'copy-images'], callback));
 
 gulp.task('default', callback => sequence('connect', callback));

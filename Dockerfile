@@ -42,10 +42,12 @@ EXPOSE 8080 8443
 # Add symbolic link to config.json to avoid mounting issues
 RUN ln -sf /usr/share/nginx/html/config/config.json /usr/share/nginx/html/config.json
 
+RUN rm /usr/share/nginx/html/index.html
+
 RUN touch config.js && \
     chown 998 config.js && chmod g=u config.js && \
-    mkdir /usr/share/nginx/html/osconsole && \
-    ln -sf /config.js /usr/share/nginx/html/osconsole/config.js
+    mkdir -p /usr/share/nginx/html/online/osconsole && \
+    ln -sf /config.js /usr/share/nginx/html/online/osconsole/config.js
 
 USER 998
 
