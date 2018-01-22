@@ -228,24 +228,23 @@ gulp.task('site-files', () => gulp.src(['images/**', 'img/**'], { base: '.' })
   .pipe(plugins.debug({ title: 'site files' }))
   .pipe(gulp.dest('site')));
 
-gulp.task('usemin', () => gulp.src('online.html')
-  .pipe(plugins.rename('index.html'))
+gulp.task('usemin', () => gulp.src('index.html')
   .pipe(plugins.usemin({
     css: [plugins.minifyCss({ keepBreaks: true }), 'concat'],
     js : [plugins.uglify(), plugins.rev()],
   }))
   .pipe(plugins.debug({ title: 'usemin' }))
-  .pipe(gulp.dest('site/online')));
+  .pipe(gulp.dest('site')));
 
-gulp.task('tweak-urls', ['usemin'], () => gulp.src('site/online/style.css')
-  .pipe(plugins.replace(/url\(img\//g, 'url(../img/'))
+gulp.task('tweak-urls', ['usemin'], () => gulp.src('site/style.css')
+  .pipe(plugins.replace(/url\(\.\.\//g, 'url('))
   // tweak fonts URL coming from PatternFly that does not repackage then in dist
-  .pipe(plugins.replace(/url\(\.\.\/components\/font-awesome\//g, 'url(../'))
-  .pipe(plugins.replace(/url\(\.\.\/components\/bootstrap\/dist\//g, 'url(../'))
-  .pipe(plugins.replace(/url\(node_modules\/bootstrap\/dist\//g, 'url(../'))
-  .pipe(plugins.replace(/url\(node_modules\/patternfly\/components\/bootstrap\/dist\//g, 'url(../'))
-  .pipe(plugins.debug({ title: 'tweak-urls-online' }))
-  .pipe(gulp.dest('site/online')));
+  .pipe(plugins.replace(/url\(\.\.\/components\/font-awesome\//g, 'url('))
+  .pipe(plugins.replace(/url\(\.\.\/components\/bootstrap\/dist\//g, 'url('))
+  .pipe(plugins.replace(/url\(node_modules\/bootstrap\/dist\//g, 'url('))
+  .pipe(plugins.replace(/url\(node_modules\/patternfly\/components\/bootstrap\/dist\//g, 'url('))
+  .pipe(plugins.debug({title: 'tweak-urls'}))
+  .pipe(gulp.dest('site')));
 
 gulp.task('copy-images', function () {
   const dirs = fs.readdirSync('./node_modules/@hawtio');
@@ -274,7 +273,7 @@ gulp.task('serve-site', function () {
   hawtio.setConfig({
     port: 2772,
     staticAssets: [{
-      path : '/',
+      path : '/online',
       dir  : 'site',
     }],
     // proxy: '/integration',
