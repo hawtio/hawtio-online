@@ -87,8 +87,7 @@ gulp.task('watch', ['build', 'watch-less'], function() {
     [
       'node_modules/@hawtio/**/dist/*.js',
       'node_modules/@hawtio/**/dist/*.css',
-      'integration.html',
-      'online.html',
+      'index.html',
       urljoin(config.dist, '*')
     ],
     ['reload']
@@ -156,12 +155,8 @@ gulp.task('connect', ['watch'], function () {
     staticAssets : [{
       path : '/online',
       dir  : '.',
-    },
-    {
-      path : '/integration',
-      dir  : '.',
     }],
-    fallback   : 'online.html',
+    fallback   : 'index.html',
     liveReload : {
       enabled : true,
     }
