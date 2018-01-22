@@ -66,6 +66,11 @@ objects:
             value: ${OPENSHIFT_MASTER}
           - name: HAWTIO_ONLINE_MODE
             value: cluster
+        - image: 'hawtio/integration'
+          imagePullPolicy: Always
+          name: hawtio-integration
+          ports:
+          - containerPort: 8080
     triggers:
     - imageChangeParams:
         automatic: true
@@ -92,6 +97,21 @@ objects:
       app: hawtio
       component: online
 - apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: hawtio
+      component: integration
+    name: hawtio-integration
+  spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: hawtio
+      component: online
+- apiVersion: v1
   kind: Route
   metadata:
     labels:
@@ -103,6 +123,22 @@ objects:
     to:
       kind: Service
       name: hawtio-online
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: hawtio
+      component: integration
+    name: hawtio-integration
+  spec:
+    host: ${ROUTE_HOSTNAME}
+    path: /integration
+    to:
+      kind: Service
+      name: hawtio-integration
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
