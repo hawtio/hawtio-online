@@ -59,7 +59,7 @@ objects:
           imagePullPolicy: Always
           name: hawtio-online
           ports:
-          - containerPort: 8080
+          - containerPort: 9090
           env:
           - name: OPENSHIFT_MASTER
             value: ${OPENSHIFT_MASTER}
@@ -95,7 +95,7 @@ objects:
     ports:
     - port: 80
       protocol: TCP
-      targetPort: 8080
+      targetPort: 9090
     selector:
       app: hawtio
       component: online

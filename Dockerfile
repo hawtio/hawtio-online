@@ -37,7 +37,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
 
 #VOLUME ["/var/cache/nginx"]
 
-EXPOSE 8080 8443
+EXPOSE 9090
 
 # Add symbolic link to config.json to avoid mounting issues
 RUN ln -sf /usr/share/nginx/html/config/config.json /usr/share/nginx/html/config.json
