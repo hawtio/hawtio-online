@@ -2,9 +2,7 @@
 
 module Online {
 
-  // import K8SClientFactory = KubernetesAPI.K8SClientFactory;
-  declare var KubernetesAPI    : any;
-  declare var K8SClientFactory : any;
+  declare var KubernetesAPI: any;
 
   angular.module(pluginName)
     .controller('Online.DiscoverController',
@@ -93,8 +91,8 @@ module Online {
                     $scope.$apply();
                   });
                   pods_watches[project.metadata.name] = {
-                    client : pods,
-                    watch  : pods_watch,
+                    request : pods,
+                    watch   : pods_watch,
                   };
                   pods.connect();
                 });
@@ -103,7 +101,7 @@ module Online {
               $scope.projects.filter(project => !projects.find(p => p.metadata.uid === project.metadata.uid))
                 .forEach(project => {
                   const handle = pods_watches[project.metadata.name];
-                  K8SClientFactory.destroy(handle.client, handle.watch);
+                  client.destroy(handle.request, handle.watch);
                   delete pods_watches[project.metadata.name];
                 });
 
@@ -111,7 +109,7 @@ module Online {
               $scope.projects.push(...projects);
               loading--;
             });
-            $scope.$on('$destroy', _ => K8SClientFactory.destroy(projects, projects_watch));
+            $scope.$on('$destroy', _ => client.destroy(projects, projects_watch));
 
             projects.connect();
           } else {
@@ -125,7 +123,7 @@ module Online {
               // have to kick off a $digest here
               $scope.$apply();
             });
-            $scope.$on('$destroy', _ => K8SClientFactory.destroy(pods, pods_watch));
+            $scope.$on('$destroy', _ => client.destroy(pods, pods_watch));
 
             pods.connect();
           }

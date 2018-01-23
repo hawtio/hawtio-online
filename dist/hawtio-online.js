@@ -149,7 +149,7 @@ var Online;
                             var _a;
                         });
                         pods_watches_1[project.metadata.name] = {
-                            client: pods,
+                            request: pods,
                             watch: pods_watch,
                         };
                         pods.connect();
@@ -158,7 +158,7 @@ var Online;
                     $scope.projects.filter(function (project) { return !projects.find(function (p) { return p.metadata.uid === project.metadata.uid; }); })
                         .forEach(function (project) {
                         var handle = pods_watches_1[project.metadata.name];
-                        K8SClientFactory.destroy(handle.client, handle.watch);
+                        client.destroy(handle.request, handle.watch);
                         delete pods_watches_1[project.metadata.name];
                     });
                     $scope.projects.length = 0;
@@ -166,7 +166,7 @@ var Online;
                     loading--;
                     var _a;
                 });
-                $scope.$on('$destroy', function (_) { return K8SClientFactory.destroy(projects_1, projects_watch_1); });
+                $scope.$on('$destroy', function (_) { return client.destroy(projects_1, projects_watch_1); });
                 projects_1.connect();
             }
             else {
@@ -181,7 +181,7 @@ var Online;
                     $scope.$apply();
                     var _a;
                 });
-                $scope.$on('$destroy', function (_) { return K8SClientFactory.destroy(pods_1, pods_watch_1); });
+                $scope.$on('$destroy', function (_) { return client.destroy(pods_1, pods_watch_1); });
                 pods_1.connect();
             }
         }
