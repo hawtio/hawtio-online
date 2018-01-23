@@ -27,6 +27,21 @@ objects:
         scheduled: true
       name: latest
 - apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: hawtio-integration
+    labels:
+      app: hawtio
+      component: integration
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker.io/hawtio/integration:latest
+      importPolicy:
+        scheduled: true
+      name: latest
+- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     labels:
@@ -82,6 +97,14 @@ objects:
         from:
           kind: ImageStreamTag
           name: hawtio-online:latest
+      type: ImageChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - hawtio-integration
+        from:
+          kind: ImageStreamTag
+          name: hawtio-integration:latest
       type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
