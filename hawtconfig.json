@@ -1,0 +1,6 @@
+{
+  "branding": {
+    "appName": "Hawtio OpenShift Console",
+    "logoUrl": "node_modules/@hawtio/core/dist/img/hawtio-logo.svg"
+  }
+}
