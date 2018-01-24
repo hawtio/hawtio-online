@@ -12,6 +12,30 @@ message: |-
   Hawtio Online is deployed.
 objects:
 - apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: hawtio-online
+  data:
+    hawtconfig.json: |
+      {
+        "branding": {
+          "appName": "Hawtio OpenShift Console",
+          "logoUrl": "img/hawtio-logo.svg"
+        }
+      }
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: hawtio-integration
+  data:
+    hawtconfig.json: |
+      {
+        "branding": {
+          "appName": "Hawtio Integration Console",
+          "logoUrl": "img/hawtio-logo.svg"
+        }
+      }
+- apiVersion: v1
   kind: ImageStream
   metadata:
     name: hawtio-online
@@ -84,11 +108,26 @@ objects:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          volumeMounts:
+          - name: hawtio-online
+            mountPath: /usr/share/nginx/html/hawtconfig.json
+            subPath: hawtconfig.json
         - image: 'hawtio/integration'
           imagePullPolicy: Always
           name: hawtio-integration
           ports:
           - containerPort: 8080
+          volumeMounts:
+          - name: hawtio-integration
+            mountPath: /usr/share/nginx/html/hawtconfig.json
+            subPath: hawtconfig.json
+        volumes:
+        - name: hawtio-online
+          configMap:
+            name: hawtio-online
+        - name: hawtio-integration
+          configMap:
+            name: hawtio-integration
     triggers:
     - imageChangeParams:
         automatic: true
