@@ -50,17 +50,22 @@ module Online {
                 placeholder: 'Filter by Name...',
                 filterType : 'text'
               },
-              {
-                id         : 'namespace',
-                title      : 'Namespace',
-                placeholder: 'Filter by Namespace...',
-                filterType : 'text'
-              }
             ],
             resultsCount  : $scope.filteredPods.length,
             appliedFilters: [],
             onFilterChange: applyFilters
           };
+
+          if ($window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
+            $scope.filterConfig.fields.push(
+              {
+                id         : 'namespace',
+                title      : 'Namespace',
+                placeholder: 'Filter by Namespace...',
+                filterType : 'text'
+              },
+            );
+          }
 
           $scope.toolbarConfig = {
             filterConfig: $scope.filterConfig,
