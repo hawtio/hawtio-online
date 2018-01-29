@@ -88,13 +88,13 @@ See [Service Accounts as OAuth Clients](https://docs.openshift.com/container-pla
 ##### Cluster mode
 
 ```
-$  yarn start --mode=cluster
+$  yarn start --master=`oc whoami --show-server` --mode=cluster
 ```
 
 ##### Namespace mode
 
 ```
-$  yarn start --mode=namespace --namespace=`oc project -q`
+$  yarn start --master=`oc whoami --show-server` --mode=namespace --namespace=`oc project -q`
 ```
 
 You can access the console at <http://localhost:2772/>.
