@@ -16,6 +16,7 @@ const gulp            = require('gulp'),
 const plugins  = gulpLoadPlugins({});
 
 const config = {
+  master    : argv.master,
   mode      : argv.mode || 'namespace',
   namespace : argv.namespace || 'hawtio',
   main      : '.',
@@ -95,12 +96,17 @@ gulp.task('watch', ['build', 'watch-less'], function() {
   gulp.watch([config.ts, config.templates], ['tsc', 'template', 'concat', 'clean']);
 });
 
-function osconsole(_, res, _) {
-  const master = process.env.OPENSHIFT_MASTER;
+function getMaster() {
+  const master = config.master || process.env.OPENSHIFT_MASTER;
   if (!master) {
-    console.error('The OPENSHIFT_MASTER environment variable must be set!');
+    console.error('The --master option or the OPENSHIFT_MASTER environment variable must be set!');
     process.exit(1);
   }
+  return master;
+}
+
+function osconsole(_, res, _) {
+  const master = getMaster();
   console.log('Using OpenShift URL:', master);
   let client;
   if (config.mode === 'namespace') {
@@ -139,11 +145,7 @@ gulp.task('connect', ['watch'], function () {
   // Lets disable unauthorised TLS for self-signed development certificates
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-  const master = process.env.OPENSHIFT_MASTER;
-  if (!master) {
-    console.error('The OPENSHIFT_MASTER environment variable must be set!');
-    process.exit(1);
-  }
+  const master = getMaster();
   console.log('Using OpenShift URL:', master);
   const kube = uri(urljoin(master, 'api'));
   const kubeapis = uri(urljoin(master, 'apis'));
