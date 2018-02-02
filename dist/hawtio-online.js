@@ -201,7 +201,7 @@ var Online;
                     .segment('pods')
                     .segment("https:" + pod.metadata.name + ":" + port)
                     .segment('proxy/jolokia'),
-                title: pod.metadata.name || 'Untitled Container',
+                title: pod.metadata.name,
                 returnTo: new URI().toString(),
             });
         }; }])

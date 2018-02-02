@@ -148,7 +148,7 @@ module Online {
           .segment('pods')
           .segment(`https:${pod.metadata.name}:${port}`)
           .segment('proxy/jolokia'),
-        title     : pod.metadata.name || 'Untitled Container',
+        title     : pod.metadata.name,
         returnTo  : new URI().toString(),
       })])
     .filter('podDetailsUrl', () => pod => UrlHelpers.join(KubernetesAPI.masterUrl, 'console/project', pod.metadata.namespace, 'browse/pods', pod.metadata.name));
