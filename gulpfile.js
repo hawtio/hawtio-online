@@ -158,6 +158,11 @@ gulp.task('connect', ['watch'], function () {
       path : '/online',
       dir  : '.',
     }],
+        staticProxies: [{
+      port: 8080,
+      path: '/integration',
+      targetPath: '/integration',
+    }],
     fallback   : 'index.html',
     liveReload : {
       enabled : true,
@@ -280,12 +285,12 @@ gulp.task('serve-site', function () {
       path : '/online',
       dir  : 'docker/site',
     }],
-    // proxy: '/integration',
-    // staticProxies: [{
-    //   port: 8080,
-    //   path: '/integration',
-    //   targetPath: '/'
-    // }],
+    staticProxies: [{
+      port: 8080,
+      path: '/integration',
+      targetPath: '/integration',
+    }],
+    fallback   : 'index.html',
     liveReload : {
       enabled : false,
     },
