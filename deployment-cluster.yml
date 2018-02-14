@@ -99,17 +99,18 @@ objects:
           imagePullPolicy: Always
           name: hawtio-online
           ports:
-          - containerPort: 9090
+          - name: nginx
+            containerPort: 9090
           livenessProbe:
             httpGet:
               path: /online
-              port: 9090
+              port: nginx
             periodSeconds: 10
             timeoutSeconds: 1
           readinessProbe:
             httpGet:
               path: /online
-              port: 9090
+              port: nginx
             initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 1
@@ -126,17 +127,18 @@ objects:
           imagePullPolicy: Always
           name: hawtio-integration
           ports:
-          - containerPort: 8080
+          - name: nginx
+            containerPort: 8080
           livenessProbe:
             httpGet:
               path: /integration
-              port: 8080
+              port: nginx
             periodSeconds: 10
             timeoutSeconds: 1
           readinessProbe:
             httpGet:
               path: /integration
-              port: 8080
+              port: nginx
             initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 1
@@ -180,7 +182,7 @@ objects:
     ports:
     - port: 80
       protocol: TCP
-      targetPort: 9090
+      targetPort: nginx
     selector:
       app: hawtio
       component: online
@@ -195,7 +197,7 @@ objects:
     ports:
     - port: 80
       protocol: TCP
-      targetPort: 8080
+      targetPort: nginx
     selector:
       app: hawtio
       component: online
