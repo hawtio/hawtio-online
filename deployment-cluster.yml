@@ -100,6 +100,19 @@ objects:
           name: hawtio-online
           ports:
           - containerPort: 9090
+          livenessProbe:
+            httpGet:
+              path: /online
+              port: 9090
+            periodSeconds: 10
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /online
+              port: 9090
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
           env:
           - name: OPENSHIFT_MASTER
             value: ${OPENSHIFT_MASTER}
@@ -114,6 +127,19 @@ objects:
           name: hawtio-integration
           ports:
           - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /integration
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /integration
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
           volumeMounts:
           - name: hawtio-integration
             mountPath: /usr/share/nginx/html/hawtconfig.json
