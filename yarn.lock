@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@hawtio/core-dts@3.0.18":
+"@hawtio/core-dts@3.0.18", "@hawtio/core-dts@~3.0.11", "@hawtio/core-dts@~3.0.12":
   version "3.0.18"
   resolved "https://registry.yarnpkg.com/@hawtio/core-dts/-/core-dts-3.0.18.tgz#20d1ff7e839c0e3180c18e954ad7a305c4ba2b24"
   dependencies:
     "@types/jquery" "~2.0.46"
 
-"@hawtio/core@3.2.1", "@hawtio/core@3.2.5", "@hawtio/core@^3.2.5":
+"@hawtio/core@3.2.1", "@hawtio/core@3.2.3", "@hawtio/core@3.2.5", "@hawtio/core@3.2.7", "@hawtio/core@^3.2.5", "@hawtio/core@~3.0.9", "@hawtio/core@~3.1.0":
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-3.2.5.tgz#02b69b0b72c6a3364b6deea61ccd9746e54fbda7"
   dependencies:
@@ -30,6 +30,14 @@
     patternfly "3.32.1"
     urijs "1.19.0"
 
+"@hawtio/forms@3.0.12":
+  version "3.0.12"
+  resolved "https://registry.yarnpkg.com/@hawtio/forms/-/forms-3.0.12.tgz#7f73abffd4c2127038fad14183ecad8ce5e9452a"
+  dependencies:
+    "@hawtio/core" "~3.1.0"
+    "@hawtio/core-dts" "~3.0.12"
+    "@hawtio/ui" "~3.0.25"
+
 "@hawtio/node-backend@^3.0.0":
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/@hawtio/node-backend/-/node-backend-3.0.4.tgz#7902fea86d2eba36ff5b51696d9f1dd9421cdb7d"
@@ -48,7 +56,39 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/utilities@^3.2.0":
+"@hawtio/oauth@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-3.0.2.tgz#e50928c74e5caa555a95076101aa079c36562ec7"
+  dependencies:
+    "@hawtio/core" "3.2.7"
+    "@hawtio/forms" "3.0.12"
+    "@hawtio/ui" "3.2.0"
+    "@hawtio/utilities" "3.2.0"
+    "@types/jqueryui" "1.12.0"
+    angular-patternfly "4.14.0"
+    angular-resizable "1.2.0"
+    keycloak-js "^3.4.3"
+    ng-idle "^1.3.2"
+    patternfly-bootstrap-treeview "2.1.5"
+
+"@hawtio/ui@3.2.0", "@hawtio/ui@~3.0.25":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@hawtio/ui/-/ui-3.2.0.tgz#29ed6aa1d01cd7d7e5e704dc5dd16a2e6e76e0a4"
+  dependencies:
+    "@hawtio/core" "3.2.3"
+    "@hawtio/core-dts" "3.0.18"
+    "@hawtio/utilities" "3.2.0"
+    "@types/bootstrap" "3.3.36"
+    "@types/clipboard" "1.5.35"
+    "@types/codemirror" "0.0.40"
+    "@types/js-beautify" "0.0.30"
+    "@types/marked" "0.0.28"
+    angular-ui-bootstrap "2.5.6"
+    clipboard "1.7.1"
+    codemirror "5.33.0"
+    js-beautify "1.7.5"
+
+"@hawtio/utilities@3.2.0", "@hawtio/utilities@^3.2.0", "@hawtio/utilities@~3.0.8":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@hawtio/utilities/-/utilities-3.2.0.tgz#31506054856fdd3013ab3e4c8dadbcb55f599ef9"
   dependencies:
@@ -57,29 +97,53 @@
     human-date "~1.4.0"
     humanize-duration "~3.10.0"
 
-"@types/angular-route@1.3.4":
+"@types/angular-route@1.3.4", "@types/angular-route@~1.3.4":
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/@types/angular-route/-/angular-route-1.3.4.tgz#10d3f7eb313fb8a4b832041f9401869803dcd4df"
   dependencies:
     "@types/angular" "*"
 
-"@types/angular@*", "@types/angular@1.6.39", "@types/angular@1.6.40":
+"@types/angular@*", "@types/angular@1.6.39", "@types/angular@1.6.40", "@types/angular@~1.6.0", "@types/angular@~1.6.18":
   version "1.6.40"
   resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.6.40.tgz#f4e5a77573068c07ccab320e63e1616e1f097fc9"
 
-"@types/jasmine@2.8.2":
-  version "2.8.2"
-  resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-2.8.2.tgz#6ae4d8740c0da5d5a627df725b4eed71b8e36668"
+"@types/bootstrap@3.3.36":
+  version "3.3.36"
+  resolved "https://registry.yarnpkg.com/@types/bootstrap/-/bootstrap-3.3.36.tgz#5ca0b81655427398fe7c8728bccdc395069093d0"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/clipboard@1.5.35", "@types/clipboard@~1.5.34":
+  version "1.5.36"
+  resolved "https://registry.yarnpkg.com/@types/clipboard/-/clipboard-1.5.36.tgz#e79fffc758e94e7ff9de9898ae7561db3c2bdd51"
+
+"@types/codemirror@0.0.40":
+  version "0.0.40"
+  resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.40.tgz#0868ed9ba5bf3ef8072de80e245ecf4a8f0bbdfd"
+
+"@types/jasmine@2.8.2", "@types/jasmine@~2.8.2":
+  version "2.8.6"
+  resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-2.8.6.tgz#14445b6a1613cf4e05dd61c3c3256d0e95c0421e"
 
 "@types/jquery@*", "@types/jquery@2.0.48", "@types/jquery@~2.0.0", "@types/jquery@~2.0.46":
   version "2.0.48"
   resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-2.0.48.tgz#3e90d8cde2d29015e5583017f7830cb3975b2eef"
 
-"@types/lodash@4.14.91":
-  version "4.14.91"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.91.tgz#794611b28056d16b5436059c6d800b39d573cd3a"
+"@types/jqueryui@1.12.0":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@types/jqueryui/-/jqueryui-1.12.0.tgz#69e6e6e2c1c7b97d0b6405c8f6036db09056bd87"
+  dependencies:
+    "@types/jquery" "*"
 
-"@types/marked@0.3.0":
+"@types/js-beautify@0.0.30":
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-0.0.30.tgz#82ffbeb2c2dec592f1d04169e926912eeed567ec"
+
+"@types/lodash@4.14.91", "@types/lodash@~4.14.65", "@types/lodash@~4.14.85":
+  version "4.14.104"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.104.tgz#53ee2357fa2e6e68379341d92eb2ecea4b11bb80"
+
+"@types/marked@0.0.28", "@types/marked@0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@types/marked/-/marked-0.3.0.tgz#583c223dd33385a1dda01aaf77b0cd0411c4b524"
 
@@ -87,15 +151,19 @@
   version "7.0.48"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.48.tgz#24bfdc0aa82e8f6dbd017159c58094a2e06d0abb"
 
-"@types/urijs@1.15.34":
-  version "1.15.34"
-  resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.15.34.tgz#b9d5954e9beaabb6fc48c2127d8df15ac6393256"
+"@types/urijs@1.15.34", "@types/urijs@~1.15.32", "@types/urijs@~1.15.34":
+  version "1.15.36"
+  resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.15.36.tgz#13e481d2fedad94880080a32b739388bc3b52e4b"
   dependencies:
     "@types/jquery" "*"
 
 JSONSelect@0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/JSONSelect/-/JSONSelect-0.4.0.tgz#a08edcc67eb3fcbe99ed630855344a0cf282bb8d"
+
+abbrev@1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
 
 accepts@1.3.4, accepts@~1.2.12, accepts@~1.2.13, accepts@~1.3.0, accepts@~1.3.4:
   version "1.3.4"
@@ -166,7 +234,7 @@ angular-file-upload@~2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/angular-file-upload/-/angular-file-upload-2.5.0.tgz#0f53c93fbc70ed8ba8340a9a289ba64b680e2167"
 
-angular-patternfly@^4.14.5:
+angular-patternfly@4.14.0, angular-patternfly@^4.14.5:
   version "4.14.5"
   resolved "https://registry.yarnpkg.com/angular-patternfly/-/angular-patternfly-4.14.5.tgz#3319a91efb0c303b419ccd0c9876a48a4a49b67e"
   dependencies:
@@ -190,15 +258,19 @@ angular-patternfly@^4.14.5:
     jquery "~3.2.1"
     moment "~2.19.3"
 
+angular-resizable@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/angular-resizable/-/angular-resizable-1.2.0.tgz#9dd29af008f8b54abfc051bd269a8f0b4fe43f1a"
+
 angular-resource@~1.6.5:
   version "1.6.7"
   resolved "https://registry.yarnpkg.com/angular-resource/-/angular-resource-1.6.7.tgz#1ac9a33d1715f2042c1321c82ca307e694ffdc93"
 
-angular-route@1.6.8:
-  version "1.6.8"
-  resolved "https://registry.yarnpkg.com/angular-route/-/angular-route-1.6.8.tgz#82ace773e7b232bf77768370760244a8caab5d36"
+angular-route@1.6.8, angular-route@~1.6.0:
+  version "1.6.9"
+  resolved "https://registry.yarnpkg.com/angular-route/-/angular-route-1.6.9.tgz#73c63cec6a8a6b924698aec635eac32aa41f5e2b"
 
-angular-sanitize@1.5.*, angular-sanitize@1.6.8:
+angular-sanitize@1.5.*, angular-sanitize@1.6.8, angular-sanitize@~1.6.0, angular-sanitize@~1.6.4:
   version "1.6.8"
   resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.6.8.tgz#68175a1a5853a6439fffcb251a88a538a44a8e70"
 
@@ -206,11 +278,11 @@ angular-svg-base-fix@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/angular-svg-base-fix/-/angular-svg-base-fix-2.0.0.tgz#f3d5f85b87a10d21310f47da8455038b90cfb000"
 
-angular-ui-bootstrap@2.3.x, angular-ui-bootstrap@^2.5.6:
+angular-ui-bootstrap@2.3.x, angular-ui-bootstrap@2.5.6, angular-ui-bootstrap@^2.5.6, angular-ui-bootstrap@~2.5.0:
   version "2.5.6"
   resolved "https://registry.yarnpkg.com/angular-ui-bootstrap/-/angular-ui-bootstrap-2.5.6.tgz#23937322ec641a6fbee16498cc32452aa199e7c5"
 
-angular@1.5.*, angular@1.6.8, angular@>=1.3.0, angular@^1.2.0:
+angular@1.5.*, angular@1.6.8, angular@>=1.3.0, angular@^1.2.0, angular@~1.6.0, angular@~1.6.4:
   version "1.6.8"
   resolved "https://registry.yarnpkg.com/angular/-/angular-1.6.8.tgz#5be378a58be91a5489e78b59c4518cd9fd273ffb"
 
@@ -346,6 +418,10 @@ beeper@^1.0.0:
 binaryextensions@~1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/binaryextensions/-/binaryextensions-1.0.1.tgz#1e637488b35b58bda5f4774bf96a5212a8c90755"
+
+bluebird@^3.0.5:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
 body-parser@1.18.2, body-parser@^1.17.2, body-parser@~1.13.3, body-parser@~1.14.0:
   version "1.18.2"
@@ -505,6 +581,14 @@ cli-usage@^0.1.1:
     marked "^0.3.6"
     marked-terminal "^1.6.2"
 
+clipboard@1.7.1, clipboard@~1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/clipboard/-/clipboard-1.7.1.tgz#360d6d6946e99a7a1fef395e42ba92b5e9b5a16b"
+  dependencies:
+    good-listener "^1.2.2"
+    select "^1.1.2"
+    tiny-emitter "^2.0.0"
+
 cliui@3.2.0, cliui@^2.1.0, cliui@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/cliui/-/cliui-3.2.0.tgz#120601537a916d29940f934da3b48d585a39213d"
@@ -541,6 +625,10 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
+codemirror@5.33.0, codemirror@~5.26.0:
+  version "5.33.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.33.0.tgz#462ad9a6fe8d38b541a9536a3997e1ef93b40c6a"
+
 color-convert@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.1.tgz#c1261107aeb2f294ebffec9ed9ecad529a6097ed"
@@ -561,11 +649,9 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@2.8.x:
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-2.8.1.tgz#06be367febfda0c330aa1e2a072d3dc9762425d4"
-  dependencies:
-    graceful-readlink ">= 1.0.0"
+commander@2.8.x, commander@^2.9.0:
+  version "2.14.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.14.1.tgz#2235123e37af8ca3c65df45b026dbd357b01b9aa"
 
 components-jqueryui@components/jqueryui#1.12.1:
   version "1.12.1"
@@ -597,6 +683,13 @@ concat-with-sourcemaps@*, concat-with-sourcemaps@^1.0.0:
   resolved "https://registry.yarnpkg.com/concat-with-sourcemaps/-/concat-with-sourcemaps-1.0.4.tgz#f55b3be2aeb47601b10a2d5259ccfb70fd2f1dd6"
   dependencies:
     source-map "^0.5.1"
+
+config-chain@~1.1.5:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/config-chain/-/config-chain-1.1.11.tgz#aba09747dfbe4c3e70e766a6e41586e1859fc6f2"
+  dependencies:
+    ini "^1.3.4"
+    proto-list "~1.2.1"
 
 connect-livereload@0.6.0, connect-livereload@^0.5.4, connect-livereload@^0.6.0:
   version "0.6.0"
@@ -809,6 +902,10 @@ delayed-stream@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
 
+delegate@^3.1.2:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/delegate/-/delegate-3.2.0.tgz#b66b71c3158522e8ab5744f720d8ca0c2af59166"
+
 depd@1.1.1, depd@~1.0.1, depd@~1.1.0, depd@~1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.1.tgz#5783b4e1c459f06fa5ca27f991f3d06e7a310359"
@@ -865,6 +962,16 @@ ecc-jsbn@~0.1.1:
   resolved "https://registry.yarnpkg.com/ecc-jsbn/-/ecc-jsbn-0.1.1.tgz#0fc73a9ed5f0d53c38193398523ef7e543777505"
   dependencies:
     jsbn "~0.1.0"
+
+editorconfig@^0.13.2:
+  version "0.13.3"
+  resolved "https://registry.yarnpkg.com/editorconfig/-/editorconfig-0.13.3.tgz#e5219e587951d60958fd94ea9a9a008cdeff1b34"
+  dependencies:
+    bluebird "^3.0.5"
+    commander "^2.9.0"
+    lru-cache "^3.2.0"
+    semver "^5.1.0"
+    sigmund "^1.0.1"
 
 ee-first@1.1.1:
   version "1.1.1"
@@ -1303,6 +1410,12 @@ glogg@^1.0.0:
   dependencies:
     sparkles "^1.0.0"
 
+good-listener@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/good-listener/-/good-listener-1.2.2.tgz#d53b30cdf9313dffb7dc9a0d477096aa6d145c50"
+  dependencies:
+    delegate "^3.1.2"
+
 google-code-prettify@~1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/google-code-prettify/-/google-code-prettify-1.0.5.tgz#9f477f224dbfa62372e5ef803a7e157410400084"
@@ -1643,10 +1756,6 @@ hawtio-kubernetes-api@hawtio/hawtio-kubernetes-api#2.0.53:
   version "2.0.0"
   resolved "https://codeload.github.com/hawtio/hawtio-kubernetes-api/tar.gz/c61e7dcccbcb14cbdd4df077dbed359f018381f9"
 
-hawtio-oauth@hawtio/hawtio-oauth#2.0.51:
-  version "2.0.0"
-  resolved "https://codeload.github.com/hawtio/hawtio-oauth/tar.gz/28ce79342698bde23e22b697791ffbb32773eca6"
-
 hoek@2.x.x, hoek@4.2.0, hoek@4.x.x:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-4.2.0.tgz#72d9d0754f7fe25ca2d01ad8f8f9a9449a89526d"
@@ -1934,11 +2043,20 @@ jquery-match-height@^0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/jquery-match-height/-/jquery-match-height-0.7.2.tgz#f8d9f3ba5314daab109cf07408674be204be5f0e"
 
-jquery@2.2.4, "jquery@>= 2.1.x", jquery@>=1.11.0, jquery@>=1.7, jquery@>=1.7.0, jquery@>=1.7.1, "jquery@>=1.7.1 <4.0.0", jquery@>=1.8, "jquery@^1.8.3 || ^2.0 || ^3.0", jquery@~3.2.1:
+jquery@2.2.4, "jquery@>= 2.1.x", jquery@>=1.11.0, jquery@>=1.7, jquery@>=1.7.0, jquery@>=1.7.1, "jquery@>=1.7.1 <4.0.0", jquery@>=1.8, "jquery@^1.8.3 || ^2.0 || ^3.0", jquery@~2.2.4, jquery@~3.2.1:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.4.tgz#2c89d6889b5eac522a7eea32c14521559c6cbf02"
 
-js-logger@1.4.1, js-logger@^0.9.14, js-logger@^1.3.0:
+js-beautify@1.7.5, js-beautify@~1.6.14:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/js-beautify/-/js-beautify-1.7.5.tgz#69d9651ef60dbb649f65527b53674950138a7919"
+  dependencies:
+    config-chain "~1.1.5"
+    editorconfig "^0.13.2"
+    mkdirp "~0.5.0"
+    nopt "~3.0.1"
+
+js-logger@1.4.1, js-logger@^0.9.14, js-logger@^1.3.0, js-logger@~1.3.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/js-logger/-/js-logger-1.4.1.tgz#f0230dc5e84e120f213d6e5a6b767a913d290335"
 
@@ -1989,6 +2107,10 @@ jsprim@^1.2.2:
     extsprintf "1.3.0"
     json-schema "0.2.3"
     verror "1.10.0"
+
+keycloak-js@^3.4.3:
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/keycloak-js/-/keycloak-js-3.4.3.tgz#9fbb1ba7b2433229f5cc8babbd308ff0e945dac7"
 
 kind-of@4.0.0, kind-of@^3.0.2, kind-of@^4.0.0:
   version "4.0.0"
@@ -2284,7 +2406,7 @@ lodash.values@~2.4.1:
   dependencies:
     lodash.keys "~2.4.1"
 
-lodash@4.17.4, lodash@4.x, lodash@^4.13.1, lodash@^4.17.4, lodash@~1.0.1:
+lodash@4.17.4, lodash@4.x, lodash@^4.13.1, lodash@^4.17.4, lodash@~1.0.1, lodash@~4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -2299,9 +2421,11 @@ loud-rejection@^1.0.0:
     currently-unhandled "^0.4.1"
     signal-exit "^3.0.0"
 
-lru-cache@2:
-  version "2.7.3"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-2.7.3.tgz#6d4524e8b955f95d4f5b58851ce21dd72fb4e952"
+lru-cache@2, lru-cache@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-3.2.0.tgz#71789b3b7f5399bec8565dda38aa30d2a097efee"
+  dependencies:
+    pseudomap "^1.0.1"
 
 make-error-cause@^1.1.1:
   version "1.2.2"
@@ -2335,9 +2459,9 @@ marked-terminal@^1.6.2:
     lodash.assign "^4.2.0"
     node-emoji "^1.4.1"
 
-marked@0.3.9, marked@^0.3.6:
-  version "0.3.9"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.9.tgz#54ce6a57e720c3ac6098374ec625fcbcc97ff290"
+marked@0.3.9, marked@^0.3.6, marked@~0.3.6:
+  version "0.3.15"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.15.tgz#de96982e54c880962f5093a2fa93d0866bf73668"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -2427,7 +2551,7 @@ minimist@0.0.8, minimist@1.2.0, minimist@^0.2.0, minimist@^1.1.0, minimist@^1.1.
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
 
-mkdirp@^0.5.0:
+mkdirp@^0.5.0, mkdirp@~0.5.0:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
@@ -2508,7 +2632,7 @@ ng-annotate@^1.2.1:
     stringset "~0.2.1"
     tryor "~0.1.2"
 
-ng-idle@~1.3.2:
+ng-idle@^1.3.2, ng-idle@~1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/ng-idle/-/ng-idle-1.3.2.tgz#73a4dcc0a6c8360310d1396df376be6bd0b0a867"
   dependencies:
@@ -2544,6 +2668,12 @@ nomnom@1.5.2:
   dependencies:
     colors "0.5.x"
     underscore "1.1.x"
+
+nopt@~3.0.1:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/nopt/-/nopt-3.0.6.tgz#c6465dbf08abcd4db359317f79ac68a646b28ff9"
+  dependencies:
+    abbrev "1"
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4:
   version "2.4.0"
@@ -2737,14 +2867,14 @@ patternfly-bootstrap-combobox@~1.1.7:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/patternfly-bootstrap-combobox/-/patternfly-bootstrap-combobox-1.1.7.tgz#6a5e3ccd1170c21b3c4b4aa168a7413e1ddbb6e1"
 
-patternfly-bootstrap-treeview@~2.1.0:
+patternfly-bootstrap-treeview@2.1.5, patternfly-bootstrap-treeview@~2.1.0:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/patternfly-bootstrap-treeview/-/patternfly-bootstrap-treeview-2.1.5.tgz#4c29f2582fb8a2f28f0a928f2f0d324d21d6990d"
   dependencies:
     bootstrap "3.3.x"
     jquery ">= 2.1.x"
 
-patternfly@3.32.1, patternfly@3.37.1, patternfly@^3.37.1:
+patternfly@3.32.1, patternfly@3.37.1, patternfly@^3.31.0, patternfly@^3.37.1, patternfly@~3.30.0:
   version "3.37.1"
   resolved "https://registry.yarnpkg.com/patternfly/-/patternfly-3.37.1.tgz#b988af3d6732cb3d0edba3f7e3b11bf10158ed4a"
   dependencies:
@@ -2826,6 +2956,10 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
+proto-list@~1.2.1:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/proto-list/-/proto-list-1.2.4.tgz#212d5bfe1318306a420f6402b8e26ff39647a849"
+
 proxy-addr@~2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-2.0.2.tgz#6571504f47bb988ec8180253f85dd7e14952bdec"
@@ -2840,6 +2974,10 @@ proxy-middleware@~0.15.0:
 prr@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/prr/-/prr-1.0.1.tgz#d3fc114ba06995a45ec6893f484ceb1d78f5f476"
+
+pseudomap@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
 
 punycode@^1.4.1:
   version "1.4.1"
@@ -3055,6 +3193,10 @@ safe-json-parse@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/safe-json-parse/-/safe-json-parse-1.0.1.tgz#3e76723e38dfdda13c9b1d29a1e07ffee4b30b57"
 
+select@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/select/-/select-1.1.2.tgz#0e7350acdec80b1108528786ec1d4418d11b396d"
+
 "semver@2 || 3 || 4 || 5", semver@5.4.1, semver@^4.1.0, semver@^5.1.0, semver@^5.3.0:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.4.1.tgz#e059c09d8571f0540823733433505d3a2f00b18e"
@@ -3123,7 +3265,7 @@ shellwords@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
 
-sigmund@~1.0.0:
+sigmund@^1.0.1, sigmund@~1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/sigmund/-/sigmund-1.0.1.tgz#3ff21f198cad2175f9f3b781853fd94d0d19b590"
 
@@ -3342,6 +3484,10 @@ time-stamp@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-1.1.0.tgz#764a5a11af50561921b133f3b44e618687e0f5c3"
 
+tiny-emitter@^2.0.0:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.0.2.tgz#82d27468aca5ade8e5fd1e6d22b57dd43ebdfb7c"
+
 tiny-lr@1.0.5, tiny-lr@^0.2.1, tiny-lr@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/tiny-lr/-/tiny-lr-1.0.5.tgz#21f40bf84ebd1f853056680375eef1670c334112"
@@ -3451,7 +3597,7 @@ unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
 
-urijs@1.19.0, urijs@^1.18.10, urijs@^1.19.0:
+urijs@1.19.0, urijs@^1.18.10, urijs@^1.19.0, urijs@~1.18.10, urijs@~1.19.0:
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.0.tgz#d8aa284d0e7469703a6988ad045c4cbfdf08ada0"
 
