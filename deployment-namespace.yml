@@ -130,18 +130,18 @@ objects:
           imagePullPolicy: Always
           name: hawtio-integration
           ports:
-          - name: nginx
+          - name: integration
             containerPort: 8080
           livenessProbe:
             httpGet:
               path: /integration
-              port: nginx
+              port: integration
             periodSeconds: 10
             timeoutSeconds: 1
           readinessProbe:
             httpGet:
               path: /integration
-              port: nginx
+              port: integration
             initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 1
@@ -200,7 +200,7 @@ objects:
     ports:
     - port: 80
       protocol: TCP
-      targetPort: nginx
+      targetPort: integration
     selector:
       app: hawtio
       component: online
