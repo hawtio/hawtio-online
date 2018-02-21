@@ -1758,9 +1758,9 @@ hawk@6.0.2, hawk@~3.1.3, hawk@~6.0.2:
     hoek "4.x.x"
     sntp "2.x.x"
 
-hawtio-kubernetes-api@hawtio/hawtio-kubernetes-api#2.0.53:
-  version "2.0.0"
-  resolved "https://codeload.github.com/hawtio/hawtio-kubernetes-api/tar.gz/c61e7dcccbcb14cbdd4df077dbed359f018381f9"
+hawtio-kubernetes-api@hawtio/hawtio-kubernetes-api#2.0.56:
+  version "2.0.56"
+  resolved "https://codeload.github.com/hawtio/hawtio-kubernetes-api/tar.gz/e8f23fb05e002b85ae097f041459391e7d1f3d26"
 
 hoek@2.x.x, hoek@4.2.0, hoek@4.x.x:
   version "4.2.0"
