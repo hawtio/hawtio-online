@@ -320,6 +320,15 @@ gulp.task('serve-site', function () {
 
   hawtio.use('/online/osconsole/config.js', osconsole);
 
+  hawtio.use('/', function (req, res, next) {
+    const path = req.originalUrl;
+    if (path === '/') {
+      res.redirect('/online');
+    } else {
+      next();
+    }
+  });
+
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
