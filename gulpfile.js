@@ -107,7 +107,6 @@ function getMaster() {
 
 function osconsole(_, res, _) {
   const master = getMaster();
-  console.log('Using OpenShift URL:', master);
   let client;
   if (config.mode === 'namespace') {
     client = {
