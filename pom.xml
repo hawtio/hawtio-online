@@ -133,7 +133,7 @@
                   <build>
                     <assembly>
                       <inline>
-			<fileSet>
+                        <fileSet>
                           <directory>dist</directory>
                         </fileSet>
                       </inline>
