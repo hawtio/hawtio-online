@@ -142,12 +142,8 @@ module Online {
     .filter('connectUrl', ['userDetails', userDetails => (pod, port = 8778) => new URI().path('/integration/')
       .hash(userDetails.token || '')
       .query({
-        jolokiaUrl : new URI(KubernetesAPI.masterUrl)
-          .segment('api/v1/namespaces')
-          .segment(pod.metadata.namespace)
-          .segment('pods')
-          .segment(`https:${pod.metadata.name}:${port}`)
-          .segment('proxy/jolokia'),
+        jolokiaUrl : new URI()
+          .path(`/master/api/v1/namespaces/${pod.metadata.namespace}/pods/https:${pod.metadata.name}:${port}/proxy/jolokia/`),
         title     : pod.metadata.name,
         returnTo  : new URI().toString(),
       })])
