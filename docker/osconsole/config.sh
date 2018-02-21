@@ -8,7 +8,7 @@ fi
 if [ "${HAWTIO_ONLINE_MODE}" = "cluster" ]; then 
 cat << EOF
 window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
-  master_uri: new URI(window.location.href).path('/master').toString(),
+  master_uri: new URI().query('').path('/master').toString(),
   hawtio: {
     mode: '${HAWTIO_ONLINE_MODE}'
   },
@@ -24,7 +24,7 @@ elif [ "${HAWTIO_ONLINE_MODE}" = "namespace" ]; then
 if [ -n "${HAWTIO_ONLINE_NAMESPACE:-}" ]; then
 cat << EOF
 window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
-  master_uri: new URI(window.location.href).path('/master').toString(),
+  master_uri: new URI().query('').path('/master').toString(),
   hawtio: {
     mode: '${HAWTIO_ONLINE_MODE}',
     namespace: '${HAWTIO_ONLINE_NAMESPACE}'
