@@ -110,11 +110,13 @@ function osconsole(_, res, _) {
   let client;
   if (config.mode === 'namespace') {
     client = {
+      master_uri : urljoin('http://localhost:2772', '/master'),
       hawtio : {
         mode      : config.mode,
         namespace : config.namespace,
       },
       openshift : {
+        master_uri          : master,
         oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
         oauth_client_id     : `system:serviceaccount:${config.namespace}:hawtio-online-dev`,
         scope               : `user:info user:check-access role:edit:${config.namespace}`,
@@ -122,10 +124,12 @@ function osconsole(_, res, _) {
     };
   } else if (config.mode === 'cluster') {
     client = {
+      master_uri : urljoin('http://localhost:2772', '/master'),
       hawtio : {
         mode : config.mode,
       },
       openshift : {
+        master_uri          : master,
         oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
         oauth_client_id     : 'hawtio-online-dev',
         scope               : 'user:info user:check-access user:list-projects role:edit:*',
