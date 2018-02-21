@@ -147,10 +147,6 @@ gulp.task('connect', ['watch'], function () {
 
   const master = getMaster();
   console.log('Using OpenShift URL:', master);
-  const kube = uri(urljoin(master, 'api'));
-  const kubeapis = uri(urljoin(master, 'apis'));
-  const oapi = uri(urljoin(master, 'oapi'));
-
   const master_api = uri.parse(master);
 
   hawtio.setConfig({
@@ -293,6 +289,7 @@ gulp.task('serve-site', function () {
   const master = getMaster();
   console.log('Using OpenShift URL:', master);
   const master_api = uri.parse(master);
+
   hawtio.setConfig({
     port: 2772,
     staticAssets: [{
