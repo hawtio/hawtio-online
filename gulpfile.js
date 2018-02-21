@@ -312,7 +312,7 @@ gulp.task('serve-site', function () {
         targetPath: '/',
       }
     ],
-    fallback   : 'index.html',
+    fallback   : 'docker/site/index.html',
     liveReload : {
       enabled : false,
     },
