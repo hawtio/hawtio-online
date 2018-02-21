@@ -107,39 +107,40 @@ function getMaster() {
 
 function osconsole(_, res, _) {
   const master = getMaster();
-  let client;
+  let answer;
   if (config.mode === 'namespace') {
-    client = {
-      master_uri : urljoin('http://localhost:2772', '/master'),
+    answer =
+    `window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
+      master_uri : new URI().query('').path('/master').toString(),
       hawtio : {
-        mode      : config.mode,
-        namespace : config.namespace,
+        mode      : '${config.mode}',
+        namespace : '${config.namespace}',
       },
       openshift : {
-        master_uri          : master,
-        oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
-        oauth_client_id     : `system:serviceaccount:${config.namespace}:hawtio-online-dev`,
-        scope               : `user:info user:check-access role:edit:${config.namespace}`,
+        master_uri          : '${master}',
+        oauth_authorize_uri : new URI('${master}').path('/oauth/authorize').toString(),
+        oauth_client_id     : 'system:serviceaccount:${config.namespace}:hawtio-online-dev',
+        scope               : 'user:info user:check-access role:edit:${config.namespace}',
       },
-    };
+    }`;
   } else if (config.mode === 'cluster') {
-    client = {
-      master_uri : urljoin('http://localhost:2772', '/master'),
+    answer =
+    `window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
+      master_uri : new URI().query('').path('/master').toString(),
       hawtio : {
-        mode : config.mode,
+        mode : '${config.mode}',
       },
       openshift : {
-        master_uri          : master,
-        oauth_authorize_uri : urljoin(master, '/oauth/authorize'),
+        master_uri          : '${master}',
+        oauth_authorize_uri : new URI('${master}').path('/oauth/authorize').toString(),
         oauth_client_id     : 'hawtio-online-dev',
         scope               : 'user:info user:check-access user:list-projects role:edit:*',
       },
-    };
+    }`;
   } else {
     console.error('Invalid value for the Hawtio Online mode, must be one of [cluster, namespace]');
     process.exit(1);
   }
-  const answer = 'window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ' + stringifyObject(client);
   res.set('Content-Type', 'application/javascript');
   res.send(answer);
 }
