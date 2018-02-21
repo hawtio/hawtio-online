@@ -13,7 +13,7 @@ const gulp            = require('gulp'),
       stringifyObject = require('stringify-object'),
       hawtio          = require('@hawtio/node-backend');
 
-const plugins  = gulpLoadPlugins({});
+const plugins = gulpLoadPlugins({});
 
 const config = {
   master    : argv.master,
@@ -285,6 +285,9 @@ gulp.task('site-config', () => gulp.src('hawtconfig.json')
   .pipe(gulp.dest('docker/site')));
 
 gulp.task('serve-site', function () {
+  // Lets disable unauthorised TLS for self-signed development certificates
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
   const master = getMaster();
   console.log('Using OpenShift URL:', master);
   const master_api = uri.parse(master);
