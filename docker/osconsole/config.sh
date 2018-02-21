@@ -13,6 +13,7 @@ window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
     mode: '${HAWTIO_ONLINE_MODE}'
   },
   openshift: {
+    master_uri: '${OPENSHIFT_MASTER}',
     oauth_authorize_uri: '${OPENSHIFT_MASTER}/oauth/authorize',
     oauth_client_id: 'hawtio-online',
     scope: 'user:info user:check-access user:list-projects role:edit:*'
@@ -29,6 +30,7 @@ window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
     namespace: '${HAWTIO_ONLINE_NAMESPACE}'
   },
   openshift: {
+    master_uri: '${OPENSHIFT_MASTER}',
     oauth_authorize_uri: '${OPENSHIFT_MASTER}/oauth/authorize',
     oauth_client_id: 'system:serviceaccount:${HAWTIO_ONLINE_NAMESPACE}:hawtio-online',
     scope: 'user:info user:check-access role:edit:${HAWTIO_ONLINE_NAMESPACE}'
