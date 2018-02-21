@@ -151,6 +151,8 @@ gulp.task('connect', ['watch'], function () {
   const kubeapis = uri(urljoin(master, 'apis'));
   const oapi = uri(urljoin(master, 'oapi'));
 
+  const master_api = uri.parse(master);
+
   hawtio.setConfig({
     logLevel : logger.INFO,
     port     : 2772,
@@ -158,11 +160,20 @@ gulp.task('connect', ['watch'], function () {
       path : '/online',
       dir  : '.',
     }],
-        staticProxies: [{
-      port: 8080,
-      path: '/integration',
-      targetPath: '/integration',
-    }],
+    staticProxies: [
+      {
+        port: 8080,
+        path: '/integration',
+        targetPath: '/integration',
+      },
+      {
+        port: master_api.port,
+        proto: master_api.protocol,
+        path: '/master',
+        hostname: master_api.hostname,
+        targetPath: '/',
+      }
+    ],
     fallback   : 'index.html',
     liveReload : {
       enabled : true,
@@ -279,17 +290,29 @@ gulp.task('site-config', () => gulp.src('hawtconfig.json')
   .pipe(gulp.dest('docker/site')));
 
 gulp.task('serve-site', function () {
+  const master = getMaster();
+  console.log('Using OpenShift URL:', master);
+  const master_api = uri.parse(master);
   hawtio.setConfig({
     port: 2772,
     staticAssets: [{
       path : '/online',
       dir  : 'docker/site',
     }],
-    staticProxies: [{
-      port: 8080,
-      path: '/integration',
-      targetPath: '/integration',
-    }],
+    staticProxies: [
+      {
+        port: 8080,
+        path: '/integration',
+        targetPath: '/integration',
+      },
+      {
+        port: master_api.port,
+        proto: master_api.protocol,
+        path: '/master',
+        hostname: master_api.hostname,
+        targetPath: '/',
+      }
+    ],
     fallback   : 'index.html',
     liveReload : {
       enabled : false,
