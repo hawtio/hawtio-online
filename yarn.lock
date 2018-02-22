@@ -3403,7 +3403,7 @@ string_decoder@0.10, string_decoder@1.0.3, string_decoder@~0.10.x, string_decode
   dependencies:
     safe-buffer "~5.1.0"
 
-stringify-object@3.2.1, stringify-object@^2.0.0, stringify-object@^3.0.0:
+stringify-object@3.2.1, stringify-object@^3.0.0:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/stringify-object/-/stringify-object-3.2.1.tgz#2720c2eff940854c819f6ee252aaeb581f30624d"
   dependencies:

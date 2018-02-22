@@ -52,7 +52,6 @@
     "js-logger": "^0.9.14",
     "proxy-middleware": "~0.15.0",
     "run-sequence": "^1.2.2",
-    "stringify-object": "^2.0.0",
     "typescript": "^2.0.0",
     "underscore.string": "^3.0.0",
     "urijs": "^1.19.0",

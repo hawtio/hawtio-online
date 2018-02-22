@@ -10,7 +10,6 @@ const gulp            = require('gulp'),
       urljoin         = require('url-join'),
       uri             = require('urijs'),
       logger          = require('js-logger'),
-      stringifyObject = require('stringify-object'),
       hawtio          = require('@hawtio/node-backend');
 
 const plugins = gulpLoadPlugins({});
