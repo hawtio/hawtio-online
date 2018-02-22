@@ -185,11 +185,6 @@ gulp.task('connect', ['watch'], function () {
     const path = req.originalUrl;
     if (path === '/') {
       res.redirect('/online');
-    } else if (s.startsWith(path, '/plugins/') && s.endsWith(path, 'html')) {
-      // avoid returning these files, they should get pulled from js
-      console.log('returning 404 for: ', path);
-      res.statusCode = 404;
-      res.end();
     } else {
       next();
     }
