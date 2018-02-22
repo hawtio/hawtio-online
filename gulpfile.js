@@ -143,7 +143,7 @@ function osconsole(_, res, _) {
   res.send(answer);
 }
 
-gulp.task('connect', ['watch'], function () {
+function backend(root, liveReload) {
   // Lets disable unauthorised TLS for self-signed development certificates
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -156,25 +156,25 @@ gulp.task('connect', ['watch'], function () {
     port     : 2772,
     staticAssets : [{
       path : '/online',
-      dir  : '.',
+      dir  : root,
     }],
     staticProxies: [
       {
-        port: 8080,
-        path: '/integration',
-        targetPath: '/integration',
+        port       : 8080,
+        path       : '/integration',
+        targetPath : '/integration',
       },
       {
-        port: master_api.port,
-        proto: master_api.protocol,
-        path: '/master',
-        hostname: master_api.hostname,
-        targetPath: '/',
+        port       : master_api.port,
+        proto      : master_api.protocol,
+        path       : '/master',
+        hostname   : master_api.hostname,
+        targetPath : '/',
       }
     ],
-    fallback   : 'index.html',
+    fallback   : urljoin(root, 'index.html'),
     liveReload : {
-      enabled : true,
+      enabled : liveReload,
     }
   });
 
@@ -188,6 +188,10 @@ gulp.task('connect', ['watch'], function () {
       next();
     }
   });
+}
+
+gulp.task('connect', ['watch'], function () {
+  backend('.', true);
 
   hawtio.use('/img', (req, res) => {
     // We may want to serve from other dependencies
@@ -283,50 +287,7 @@ gulp.task('site-config', () => gulp.src('hawtconfig.json')
   .pipe(gulp.dest('docker/site')));
 
 gulp.task('serve-site', function () {
-  // Lets disable unauthorised TLS for self-signed development certificates
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
-  const master = getMaster();
-  console.log('Using OpenShift URL:', master);
-  const master_api = uri.parse(master);
-
-  hawtio.setConfig({
-    port: 2772,
-    staticAssets: [{
-      path : '/online',
-      dir  : 'docker/site',
-    }],
-    staticProxies: [
-      {
-        port: 8080,
-        path: '/integration',
-        targetPath: '/integration',
-      },
-      {
-        port: master_api.port,
-        proto: master_api.protocol,
-        path: '/master',
-        hostname: master_api.hostname,
-        targetPath: '/',
-      }
-    ],
-    fallback   : 'docker/site/index.html',
-    liveReload : {
-      enabled : false,
-    },
-  });
-
-  hawtio.use('/online/osconsole/config.js', osconsole);
-
-  hawtio.use('/', function (req, res, next) {
-    const path = req.originalUrl;
-    if (path === '/') {
-      res.redirect('/online');
-    } else {
-      next();
-    }
-  });
-
+  backend('docker/site/', false);
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
