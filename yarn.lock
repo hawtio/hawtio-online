@@ -38,9 +38,9 @@
     "@hawtio/core-dts" "~3.0.12"
     "@hawtio/ui" "~3.0.25"
 
-"@hawtio/node-backend@^3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@hawtio/node-backend/-/node-backend-3.0.5.tgz#84f1df6f634d26743b9993aa606a71f869c75b46"
+"@hawtio/node-backend@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@hawtio/node-backend/-/node-backend-3.0.6.tgz#9d2af7911d1e9bc32f283951760ef7b40c29a6fe"
   dependencies:
     "@types/node" "^7.0.31"
     body-parser "^1.17.2"
