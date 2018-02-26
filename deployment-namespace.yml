@@ -84,7 +84,7 @@ objects:
           name: hawtio-online
           ports:
           - name: nginx
-            containerPort: 9090
+            containerPort: 8080
           livenessProbe:
             httpGet:
               path: /online

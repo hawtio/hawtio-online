@@ -4,4 +4,4 @@ metadata:
   name: hawtio-online-dev
 redirectURIs:
 - http://localhost:2772
-- http://localhost:9090
+- http://localhost:8080
