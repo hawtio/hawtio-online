@@ -1,3 +1,17 @@
+FROM docker.io/node:9 as builder
+
+ARG HAWTIO_INTEGRATION_VERSION="v3.2.16"
+
+WORKDIR /hawtio
+
+RUN git clone -b ${HAWTIO_INTEGRATION_VERSION} --single-branch --depth 1 https://github.com/hawtio/hawtio-integration.git
+
+WORKDIR /hawtio/hawtio-integration
+
+RUN npm install gulp-cli -g && \
+    yarn install && \
+    gulp site
+
 FROM docker.io/centos:7
 
 ENV NGINX_VERSION 1.13.4-1.el7
@@ -46,14 +60,16 @@ RUN rm /usr/share/nginx/html/index.html
 
 RUN touch config.js && \
     chown 998 config.js && chmod g=u config.js && \
-    mkdir /usr/share/nginx/html/osconsole && \
-    ln -sf /config.js /usr/share/nginx/html/osconsole/config.js
+    mkdir -p /usr/share/nginx/html/online/osconsole && \
+    ln -sf /config.js /usr/share/nginx/html/online/osconsole/config.js
 
 USER 998
 
 COPY nginx.conf /etc/nginx/conf.d
 COPY nginx.sh .
 COPY osconsole/config.sh .
-COPY ${SRC_DIR} /usr/share/nginx/html
+COPY ${SRC_DIR} /usr/share/nginx/html/online
+
+COPY --from=builder /hawtio/hawtio-integration/docker/site /usr/share/nginx/html/integration
 
 CMD ["./nginx.sh"]
