@@ -16,8 +16,6 @@ FROM docker.io/centos:7
 
 ENV NGINX_VERSION 1.13.4-1.el7
 
-ARG SRC_DIR="site"
-
 LABEL name="nginxinc/nginx" \
       vendor="NGINX Inc." \
       version="${NGINX_VERSION}" \
@@ -68,7 +66,7 @@ USER 998
 COPY nginx.conf /etc/nginx/conf.d
 COPY nginx.sh .
 COPY osconsole/config.sh .
-COPY ${SRC_DIR} /usr/share/nginx/html/online
+COPY site /usr/share/nginx/html/online
 
 COPY --from=builder /hawtio/hawtio-integration/docker/site /usr/share/nginx/html/integration
 
