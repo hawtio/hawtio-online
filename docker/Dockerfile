@@ -1,17 +1,3 @@
-FROM docker.io/node:9 as builder
-
-ARG HAWTIO_INTEGRATION_VERSION="v3.2.16"
-
-WORKDIR /hawtio
-
-RUN git clone -b ${HAWTIO_INTEGRATION_VERSION} --single-branch --depth 1 https://github.com/hawtio/hawtio-integration.git
-
-WORKDIR /hawtio/hawtio-integration
-
-RUN npm install gulp-cli -g && \
-    yarn install && \
-    gulp site
-
 FROM docker.io/centos:7
 
 ENV NGINX_VERSION 1.13.4-1.el7
@@ -61,13 +47,33 @@ RUN touch config.js && \
     mkdir -p /usr/share/nginx/html/online/osconsole && \
     ln -sf /config.js /usr/share/nginx/html/online/osconsole/config.js
 
+ARG HAWTIO_INTEGRATION_VERSION="v3.2.16"
+
+RUN curl --silent --location https://rpm.nodesource.com/setup_8.x | bash - && \
+    curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \
+    echo "clean_requirements_on_remove=1" >> /etc/yum.conf && \
+    yum install -y bzip2 git nodejs yarn && \
+    git clone -b ${HAWTIO_INTEGRATION_VERSION} --single-branch --depth 1 https://github.com/hawtio/hawtio-integration.git && \
+    cd hawtio-integration && \
+    yarn global add gulp-cli && \
+    yarn install && \
+    gulp site && \
+    cp -R docker/site /usr/share/nginx/html/integration && \
+    cd .. && \
+    rm -rf hawtio-integration && \
+    yarn cache clean && \
+    yum remove -y bzip2 git nodejs yarn && \
+    yum autoremove -y && \
+    yum clean all && \
+    rm -rf /var/cache/yum && \
+    rm -rf /tmp && \
+    rm -rf /var/log/anaconda
+
 USER 998
 
 COPY nginx.conf /etc/nginx/conf.d
 COPY nginx.sh .
 COPY osconsole/config.sh .
 COPY site /usr/share/nginx/html/online
-
-COPY --from=builder /hawtio/hawtio-integration/docker/site /usr/share/nginx/html/integration
 
 CMD ["./nginx.sh"]
