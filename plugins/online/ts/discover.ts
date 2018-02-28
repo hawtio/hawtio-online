@@ -30,6 +30,18 @@ module Online {
               $scope.filteredPods.push(...$scope.pods);
             }
             $scope.toolbarConfig.filterConfig.resultsCount = $scope.filteredPods.length;
+            applySort();
+          };
+
+          const applySort = () => {
+            $scope.filteredPods.sort((pod1, pod2) => {
+              let value = 0;
+              value = pod1.metadata.name.localeCompare(pod2.metadata.name);
+              if (!$scope.toolbarConfig.sortConfig.isAscending) {
+                value *= -1;
+              }
+              return value;
+            })
           };
 
           const matches = (item, filter) => {
@@ -43,33 +55,45 @@ module Online {
           };
 
           $scope.filterConfig = {
-            fields        : [
+            fields : [
               {
-                id         : 'name',
-                title      : 'Name',
-                placeholder: 'Filter by Name...',
-                filterType : 'text'
+                id          : 'name',
+                title       : 'Name',
+                placeholder : 'Filter by Name...',
+                filterType  : 'text'
               },
             ],
-            resultsCount  : $scope.filteredPods.length,
-            appliedFilters: [],
-            onFilterChange: applyFilters
+            resultsCount   : $scope.filteredPods.length,
+            appliedFilters : [],
+            onFilterChange : applyFilters,
+          };
+
+          const sortConfig = {
+            fields: [
+              {
+                id       : 'name',
+                title    : 'Name',
+                sortType : 'alpha',
+              },
+            ],
+            onSortChange: applySort,
+          };
+
+          $scope.toolbarConfig = {
+            filterConfig : $scope.filterConfig,
+            sortConfig   : sortConfig,
           };
 
           if ($window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
             $scope.filterConfig.fields.push(
               {
-                id         : 'namespace',
-                title      : 'Namespace',
-                placeholder: 'Filter by Namespace...',
-                filterType : 'text'
+                id          : 'namespace',
+                title       : 'Namespace',
+                placeholder : 'Filter by Namespace...',
+                filterType  : 'text',
               },
             );
           }
-
-          $scope.toolbarConfig = {
-            filterConfig: $scope.filterConfig,
-          };
 
           $scope.open = url => {
             $window.open(url);

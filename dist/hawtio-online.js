@@ -90,7 +90,18 @@ var Online;
                     (_a = $scope.filteredPods).push.apply(_a, $scope.pods);
                 }
                 $scope.toolbarConfig.filterConfig.resultsCount = $scope.filteredPods.length;
+                applySort();
                 var _a;
+            };
+            var applySort = function () {
+                $scope.filteredPods.sort(function (pod1, pod2) {
+                    var value = 0;
+                    value = pod1.metadata.name.localeCompare(pod2.metadata.name);
+                    if (!$scope.toolbarConfig.sortConfig.isAscending) {
+                        value *= -1;
+                    }
+                    return value;
+                });
             };
             var matches = function (item, filter) {
                 var match = true;
@@ -113,19 +124,30 @@ var Online;
                 ],
                 resultsCount: $scope.filteredPods.length,
                 appliedFilters: [],
-                onFilterChange: applyFilters
+                onFilterChange: applyFilters,
+            };
+            var sortConfig = {
+                fields: [
+                    {
+                        id: 'name',
+                        title: 'Name',
+                        sortType: 'alpha',
+                    },
+                ],
+                onSortChange: applySort,
+            };
+            $scope.toolbarConfig = {
+                filterConfig: $scope.filterConfig,
+                sortConfig: sortConfig,
             };
             if ($window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
                 $scope.filterConfig.fields.push({
                     id: 'namespace',
                     title: 'Namespace',
                     placeholder: 'Filter by Namespace...',
-                    filterType: 'text'
+                    filterType: 'text',
                 });
             }
-            $scope.toolbarConfig = {
-                filterConfig: $scope.filterConfig,
-            };
             $scope.open = function (url) {
                 $window.open(url);
                 return true;
