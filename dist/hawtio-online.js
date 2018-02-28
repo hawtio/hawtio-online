@@ -113,7 +113,7 @@ var Online;
                 }
                 return match;
             };
-            $scope.filterConfig = {
+            var filterConfig = {
                 fields: [
                     {
                         id: 'name',
@@ -137,11 +137,11 @@ var Online;
                 onSortChange: applySort,
             };
             $scope.toolbarConfig = {
-                filterConfig: $scope.filterConfig,
+                filterConfig: filterConfig,
                 sortConfig: sortConfig,
             };
             if ($window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
-                $scope.filterConfig.fields.push({
+                filterConfig.fields.push({
                     id: 'namespace',
                     title: 'Namespace',
                     placeholder: 'Filter by Namespace...',
@@ -167,7 +167,7 @@ var Online;
                             var others = $scope.pods.filter(function (pod) { return pod.metadata.namespace !== project.metadata.name; });
                             $scope.pods.length = 0;
                             (_a = $scope.pods).push.apply(_a, others.concat(_.filter(pods, function (pod) { return jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0; })));
-                            applyFilters($scope.filterConfig.appliedFilters);
+                            applyFilters(filterConfig.appliedFilters);
                             // have to kick off a $digest here
                             $scope.$apply();
                             var _a;
@@ -200,7 +200,7 @@ var Online;
                     loading--;
                     $scope.pods.length = 0;
                     (_a = $scope.pods).push.apply(_a, _.filter(pods, function (pod) { return jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0; }));
-                    applyFilters($scope.filterConfig.appliedFilters);
+                    applyFilters(filterConfig.appliedFilters);
                     // have to kick off a $digest here
                     $scope.$apply();
                     var _a;

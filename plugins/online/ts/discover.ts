@@ -54,7 +54,7 @@ module Online {
             return match;
           };
 
-          $scope.filterConfig = {
+          const filterConfig = {
             fields : [
               {
                 id          : 'name',
@@ -80,12 +80,12 @@ module Online {
           };
 
           $scope.toolbarConfig = {
-            filterConfig : $scope.filterConfig,
+            filterConfig : filterConfig,
             sortConfig   : sortConfig,
           };
 
           if ($window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
-            $scope.filterConfig.fields.push(
+            filterConfig.fields.push(
               {
                 id          : 'namespace',
                 title       : 'Namespace',
@@ -115,7 +115,7 @@ module Online {
                     const others = $scope.pods.filter(pod => pod.metadata.namespace !== project.metadata.name);
                     $scope.pods.length = 0;
                     $scope.pods.push(...others, ..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
-                    applyFilters($scope.filterConfig.appliedFilters);
+                    applyFilters(filterConfig.appliedFilters);
                     // have to kick off a $digest here
                     $scope.$apply();
                   });
@@ -148,7 +148,7 @@ module Online {
               loading--;
               $scope.pods.length = 0;
               $scope.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
-              applyFilters($scope.filterConfig.appliedFilters);
+              applyFilters(filterConfig.appliedFilters);
               // have to kick off a $digest here
               $scope.$apply();
             });
