@@ -1,6 +1,8 @@
 {
   "branding": {
     "appName": "Hawtio OpenShift Console",
-    "logoUrl": "node_modules/@hawtio/core/dist/img/hawtio-logo.svg"
-  }
+    "appLogoUrl": "node_modules/@hawtio/core/dist/img/hawtio-logo.svg",
+    "aboutDescription": "The Hawtio OpenShift Console eases the discovery and management of 'hawtio-enabled' applications deployed on OpenShift."
+  },
+  "disabledRoutes": []
 }
