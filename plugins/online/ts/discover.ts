@@ -16,6 +16,31 @@ module Online {
           $scope.projects = [];
           $scope.loading = () => loading > 0;
 
+          $scope.getStatusClasses = (pod, status) => {
+            let styles;
+            switch (status) {
+              case 'Running':
+                if (isPodReady(pod)) {
+                  styles = 'list-view-pf-icon-success';
+                }
+                break;
+              case 'Complete':
+              case 'Completed':
+              case 'Succeeded':
+                styles = 'list-view-pf-icon-success';
+                break;
+              case 'Error':
+              case 'Terminating':
+              case 'Terminated':
+              case 'Unknown':
+                styles = 'list-view-pf-icon-danger';
+                break;
+              default:
+               styles = 'list-view-pf-icon-info';
+            }
+            return `list-view-pf-icon-md ${styles}`;
+          }
+
           $element.on('$destroy', _ => $scope.$destroy());
 
           const applyFilters = filters => {
