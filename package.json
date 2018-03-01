@@ -188,12 +188,11 @@
     "@types/urijs": "1.15.36",
     "angular-route": "1.6.9",
     "marked": "0.3.15",
-    "@hawtio/ui": "3.2.0",
+    "@hawtio/ui": "3.2.3",
     "@types/clipboard": "1.5.36",
     "codemirror": "5.33.0",
     "js-beautify": "1.7.5",
     "commander": "2.14.1",
-    "lru-cache": "3.2.0",
-    "@hawtio/utilities": "3.2.3"
+    "lru-cache": "3.2.0"
   }
 }
