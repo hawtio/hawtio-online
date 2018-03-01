@@ -8,9 +8,9 @@
   dependencies:
     "@types/jquery" "~2.0.46"
 
-"@hawtio/core@3.2.1", "@hawtio/core@3.2.3", "@hawtio/core@3.2.5", "@hawtio/core@3.2.7", "@hawtio/core@^3.2.5", "@hawtio/core@~3.0.9", "@hawtio/core@~3.1.0":
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-3.2.5.tgz#02b69b0b72c6a3364b6deea61ccd9746e54fbda7"
+"@hawtio/core@3.2.1", "@hawtio/core@3.2.17", "@hawtio/core@3.2.3", "@hawtio/core@3.2.7", "@hawtio/core@^3.2.17", "@hawtio/core@~3.0.9", "@hawtio/core@~3.1.0":
+  version "3.2.17"
+  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-3.2.17.tgz#9426f60d83155caf9b145cae06bc5b5d8c799777"
   dependencies:
     "@hawtio/core-dts" "3.0.18"
     "@types/angular" "1.6.39"
@@ -21,13 +21,13 @@
     "@types/marked" "0.3.0"
     "@types/urijs" "1.15.34"
     angular "1.6.8"
+    angular-patternfly "^4.0.0"
     angular-route "1.6.8"
     angular-sanitize "1.6.8"
     jquery "2.2.4"
     js-logger "1.4.1"
     lodash "4.17.4"
     marked "0.3.9"
-    patternfly "3.32.1"
     urijs "1.19.0"
 
 "@hawtio/forms@3.0.12":
@@ -88,7 +88,7 @@
     codemirror "5.33.0"
     js-beautify "1.7.5"
 
-"@hawtio/utilities@3.2.0", "@hawtio/utilities@^3.2.0", "@hawtio/utilities@~3.0.8":
+"@hawtio/utilities@3.2.0", "@hawtio/utilities@~3.0.8":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@hawtio/utilities/-/utilities-3.2.0.tgz#31506054856fdd3013ab3e4c8dadbcb55f599ef9"
   dependencies:
@@ -240,7 +240,7 @@ angular-file-upload@~2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/angular-file-upload/-/angular-file-upload-2.5.0.tgz#0f53c93fbc70ed8ba8340a9a289ba64b680e2167"
 
-angular-patternfly@4.14.0, angular-patternfly@4.14.5, angular-patternfly@^4.15.0:
+angular-patternfly@4.14.0, angular-patternfly@4.14.5, angular-patternfly@^4.0.0, angular-patternfly@^4.15.0:
   version "4.14.5"
   resolved "https://registry.yarnpkg.com/angular-patternfly/-/angular-patternfly-4.14.5.tgz#3319a91efb0c303b419ccd0c9876a48a4a49b67e"
   dependencies:

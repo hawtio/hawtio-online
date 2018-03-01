@@ -10,7 +10,7 @@ var Online;
         }])
         .constant('jsonpath', jsonpath)
         .run(['HawtioNav', function (nav) {
-            nav.on(HawtioMainNav.Actions.CHANGED, Online.pluginName, function (items) {
+            nav.on(Nav.Actions.CHANGED, Online.pluginName, function (items) {
                 items.forEach(function (item) {
                     switch (item.id) {
                         case 'jvm':
@@ -224,6 +224,65 @@ var Online;
             });
         }; }])
         .filter('podDetailsUrl', function () { return function (pod) { return UrlHelpers.join(Core.pathGet(window, ['OPENSHIFT_CONFIG', 'openshift', 'master_uri']) || KubernetesAPI.masterUrl, 'console/project', pod.metadata.namespace, 'browse/pods', pod.metadata.name); }; });
+})(Online || (Online = {}));
+var Online;
+(function (Online) {
+    function getStatus(pod) {
+        return Core.pathGet(pod, ['status', 'phase']);
+    }
+    Online.getStatus = getStatus;
+    function isReady(pod) {
+        var status = pod.status || {};
+        return (status.conditions || []).some(function (c) { return c.type === 'Ready' && c.status === 'True'; });
+    }
+    function getStatusStyle(pod) {
+        var status = getStatus(pod);
+        if (status) {
+            status = status.toLowerCase();
+            if (_.startsWith(status, 'run') || _.startsWith(status, 'ok')) {
+                if (pod.metadata.deletionTimestamp) {
+                    // Terminating ...
+                    return 'fa fa-times list-view-pf-icon-md list-view-pf-icon-info';
+                }
+                var ready = ('$ready' in pod) ? pod.$ready : isReady(pod);
+                if (!ready) {
+                    return 'fa fa-refresh fa-spin list-view-pf-icon-md list-view-pf-icon-info';
+                }
+                return 'fa fa-refresh  fa-spin list-view-pf-icon-md list-view-pf-icon-success';
+            }
+            else if (_.startsWith(status, 'wait') || _.startsWith(status, 'pend')) {
+                if (!pod.$events) {
+                    // Scheduling...
+                    return 'fa fa-hourglass-half list-view-pf-icon-md list-view-pf-icon-info';
+                }
+                var containers = _.groupBy(pod.$events, function (event) { return event.fieldPath; });
+                if (_.every(containers, function (events) { return _.some(events, { reason: 'Started' }); })) {
+                    // Started ...
+                    return 'fa fa-refresh fa-spin list-view-pf-icon-md list-view-pf-icon-info';
+                }
+                else if (_.every(containers, function (events) { return _.some(events, { reason: 'Created' }); })) {
+                    // Starting ...
+                    return 'fa fa-cog fa-spin list-view-pf-icon-md list-view-pf-icon-info';
+                }
+                else if (_.every(containers, function (events) { return _.some(events, { reason: 'Pulled' }); })) {
+                    // Creating ...
+                    return 'fa fa-cog list-view-pf-icon-md list-view-pf-icon-info';
+                }
+                else if (_.every(containers, function (events) { return _.some(events, { reason: 'Scheduled' }); })) {
+                    // Pulling ...
+                    return 'fa fa-download list-view-pf-icon-md list-view-pf-icon-info';
+                }
+            }
+            else if (_.startsWith(status, 'term') || _.startsWith(status, 'error') || _.startsWith(status, 'fail')) {
+                return 'fa fa-power-off list-view-pf-icon-md list-view-pf-icon-danger';
+            }
+            else if (_.startsWith(status, 'succeeded')) {
+                return 'fa fa-check-circle-o list-view-pf-icon-md list-view-pf-icon-success';
+            }
+        }
+        return 'fa fa-question list-view-pf-icon-md list-view-pf-icon-danger';
+    }
+    Online.getStatusStyle = getStatusStyle;
 })(Online || (Online = {}));
 
 angular.module('hawtio-online-templates', []).run(['$templateCache', function($templateCache) {$templateCache.put('plugins/online/html/discover.html','<div ng-controller="Online.DiscoverController">\n\n  <div class="title">\n    <h1>Hawtio Containers</h1>\n  </div>\n\n  <pf-toolbar config="toolbarConfig"></pf-toolbar>\n\n  <div class="spinner spinner-lg loading-page" ng-if="loading()"></div>\n\n  <div class="blank-slate-pf no-border" ng-if="loading() === false && pods.length === 0">\n    <div class="blank-slate-pf-icon">\n      <span class="pficon pficon pficon-add-circle-o"></span>\n    </div>\n    <h1>\n      No Hawtio Containers\n    </h1>\n    <p>\n      There are no containers running with a port configured whose name is <code>jolokia</code>.\n    </p>\n  </div>\n\n  <div class="list-group list-view-pf list-view-pf-view">\n    <div ng-repeat="pod in filteredPods" class="list-group-item list-view-pf-stacked">\n      <div class="list-view-pf-actions">\n        <button ng-if="(containers = (pod.spec.containers | jolokiaContainers)).length === 1"\n                class="btn btn-primary" ng-click="open(pod | connectUrl: (containers[0] | jolokiaPort).containerPort)">\n          Connect\n        </button>\n        <div ng-if="containers.length > 1" class="dropdown">\n          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">\n            Connect\n            <span class="caret"></span>\n          </button>\n          <ul class="dropdown-menu dropdown-menu-right" role="menu">\n            <li class="dropdown-header">Containers</li>\n            <li ng-repeat="container in containers" role="presentation">\n              <a role="menuitem" tabindex="-1" href="#" ng-click="open(pod | connectUrl: (container | jolokiaPort).containerPort)">\n                {{container.name}}\n              </a>\n            </li>\n          </ul>\n        </div>\n        <div class="dropdown pull-right dropdown-kebab-pf">\n          <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown">\n            <span class="fa fa-ellipsis-v"></span>\n          </button>\n          <ul class="dropdown-menu dropdown-menu-right">\n            <li class="dropdown-header">OpenShift Console</li>\n            <li><a href="#" ng-click="open(pod | podDetailsUrl)">Open pod details</a></li>\n          </ul>\n        </div>\n      </div>\n      <div class="list-view-pf-main-info">\n        <div class="list-view-pf-left">\n          <span class="pficon pficon-ok list-view-pf-icon-md list-view-pf-icon-success"></span>\n        </div>\n        <div class="list-view-pf-body">\n          <div class="list-view-pf-description">\n            <div class="list-group-item-heading">\n              {{pod.metadata.name}}\n            </div>\n            <div class="list-group-item-text">\n              <labels labels="pod.metadata.labels"\n                      project-name="{{pod.metadata.namespace}}" limit="3">\n              </labels>\n            </div>\n          </div>\n          <div class="list-view-pf-additional-info">\n            <div class="list-view-pf-additional-info-item">\n              <span class="pficon pficon-home"></span>\n              {{pod.metadata.namespace}}\n            </div>\n            <div class="list-view-pf-additional-info-item">\n              <span class="pficon pficon-container-node"></span>\n              {{pod.spec.nodeName || pod.status.hostIP}}\n            </div>\n            <div class="list-view-pf-additional-info-item">\n              <span class="pficon pficon-image"></span>\n              <strong>{{pod.spec.containers.length}}</strong>\n              <ng-pluralize count="containers.length" when="{\n                     \'one\': \'container\',\n                     \'other\': \'containers\'}">\n              </ng-pluralize>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n\n</div>');

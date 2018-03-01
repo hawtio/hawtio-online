@@ -17,8 +17,8 @@ module Online {
     // Expose jsonpath as constant for injection
     .constant('jsonpath', jsonpath)
 
-    .run(['HawtioNav', (nav: HawtioMainNav.Registry) => {
-      nav.on(HawtioMainNav.Actions.CHANGED, pluginName, items => {
+    .run(['HawtioNav', (nav: Nav.Registry) => {
+      nav.on(Nav.Actions.CHANGED, pluginName, items => {
         items.forEach(item => {
           switch (item.id) {
             case 'jvm':

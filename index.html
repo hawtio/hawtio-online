@@ -8,6 +8,8 @@
 
     <!-- build:css style.css -->
 
+    <!-- datatables -->
+    <link rel="stylesheet" href="node_modules/datatables.net-dt/css/jquery.dataTables.css" />
     <!-- patternfly -->
     <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly.min.css">
     <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly-additions.min.css">
@@ -22,6 +24,9 @@
 
     <!-- jquery -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <!-- datatables -->
+    <script src="node_modules/datatables.net/js/jquery.dataTables.js"></script>
+    <script src="node_modules/datatables.net-select/js/dataTables.select.js"></script>
     <!-- bootstrap -->
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- patternfly -->
@@ -38,6 +43,9 @@
     <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
     <!-- angular-drag-and-drop-lists -->
     <script src="node_modules/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
+    <!-- angular-datatables -->
+    <script src="node_modules/angularjs-datatables/dist/angular-datatables.min.js"></script>
+    <script src="node_modules/angularjs-datatables/dist/plugins/select/angular-datatables.select.min.js"></script>
     <!-- angular-patternfly -->
     <script src="node_modules/angular-patternfly/dist/angular-patternfly.js"></script>
     <!-- lodash -->
@@ -50,8 +58,6 @@
     <script src="node_modules/@hawtio/core/dist/hawtio-core.js"></script>
     <!-- marked -->
     <script src="node_modules/marked/lib/marked.js"></script>
-    <!-- @hawtio/utilities -->
-    <script src="node_modules/@hawtio/utilities/dist/hawtio-utilities.js"></script>
     <!-- @hawtio-oauth -->
     <script src="node_modules/@hawtio/oauth/dist/hawtio-oauth.js"></script>
     <script src="node_modules/ng-idle/angular-idle.js"></script>
@@ -73,36 +79,6 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-pf-vertical">
-      <div class="navbar-header">
-        <a href="." class="navbar-brand">
-          <hawtio-branding-image class="navbar-brand-name" src="logoUrl" alt="appName"></hawtio-branding-image>
-        </a>
-      </div>
-      <nav class="collapse navbar-collapse">
-        <ul class="nav navbar-nav navbar-right navbar-iconic">
-          <li>
-            <a class="nav-item-iconic" href="help">
-              <span title="Help" class="fa pficon-help"></span>
-            </a>
-          </li>
-          <li class="dropdown">
-            <a class="dropdown-toggle nav-item-iconic" id="userDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              <span title="Username" class="fa pficon-user"></span>
-              <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="userDropdownMenu" hawtio-extension name="hawtio-user">
-            </ul>
-          </li>
-        </ul>
-      </nav>
-    </nav>
-
-    <hawtio-vertical-nav></hawtio-vertical-nav>
-
-    <div id="main" class="container-fluid container-pf-nav-pf-vertical ng-cloak"
-         ng-controller="HawtioNav.ViewController"
-         ng-include src="viewPartial">
-    </div>
+    <hawtio-app></hawtio-app>
   </body>
 </html>
