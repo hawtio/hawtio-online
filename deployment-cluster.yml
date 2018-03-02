@@ -35,7 +35,7 @@ objects:
       {
         "branding": {
           "appName": "Hawtio Integration Console",
-          "logoUrl": "img/hawtio-logo.svg",
+          "appLogoUrl": "img/hawtio-logo.svg",
           "aboutDescription": "The Hawtio Integration Console enables introspecting Java applications."
         },
         "disabledRoutes": []
