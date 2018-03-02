@@ -18,21 +18,21 @@ const config = {
   mode      : argv.mode || 'namespace',
   namespace : argv.namespace || 'hawtio',
   main      : '.',
-  ts        : ['plugins/**/*.ts', 'node_modules/@hawtio/oauth/dist/keycloak-js/keycloak.d.ts'],
   templates : ['plugins/**/*.html'],
   less      : ['plugins/**/*.less'],
   dist      : argv.out || './dist/',
   js        : 'hawtio-online.js',
   dts       : 'hawtio-online.d.ts',
   css       : 'hawtio-online.css',
-  tsProject : plugins.typescript.createProject('tsconfig.json'),
 };
+
+const tsProject = plugins.typescript.createProject('tsconfig.json');
 
 gulp.task('clean-defs', () => del(config.dist + '*.d.ts'));
 
 gulp.task('tsc', ['clean-defs'], function () {
-  const tsResult = gulp.src(config.ts)
-    .pipe(config.tsProject())
+  const tsResult = tsProject.src()
+    .pipe(tsProject())
     .on('error', plugins.notify.onError({
       onLast : true,
       message: '<%= error.message %>',
@@ -91,7 +91,9 @@ gulp.task('watch', ['build', 'watch-less'], function() {
     ],
     ['reload']
   );
-  gulp.watch([config.ts, config.templates], ['tsc', 'template', 'concat', 'clean']);
+
+  const tsconfig = require('./tsconfig.json')
+  gulp.watch([...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), config.templates], ['tsc', 'template', 'concat', 'clean']);
 });
 
 function getMaster() {
