@@ -18,7 +18,7 @@ const config = {
   mode      : argv.mode || 'namespace',
   namespace : argv.namespace || 'hawtio',
   main      : '.',
-  ts        : ['plugins/**/*.ts'],
+  ts        : ['plugins/**/*.ts', 'node_modules/@hawtio/oauth/dist/keycloak-js/keycloak.d.ts'],
   templates : ['plugins/**/*.html'],
   less      : ['plugins/**/*.less'],
   dist      : argv.out || './dist/',
