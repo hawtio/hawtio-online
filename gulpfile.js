@@ -17,7 +17,6 @@ const config = {
   master    : argv.master,
   mode      : argv.mode || 'namespace',
   namespace : argv.namespace || 'hawtio',
-  main      : '.',
   templates : ['plugins/**/*.html'],
   less      : ['plugins/**/*.less'],
   dist      : argv.out || './dist/',
