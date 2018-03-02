@@ -56,9 +56,9 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@^3.0.7":
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-3.0.7.tgz#0b1896227ad4e1cab15709e755cd20b6527a1f39"
+"@hawtio/oauth@^3.0.9":
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-3.0.9.tgz#ad69a9f149c476562f0927e3c8e2f8db5af4e42d"
   dependencies:
     "@hawtio/core" "~3.2.0"
     "@hawtio/forms" "~3.2.0"
