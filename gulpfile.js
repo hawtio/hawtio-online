@@ -81,18 +81,11 @@ gulp.task('watch-less', function () {
 });
 
 gulp.task('watch', ['build', 'watch-less'], function() {
-  gulp.watch(
-    [
-      'node_modules/@hawtio/**/dist/*.js',
-      'node_modules/@hawtio/**/dist/*.css',
-      'index.html',
-      urljoin(config.dist, '*')
-    ],
-    ['reload']
-  );
+  gulp.watch(['index.html', urljoin(config.dist, '*')], ['reload']);
 
-  const tsconfig = require('./tsconfig.json')
-  gulp.watch([...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), config.templates], ['tsc', 'template', 'concat', 'clean']);
+  const tsconfig = require('./tsconfig.json');
+  gulp.watch([...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), config.templates],
+    ['tsc', 'template', 'concat', 'clean']);
 });
 
 function getMaster() {
