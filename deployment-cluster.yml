@@ -21,8 +21,10 @@ objects:
       {
         "branding": {
           "appName": "Hawtio OpenShift Console",
-          "logoUrl": "img/hawtio-logo.svg"
-        }
+          "appLogoUrl": "img/hawtio-logo.svg",
+          "aboutDescription": "The Hawtio OpenShift Console eases the discovery and management of 'hawtio-enabled' applications deployed on OpenShift."
+        },
+        "disabledRoutes": []
       }
 - apiVersion: v1
   kind: ConfigMap
@@ -33,8 +35,10 @@ objects:
       {
         "branding": {
           "appName": "Hawtio Integration Console",
-          "logoUrl": "img/hawtio-logo.svg"
-        }
+          "logoUrl": "img/hawtio-logo.svg",
+          "aboutDescription": "The Hawtio Integration Console enables introspecting Java applications."
+        },
+        "disabledRoutes": []
       }
 - apiVersion: v1
   kind: ImageStream
