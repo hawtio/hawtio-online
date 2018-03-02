@@ -53,7 +53,10 @@
       </div>
       <div class="list-view-pf-main-info">
         <div class="list-view-pf-left">
-          <status-icon status="status = (pod | podStatus)" class="getStatusClasses(pod, status)"></status-icon>
+          <status-icon status="status = (pod | podStatus)"
+            class="getStatusClasses(pod, status)"
+            uib-tooltip="{{status | humanizePodStatus}}" tooltip-placement="bottom">
+          </status-icon>
         </div>
         <div class="list-view-pf-body">
           <div class="list-view-pf-description">
