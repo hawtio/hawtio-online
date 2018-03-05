@@ -5,5 +5,7 @@ declare module Online {
 declare module Online {
 }
 declare module Online {
+}
+declare module Online {
     function isPodReady(pod: any): any;
 }

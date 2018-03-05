@@ -157,8 +157,85 @@ var Online;
 var Online;
 (function (Online) {
     angular.module(Online.pluginName)
-        .controller('Online.DiscoverController', ['$scope', '$location', '$window', '$element', 'K8SClientFactory', 'jsonpath',
-        function ($scope, $location, $window, $element, client /*: K8SClientFactory*/, jsonpath) {
+        .directive('durationUntilNow', function () {
+        return {
+            restrict: 'E',
+            scope: {
+                timestamp: '=',
+                omitSingle: '=?',
+                precision: '=?'
+            },
+            template: '<span data-timestamp="{{timestamp}}" data-omit-single="{{omitSingle}}" data-precision="{{precision}}" class="duration">{{timestamp | duration : null : omitSingle : precision}}</span>'
+        };
+    })
+        .filter('duration', function () {
+        return function (timestampLhs, timestampRhs, omitSingle, precision) {
+            if (!timestampLhs) {
+                return timestampLhs;
+            }
+            precision = precision || 2;
+            timestampRhs = timestampRhs || new Date(); // moment expects either an ISO format string or a Date object
+            var ms = moment(timestampRhs).diff(timestampLhs);
+            if (ms < 0) {
+                // Don't show negative durations
+                ms = 0;
+            }
+            var duration = moment.duration(ms);
+            // the out of the box humanize in moment.js rounds to the nearest time unit
+            // but we need more details
+            var humanizedDuration = [];
+            var years = duration.years();
+            var months = duration.months();
+            var days = duration.days();
+            var hours = duration.hours();
+            var minutes = duration.minutes();
+            var seconds = duration.seconds();
+            function add(count, singularText, pluralText) {
+                if (count === 0) {
+                    return;
+                }
+                if (count === 1) {
+                    if (omitSingle) {
+                        humanizedDuration.push(singularText);
+                    }
+                    else {
+                        humanizedDuration.push('1 ' + singularText);
+                    }
+                    return;
+                }
+                humanizedDuration.push(count + ' ' + pluralText);
+            }
+            add(years, 'year', 'years');
+            add(months, 'month', 'months');
+            add(days, 'day', 'days');
+            add(hours, 'hour', 'hours');
+            add(minutes, 'minute', 'minutes');
+            add(seconds, 'second', 'seconds');
+            // If precision is 1, we're showing rough values. Don't show values less
+            // than a minute.
+            // TODO: Is there ever a time we want precision = 1 and to show seconds?
+            if (humanizedDuration.length === 1 && seconds && precision === 1) {
+                if (omitSingle) {
+                    return 'minute';
+                }
+                return '1 minute';
+            }
+            if (humanizedDuration.length === 0) {
+                humanizedDuration.push('0 seconds');
+            }
+            if (humanizedDuration.length > precision) {
+                humanizedDuration.length = precision;
+            }
+            return humanizedDuration.join(', ');
+        };
+    });
+})(Online || (Online = {}));
+/// <reference path="onlinePlugin.ts"/>
+var Online;
+(function (Online) {
+    angular.module(Online.pluginName)
+        .controller('Online.DiscoverController', ['$scope', '$location', '$window', '$element', 'K8SClientFactory', 'jsonpath', 'pfViewUtils',
+        function ($scope, $location, $window, $element, client /*: K8SClientFactory*/, jsonpath, pfViewUtils) {
             var loading = 0;
             $scope.pods = [];
             $scope.filteredPods = [];
@@ -248,9 +325,19 @@ var Online;
                 ],
                 onSortChange: applySort,
             };
+            var viewsConfig = {
+                views: [
+                    pfViewUtils.getListView(),
+                    pfViewUtils.getCardView(),
+                ],
+                onViewSelect: function (viewId) { return $scope.viewType = viewId; },
+            };
+            viewsConfig.currentView = viewsConfig.views[0].id;
+            $scope.viewType = viewsConfig.currentView;
             $scope.toolbarConfig = {
                 filterConfig: filterConfig,
                 sortConfig: sortConfig,
+                viewsConfig: viewsConfig,
             };
             if ($window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
                 filterConfig.fields.push({
@@ -346,6 +433,6 @@ var Online;
     Online.isPodReady = isPodReady;
 })(Online || (Online = {}));
 
-angular.module('hawtio-online-templates', []).run(['$templateCache', function($templateCache) {$templateCache.put('plugins/online/html/discover.html','<div ng-controller="Online.DiscoverController">\n\n  <div class="title">\n    <h1>Pods</h1>\n  </div>\n\n  <pf-toolbar config="toolbarConfig"></pf-toolbar>\n\n  <div class="spinner spinner-lg loading-page" ng-if="loading()"></div>\n\n  <div class="blank-slate-pf no-border" ng-if="loading() === false && pods.length === 0">\n    <div class="blank-slate-pf-icon">\n      <span class="pficon pficon pficon-add-circle-o"></span>\n    </div>\n    <h1>\n      No Hawtio Containers\n    </h1>\n    <p>\n      There are no containers running with a port configured whose name is <code>jolokia</code>.\n    </p>\n  </div>\n\n  <div class="list-group list-view-pf list-view-pf-view">\n    <div ng-repeat="pod in filteredPods" class="list-group-item list-view-pf-stacked">\n      <div class="list-view-pf-main-info">\n        <div class="list-view-pf-left">\n          <status-icon status="status = (pod | podStatus)"\n            class="getStatusClasses(pod, status)"\n            uib-tooltip="{{status | humanizePodStatus}}" tooltip-placement="bottom">\n          </status-icon>\n        </div>\n        <div class="list-view-pf-body">\n          <div class="list-view-pf-description">\n            <div class="list-group-item-heading">\n              {{pod.metadata.name}}\n            </div>\n            <div class="list-group-item-text">\n              <labels labels="pod.metadata.labels"\n                      project-name="{{pod.metadata.namespace}}" limit="3">\n              </labels>\n            </div>\n          </div>\n          <div class="list-view-pf-additional-info">\n            <div class="list-view-pf-additional-info-item">\n              <span class="pficon pficon-home"></span>\n              {{pod.metadata.namespace}}\n            </div>\n            <div class="list-view-pf-additional-info-item">\n              <span class="pficon pficon-container-node"></span>\n              {{pod.spec.nodeName || pod.status.hostIP}}\n            </div>\n            <div class="list-view-pf-additional-info-item">\n              <span class="pficon pficon-image"></span>\n              <strong>{{pod.spec.containers.length}}</strong>\n              <ng-pluralize count="containers.length" when="{\n                     \'one\': \'container\',\n                     \'other\': \'containers\'}">\n              </ng-pluralize>\n            </div>\n          </div>\n        </div>\n      </div>\n      <div class="list-view-pf-actions">\n        <button ng-if="(containers = (pod.spec.containers | jolokiaContainers)).length === 1"\n                class="btn btn-primary"\n                ng-click="open(pod | connectUrl: (containers[0] | jolokiaPort).containerPort)"\n                ng-disabled="status !== \'Running\'">\n          Connect\n        </button>\n        <div ng-if="containers.length > 1" class="dropdown">\n          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"\n            ng-disabled="status !== \'Running\'">\n            Connect\n            <span class="caret"></span>\n          </button>\n          <ul class="dropdown-menu dropdown-menu-right" role="menu">\n            <li class="dropdown-header">Containers</li>\n            <li ng-repeat="container in containers" role="presentation">\n              <a role="menuitem" tabindex="-1" href="#"\n                ng-click="open(pod | connectUrl: (container | jolokiaPort).containerPort)">\n                {{container.name}}\n              </a>\n            </li>\n          </ul>\n        </div>\n        <div class="dropdown pull-right dropdown-kebab-pf">\n          <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown">\n            <span class="fa fa-ellipsis-v"></span>\n          </button>\n          <ul class="dropdown-menu dropdown-menu-right">\n            <li class="dropdown-header">OpenShift Console</li>\n            <li><a href="#" ng-click="open(pod | podDetailsUrl)">Open pod details</a></li>\n          </ul>\n        </div>\n      </div>\n    </div>\n  </div>\n\n</div>');
+angular.module('hawtio-online-templates', []).run(['$templateCache', function($templateCache) {$templateCache.put('plugins/online/html/discover.html','<div ng-controller="Online.DiscoverController">\n\n  <div class="title">\n    <h1>Pods</h1>\n  </div>\n\n  <pf-toolbar config="toolbarConfig"></pf-toolbar>\n\n  <div class="spinner spinner-lg loading-page" ng-if="loading()"></div>\n\n  <div class="blank-slate-pf no-border" ng-if="loading() === false && pods.length === 0">\n    <div class="blank-slate-pf-icon">\n      <span class="pficon pficon pficon-add-circle-o"></span>\n    </div>\n    <h1>\n      No Hawtio Containers\n    </h1>\n    <p>\n      There are no containers running with a port configured whose name is <code>jolokia</code>.\n    </p>\n  </div>\n\n  <div class="list-group list-view-pf list-view-pf-view"\n       ng-if="viewType == \'listView\'">\n    <div ng-repeat="pod in filteredPods" class="list-group-item list-view-pf-stacked">\n      <div class="list-view-pf-main-info">\n        <div class="list-view-pf-left">\n          <status-icon status="status = (pod | podStatus)"\n            class="getStatusClasses(pod, status)"\n            uib-tooltip="{{status | humanizePodStatus}}" tooltip-placement="bottom">\n          </status-icon>\n        </div>\n        <div class="list-view-pf-body">\n          <div class="list-view-pf-description">\n            <div class="list-group-item-heading">\n              {{pod.metadata.name}}\n            </div>\n            <div class="list-group-item-text">\n              <labels labels="pod.metadata.labels"\n                      project-name="{{pod.metadata.namespace}}" limit="3">\n              </labels>\n            </div>\n          </div>\n          <div class="list-view-pf-additional-info">\n            <div class="list-view-pf-additional-info-item">\n              <span class="pficon pficon-home"></span>\n              {{pod.metadata.namespace}}\n            </div>\n            <div class="list-view-pf-additional-info-item">\n              <span class="pficon pficon-container-node"></span>\n              {{pod.spec.nodeName || pod.status.hostIP}}\n            </div>\n            <div class="list-view-pf-additional-info-item">\n              <span class="pficon pficon-image"></span>\n              <strong>{{pod.spec.containers.length}}</strong>\n              <ng-pluralize count="containers.length" when="{\n                     \'one\': \'container\',\n                     \'other\': \'containers\'}">\n              </ng-pluralize>\n            </div>\n          </div>\n        </div>\n      </div>\n      <div class="list-view-pf-actions">\n        <button ng-if="(containers = (pod.spec.containers | jolokiaContainers)).length === 1"\n                class="btn btn-primary"\n                ng-click="open(pod | connectUrl: (containers[0] | jolokiaPort).containerPort)"\n                ng-disabled="status !== \'Running\'">\n          Connect\n        </button>\n        <div ng-if="containers.length > 1" class="dropdown">\n          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"\n            ng-disabled="status !== \'Running\'">\n            Connect\n            <span class="caret"></span>\n          </button>\n          <ul class="dropdown-menu dropdown-menu-right" role="menu">\n            <li class="dropdown-header">Containers</li>\n            <li ng-repeat="container in containers" role="presentation">\n              <a role="menuitem" tabindex="-1" href="#"\n                ng-click="open(pod | connectUrl: (container | jolokiaPort).containerPort)">\n                {{container.name}}\n              </a>\n            </li>\n          </ul>\n        </div>\n        <div class="dropdown pull-right dropdown-kebab-pf">\n          <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown">\n            <span class="fa fa-ellipsis-v"></span>\n          </button>\n          <ul class="dropdown-menu dropdown-menu-right">\n            <li class="dropdown-header">OpenShift Console</li>\n            <li><a href="#" ng-click="open(pod | podDetailsUrl)">Open pod details</a></li>\n          </ul>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <div class="container-fluid container-cards-pf" ng-if="viewType == \'cardView\'">\n    <div class="row row-cards-pf">\n      <div ng-repeat="pod in filteredPods" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">\n        <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select card-pf-aggregate-status">\n\n          <div class="card-pf-body">\n            <div class="card-pf-top-element">\n              <img class="card-pf-icon-circle" src="img/java.svg"></img>\n            </div>\n            <h2 class="card-pf-title text-center">\n              {{pod.metadata.name}}\n            </h2>\n            <div class="card-pf-items text-center">\n              <div class="card-pf-item">\n                <span class="pficon pficon-home"></span>\n                <span class="card-pf-item-text">{{pod.metadata.namespace}}</span>\n              </div>\n              <div class="card-pf-item">\n                <span class="pficon pficon-image"></span>\n                <span class="card-pf-item-text">\n                  {{pod.spec.containers.length}}\n                </span>\n              </div>\n            </div>\n            <p class="card-pf-info text-center">\n              Created <duration-until-now timestamp="pod.status.startTime"></duration-until-now> ago\n              <p class="card-pf-aggregate-status-notifications">\n                <status-icon status="status = (pod | podStatus)"\n                              class="\'card-pf-aggregate-status-notification\'"\n                              uib-tooltip="{{status | humanizePodStatus}}" tooltip-placement="bottom">\n                </status-icon>\n              </p>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n\n</div>\n\n<script>\n  $(function() {\n    // matchHeight the contents of each .card-pf and then the .card-pf itself\n    $(".row-cards-pf > [class*=\'col\'] > .card-pf > .card-pf-title").matchHeight();\n    $(".row-cards-pf > [class*=\'col\'] > .card-pf > .card-pf-body").matchHeight();\n    $(".row-cards-pf > [class*=\'col\'] > .card-pf > .card-pf-footer").matchHeight();\n    $(".row-cards-pf > [class*=\'col\'] > .card-pf").matchHeight();\n  });\n</script>');
 $templateCache.put('plugins/online/html/labels.html','<div row wrap ng-if="(labels | hashSize) > 0">\n  <span row nowrap ng-repeat="(labelKey, labelValue) in labels"\n        class="k8s-label" ng-if="!limit || $index < limit">\n    <span row class="label-pair" ng-if="clickable">\n      <a href="" class="label-key label truncate"\n         ng-click="filterAndNavigate(labelKey)"\n         ng-attr-title="All {{titleKind || kind}} with the label \'{{labelKey}}\' (any value)">{{labelKey}}</a><a\n        href="" class="label-value label truncate"\n        ng-click="filterAndNavigate(labelKey, labelValue)"\n        ng-attr-title="All {{titleKind || kind}} with the label \'{{labelKey}}={{labelValue}}\'">{{labelValue}}<span\n        ng-if="labelValue === \'\'"><em>&lt;empty&gt;</em></span></a>\n    </span>\n    <span row class="label-pair" ng-if="!clickable">\n      <span class="label-key label truncate">{{labelKey}}</span><span\n        class="label-value label truncate">{{labelValue}}</span>\n    </span>\n  </span>\n  <a href="" class="small" ng-click="limit = null"\n     ng-show="limit && limit < (labels | hashSize)"\n     style="padding-left: 5px; vertical-align: middle;">More labels...</a>\n</div>');
 $templateCache.put('plugins/online/html/statusIcon.html','<span ng-switch="status" class="hide-ng-leave status-icon">\n  <span ng-switch-when="Cancelled" class="fa fa-ban text-muted" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Complete" class="fa fa-check text-success" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Completed" class="fa fa-check text-success" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Active" class="fa fa-refresh" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Error" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Failed" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="New" class="fa fa-hourglass-o" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Pending" class="fa fa-hourglass-half" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Ready" class="fa fa-check text-success" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Running" class="fa fa-refresh" aria-hidden="true" ng-class="[class, {\'fa-spin\' : spinning}]"></span>\n  <span ng-switch-when="Succeeded" class="fa fa-check text-success" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Bound" class="fa fa-check text-success" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Terminating" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Terminated" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="Unknown" class="fa fa-question text-danger" aria-hidden="true" ng-class="class"></span>\n\n  <!-- Container Runtime States -->\n  <span ng-switch-when="Init Error" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="ContainerCreating" class="fa fa-hourglass-half" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="CrashLoopBackOff" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="ImagePullBackOff" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="ImageInspectError" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="ErrImagePull" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="ErrImageNeverPull" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="no matching container" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="RegistryUnavailable" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="RunContainerError" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="KillContainerError" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="VerifyNonRootError" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="SetupNetworkError" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="TeardownNetworkError" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="DeadlineExceeded" class="fa fa-times text-danger" aria-hidden="true" ng-class="class"></span>\n  <span ng-switch-when="PodInitializing" class="fa fa-hourglass-half" aria-hidden="true" ng-class="class"></span>\n</span>');}]); hawtioPluginLoader.addModule("hawtio-online-templates");

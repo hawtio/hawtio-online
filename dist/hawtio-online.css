@@ -83,6 +83,9 @@ div.list-group-item-text labels {
 .list-view-pf-actions > div {
   display: inline-block;
 }
+.card-pf .card-pf-icon-circle {
+  padding: 10px;
+}
 
 @media screen and (max-width: 767px) {
 }

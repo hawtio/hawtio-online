@@ -6,8 +6,8 @@ module Online {
 
   angular.module(pluginName)
     .controller('Online.DiscoverController',
-      ['$scope', '$location', '$window', '$element', 'K8SClientFactory', 'jsonpath',
-        ($scope, $location, $window, $element, client/*: K8SClientFactory*/, jsonpath) => {
+      ['$scope', '$location', '$window', '$element', 'K8SClientFactory', 'jsonpath', 'pfViewUtils',
+        ($scope, $location, $window, $element, client/*: K8SClientFactory*/, jsonpath, pfViewUtils) => {
 
           let loading = 0;
 
@@ -104,9 +104,20 @@ module Online {
             onSortChange: applySort,
           };
 
+          const viewsConfig: any = {
+            views : [
+              pfViewUtils.getListView(),
+              pfViewUtils.getCardView(),
+            ],
+            onViewSelect : viewId => $scope.viewType = viewId,
+          };
+          viewsConfig.currentView = viewsConfig.views[0].id;
+          $scope.viewType = viewsConfig.currentView;
+
           $scope.toolbarConfig = {
             filterConfig : filterConfig,
             sortConfig   : sortConfig,
+            viewsConfig  : viewsConfig,
           };
 
           if ($window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
