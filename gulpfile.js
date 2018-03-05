@@ -76,12 +76,17 @@ gulp.task('less', () => gulp.src(config.less)
   .pipe(plugins.concat(config.css))
   .pipe(gulp.dest(config.dist)));
 
-gulp.task('watch', ['build'], function() {
+gulp.task('watch', ['build'], function () {
   gulp.watch(['index.html', urljoin(config.dist, '*')], ['reload']);
   gulp.watch(config.less, ['less']);
   const tsconfig = require('./tsconfig.json');
   gulp.watch([...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), ...config.templates],
     ['tsc', 'template', 'concat', 'clean']);
+});
+
+gulp.task('copy-images', function () {
+  return gulp.src('./img/**/*')
+    .pipe(gulp.dest(urljoin(config.dist, 'img')));
 });
 
 function getMaster() {
@@ -281,7 +286,7 @@ gulp.task('serve-site', function () {
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
-gulp.task('build', callback => sequence(['tsc', 'less', 'template', 'concat'], 'clean', callback));
+gulp.task('build', callback => sequence(['tsc', 'less', 'template', 'concat', 'copy-images'], 'clean', callback));
 
 gulp.task('site', callback => sequence('clean', ['site-fonts', 'site-files', 'site-usemin', 'site-tweak-urls', 'site-images', 'site-config'], callback));
 
