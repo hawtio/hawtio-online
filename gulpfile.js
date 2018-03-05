@@ -76,15 +76,11 @@ gulp.task('less', () => gulp.src(config.less)
   .pipe(plugins.concat(config.css))
   .pipe(gulp.dest(config.dist)));
 
-gulp.task('watch-less', function () {
-  plugins.watch(config.less, () => ['less']);
-});
-
-gulp.task('watch', ['build', 'watch-less'], function() {
+gulp.task('watch', ['build'], function() {
   gulp.watch(['index.html', urljoin(config.dist, '*')], ['reload']);
-
+  gulp.watch(config.less, ['less']);
   const tsconfig = require('./tsconfig.json');
-  gulp.watch([...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), config.templates],
+  gulp.watch([...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), ...config.templates],
     ['tsc', 'template', 'concat', 'clean']);
 });
 
