@@ -122,12 +122,12 @@
             </div>
             <p class="card-pf-info text-center">
               Created <duration-until-now timestamp="pod.status.startTime"></duration-until-now> ago
-              <p class="card-pf-aggregate-status-notifications">
+              <p>
                 <status-icon status="status = (pod | podStatus)"
-                             class="'card-pf-aggregate-status-notification'"
-                             uib-tooltip="{{status | humanizePodStatus}}" tooltip-placement="bottom">
-                </status-icon>
+                             class="'card-pf-aggregate-status-notification'"></status-icon>
+                {{status | humanizePodStatus}}
               </p>
+              <!-- TODO: add aggregate status notifications -->
           </div>
         </div>
       </div>
