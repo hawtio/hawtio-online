@@ -101,7 +101,6 @@
     <div class="row row-cards-pf">
       <div ng-repeat="pod in filteredPods" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
         <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select card-pf-aggregate-status">
-
           <div class="card-pf-body">
             <div class="card-pf-top-element">
               <img class="card-pf-icon-circle" src="img/java.svg"></img>
@@ -125,8 +124,8 @@
               Created <duration-until-now timestamp="pod.status.startTime"></duration-until-now> ago
               <p class="card-pf-aggregate-status-notifications">
                 <status-icon status="status = (pod | podStatus)"
-                              class="'card-pf-aggregate-status-notification'"
-                              uib-tooltip="{{status | humanizePodStatus}}" tooltip-placement="bottom">
+                             class="'card-pf-aggregate-status-notification'"
+                             uib-tooltip="{{status | humanizePodStatus}}" tooltip-placement="bottom">
                 </status-icon>
               </p>
           </div>
@@ -134,15 +133,4 @@
       </div>
     </div>
   </div>
-
 </div>
-
-<script>
-  $(function() {
-    // matchHeight the contents of each .card-pf and then the .card-pf itself
-    $(".row-cards-pf > [class*='col'] > .card-pf > .card-pf-title").matchHeight();
-    $(".row-cards-pf > [class*='col'] > .card-pf > .card-pf-body").matchHeight();
-    $(".row-cards-pf > [class*='col'] > .card-pf > .card-pf-footer").matchHeight();
-    $(".row-cards-pf > [class*='col'] > .card-pf").matchHeight();
-  });
-</script>

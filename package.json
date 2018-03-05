@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@hawtio/node-backend": "^3.0.6",
+    "@types/jquery-match-height": "^0.7.4",
     "del": "^2.0.0",
     "event-stream": "^3.0.0",
     "gulp": "^3.0.0",

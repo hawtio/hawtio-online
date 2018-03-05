@@ -6,8 +6,8 @@ module Online {
 
   angular.module(pluginName)
     .controller('Online.DiscoverController',
-      ['$scope', '$location', '$window', '$element', 'K8SClientFactory', 'jsonpath', 'pfViewUtils',
-        ($scope, $location, $window, $element, client/*: K8SClientFactory*/, jsonpath, pfViewUtils) => {
+      ['$scope', '$location', '$window', '$element', 'K8SClientFactory', 'jsonpath', 'pfViewUtils', '$timeout',
+        ($scope, $location, $window, $element, client/*: K8SClientFactory*/, jsonpath, pfViewUtils, $timeout) => {
 
           let loading = 0;
 
@@ -109,7 +109,17 @@ module Online {
               pfViewUtils.getListView(),
               pfViewUtils.getCardView(),
             ],
-            onViewSelect : viewId => $scope.viewType = viewId,
+            onViewSelect : viewId => {
+              $scope.viewType = viewId;
+              if (viewId === 'cardView') {
+                $timeout(function () {
+                  $(".row-cards-pf > [class*='col'] > .card-pf .card-pf-title").matchHeight();
+                  $(".row-cards-pf > [class*='col'] > .card-pf .card-pf-items").matchHeight();
+                  $(".row-cards-pf > [class*='col'] > .card-pf .card-pf-info").matchHeight();
+                  $(".row-cards-pf > [class*='col'] > .card-pf").matchHeight();
+                }, 15, false);
+              }
+            }
           };
           viewsConfig.currentView = viewsConfig.views[0].id;
           $scope.viewType = viewsConfig.currentView;
