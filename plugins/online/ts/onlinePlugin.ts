@@ -6,7 +6,7 @@ module Online {
   declare const jsonpath: any;
   declare const LabelSelector: any;
 
-  angular.module(pluginName, ['patternfly', 'KubernetesAPI'])
+  angular.module(pluginName, ['patternfly', 'KubernetesAPI', 'angularMoment'])
 
     .config(['$routeProvider', ($routeProvider: angular.route.IRouteProvider) => {
       $routeProvider

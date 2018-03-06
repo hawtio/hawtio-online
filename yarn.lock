@@ -230,6 +230,12 @@ angular-drag-and-drop-lists@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/angular-drag-and-drop-lists/-/angular-drag-and-drop-lists-2.0.0.tgz#a01d44b94cf233c9c2d45a31842cb35a9d0882ca"
 
+angular-moment@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/angular-moment/-/angular-moment-1.2.0.tgz#a09e4902bc8d48ce06832af8c74169841b613bae"
+  dependencies:
+    moment ">=2.8.0 <3.0.0"
+
 angular-patternfly@4.14.5, angular-patternfly@^4.0.0, angular-patternfly@^4.15.0:
   version "4.14.5"
   resolved "https://registry.yarnpkg.com/angular-patternfly/-/angular-patternfly-4.14.5.tgz#3319a91efb0c303b419ccd0c9876a48a4a49b67e"
@@ -2525,7 +2531,7 @@ moment-timezone@^0.4.0, moment-timezone@^0.4.1:
   dependencies:
     moment ">= 2.6.0"
 
-moment@2.20.1, "moment@>= 2.6.0", moment@^2.10, moment@^2.19.1, moment@^2.20.1, moment@~2.19.3:
+moment@2.20.1, "moment@>= 2.6.0", "moment@>=2.8.0 <3.0.0", moment@^2.10, moment@^2.19.1, moment@^2.20.1, moment@~2.19.3:
   version "2.20.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
 

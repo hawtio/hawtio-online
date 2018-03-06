@@ -121,7 +121,7 @@
               </div>
             </div>
             <div class="card-pf-info text-center">
-              Created <duration-until-now timestamp="pod.status.startTime"></duration-until-now> ago
+              Created <span am-time-ago="pod.status.startTime" am-without-suffix="true"></span> ago
               <!-- TODO: add aggregate status notifications -->
               <p>
                 <status-icon status="status = (pod | podStatus)"
