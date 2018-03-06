@@ -120,14 +120,36 @@
                 </span>
               </div>
             </div>
-            <p class="card-pf-info text-center">
+            <div class="card-pf-info text-center">
               Created <duration-until-now timestamp="pod.status.startTime"></duration-until-now> ago
               <p>
                 <status-icon status="status = (pod | podStatus)"
                              class="'card-pf-aggregate-status-notification'"></status-icon>
                 {{status | humanizePodStatus}}
+                <!-- TODO: add aggregate status notifications -->
               </p>
-              <!-- TODO: add aggregate status notifications -->
+              <button ng-if="(containers = (pod.spec.containers | jolokiaContainers)).length === 1"
+                      class="btn btn-primary"
+                      ng-click="open(pod | connectUrl: (containers[0] | jolokiaPort).containerPort)"
+                      ng-disabled="status !== 'Running'">
+                Connect
+              </button>
+              <div ng-if="containers.length > 1" class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"
+                  ng-disabled="status !== 'Running'">
+                  Connect
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                  <li class="dropdown-header">Containers</li>
+                  <li ng-repeat="container in containers" role="presentation">
+                    <a role="menuitem" tabindex="-1" href="#"
+                      ng-click="open(pod | connectUrl: (container | jolokiaPort).containerPort)">
+                      {{container.name}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
           </div>
         </div>
       </div>
