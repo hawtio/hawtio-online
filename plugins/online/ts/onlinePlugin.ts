@@ -1,4 +1,4 @@
-module Online {
+namespace Online {
 
   export const pluginName   = 'online';
   export const templatePath = 'plugins/' + pluginName + '/html/';

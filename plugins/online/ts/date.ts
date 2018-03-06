@@ -1,6 +1,6 @@
 /// <reference path="onlinePlugin.ts"/>
 
-module Online {
+namespace Online {
 
   angular.module(pluginName)
     .directive('durationUntilNow', function() {

@@ -1,11 +1,11 @@
-declare module Online {
+declare namespace Online {
     const pluginName = "online";
     const templatePath: string;
 }
-declare module Online {
+declare namespace Online {
 }
-declare module Online {
+declare namespace Online {
 }
-declare module Online {
+declare namespace Online {
     function isPodReady(pod: any): any;
 }

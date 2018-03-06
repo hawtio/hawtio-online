@@ -1,6 +1,6 @@
 /// <reference path="onlinePlugin.ts"/>
 
-module Online {
+namespace Online {
 
   declare var KubernetesAPI: any;
 

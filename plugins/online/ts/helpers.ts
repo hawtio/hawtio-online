@@ -1,4 +1,4 @@
-module Online {
+namespace Online {
 
   export function isPodReady(pod) {
     const conditions = Core.pathGet(pod, 'status.conditions');
