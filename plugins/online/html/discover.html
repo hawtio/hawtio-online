@@ -122,11 +122,11 @@
             </div>
             <div class="card-pf-info text-center">
               Created <duration-until-now timestamp="pod.status.startTime"></duration-until-now> ago
+              <!-- TODO: add aggregate status notifications -->
               <p>
                 <status-icon status="status = (pod | podStatus)"
-                             class="'card-pf-aggregate-status-notification'"></status-icon>
+                             class="getStatusClasses(pod, status)"></status-icon>
                 {{status | humanizePodStatus}}
-                <!-- TODO: add aggregate status notifications -->
               </p>
               <button ng-if="(containers = (pod.spec.containers | jolokiaContainers)).length === 1"
                       class="btn btn-primary"

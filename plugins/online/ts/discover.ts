@@ -21,7 +21,9 @@ module Online {
             switch (status) {
               case 'Running':
                 if (isPodReady(pod)) {
-                  styles = 'list-view-pf-icon-success';
+                  styles = $scope.viewType === 'listView'
+                    ? 'list-view-pf-icon-success'
+                    : 'text-success';
                 }
                 break;
               case 'Complete':
@@ -38,7 +40,9 @@ module Online {
               default:
                styles = 'list-view-pf-icon-info';
             }
-            return `list-view-pf-icon-md ${styles}`;
+            return $scope.viewType === 'listView'
+              ? `list-view-pf-icon-md ${styles}`
+              : `card-pf-aggregate-status-notification ${styles}`;
           }
 
           $element.on('$destroy', _ => $scope.$destroy());
