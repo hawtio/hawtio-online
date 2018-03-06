@@ -1,14 +1,14 @@
-<div ng-controller="Online.DiscoverController">
+<div ng-controller="DiscoverController as $ctrl">
 
   <div class="title">
     <h1>Pods</h1>
   </div>
 
-  <pf-toolbar config="toolbarConfig"></pf-toolbar>
+  <pf-toolbar config="$ctrl.toolbarConfig"></pf-toolbar>
 
-  <div class="spinner spinner-lg loading-page" ng-if="loading()"></div>
+  <div class="spinner spinner-lg loading-page" ng-if="$ctrl.loading()"></div>
 
-  <div class="blank-slate-pf no-border" ng-if="loading() === false && pods.length === 0">
+  <div class="blank-slate-pf no-border" ng-if="$ctrl.loading() === false && $ctrl.pods.length === 0">
     <div class="blank-slate-pf-icon">
       <span class="pficon pficon pficon-add-circle-o"></span>
     </div>
@@ -21,12 +21,12 @@
   </div>
 
   <div class="list-group list-view-pf list-view-pf-view"
-       ng-if="viewType == 'listView'">
-    <div ng-repeat="pod in filteredPods" class="list-group-item list-view-pf-stacked">
+       ng-if="$ctrl.viewType == 'listView'">
+    <div ng-repeat="pod in $ctrl.filteredPods" class="list-group-item list-view-pf-stacked">
       <div class="list-view-pf-main-info">
         <div class="list-view-pf-left">
           <status-icon status="status = (pod | podStatus)"
-            class="getStatusClasses(pod, status)"
+            class="$ctrl.getStatusClasses(pod, status)"
             uib-tooltip="{{status | humanizePodStatus}}" tooltip-placement="bottom">
           </status-icon>
         </div>
@@ -37,7 +37,8 @@
             </div>
             <div class="list-group-item-text">
               <labels labels="pod.metadata.labels"
-                      project-name="{{pod.metadata.namespace}}" limit="3">
+                      project-name="{{pod.metadata.namespace}}"
+                      limit="3">
               </labels>
             </div>
           </div>
@@ -54,8 +55,8 @@
               <span class="pficon pficon-image"></span>
               <strong>{{pod.spec.containers.length}}</strong>
               <ng-pluralize count="containers.length" when="{
-                     'one': 'container',
-                     'other': 'containers'}">
+                'one': 'container',
+                'other': 'containers'}">
               </ng-pluralize>
             </div>
           </div>
@@ -64,7 +65,7 @@
       <div class="list-view-pf-actions">
         <button ng-if="(containers = (pod.spec.containers | jolokiaContainers)).length === 1"
                 class="btn btn-primary"
-                ng-click="open(pod | connectUrl: (containers[0] | jolokiaPort).containerPort)"
+                ng-click="$ctrl.open(pod | connectUrl: (containers[0] | jolokiaPort).containerPort)"
                 ng-disabled="status !== 'Running'">
           Connect
         </button>
@@ -78,7 +79,7 @@
             <li class="dropdown-header">Containers</li>
             <li ng-repeat="container in containers" role="presentation">
               <a role="menuitem" tabindex="-1" href="#"
-                ng-click="open(pod | connectUrl: (container | jolokiaPort).containerPort)">
+                ng-click="$ctrl.open(pod | connectUrl: (container | jolokiaPort).containerPort)">
                 {{container.name}}
               </a>
             </li>
@@ -90,20 +91,20 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-right">
             <li class="dropdown-header">OpenShift Console</li>
-            <li><a href="#" ng-click="open(pod | podDetailsUrl)">Open pod details</a></li>
+            <li><a href="#" ng-click="$ctrl.open(pod | podDetailsUrl)">Open pod details</a></li>
           </ul>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="container-fluid container-cards-pf" ng-if="viewType == 'cardView'">
+  <div class="container-fluid container-cards-pf" ng-if="$ctrl.viewType == 'cardView'">
     <div class="row row-cards-pf">
-      <div ng-repeat="pod in filteredPods" match-height class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div ng-repeat="pod in $ctrl.filteredPods" match-height class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
         <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select card-pf-aggregate-status">
           <div class="card-pf-body">
             <div class="card-pf-top-element">
-              <img class="card-pf-icon-circle" src="img/java.svg"></img>
+              <img class="card-pf-icon-circle" src="img/java.svg"/>
             </div>
             <h2 class="card-pf-title text-center">
               {{pod.metadata.name}}
@@ -125,12 +126,12 @@
               <!-- TODO: add aggregate status notifications -->
               <p>
                 <status-icon status="status = (pod | podStatus)"
-                             class="getStatusClasses(pod, status)"></status-icon>
+                             class="$ctrl.getStatusClasses(pod, status)"></status-icon>
                 {{status | humanizePodStatus}}
               </p>
               <button ng-if="(containers = (pod.spec.containers | jolokiaContainers)).length === 1"
                       class="btn btn-primary"
-                      ng-click="open(pod | connectUrl: (containers[0] | jolokiaPort).containerPort)"
+                      ng-click="$ctrl.open(pod | connectUrl: (containers[0] | jolokiaPort).containerPort)"
                       ng-disabled="status !== 'Running'">
                 Connect
               </button>
@@ -144,12 +145,13 @@
                   <li class="dropdown-header">Containers</li>
                   <li ng-repeat="container in containers" role="presentation">
                     <a role="menuitem" tabindex="-1" href="#"
-                      ng-click="open(pod | connectUrl: (container | jolokiaPort).containerPort)">
+                      ng-click="$ctrl.open(pod | connectUrl: (container | jolokiaPort).containerPort)">
                       {{container.name}}
                     </a>
                   </li>
                 </ul>
               </div>
+            </div>
           </div>
         </div>
       </div>
