@@ -5,7 +5,6 @@
 
 namespace Online {
 
-  declare const jsonpath: any;
   declare const KubernetesAPI: any;
 
   export const discoverModule = angular
