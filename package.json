@@ -17,7 +17,7 @@
     "angular-patternfly": "^4.15.0",
     "angular-resource": "~1.6.5",
     "angular-ui-bootstrap": "^2.5.6",
-    "hawtio-kubernetes-api": "hawtio/hawtio-kubernetes-api#2.0.58",
+    "hawtio-kubernetes-api": "^2.0.58",
     "jquery-match-height": "^0.7.2",
     "jsonpath": "^1.0.0",
     "kubernetes-label-selector": "kubernetes-ui/label-selector#1.4.2",
