@@ -38,9 +38,9 @@
     "@hawtio/core-dts" "~3.0.0"
     "@hawtio/ui" "~3.2.0"
 
-"@hawtio/node-backend@^3.0.6":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@hawtio/node-backend/-/node-backend-3.0.6.tgz#9d2af7911d1e9bc32f283951760ef7b40c29a6fe"
+"@hawtio/node-backend@^3.0.8":
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/@hawtio/node-backend/-/node-backend-3.0.8.tgz#33cd104a74165bc22f1975a2cab07b4a1b140aad"
   dependencies:
     "@types/node" "^7.0.31"
     body-parser "^1.17.2"
@@ -273,8 +273,8 @@ angular-resource@~1.6.5:
   resolved "https://registry.yarnpkg.com/angular-resource/-/angular-resource-1.6.7.tgz#1ac9a33d1715f2042c1321c82ca307e694ffdc93"
 
 angular-route@1.6.8, angular-route@1.6.9, angular-route@~1.6.0:
-  version "1.6.8"
-  resolved "https://registry.yarnpkg.com/angular-route/-/angular-route-1.6.8.tgz#82ace773e7b232bf77768370760244a8caab5d36"
+  version "1.6.9"
+  resolved "https://registry.yarnpkg.com/angular-route/-/angular-route-1.6.9.tgz#73c63cec6a8a6b924698aec635eac32aa41f5e2b"
 
 angular-sanitize@1.5.*, angular-sanitize@1.6.8, angular-sanitize@~1.6.0:
   version "1.6.8"
