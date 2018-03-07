@@ -186,7 +186,7 @@
     "jquery": "2.2.4",
     "@hawtio/core": "3.2.19",
     "angular-ui-bootstrap": "2.5.6",
-    "angular-patternfly": "4.14.5",
+    "angular-patternfly": "4.15.0",
     "@types/jasmine": "2.8.6",
     "@types/lodash": "4.14.104",
     "@types/marked": "0.3.0",
