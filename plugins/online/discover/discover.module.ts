@@ -30,10 +30,9 @@ namespace Online {
   .filter('connectUrl', ['userDetails', userDetails => (pod, port = 8778) => new URI().path('/integration/')
     .hash(userDetails.token || '')
     .query({
-      jolokiaUrl : new URI()
-        .path(`/master/api/v1/namespaces/${pod.metadata.namespace}/pods/https:${pod.metadata.name}:${port}/proxy/jolokia/`),
-      title     : pod.metadata.name,
-      returnTo  : new URI().toString(),
+      jolokiaUrl : new URI().query('').path(`/master/api/v1/namespaces/${pod.metadata.namespace}/pods/https:${pod.metadata.name}:${port}/proxy/jolokia/`),
+      title      : pod.metadata.name,
+      returnTo   : new URI().toString(),
     })])
   .filter('podDetailsUrl', () => pod => UrlHelpers.join(Core.pathGet(window, ['OPENSHIFT_CONFIG', 'openshift', 'master_uri']) || KubernetesAPI.masterUrl, 'console/project', pod.metadata.namespace, 'browse/pods', pod.metadata.name));
 }

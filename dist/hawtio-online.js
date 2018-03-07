@@ -369,8 +369,7 @@ var Online;
             return new URI().path('/integration/')
                 .hash(userDetails.token || '')
                 .query({
-                jolokiaUrl: new URI()
-                    .path("/master/api/v1/namespaces/" + pod.metadata.namespace + "/pods/https:" + pod.metadata.name + ":" + port + "/proxy/jolokia/"),
+                jolokiaUrl: new URI().query('').path("/master/api/v1/namespaces/" + pod.metadata.namespace + "/pods/https:" + pod.metadata.name + ":" + port + "/proxy/jolokia/"),
                 title: pod.metadata.name,
                 returnTo: new URI().toString(),
             });
