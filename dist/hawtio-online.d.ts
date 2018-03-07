@@ -21,6 +21,16 @@ declare namespace Online {
     }
 }
 declare namespace Online {
+    class HttpSrcDirective implements ng.IDirective {
+        private $http;
+        scope: {
+            httpSrc: '@';
+        };
+        constructor($http: any);
+        link($scope: any, elem: any, attrs: any): void;
+    }
+}
+declare namespace Online {
     class MatchHeightDirective implements ng.IDirective {
         private $timeout;
         restrict: 'A';

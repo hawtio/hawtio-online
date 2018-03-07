@@ -104,7 +104,13 @@
         <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select card-pf-aggregate-status">
           <div class="card-pf-body">
             <div class="card-pf-top-element">
-              <img class="card-pf-icon-circle" src="img/java.svg"/>
+              <img ng-if="pod.metadata.annotations['fabric8.io/iconUrl']"
+                class="card-pf-icon-circle"
+                http-src="/integration/{{pod.metadata.annotations['fabric8.io/iconUrl']}}"
+                src="img/loader.svg"/>
+              <img ng-if="!pod.metadata.annotations['fabric8.io/iconUrl']"
+                class="card-pf-icon-circle"
+                src="img/java.svg"/>
             </div>
             <h2 class="card-pf-title text-center">
               {{pod.metadata.name}}

@@ -1,4 +1,5 @@
 /// <reference path="discover.controller.ts"/>
+/// <reference path="httpSrc.directive.ts"/>
 /// <reference path="match-height.directive.ts"/>
 /// <reference path="../labels/labels.module.ts"/>
 /// <reference path="../status/status.module.ts"/>
@@ -16,7 +17,8 @@ namespace Online {
       statusModule.name,
     ])
     .controller('DiscoverController', DiscoverController)
-    .directive('matchHeight', ['$timeout', $timeout => new MatchHeightDirective($timeout)]);
+    .directive('matchHeight', ['$timeout', $timeout => new MatchHeightDirective($timeout)])
+    .directive('httpSrc', ['$http', $http => new HttpSrcDirective($http)]);
 
   hawtioPluginLoader.addModule(discoverModule.name);
 
