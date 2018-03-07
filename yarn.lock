@@ -288,7 +288,7 @@ angular-ui-bootstrap@2.3.x, angular-ui-bootstrap@2.5.6, angular-ui-bootstrap@^2.
   version "2.5.6"
   resolved "https://registry.yarnpkg.com/angular-ui-bootstrap/-/angular-ui-bootstrap-2.5.6.tgz#23937322ec641a6fbee16498cc32452aa199e7c5"
 
-angular@1.5.*, angular@1.6.8, angular@>=1.3.0, angular@^1.2.0, angular@~1.6.0:
+angular@1.5.*, angular@1.6.8, angular@>=1.3.0, "angular@>=1.3.8 <1.6", angular@^1.2.0, angular@~1.6.0:
   version "1.6.8"
   resolved "https://registry.yarnpkg.com/angular/-/angular-1.6.8.tgz#5be378a58be91a5489e78b59c4518cd9fd273ffb"
 
@@ -378,6 +378,12 @@ asn1@~0.2.3:
 assert-plus@1.0.0, assert-plus@^0.2.0, assert-plus@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-1.0.0.tgz#f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525"
+
+async@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/async/-/async-2.6.0.tgz#61a29abb6fcc026fea77e56d1c6ec53a795951f4"
+  dependencies:
+    lodash "^4.14.0"
 
 asynckit@^0.4.0:
   version "0.4.0"
@@ -807,6 +813,10 @@ csurf@~1.8.3:
     cookie-signature "1.0.6"
     csrf "~3.0.0"
     http-errors "~1.3.1"
+
+csv-parse@^2.0.0:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-2.0.4.tgz#5b469596766ee07f2cbd71aced7ae76b3c73c901"
 
 currently-unhandled@^0.4.1:
   version "0.4.1"
@@ -1267,7 +1277,7 @@ font-awesome-sass@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/font-awesome-sass/-/font-awesome-sass-4.7.0.tgz#4eda693e915009ce00b228e0964dc5eca9bc34e1"
 
-font-awesome@^4.7.0:
+font-awesome@^4.3.0, font-awesome@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
 
@@ -1794,6 +1804,10 @@ http-signature@1.2.0, http-signature@~1.1.0, http-signature@~1.2.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
+humanize@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/humanize/-/humanize-0.0.9.tgz#1994ffaecdfe9c441ed2bdac7452b7bb4c9e41a4"
+
 iconv-lite@0.4.11, iconv-lite@0.4.13, iconv-lite@0.4.19:
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
@@ -2106,9 +2120,14 @@ kind-of@4.0.0, kind-of@^3.0.2, kind-of@^4.0.0:
   dependencies:
     is-buffer "^1.1.5"
 
-kubernetes-label-selector@kubernetes-ui/label-selector#1.4.2:
-  version "1.0.0"
-  resolved "https://codeload.github.com/kubernetes-ui/label-selector/tar.gz/eb0ac6e5b7656c078be23f307a6dc88a2b052fb2"
+kubernetes-label-selector@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/kubernetes-label-selector/-/kubernetes-label-selector-2.1.2.tgz#4af3ca0653d4ffbd533071e8a89b291c7135b89b"
+  dependencies:
+    angular ">=1.3.8 <1.6"
+    font-awesome "^4.3.0"
+    lodash "^4.17.4"
+    selectize "~0.12.1"
 
 lazy-cache@^1.0.3:
   version "1.0.4"
@@ -2374,7 +2393,7 @@ lodash.uniq@^4.3.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
 
-lodash@4.17.4, lodash@4.x, lodash@^4.13.1, lodash@^4.17.4, lodash@~1.0.1:
+lodash@4.17.4, lodash@4.x, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lodash@~1.0.1:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -2494,6 +2513,10 @@ micromatch@^2.3.7, micromatch@^2.3.8:
     object.omit "^2.0.0"
     parse-glob "^3.0.4"
     regex-cache "^0.4.2"
+
+microplugin@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/microplugin/-/microplugin-0.0.3.tgz#1fc2e1bb7c9e19e82bd84bba9137bbe71250d8cd"
 
 mime-db@1.32.0, "mime-db@>= 1.30.0 < 2", mime-db@~1.30.0:
   version "1.32.0"
@@ -2699,7 +2722,7 @@ once@1.4.0, once@^1.3.0, once@^1.4.0, once@~1.3.0:
   dependencies:
     wrappy "1"
 
-optimist@~0.6.1:
+optimist@^0.6.1, optimist@~0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/optimist/-/optimist-0.6.1.tgz#da3ea74686fa21a19a111c326e90eb15a0196686"
   dependencies:
@@ -3167,6 +3190,13 @@ select@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/select/-/select-1.1.2.tgz#0e7350acdec80b1108528786ec1d4418d11b396d"
 
+selectize@~0.12.1:
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/selectize/-/selectize-0.12.4.tgz#50c697526b609dea11da153cf7252b98948f4c0e"
+  dependencies:
+    microplugin "0.0.3"
+    sifter "^0.5.1"
+
 "semver@2 || 3 || 4 || 5", semver@5.4.1, semver@^4.1.0, semver@^5.1.0, semver@^5.3.0:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.4.1.tgz#e059c09d8571f0540823733433505d3a2f00b18e"
@@ -3234,6 +3264,16 @@ setprototypeof@1.0.3, setprototypeof@1.1.0:
 shellwords@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
+
+sifter@^0.5.1:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/sifter/-/sifter-0.5.3.tgz#5e6507fe8c114b2b28d90b6bf4e5b636e611e48b"
+  dependencies:
+    async "^2.6.0"
+    cardinal "^1.0.0"
+    csv-parse "^2.0.0"
+    humanize "^0.0.9"
+    optimist "^0.6.1"
 
 sigmund@^1.0.1, sigmund@~1.0.0:
   version "1.0.1"
