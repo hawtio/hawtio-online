@@ -1,5 +1,8 @@
 */
-!dist/
-!docker/
-!img/
-!plugins/
+!/dist/
+!/dist/**/*
+!/docker/
+!/img/
+!/img/**/*
+!/plugins/
+!/plugins/**/*
