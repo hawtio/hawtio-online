@@ -14,7 +14,6 @@ declare namespace Online {
         viewType: any;
         constructor($scope: any, $window: any, pfViewUtils: any, K8SClientFactory: any, jsonpath: any);
         $onInit(): void;
-        $onDestroy(): void;
         loading(): boolean;
         open(url: any): boolean;
         getStatusClasses(pod: any, status: any): string;
