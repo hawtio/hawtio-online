@@ -187,22 +187,6 @@ function backend(root, liveReload) {
 
 gulp.task('connect', ['watch'], function () {
   backend('.', true);
-
-  hawtio.use('/img', (req, res) => {
-    // We may want to serve from other dependencies
-    const file = path.join(__dirname, 'node_modules', '@hawtio', 'integration', 'dist', req.originalUrl);
-    if (fs.existsSync(file)) {
-      res.writeHead(200, {
-        'Content-Type'       : 'application/octet-stream',
-        'Content-Disposition': 'attachment; filename=' + file
-      });
-      fs.createReadStream(file).pipe(res);
-    } else {
-      res.writeHead(400, {'Content-Type': 'text/plain'});
-      res.end(`File ${file} does not exist in dependencies`);
-    }
-  });
-
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
