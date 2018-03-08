@@ -442,14 +442,6 @@ var Online;
                 .when('/online/discover', { templateUrl: 'plugins/online/discover/discover.html' });
         }]);
     module.run(['HawtioNav', function (nav) {
-            nav.on(Nav.Actions.CHANGED, module.name, function (items) {
-                items.forEach(function (item) {
-                    switch (item.id) {
-                        case 'jvm':
-                            item.isValid = function (_) { return false; };
-                    }
-                });
-            });
             var builder = nav.builder();
             var tab = builder.id('online')
                 .title(function () { return 'Online'; })

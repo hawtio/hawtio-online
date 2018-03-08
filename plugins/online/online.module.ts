@@ -14,15 +14,6 @@ namespace Online {
   }]);
 
   module.run(['HawtioNav', (nav: Nav.Registry) => {
-    nav.on(Nav.Actions.CHANGED, module.name, items => {
-      items.forEach(item => {
-        switch (item.id) {
-          case 'jvm':
-            item.isValid = _ => false;
-        }
-      });
-    });
-
     const builder = nav.builder();
     const tab = builder.id('online')
       .title(() => 'Online')
