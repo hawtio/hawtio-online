@@ -166,12 +166,6 @@ namespace Online {
       }
     }
 
-    
-    $onDestroy() {
-      // $element.on('$destroy', _ => $scope.$destroy());
-      this.$scope.$destroy();
-    }
-
     loading() {
       return this._loading > 0;
     }
