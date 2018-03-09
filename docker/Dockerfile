@@ -47,7 +47,7 @@ RUN touch config.js && \
     mkdir -p /usr/share/nginx/html/online/osconsole && \
     ln -sf /config.js /usr/share/nginx/html/online/osconsole/config.js
 
-ARG HAWTIO_INTEGRATION_VERSION="v3.2.21"
+ARG HAWTIO_INTEGRATION_VERSION="v3.2.22"
 
 RUN curl --silent --location https://rpm.nodesource.com/setup_8.x | bash - && \
     curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \

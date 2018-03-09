@@ -1,6 +1,6 @@
 FROM docker.io/node:9 as builder
 
-ARG HAWTIO_INTEGRATION_VERSION="v3.2.21"
+ARG HAWTIO_INTEGRATION_VERSION="v3.2.22"
 
 RUN yarn global add gulp-cli
 
