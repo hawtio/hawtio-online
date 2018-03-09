@@ -10,11 +10,10 @@ namespace Online {
     viewType;
 
     constructor(
-      private $scope,
-      private $window,
+      private $scope: ng.IScope,
+      private $window: ng.IWindowService,
       private pfViewUtils,
       private K8SClientFactory,
-      private jsonpath,
     ) {
       'ngInject';
     }
@@ -122,7 +121,7 @@ namespace Online {
                 this._loading--;
                 const others = this.pods.filter(pod => pod.metadata.namespace !== project.metadata.name);
                 this.pods.length = 0;
-                this.pods.push(...others, ..._.filter(pods, pod => this.jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
+                this.pods.push(...others, ..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
                 applyFilters(filterConfig.appliedFilters);
                 // have to kick off a $digest here
                 this.$scope.$apply();
@@ -155,7 +154,7 @@ namespace Online {
         const pods_watch = pods.watch(pods => {
           this._loading--;
           this.pods.length = 0;
-          this.pods.push(..._.filter(pods, pod => this.jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
+          this.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
           applyFilters(filterConfig.appliedFilters);
           // have to kick off a $digest here
           this.$scope.$apply();

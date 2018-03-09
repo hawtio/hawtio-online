@@ -4,13 +4,11 @@ namespace Online {
 
     restrict : 'A';
 
-    constructor(
-      private $timeout,
-    ) {
+    constructor(private $timeout: ng.ITimeoutService) {
       'ngInject';
     }
 
-    link(scope, _) {
+    link(scope: ng.IScope) {
       this.$timeout(() => {
         $(".row-cards-pf > [class*='col'] > .card-pf .card-pf-title").matchHeight();
         $(".row-cards-pf > [class*='col'] > .card-pf .card-pf-items").matchHeight();

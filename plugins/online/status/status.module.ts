@@ -2,7 +2,13 @@ namespace Online {
 
   export const statusModule = angular
     .module('hawtio-online-status', [])
-    .directive('statusIcon', () => ({
+    .directive('statusIcon', statusIconDirective)
+    .filter('podStatus', podStatusFilter)
+    .filter('humanizeReason', humanizeReasonFilter)
+    .filter('humanizePodStatus', humanizeReasonFilter => humanizeReasonFilter);
+
+  function statusIconDirective() {
+    return {
       restrict    : 'E',
       templateUrl : 'plugins/online/status/statusIcon.html',
       scope       : {
@@ -13,8 +19,14 @@ namespace Online {
       link: function($scope: any, $elem, $attrs) {
         $scope.spinning = !angular.isDefined($attrs.disableAnimation);
       }
-    }))
-  .filter('podStatus', function() {
+    }
+  }
+
+  function humanizeReasonFilter() {
+    return reason => _.startCase(reason).replace("Back Off", "Back-off").replace("O Auth", "OAuth");
+  }
+
+  function podStatusFilter() {
     // Return results that match
     // https://github.com/openshift/origin/blob/master/vendor/k8s.io/kubernetes/pkg/printers/internalversion/printers.go#L523-L615
     return function(pod) {
@@ -90,13 +102,5 @@ namespace Online {
 
       return reason;
     };
-  })
-  .filter('humanizeReason', function() {
-    return function(reason) {
-      var humanizedReason = _.startCase(reason);
-      // Special case some values like "BackOff" -> "Back-off"
-      return humanizedReason.replace("Back Off", "Back-off").replace("O Auth", "OAuth");
-    };
-  })
-  .filter('humanizePodStatus', humanizeReasonFilter => humanizeReasonFilter);
+  }
 }

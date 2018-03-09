@@ -5,14 +5,13 @@ declare namespace Online {
         private $window;
         private pfViewUtils;
         private K8SClientFactory;
-        private jsonpath;
         _loading: number;
         pods: any[];
         filteredPods: any[];
         projects: any[];
         toolbarConfig: any;
         viewType: any;
-        constructor($scope: any, $window: any, pfViewUtils: any, K8SClientFactory: any, jsonpath: any);
+        constructor($scope: ng.IScope, $window: ng.IWindowService, pfViewUtils: any, K8SClientFactory: any);
         $onInit(): void;
         loading(): boolean;
         open(url: any): boolean;
@@ -20,21 +19,24 @@ declare namespace Online {
     }
 }
 declare namespace Online {
+    interface HttpSrcDirectiveScope extends ng.IScope {
+        objectURL: string;
+    }
     class HttpSrcDirective implements ng.IDirective {
         private $http;
         scope: {
             httpSrc: '@';
         };
-        constructor($http: any);
-        link($scope: any, elem: any, attrs: any): void;
+        constructor($http: ng.IHttpService);
+        link(scope: HttpSrcDirectiveScope, elem: JQuery, attrs: ng.IAttributes): void;
     }
 }
 declare namespace Online {
     class MatchHeightDirective implements ng.IDirective {
         private $timeout;
         restrict: 'A';
-        constructor($timeout: any);
-        link(scope: any, _: any): void;
+        constructor($timeout: ng.ITimeoutService);
+        link(scope: ng.IScope): void;
     }
 }
 declare namespace Online {
@@ -51,4 +53,35 @@ declare namespace Online {
 }
 declare namespace Online {
     function isPodReady(pod: any): any;
+}
+declare namespace Online {
+    interface LabelsDirectiveScope extends ng.IScope {
+        labels: {
+            [key: string]: string;
+        };
+        clickable?: boolean;
+        kind?: string;
+        projectName?: string;
+        limit?: number;
+        titleKind?: string;
+        navigateUrl?: string;
+        filterCurrentPage?: boolean;
+        filterAndNavigate?: (key: string, value?: string) => void;
+    }
+    class LabelsDirective implements ng.IDirective {
+        restrict: string;
+        scope: {
+            labels: string;
+            clickable: string;
+            kind: string;
+            projectName: string;
+            limit: string;
+            titleKind: string;
+            navigateUrl: string;
+            filterCurrentPage: string;
+        };
+        templateUrl: string;
+        constructor($location: ng.ILocationService, $timeout: ng.ITimeoutService);
+        link(scope: LabelsDirectiveScope): void;
+    }
 }

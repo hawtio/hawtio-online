@@ -3,19 +3,23 @@
 namespace Online {
 
   const module = angular
-    .module('hawtio-online', [
-      discoverModule.name,
-    ])
+    .module('hawtio-online', [discoverModule.name])
+    .config(addRoutes)
+    .run(addOnlineTab)
     .run(addLogoutToUserDropdown);
 
-  module.config(['$routeProvider', ($routeProvider: angular.route.IRouteProvider) => {
+  function addRoutes($routeProvider: angular.route.IRouteProvider) {
+    'ngInject';
+
     $routeProvider
       .when('/online', { redirectTo: '/online/discover' })
       .when('/online/discover', { templateUrl: 'plugins/online/discover/discover.html' });
-  }]);
+  }
 
-  module.run(['HawtioNav', (nav: Nav.Registry) => {
-    const builder = nav.builder();
+  function addOnlineTab(HawtioNav: Nav.Registry): void {
+    'ngInject';
+
+    const builder = HawtioNav.builder();
     const tab = builder.id('online')
       .title(() => 'Online')
       .defaultPage({
@@ -28,13 +32,13 @@ namespace Online {
       .isValid(() => true)
       .build();
 
-    nav.add(tab);
-  }]);
+    HawtioNav.add(tab);
+  }
 
   function addLogoutToUserDropdown(
-    HawtioExtension : Core.HawtioExtension,
-    $compile        : ng.ICompileService,
-    userDetails     : Core.AuthService): void {
+    HawtioExtension: Core.HawtioExtension,
+    $compile: ng.ICompileService,
+    userDetails: Core.AuthService): void {
     'ngInject';
 
     HawtioExtension.add('hawtio-logout', ($scope) => {

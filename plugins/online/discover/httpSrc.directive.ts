@@ -1,27 +1,31 @@
 namespace Online {
 
+  export interface HttpSrcDirectiveScope extends ng.IScope {
+    objectURL: string;
+}
+
   export class HttpSrcDirective implements ng.IDirective {
 
     scope: {
       httpSrc: '@';
     };
 
-    constructor(private $http) {
+    constructor(private $http: ng.IHttpService) {
       'ngInject';
     }
 
-    link($scope, elem, attrs) {
+    link(scope: HttpSrcDirectiveScope, elem: JQuery, attrs: ng.IAttributes) {
       function revokeObjectURL() {
-        if ($scope.objectURL) {
-          URL.revokeObjectURL($scope.objectURL);
+        if (scope.objectURL) {
+          URL.revokeObjectURL(scope.objectURL);
         }
       }
 
-      $scope.$watch('objectURL', function (objectURL) {
+      scope.$watch('objectURL', function (objectURL: string) {
         elem.attr('src', objectURL);
       });
 
-      $scope.$on('$destroy', function () {
+      scope.$on('$destroy', function () {
         revokeObjectURL();
       });
 
@@ -29,7 +33,7 @@ namespace Online {
         revokeObjectURL();
 
         if (url && url.indexOf('data:') === 0) {
-          $scope.objectURL = url;
+          scope.objectURL = url;
         } else if (url) {
           this.$http
             .get(url, {
@@ -41,16 +45,16 @@ namespace Online {
             })
             .then(function (response) {
               const contentType = response.headers('Content-Type');
-              if (!contentType || !contentType.startsWith('image/')) {
+              if (!contentType || !_.startsWith(contentType, 'image/')) {
                 throw Error(`Invalid content type '${contentType}' for URL '${url}'`);
               }
               const blob = new Blob([response.data], {
                 type : response.headers('Content-Type'),
               });
-              $scope.objectURL = URL.createObjectURL(blob);
+              scope.objectURL = URL.createObjectURL(blob);
             })
             .catch(error => {
-              $scope.objectURL = 'img/java.svg';
+              scope.objectURL = 'img/java.svg';
             });
         }
       });
