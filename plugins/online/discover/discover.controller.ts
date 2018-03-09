@@ -13,7 +13,7 @@ namespace Online {
       private $scope: ng.IScope,
       private $window: ng.IWindowService,
       private pfViewUtils,
-      private K8SClientFactory,
+      private K8SClientFactory: KubernetesAPI.K8SClientFactory,
     ) {
       'ngInject';
     }
@@ -134,7 +134,7 @@ namespace Online {
             });
 
           // handle delete projects
-          this.projects.filter(project => !projects.find(p => p.metadata.uid === project.metadata.uid))
+          this.projects.filter(project => !projects.some(p => p.metadata.uid === project.metadata.uid))
             .forEach(project => {
               const handle = pods_watches[project.metadata.name];
               this.K8SClientFactory.destroy(handle.request, handle.watch);

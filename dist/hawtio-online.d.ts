@@ -1,4 +1,5 @@
 /// <reference types="angular" />
+/// <reference types="kubernetes-api" />
 /// <reference types="core" />
 declare namespace Online {
     class DiscoverController {
@@ -12,7 +13,7 @@ declare namespace Online {
         projects: any[];
         toolbarConfig: any;
         viewType: any;
-        constructor($scope: ng.IScope, $window: ng.IWindowService, pfViewUtils: any, K8SClientFactory: any);
+        constructor($scope: ng.IScope, $window: ng.IWindowService, pfViewUtils: any, K8SClientFactory: KubernetesAPI.K8SClientFactory);
         $onInit(): void;
         loading(): boolean;
         open(url: any): boolean;

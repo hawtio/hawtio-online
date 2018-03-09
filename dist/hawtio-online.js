@@ -123,7 +123,7 @@ var Online;
                         pods.connect();
                     });
                     // handle delete projects
-                    _this.projects.filter(function (project) { return !projects.find(function (p) { return p.metadata.uid === project.metadata.uid; }); })
+                    _this.projects.filter(function (project) { return !projects.some(function (p) { return p.metadata.uid === project.metadata.uid; }); })
                         .forEach(function (project) {
                         var handle = pods_watches_1[project.metadata.name];
                         _this.K8SClientFactory.destroy(handle.request, handle.watch);
