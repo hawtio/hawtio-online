@@ -3,7 +3,7 @@
 namespace Online {
 
   const module = angular
-    .module('hawtio-online', [discoverModule.name])
+    .module('hawtio-online', [])
     .config(addRoutes)
     .run(addOnlineTab)
     .run(addLogoutToUserDropdown);

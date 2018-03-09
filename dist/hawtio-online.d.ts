@@ -1,4 +1,5 @@
 /// <reference types="angular" />
+/// <reference types="core" />
 declare namespace Online {
     class DiscoverController {
         private $scope;
@@ -50,6 +51,24 @@ declare namespace Online {
 }
 declare namespace Online {
     const log: Logging.Logger;
+}
+declare namespace Online {
+    class AboutController {
+        private configManager;
+        flags: {
+            open: boolean;
+        };
+        title: string;
+        productInfo: object[];
+        additionalInfo: string;
+        copyright: string;
+        constructor(configManager: Core.ConfigManager);
+        $onInit(): void;
+        onClose(): void;
+    }
+    const aboutComponent: angular.IComponentOptions;
+}
+declare namespace Online {
 }
 declare namespace Online {
     function isPodReady(pod: any): any;

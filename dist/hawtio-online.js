@@ -437,7 +437,7 @@ var Online;
     addOnlineTab.$inject = ["HawtioNav"];
     addLogoutToUserDropdown.$inject = ["HawtioExtension", "$compile", "userDetails"];
     var module = angular
-        .module('hawtio-online', [Online.discoverModule.name])
+        .module('hawtio-online', [])
         .config(addRoutes)
         .run(addOnlineTab)
         .run(addLogoutToUserDropdown);
@@ -473,6 +473,49 @@ var Online;
     }
     hawtioPluginLoader.addModule(module.name);
     Online.log = Logger.get(module.name);
+})(Online || (Online = {}));
+var Online;
+(function (Online) {
+    var AboutController = /** @class */ (function () {
+        AboutController.$inject = ["configManager"];
+        function AboutController(configManager) {
+            'ngInject';
+            this.configManager = configManager;
+        }
+        AboutController.prototype.$onInit = function () {
+            this.title = this.configManager.getBrandingValue('appName');
+            this.additionalInfo = this.configManager.getBrandingValue('aboutDescription');
+        };
+        AboutController.prototype.onClose = function () {
+            this.flags.open = false;
+        };
+        return AboutController;
+    }());
+    Online.AboutController = AboutController;
+    Online.aboutComponent = {
+        bindings: {
+            flags: '<',
+        },
+        template: "\n      <pf-about-modal is-open=\"$ctrl.flags.open\" on-close=\"$ctrl.onClose()\" title=\"$ctrl.title\"\n        additional-info=\"$ctrl.additionalInfo\"></pf-about-modal>\n    ",
+        controller: AboutController,
+    };
+})(Online || (Online = {}));
+/// <reference path="about.component.ts"/>
+var Online;
+(function (Online) {
+    configureMenu.$inject = ["HawtioExtension", "$compile"];
+    var aboutModule = angular
+        .module('hawtio-online-about', [])
+        .run(configureMenu)
+        .component('about', Online.aboutComponent);
+    function configureMenu(HawtioExtension, $compile) {
+        'ngInject';
+        HawtioExtension.add('hawtio-about', function ($scope) {
+            var template = "\n        <a ng-init=\"flags = {open: false}\" ng-click=\"flags.open = true\">About</a>\n        <about flags=\"flags\"></about>\n      ";
+            return $compile(template)($scope);
+        });
+    }
+    hawtioPluginLoader.addModule(aboutModule.name);
 })(Online || (Online = {}));
 var Online;
 (function (Online) {
