@@ -5,7 +5,8 @@ namespace Online {
   const module = angular
     .module('hawtio-online', [
       discoverModule.name,
-    ]);
+    ])
+    .run(addLogoutToUserDropdown);
 
   module.config(['$routeProvider', ($routeProvider: angular.route.IRouteProvider) => {
     $routeProvider
@@ -29,6 +30,19 @@ namespace Online {
 
     nav.add(tab);
   }]);
+
+  function addLogoutToUserDropdown(
+    HawtioExtension : Core.HawtioExtension,
+    $compile        : ng.ICompileService,
+    userDetails     : Core.AuthService): void {
+    'ngInject';
+
+    HawtioExtension.add('hawtio-logout', ($scope) => {
+      $scope.userDetails = userDetails;
+      const template = '<a href="" ng-click="userDetails.logout()">Logout</a>';
+      return $compile(template)($scope);
+    });
+  }
 
   hawtioPluginLoader.addModule(module.name);
 

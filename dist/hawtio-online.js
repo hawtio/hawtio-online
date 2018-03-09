@@ -432,10 +432,12 @@ var Online;
 /// <reference path="discover/discover.module.ts"/>
 var Online;
 (function (Online) {
+    addLogoutToUserDropdown.$inject = ["HawtioExtension", "$compile", "userDetails"];
     var module = angular
         .module('hawtio-online', [
         Online.discoverModule.name,
-    ]);
+    ])
+        .run(addLogoutToUserDropdown);
     module.config(['$routeProvider', function ($routeProvider) {
             $routeProvider
                 .when('/online', { redirectTo: '/online/discover' })
@@ -456,6 +458,14 @@ var Online;
                 .build();
             nav.add(tab);
         }]);
+    function addLogoutToUserDropdown(HawtioExtension, $compile, userDetails) {
+        'ngInject';
+        HawtioExtension.add('hawtio-logout', function ($scope) {
+            $scope.userDetails = userDetails;
+            var template = '<a href="" ng-click="userDetails.logout()">Logout</a>';
+            return $compile(template)($scope);
+        });
+    }
     hawtioPluginLoader.addModule(module.name);
     Online.log = Logger.get(module.name);
 })(Online || (Online = {}));
