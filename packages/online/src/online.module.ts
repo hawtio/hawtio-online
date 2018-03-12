@@ -13,7 +13,7 @@ namespace Online {
 
     $routeProvider
       .when('/online', { redirectTo: '/online/discover' })
-      .when('/online/discover', { templateUrl: 'plugins/online/discover/discover.html' });
+      .when('/online/discover', { templateUrl: 'src/discover/discover.html' });
   }
 
   function addOnlineTab(HawtioNav: Nav.Registry): void {

@@ -10,7 +10,7 @@ namespace Online {
   function statusIconDirective() {
     return {
       restrict    : 'E',
-      templateUrl : 'plugins/online/status/statusIcon.html',
+      templateUrl : 'src/status/statusIcon.html',
       scope       : {
         status           : '=',
         disableAnimation : "@",

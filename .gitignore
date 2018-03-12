@@ -1,8 +1,7 @@
 */
-!/dist/
-!/dist/**/*
+
 !/docker/
-!/img/
-!/img/**/*
-!/plugins/
-!/plugins/**/*
+!/packages/
+!/packages/**/*
+
+node_modules/
