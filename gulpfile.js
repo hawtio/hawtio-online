@@ -113,13 +113,25 @@ function backend(root, liveReload) {
 }
 
 gulp.tasks['online.build'] = online.tasks['build'];
+gulp.tasks['online.site'] = online.tasks['site'];
 
 gulp.task('online.chdir', callback => {
   process.chdir('packages/online');
   callback();
 });
 
-gulp.task('build', callback => sequence(['online.chdir', 'online.build'], callback));
+gulp.task('chdir', callback => {
+  process.chdir('..');
+  callback();
+});
+
+gulp.task('build', callback => sequence('online.chdir', 'online.build', 'chdir', callback));
+
+gulp.task('site', callback => sequence('online.chdir', 'online.site', 'chdir', 'copy-sites', callback));
+
+gulp.task('copy-sites', () => gulp.src('packages/online/site/**/*')
+  .pipe(gulp.dest('docker/site/online'))
+);
 
 gulp.task('serve-site', function () {
   backend('docker/site/', false);
