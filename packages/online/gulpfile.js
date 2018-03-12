@@ -12,9 +12,9 @@ const gulp            = require('gulp'),
 const plugins = gulpLoadPlugins({});
 
 const config = {
-  templates : [path.join(path.dirname(__filename), 'src/**/*.html')],
-  less      : [path.join(path.dirname(__filename), 'src/**/*.less')],
-  dist      : argv.out || path.join(path.dirname(__filename), './dist/'),
+  templates : ['src/**/*.html'],
+  less      : ['src/**/*.less'],
+  dist      : argv.out || './dist/',
   js        : 'hawtio-online.js',
   dts       : 'hawtio-online.d.ts',
   css       : 'hawtio-online.css',
@@ -45,7 +45,7 @@ gulp.task('tsc', ['clean-defs'], function () {
 gulp.task('template', ['tsc'], () => gulp.src(config.templates)
   .pipe(plugins.angularTemplatecache({
     filename      : 'templates.js',
-    root          : path.join(path.dirname(__filename), 'src/'),
+    root          : 'src/',
     standalone    : true,
     module        : 'hawtio-online-templates',
     templateFooter: '}]); hawtioPluginLoader.addModule("hawtio-online-templates");',
@@ -53,11 +53,7 @@ gulp.task('template', ['tsc'], () => gulp.src(config.templates)
   .pipe(gulp.dest('.')));
 
 gulp.task('concat', ['template'], () =>
-  gulp.src(
-    [
-      path.join(path.dirname(__filename), 'compiled.js'),
-      path.join(path.dirname(__filename), 'templates.js'),
-    ])
+  gulp.src(['compiled.js', 'templates.js'])
     .pipe(plugins.concat(config.js))
     .pipe(gulp.dest(config.dist)));
 

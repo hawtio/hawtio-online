@@ -10,8 +10,6 @@ const gulp     = require('gulp'),
       logger   = require('js-logger'),
       hawtio   = require('@hawtio/node-backend');
 
-gulp.tasks = online.tasks;
-
 const config = {
   master    : argv.master,
   mode      : argv.mode || 'namespace',
@@ -113,6 +111,15 @@ function backend(root, liveReload) {
     }
   });
 }
+
+gulp.tasks['online.build'] = online.tasks['build'];
+
+gulp.task('online.chdir', callback => {
+  process.chdir('packages/online');
+  callback();
+});
+
+gulp.task('build', callback => sequence(['online.chdir', 'online.build'], callback));
 
 gulp.task('serve-site', function () {
   backend('docker/site/', false);
