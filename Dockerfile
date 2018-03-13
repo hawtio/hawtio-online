@@ -1,19 +1,8 @@
 FROM docker.io/node:9 as builder
 
-ARG HAWTIO_INTEGRATION_VERSION="v3.2.22"
-
 RUN yarn global add gulp-cli
 
-WORKDIR /hawtio
-
-RUN git clone -b ${HAWTIO_INTEGRATION_VERSION} --single-branch --depth 1 https://github.com/hawtio/hawtio-integration.git
-
-WORKDIR /hawtio/hawtio-integration
-
-RUN yarn install && \
-    gulp site
-
-WORKDIR /hawtio/hawtio-online
+WORKDIR /hawtio-online
 
 COPY . .
 
@@ -71,8 +60,7 @@ COPY docker/nginx.conf /etc/nginx/conf.d
 COPY docker/nginx.sh .
 COPY docker/osconsole/config.sh .
 
-COPY --from=builder /hawtio/hawtio-integration/docker/site /usr/share/nginx/html/integration
-COPY --from=builder /hawtio/hawtio-online/docker/site/online /usr/share/nginx/html/online
+COPY --from=builder /hawtio-online/docker/site /usr/share/nginx/html/
 
 USER 998
 
