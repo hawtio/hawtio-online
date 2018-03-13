@@ -11,7 +11,7 @@
   "devDependencies": {
     "del": "^2.0.0",
     "event-stream": "^3.0.0",
-    "gulp": "^3.0.0",
+    "gulp": "^4.0.0",
     "gulp-angular-templatecache": "^2.0.0",
     "gulp-chmod": "^2.0.0",
     "gulp-concat": "^2.0.0",

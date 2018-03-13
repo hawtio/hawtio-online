@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@hawtio/node-backend": "^3.0.8",
-    "gulp": "^3.0.0",
+    "gulp": "^4.0.0",
     "gulp-connect": "^2.0.0",
     "gulp-debug": "^3.0.0",
     "gulp-notify": "^2.0.0",
@@ -186,6 +186,11 @@
     "global-prefix": "1.0.2",
     "array-slice": "1.1.0",
     "plugin-error": "1.0.1",
-    "has-flag": "3.0.0"
+    "has-flag": "3.0.0",
+    "glob-watcher": "5.0.1",
+    "nopt": "4.0.1",
+    "yargs-parser": "5.0.0",
+    "is-valid-glob": "1.0.0",
+    "to-absolute-glob": "2.0.2"
   }
 }
