@@ -27,7 +27,6 @@
   },
   "flat": true,
   "resolutions": {
-    "event-stream": "3.3.4",
     "gulp-concat": "2.6.1",
     "js-logger": "1.4.1",
     "stringify-object": "3.2.1",

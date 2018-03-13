@@ -1,5 +1,4 @@
 const gulp            = require('gulp'),
-      eventStream     = require('event-stream'),
       gulpLoadPlugins = require('gulp-load-plugins'),
       del             = require('del'),
       fs              = require('fs'),
@@ -110,7 +109,7 @@ gulp.task('site-usemin', () => gulp.src('index.html')
   .pipe(plugins.debug({ title: 'site usemin' }))
   .pipe(gulp.dest('site')));
 
-gulp.task('site-tweak-urls', gulp.series('site-usemin', 'site-config', () => eventStream.merge(
+gulp.task('site-tweak-urls', gulp.series('site-usemin', 'site-config', () => merge(
   gulp.src('site/style.css')
     .pipe(plugins.replace(/url\(\.\.\//g, 'url('))
     // tweak fonts URL coming from PatternFly that does not repackage then in dist

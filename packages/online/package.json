@@ -28,7 +28,6 @@
     "@types/jquery-match-height": "^0.7.4",
     "@types/jsonpath": "^0.2.0",
     "del": "^2.0.0",
-    "event-stream": "^3.0.0",
     "merge2": "^1.2.1",
     "gulp": "^4.0.0",
     "gulp-angular-templatecache": "^2.0.0",
