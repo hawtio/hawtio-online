@@ -54,8 +54,8 @@ Open the route URL displayed above from your Web browser to access the Hawtio On
 You must have the following tools installed:
 
 * [Node.js](http://nodejs.org)
-* [Yarn](https://yarnpkg.com)
-* [gulp](http://gulpjs.com/)
+* [Yarn](https://yarnpkg.com) (version `1.5.1` or higher)
+* [gulp](http://gulpjs.com/) (version `4.x`)
 
 ### Build
 
