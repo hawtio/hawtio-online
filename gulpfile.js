@@ -115,18 +115,18 @@ gulp.registry().set('online.build', online.registry().get('build').unwrap());
 gulp.registry().set('online.site', online.registry().get('site').unwrap());
 
 gulp.task('online.chdir', done => {
-  process.chdir('packages/online');
+  process.chdir(path.join(path.dirname(__filename), 'packages/online'));
   done();
 });
 
 gulp.task('chdir', done => {
-  process.chdir('..');
+  process.chdir(path.dirname(__filename));
   done();
 });
 
 gulp.task('build', gulp.series('online.chdir', 'online.build', 'chdir'));
 
-gulp.task('copy-sites', () => gulp.src('packages/online/site/**')
+gulp.task('copy-sites', () => gulp.src('packages/online/site/**/*')
   .pipe(gulp.dest('docker/site/online'))
 );
 
