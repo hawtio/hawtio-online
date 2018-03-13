@@ -1,6 +1,10 @@
 *
+
 !docker/
 !gulpfile.js
 !package.json
 !yarn.lock
 !packages/
+
+**/node_modules/
+**/site/
