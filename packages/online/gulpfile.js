@@ -5,7 +5,6 @@ const gulp            = require('gulp'),
       merge           = require('merge2'),
       path            = require('path'),
       argv            = require('yargs').argv,
-      urljoin         = require('url-join'),
       logger          = require('js-logger');
 
 const plugins = gulpLoadPlugins({});
@@ -79,7 +78,7 @@ gulp.task('less', () => gulp.src(config.less.map(glob => path.join(__dirname, gl
 
 gulp.task('copy-images', function () {
   return gulp.src('./img/**/*')
-    .pipe(gulp.dest(urljoin(config.dist, 'img')));
+    .pipe(gulp.dest(path.join(config.dist, 'img')));
 });
 
 gulp.task('site-fonts', () =>
@@ -174,7 +173,7 @@ gulp.task('watch-ts', () => {
     gulp.series('concat', 'clean'))});
 
 gulp.task('watch-files', () => gulp.watch(
-  ['index.html', urljoin(config.dist, '*')],
+  ['index.html', path.join(config.dist, '*')],
   { cwd: __dirname },
   gulp.series('reload')));
 
