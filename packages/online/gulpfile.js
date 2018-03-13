@@ -42,7 +42,7 @@ gulp.task('tsc', function () {
 gulp.task('template', gulp.series('tsc', () => gulp.src(config.templates.map(glob => path.join(__dirname, glob)))
   .pipe(plugins.angularTemplatecache({
     filename      : 'templates.js',
-    root          : path.join(__dirname, 'src/'),
+    root          : 'src/',
     standalone    : true,
     module        : 'hawtio-online-templates',
     templateFooter: '}]); hawtioPluginLoader.addModule("hawtio-online-templates");',
