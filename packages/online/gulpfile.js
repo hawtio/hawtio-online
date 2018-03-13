@@ -58,7 +58,12 @@ gulp.task('concat', gulp.series('template', () =>
     .pipe(plugins.concat(config.js))
     .pipe(gulp.dest(config.dist, { cwd: __dirname }))));
 
-gulp.task('clean', () => del(['templates.js', 'compiled.js', './site/']));
+gulp.task('clean', () => del(
+  [
+    path.join(__dirname, 'templates.js'),
+    path.join(__dirname, 'compiled.js'),
+    path.join(__dirname, './site/'),
+  ]));
 
 gulp.task('less', () => gulp.src(config.less.map(glob => path.join(__dirname, glob)))
   .pipe(plugins.less({
