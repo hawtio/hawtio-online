@@ -1,9 +1,6 @@
 *
-!dist/
 !docker/
-!img/
 !gulpfile.js
 !package.json
 !yarn.lock
-!index.html
-!hawtconfig.json
+!packages/

@@ -74,6 +74,6 @@ USER 998
 COPY nginx.conf /etc/nginx/conf.d
 COPY nginx.sh .
 COPY osconsole/config.sh .
-COPY site /usr/share/nginx/html/online
+COPY site/online /usr/share/nginx/html/online
 
 CMD ["./nginx.sh"]

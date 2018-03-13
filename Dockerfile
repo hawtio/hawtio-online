@@ -72,7 +72,7 @@ COPY docker/nginx.sh .
 COPY docker/osconsole/config.sh .
 
 COPY --from=builder /hawtio/hawtio-integration/docker/site /usr/share/nginx/html/integration
-COPY --from=builder /hawtio/hawtio-online/docker/site /usr/share/nginx/html/online
+COPY --from=builder /hawtio/hawtio-online/docker/site/online /usr/share/nginx/html/online
 
 USER 998
 
