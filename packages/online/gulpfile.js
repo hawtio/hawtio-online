@@ -19,7 +19,7 @@ const config = {
   css       : 'hawtio-online.css',
 };
 
-const tsProject = plugins.typescript.createProject(path.join(path.dirname(__filename), 'tsconfig.json'));
+const tsProject = plugins.typescript.createProject(path.join(__dirname, 'tsconfig.json'));
 
 gulp.task('tsc', function () {
   const tsResult = tsProject.src()
@@ -33,30 +33,34 @@ gulp.task('tsc', function () {
   return merge(
     tsResult.js
       .pipe(plugins.ngAnnotate())
-      .pipe(gulp.dest('.')),
+      .pipe(gulp.dest('.', { cwd: __dirname })),
     tsResult.dts
      .pipe(plugins.rename(config.dts))
-     .pipe(gulp.dest(config.dist)));
+     .pipe(gulp.dest(config.dist, { cwd: __dirname })));
 });
 
-gulp.task('template', gulp.series('tsc', () => gulp.src(config.templates)
+gulp.task('template', gulp.series('tsc', () => gulp.src(config.templates.map(glob => path.join(__dirname, glob)))
   .pipe(plugins.angularTemplatecache({
     filename      : 'templates.js',
-    root          : 'src/',
+    root          : path.join(__dirname, 'src/'),
     standalone    : true,
     module        : 'hawtio-online-templates',
     templateFooter: '}]); hawtioPluginLoader.addModule("hawtio-online-templates");',
   }))
-  .pipe(gulp.dest('.'))));
+  .pipe(gulp.dest('.', { cwd: __dirname }))));
 
 gulp.task('concat', gulp.series('template', () =>
-  gulp.src(['compiled.js', 'templates.js'])
+  gulp.src(
+    [
+      path.join(__dirname, 'compiled.js'),
+      path.join(__dirname, 'templates.js'),
+    ])
     .pipe(plugins.concat(config.js))
-    .pipe(gulp.dest(config.dist))));
+    .pipe(gulp.dest(config.dist, { cwd: __dirname }))));
 
 gulp.task('clean', () => del(['templates.js', 'compiled.js', './site/']));
 
-gulp.task('less', () => gulp.src(config.less)
+gulp.task('less', () => gulp.src(config.less.map(glob => path.join(__dirname, glob)))
   .pipe(plugins.less({
     paths: [path.join(__dirname, 'node_modules')]
   }))
@@ -66,7 +70,7 @@ gulp.task('less', () => gulp.src(config.less)
     title  : 'less file compilation error'
   }))
   .pipe(plugins.concat(config.css))
-  .pipe(gulp.dest(config.dist)));
+  .pipe(gulp.dest(config.dist, { cwd: __dirname })));
 
 gulp.task('copy-images', function () {
   return gulp.src('./img/**/*')
@@ -150,12 +154,25 @@ gulp.task('build', gulp.series(gulp.parallel('concat', 'less', 'copy-images'), '
 
 gulp.task('site', gulp.series('clean', gulp.parallel('site-fonts', 'site-files', 'site-usemin', 'site-tweak-urls', 'site-images', 'site-config')));
 
-gulp.task('watch', gulp.series('build', function () {
-  gulp.watch(['index.html', urljoin(config.dist, '*')], ['reload']);
-  gulp.watch(config.less, ['less']);
-  const tsconfig = require('./tsconfig.json');
-  gulp.watch([...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), ...config.templates],
-    ['tsc', 'template', 'concat', 'clean']);
-}));
+gulp.task('reload', done => { done() });
 
-module.exports = gulp;
+gulp.task('watch-less', () => gulp.watch(
+  config.less,
+  { cwd: __dirname },
+  gulp.series('less')));
+
+gulp.task('watch-ts', () => {
+  const tsconfig = require(path.join(__dirname, 'tsconfig.json'));
+  return gulp.watch(
+    [...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), ...config.templates],
+    { cwd: __dirname },
+    gulp.series('concat', 'clean'))});
+
+gulp.task('watch-files', () => gulp.watch(
+  ['index.html', urljoin(config.dist, '*')],
+  { cwd: __dirname },
+  gulp.series('reload')));
+
+gulp.task('watch', gulp.parallel('watch-ts', 'watch-less', 'watch-files'));
+
+module.exports = gulp.registry();

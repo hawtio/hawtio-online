@@ -111,8 +111,11 @@ function backend(root, liveReload) {
   });
 }
 
-gulp.registry().set('online.build', online.registry().get('build').unwrap());
-gulp.registry().set('online.site', online.registry().get('site').unwrap());
+gulp.registry().set('online.build', online.get('build').unwrap());
+gulp.registry().set('online.site', online.get('site').unwrap());
+gulp.registry().set('online.watch', online.get('watch').unwrap());
+
+online.set('reload', () => gulp.src('packages/online').pipe(hawtio.reload()));
 
 gulp.task('online.chdir', done => {
   process.chdir(path.join(path.dirname(__filename), 'packages/online'));
@@ -137,9 +140,13 @@ gulp.task('serve-site', () => {
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
-gulp.task('connect', /* gulp['watch'], */ function () {
-  backend('./packages/online', true);
+gulp.task('watch', gulp.series('online.watch'));
+
+gulp.task('connect', gulp.parallel('watch', function () {
+  backend('packages/online', true);
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
-});
+}));
+
+gulp.task('default', gulp.series('connect'));
 
 gulp.task('reload', () => gulp.src('.').pipe(hawtio.reload()));
