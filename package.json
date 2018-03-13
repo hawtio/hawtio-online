@@ -21,7 +21,6 @@
     "gulp-notify": "^2.0.0",
     "gulp-watch": "^3.0.0",
     "js-logger": "^0.9.14",
-    "run-sequence": "^1.2.2",
     "urijs": "^1.19.0",
     "url-join": "1.0.0",
     "yargs": "^6.0.0"
