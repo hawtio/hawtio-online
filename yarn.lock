@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@hawtio/core-dts@3.0.18":
+"@hawtio/core-dts@3.0.18", "@hawtio/core-dts@~3.0.0":
   version "3.0.18"
   resolved "https://registry.yarnpkg.com/@hawtio/core-dts/-/core-dts-3.0.18.tgz#20d1ff7e839c0e3180c18e954ad7a305c4ba2b24"
   dependencies:
@@ -29,6 +29,36 @@
     lodash "4.17.4"
     marked "0.3.9"
     urijs "1.19.0"
+
+"@hawtio/forms@~3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@hawtio/forms/-/forms-3.2.0.tgz#868b86aa462797e7721fdfdba99701e4b3d6405c"
+  dependencies:
+    "@hawtio/core" "~3.2.0"
+    "@hawtio/core-dts" "~3.0.0"
+    "@hawtio/ui" "~3.2.0"
+
+"@hawtio/integration@^3.2.22":
+  version "3.2.22"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-3.2.22.tgz#faa8f5a5ffdc70aafa9793a0db7306c4cb497b52"
+  dependencies:
+    "@hawtio/jmx" "~3.2.0"
+    "@types/angular-mocks" "~1.5.11"
+    "@types/jqueryui" "1.12.0"
+    dagre-layout "0.8.0"
+    ng-infinite-scroll "1.3.0"
+
+"@hawtio/jmx@~3.2.0":
+  version "3.2.21"
+  resolved "https://registry.yarnpkg.com/@hawtio/jmx/-/jmx-3.2.21.tgz#ac52a8a7f299638fa89d6c9d924ef38b79fb895e"
+  dependencies:
+    "@hawtio/core" "~3.2.0"
+    "@hawtio/forms" "~3.2.0"
+    "@hawtio/ui" "~3.2.0"
+    "@types/jasmine" "~2.8.0"
+    "@types/jqueryui" "~1.12.0"
+    angular-resizable "1.2.0"
+    patternfly-bootstrap-treeview "2.1.5"
 
 "@hawtio/kubernetes-api@^3.0.0":
   version "3.0.0"
@@ -62,7 +92,7 @@
     "@hawtio/core" "~3.2.0"
     ng-idle "^1.3.2"
 
-"@hawtio/ui@3.2.3":
+"@hawtio/ui@3.2.3", "@hawtio/ui@~3.2.0":
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/@hawtio/ui/-/ui-3.2.3.tgz#7330a086ac69f759df5964a8b8ea5ed04c8a04a7"
   dependencies:
@@ -77,6 +107,12 @@
     clipboard "1.7.1"
     codemirror "5.33.0"
     js-beautify "1.7.5"
+
+"@types/angular-mocks@~1.5.11":
+  version "1.5.11"
+  resolved "https://registry.yarnpkg.com/@types/angular-mocks/-/angular-mocks-1.5.11.tgz#d5bbefbf742f2196071bda0fe051878b6f4fd72c"
+  dependencies:
+    "@types/angular" "*"
 
 "@types/angular-route@1.3.4":
   version "1.3.4"
@@ -94,11 +130,7 @@
   dependencies:
     "@types/jquery" "*"
 
-"@types/clipboard@1.5.35":
-  version "1.5.35"
-  resolved "https://registry.yarnpkg.com/@types/clipboard/-/clipboard-1.5.35.tgz#bceb67a7e0aad3070468929b95a2d626405db464"
-
-"@types/clipboard@1.5.36":
+"@types/clipboard@1.5.35", "@types/clipboard@1.5.36":
   version "1.5.36"
   resolved "https://registry.yarnpkg.com/@types/clipboard/-/clipboard-1.5.36.tgz#e79fffc758e94e7ff9de9898ae7561db3c2bdd51"
 
@@ -106,7 +138,7 @@
   version "0.0.40"
   resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.40.tgz#0868ed9ba5bf3ef8072de80e245ecf4a8f0bbdfd"
 
-"@types/jasmine@2.8.2", "@types/jasmine@2.8.6":
+"@types/jasmine@2.8.2", "@types/jasmine@2.8.6", "@types/jasmine@~2.8.0":
   version "2.8.6"
   resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-2.8.6.tgz#14445b6a1613cf4e05dd61c3c3256d0e95c0421e"
 
@@ -119,6 +151,12 @@
 "@types/jquery@*", "@types/jquery@2.0.48", "@types/jquery@~2.0.0", "@types/jquery@~2.0.46":
   version "2.0.48"
   resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-2.0.48.tgz#3e90d8cde2d29015e5583017f7830cb3975b2eef"
+
+"@types/jqueryui@1.12.0", "@types/jqueryui@1.12.2", "@types/jqueryui@~1.12.0":
+  version "1.12.2"
+  resolved "https://registry.yarnpkg.com/@types/jqueryui/-/jqueryui-1.12.2.tgz#8daa7ffa16880c78b1662ff287df058a2aceb651"
+  dependencies:
+    "@types/jquery" "*"
 
 "@types/js-beautify@0.0.30":
   version "0.0.30"
@@ -248,6 +286,10 @@ angular-patternfly@4.15.0, angular-patternfly@^4.0.0, angular-patternfly@^4.15.0
     jquery "~3.2.1"
     jquery-ui-dist "~1.12.1"
     moment "~2.19.3"
+
+angular-resizable@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/angular-resizable/-/angular-resizable-1.2.0.tgz#9dd29af008f8b54abfc051bd269a8f0b4fe43f1a"
 
 angular-resource@~1.6.5:
   version "1.6.9"
@@ -1061,6 +1103,13 @@ d@1:
   dependencies:
     es5-ext "^0.10.9"
 
+dagre-layout@0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/dagre-layout/-/dagre-layout-0.8.0.tgz#7147b6afb655602f855158dfea171db9aa98d4ff"
+  dependencies:
+    graphlib "^2.1.1"
+    lodash "^4.17.4"
+
 dashdash@^1.12.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
@@ -1848,6 +1897,12 @@ graceful-fs@4.1.11, graceful-fs@^3.0.0, graceful-fs@^3.0.2, graceful-fs@^4.0.0, 
 "graceful-readlink@>= 1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
+
+graphlib@^2.1.1:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/graphlib/-/graphlib-2.1.5.tgz#6afe1afcc5148555ec799e499056795bd6938c87"
+  dependencies:
+    lodash "^4.11.1"
 
 growly@^1.2.0:
   version "1.3.0"
@@ -2852,7 +2907,7 @@ lodash.uniq@^4.3.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
 
-lodash@4.17.4, lodash@4.x, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lodash@~1.0.1:
+lodash@4.17.4, lodash@4.x, lodash@^4.11.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lodash@~1.0.1:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -3129,6 +3184,10 @@ ng-idle@^1.3.2, ng-idle@~1.3.2:
   resolved "https://registry.yarnpkg.com/ng-idle/-/ng-idle-1.3.2.tgz#73a4dcc0a6c8360310d1396df376be6bd0b0a867"
   dependencies:
     angular "^1.2.0"
+
+ng-infinite-scroll@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/ng-infinite-scroll/-/ng-infinite-scroll-1.3.0.tgz#c2e98d8fd134b0525a4d2cf58c95d9b583755112"
 
 node-emoji@^1.4.1:
   version "1.8.1"
@@ -3450,7 +3509,7 @@ patternfly-bootstrap-combobox@~1.1.7:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/patternfly-bootstrap-combobox/-/patternfly-bootstrap-combobox-1.1.7.tgz#6a5e3ccd1170c21b3c4b4aa168a7413e1ddbb6e1"
 
-patternfly-bootstrap-treeview@~2.1.0:
+patternfly-bootstrap-treeview@2.1.5, patternfly-bootstrap-treeview@~2.1.0:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/patternfly-bootstrap-treeview/-/patternfly-bootstrap-treeview-2.1.5.tgz#4c29f2582fb8a2f28f0a928f2f0d324d21d6990d"
   dependencies:
