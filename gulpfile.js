@@ -1,4 +1,6 @@
-const online = require('./packages/online/gulpfile');
+// Packages Gulpfile
+const online      = require('./packages/online/gulpfile');
+const integration = require('./packages/integration/gulpfile');
 
 const gulp    = require('gulp'),
       fs      = require('fs'),
@@ -111,29 +113,46 @@ function backend(root, liveReload) {
   });
 }
 
+// Online package tasks
 gulp.registry().set('online.build', online.get('build').unwrap());
 gulp.registry().set('online.site', online.get('site').unwrap());
 gulp.registry().set('online.watch', online.get('watch').unwrap());
 
 online.set('reload', () => gulp.src('packages/online').pipe(hawtio.reload()));
 
+// Integration package tasks
+gulp.registry().set('integration.site', integration.get('site').unwrap());
+
+// Workspace tasks
 gulp.task('online.chdir', done => {
-  process.chdir(path.join(path.dirname(__filename), 'packages/online'));
+  process.chdir(path.join(__dirname, 'packages/online'));
+  done();
+});
+
+gulp.task('integration.chdir', done => {
+  process.chdir(path.join(__dirname, 'packages/integration'));
   done();
 });
 
 gulp.task('chdir', done => {
-  process.chdir(path.dirname(__filename));
+  process.chdir(__dirname);
   done();
 });
 
 gulp.task('build', gulp.series('online.chdir', 'online.build', 'chdir'));
 
-gulp.task('copy-sites', () => gulp.src('packages/online/site/**/*')
+gulp.task('copy-online-site', () => gulp.src('packages/online/site/**/*')
   .pipe(gulp.dest('docker/site/online'))
 );
 
-gulp.task('site', gulp.series('online.chdir', 'online.site', 'chdir', 'copy-sites'));
+gulp.task('copy-integration-site', () => gulp.src('packages/integration/site/**/*')
+  .pipe(gulp.dest('docker/site/integration'))
+);
+
+gulp.task('site', gulp.series(
+  'online.chdir', 'online.site', 'chdir', 'copy-online-site',
+  'integration.chdir', 'integration.site', 'chdir', 'copy-integration-site'
+));
 
 gulp.task('serve-site', () => {
   backend('docker/site/online', false);
