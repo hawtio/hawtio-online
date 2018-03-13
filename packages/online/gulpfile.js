@@ -1,9 +1,9 @@
 const gulp            = require('gulp'),
-      sequence        = require('run-sequence'),
       eventStream     = require('event-stream'),
       gulpLoadPlugins = require('gulp-load-plugins'),
       del             = require('del'),
       fs              = require('fs'),
+      merge           = require('merge2'),
       path            = require('path'),
       argv            = require('yargs').argv,
       urljoin         = require('url-join'),
@@ -22,9 +22,7 @@ const config = {
 
 const tsProject = plugins.typescript.createProject(path.join(path.dirname(__filename), 'tsconfig.json'));
 
-gulp.task('clean-defs', () => del(config.dist + '*.d.ts'));
-
-gulp.task('tsc', ['clean-defs'], function () {
+gulp.task('tsc', function () {
   const tsResult = tsProject.src()
     .pipe(tsProject())
     .on('error', plugins.notify.onError({
@@ -33,7 +31,7 @@ gulp.task('tsc', ['clean-defs'], function () {
       title  : 'Typescript compilation error'
     }));
 
-  return eventStream.merge(
+  return merge(
     tsResult.js
       .pipe(plugins.ngAnnotate())
       .pipe(gulp.dest('.')),
@@ -42,7 +40,7 @@ gulp.task('tsc', ['clean-defs'], function () {
      .pipe(gulp.dest(config.dist)));
 });
 
-gulp.task('template', ['tsc'], () => gulp.src(config.templates)
+gulp.task('template', gulp.series('tsc', () => gulp.src(config.templates)
   .pipe(plugins.angularTemplatecache({
     filename      : 'templates.js',
     root          : 'src/',
@@ -50,12 +48,12 @@ gulp.task('template', ['tsc'], () => gulp.src(config.templates)
     module        : 'hawtio-online-templates',
     templateFooter: '}]); hawtioPluginLoader.addModule("hawtio-online-templates");',
   }))
-  .pipe(gulp.dest('.')));
+  .pipe(gulp.dest('.'))));
 
-gulp.task('concat', ['template'], () =>
+gulp.task('concat', gulp.series('template', () =>
   gulp.src(['compiled.js', 'templates.js'])
     .pipe(plugins.concat(config.js))
-    .pipe(gulp.dest(config.dist)));
+    .pipe(gulp.dest(config.dist))));
 
 gulp.task('clean', () => del(['templates.js', 'compiled.js', './site/']));
 
@@ -101,6 +99,9 @@ gulp.task('site-files', () => gulp.src(['images/**', 'img/**'], { base: '.' })
   .pipe(plugins.debug({ title: 'site files' }))
   .pipe(gulp.dest('site')));
 
+gulp.task('site-config', () => gulp.src('hawtconfig.json')
+  .pipe(gulp.dest('site')));
+
 gulp.task('site-usemin', () => gulp.src('index.html')
   .pipe(plugins.usemin({
     css: [plugins.minifyCss({ keepBreaks: true }), 'concat'],
@@ -109,7 +110,7 @@ gulp.task('site-usemin', () => gulp.src('index.html')
   .pipe(plugins.debug({ title: 'site usemin' }))
   .pipe(gulp.dest('site')));
 
-gulp.task('site-tweak-urls', ['site-usemin', 'site-config'], () => eventStream.merge(
+gulp.task('site-tweak-urls', gulp.series('site-usemin', 'site-config', () => eventStream.merge(
   gulp.src('site/style.css')
     .pipe(plugins.replace(/url\(\.\.\//g, 'url('))
     // tweak fonts URL coming from PatternFly that does not repackage then in dist
@@ -121,7 +122,7 @@ gulp.task('site-tweak-urls', ['site-usemin', 'site-config'], () => eventStream.m
   gulp.src('site/hawtconfig.json')
     .pipe(plugins.replace(/node_modules\/@hawtio\/core\/dist\//g, ''))
     .pipe(gulp.dest('site')))
-  .pipe(plugins.debug({ title: 'site tweak urls' })));
+  .pipe(plugins.debug({ title: 'site tweak urls' }))));
 
 gulp.task('site-images', function () {
   const dirs = fs.readdirSync('./node_modules/@hawtio');
@@ -146,21 +147,16 @@ gulp.task('site-images', function () {
     .pipe(gulp.dest('site/img'));
 });
 
-gulp.task('site-config', () => gulp.src('hawtconfig.json')
-  .pipe(gulp.dest('site')));
+gulp.task('build', gulp.series(gulp.parallel('concat', 'less', 'copy-images'), 'clean'));
 
-gulp.task('build', callback => sequence(['tsc', 'less', 'template', 'concat', 'copy-images'], 'clean', callback));
+gulp.task('site', gulp.series('clean', gulp.parallel('site-fonts', 'site-files', 'site-usemin', 'site-tweak-urls', 'site-images', 'site-config')));
 
-gulp.task('site', callback => sequence('clean', ['site-fonts', 'site-files', 'site-usemin', 'site-tweak-urls', 'site-images', 'site-config'], callback));
-
-gulp.task('watch', ['build'], function () {
+gulp.task('watch', gulp.series('build', function () {
   gulp.watch(['index.html', urljoin(config.dist, '*')], ['reload']);
   gulp.watch(config.less, ['less']);
   const tsconfig = require('./tsconfig.json');
   gulp.watch([...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), ...config.templates],
     ['tsc', 'template', 'concat', 'clean']);
-});
-
-gulp.task('default', callback => sequence('connect', callback));
+}));
 
 module.exports = gulp;

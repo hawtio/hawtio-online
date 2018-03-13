@@ -1,14 +1,13 @@
 const online = require('./packages/online/gulpfile');
 
-const gulp     = require('gulp'),
-      sequence = require('run-sequence'),
-      fs       = require('fs'),
-      path     = require('path'),
-      argv     = require('yargs').argv,
-      urljoin  = require('url-join'),
-      uri      = require('urijs'),
-      logger   = require('js-logger'),
-      hawtio   = require('@hawtio/node-backend');
+const gulp    = require('gulp'),
+      fs      = require('fs'),
+      path    = require('path'),
+      argv    = require('yargs').argv,
+      urljoin = require('url-join'),
+      uri     = require('urijs'),
+      logger  = require('js-logger'),
+      hawtio  = require('@hawtio/node-backend');
 
 const config = {
   master    : argv.master,
@@ -112,33 +111,33 @@ function backend(root, liveReload) {
   });
 }
 
-gulp.tasks['online.build'] = online.tasks['build'];
-gulp.tasks['online.site'] = online.tasks['site'];
+gulp.registry().set('online.build', online.registry().get('build').unwrap());
+gulp.registry().set('online.site', online.registry().get('site').unwrap());
 
-gulp.task('online.chdir', callback => {
+gulp.task('online.chdir', done => {
   process.chdir('packages/online');
-  callback();
+  done();
 });
 
-gulp.task('chdir', callback => {
+gulp.task('chdir', done => {
   process.chdir('..');
-  callback();
+  done();
 });
 
-gulp.task('build', callback => sequence('online.chdir', 'online.build', 'chdir', callback));
+gulp.task('build', gulp.series('online.chdir', 'online.build', 'chdir'));
 
-gulp.task('site', callback => sequence('online.chdir', 'online.site', 'chdir', 'copy-sites', callback));
-
-gulp.task('copy-sites', () => gulp.src('packages/online/site/**/*')
+gulp.task('copy-sites', () => gulp.src('packages/online/site/**')
   .pipe(gulp.dest('docker/site/online'))
 );
 
-gulp.task('serve-site', function () {
-  backend('docker/site/', false);
+gulp.task('site', gulp.series('online.chdir', 'online.site', 'chdir', 'copy-sites'));
+
+gulp.task('serve-site', () => {
+  backend('docker/site/online', false);
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
-gulp.task('connect', ['watch'], function () {
+gulp.task('connect', /* gulp['watch'], */ function () {
   backend('./packages/online', true);
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
