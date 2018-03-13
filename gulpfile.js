@@ -3,6 +3,7 @@ const online      = require('./packages/online/gulpfile');
 const integration = require('./packages/integration/gulpfile');
 
 const gulp    = require('gulp'),
+      del     = require('del'),
       fs      = require('fs'),
       path    = require('path'),
       argv    = require('yargs').argv,
@@ -149,7 +150,10 @@ gulp.task('copy-integration-site', () => gulp.src('packages/integration/site/**/
   .pipe(gulp.dest('docker/site/integration'))
 );
 
+gulp.task('site-clean', () => del('docker/site/'));
+
 gulp.task('site', gulp.series(
+  'site-clean',
   'online.chdir', 'online.site', 'chdir', 'copy-online-site',
   'integration.chdir', 'integration.site', 'chdir', 'copy-integration-site'
 ));
