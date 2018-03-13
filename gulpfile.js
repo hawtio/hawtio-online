@@ -148,5 +148,3 @@ gulp.task('connect', gulp.parallel('watch', function () {
 }));
 
 gulp.task('default', gulp.series('connect'));
-
-gulp.task('reload', () => gulp.src('.').pipe(hawtio.reload()));
