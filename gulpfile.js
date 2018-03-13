@@ -114,15 +114,16 @@ function backend(root, liveReload) {
   });
 }
 
+// TODO: better reuse package tasks, see https://github.com/gulpjs/undertaker#sharing-functionalities
 // Online package tasks
-gulp.registry().set('online.build', online.get('build').unwrap());
-gulp.registry().set('online.site', online.get('site').unwrap());
-gulp.registry().set('online.watch', online.get('watch').unwrap());
+gulp.task('online.build', online.get('build').unwrap());
+gulp.task('online.site', online.get('site').unwrap());
+gulp.task('online.watch', online.get('watch').unwrap());
 
 online.set('reload', () => gulp.src('packages/online').pipe(hawtio.reload()));
 
 // Integration package tasks
-gulp.registry().set('integration.site', integration.get('site').unwrap());
+gulp.task('integration.site', integration.get('site').unwrap());
 
 // Workspace tasks
 gulp.task('online.chdir', done => {
@@ -152,6 +153,7 @@ gulp.task('copy-integration-site', () => gulp.src('packages/integration/site/**/
 
 gulp.task('site-clean', () => del('docker/site/'));
 
+// TODO: parallel site build
 gulp.task('site', gulp.series(
   'site-clean',
   'online.chdir', 'online.site', 'chdir', 'copy-online-site',
