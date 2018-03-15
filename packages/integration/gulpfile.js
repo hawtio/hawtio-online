@@ -20,7 +20,10 @@ const config = {
 
 const tsProject = plugins.typescript.createProject(path.join(__dirname, 'tsconfig.json'));
 
-gulp.task('tsc', function () {
+// Gulp tasks namespace
+const ns = name => 'integration::' + name;
+
+gulp.task(ns('tsc'), function () {
   const tsResult = tsProject.src()
     .pipe(tsProject())
     .on('error', plugins.notify.onError({
@@ -38,7 +41,7 @@ gulp.task('tsc', function () {
      .pipe(gulp.dest(config.dist, { cwd: __dirname })));
 });
 
-gulp.task('template', gulp.series('tsc', () => gulp.src(config.templates.map(glob => path.join(__dirname, glob)))
+gulp.task(ns('template'), gulp.series(ns('tsc'), () => gulp.src(config.templates.map(glob => path.join(__dirname, glob)))
   .pipe(plugins.angularTemplatecache({
     filename      : 'templates.js',
     root          : 'src/',
@@ -48,7 +51,7 @@ gulp.task('template', gulp.series('tsc', () => gulp.src(config.templates.map(glo
   }))
   .pipe(gulp.dest('.', { cwd: __dirname }))));
 
-gulp.task('concat', gulp.series('template', () =>
+gulp.task(ns('concat'), gulp.series(ns('template'), () =>
   gulp.src(
     [
       path.join(__dirname, 'compiled.js'),
@@ -57,14 +60,14 @@ gulp.task('concat', gulp.series('template', () =>
     .pipe(plugins.concat(config.js))
     .pipe(gulp.dest(config.dist, { cwd: __dirname }))));
 
-gulp.task('clean', () => del(
+gulp.task(ns('clean'), () => del(
   [
     path.join(__dirname, 'templates.js'),
     path.join(__dirname, 'compiled.js'),
     path.join(__dirname, './site/'),
   ]));
 
-gulp.task('less', () => gulp.src(config.less.map(glob => path.join(__dirname, glob)))
+gulp.task(ns('less'), () => gulp.src(config.less.map(glob => path.join(__dirname, glob)))
   .pipe(plugins.less({
     paths: [path.join(__dirname, 'node_modules')]
   }))
@@ -76,12 +79,12 @@ gulp.task('less', () => gulp.src(config.less.map(glob => path.join(__dirname, gl
   .pipe(plugins.concat(config.css))
   .pipe(gulp.dest(config.dist, { cwd: __dirname })));
 
-gulp.task('copy-images', function () {
+gulp.task(ns('copy-images'), function () {
   return gulp.src('./img/**/*')
     .pipe(gulp.dest(path.join(config.dist, 'img')));
 });
 
-gulp.task('site-fonts', () =>
+gulp.task(ns('site-fonts'), () =>
   gulp
     .src(
       [
@@ -100,16 +103,16 @@ gulp.task('site-fonts', () =>
     .pipe(gulp.dest('site/fonts/', { overwrite: false }))
 );
 
-gulp.task('site-files', () => gulp.src(['images/**', 'img/**'], { base: '.' })
+gulp.task(ns('site-files'), () => gulp.src(['images/**', 'img/**'], { base: '.' })
   .pipe(plugins.chmod(0o644))
   .pipe(plugins.dedupe({ same: false }))
   .pipe(plugins.debug({ title: 'site files' }))
   .pipe(gulp.dest('site')));
 
-gulp.task('site-config', () => gulp.src('hawtconfig.json')
+gulp.task(ns('site-config'), () => gulp.src('hawtconfig.json')
   .pipe(gulp.dest('site')));
 
-gulp.task('site-usemin', () => gulp.src('index.html')
+gulp.task(ns('site-usemin'), () => gulp.src('index.html')
   .pipe(plugins.usemin({
     css: [plugins.minifyCss({ keepBreaks: true }), 'concat'],
     js : [plugins.uglify(), plugins.rev()],
@@ -117,7 +120,7 @@ gulp.task('site-usemin', () => gulp.src('index.html')
   .pipe(plugins.debug({ title: 'site usemin' }))
   .pipe(gulp.dest('site')));
 
-gulp.task('site-tweak-urls', gulp.series('site-usemin', 'site-config', () => merge(
+gulp.task(ns('site-tweak-urls'), gulp.series(ns('site-usemin'), ns('site-config'), () => merge(
   gulp.src('site/style.css')
     .pipe(plugins.replace(/url\(\.\.\//g, 'url('))
     // tweak fonts URL coming from PatternFly that does not repackage then in dist
@@ -131,7 +134,7 @@ gulp.task('site-tweak-urls', gulp.series('site-usemin', 'site-config', () => mer
     .pipe(gulp.dest('site')))
   .pipe(plugins.debug({ title: 'site tweak urls' }))));
 
-gulp.task('site-images', function () {
+gulp.task(ns('site-images'), function () {
   const dirs = fs.readdirSync('./node_modules/@hawtio');
   const patterns = [];
   dirs.forEach(function (dir) {
@@ -154,29 +157,27 @@ gulp.task('site-images', function () {
     .pipe(gulp.dest('site/img'));
 });
 
-gulp.task('build', gulp.series(gulp.parallel('concat', 'less', 'copy-images'), 'clean'));
+gulp.task(ns('build'), gulp.series(gulp.parallel(['concat', 'less', 'copy-images'].map(ns)), ns('clean')));
 
-gulp.task('site', gulp.series('clean', gulp.parallel('site-fonts', 'site-files', 'site-usemin', 'site-tweak-urls', 'site-images', 'site-config')));
+gulp.task(ns('site'), gulp.series(ns('clean'), gulp.parallel(['site-fonts', 'site-files', 'site-usemin', 'site-tweak-urls', 'site-images', 'site-config'].map(ns))));
 
-gulp.task('reload', done => { done() });
+gulp.task(ns('reload'), done => { done() });
 
-gulp.task('watch-less', () => gulp.watch(
+gulp.task(ns('watch-less'), () => gulp.watch(
   config.less,
   { cwd: __dirname },
-  gulp.series('less')));
+  gulp.series(ns('less'))));
 
-gulp.task('watch-ts', () => {
+gulp.task(ns('watch-ts'), () => {
   const tsconfig = require(path.join(__dirname, 'tsconfig.json'));
   return gulp.watch(
     [...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), ...config.templates],
     { cwd: __dirname },
-    gulp.series('concat', 'clean'))});
+    gulp.series(ns('concat'), ns('clean')))});
 
-gulp.task('watch-files', () => gulp.watch(
+gulp.task(ns('watch-files'), () => gulp.watch(
   ['index.html', path.join(config.dist, '*')],
   { cwd: __dirname },
-  gulp.series('reload')));
+  gulp.series(ns('reload'))));
 
-gulp.task('watch', gulp.parallel('watch-ts', 'watch-less', 'watch-files'));
-
-module.exports = gulp.registry();
+gulp.task(ns('watch'), gulp.parallel(['watch-ts', 'watch-less', 'watch-files'].map(ns)));

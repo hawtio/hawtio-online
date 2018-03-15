@@ -732,6 +732,10 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
+callsite@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/callsite/-/callsite-1.0.0.tgz#280398e5d664bd74038b6f0905153e6e8af1bc20"
+
 camelcase-keys@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/camelcase-keys/-/camelcase-keys-2.1.0.tgz#308beeaffdf28119051efa1d932213c91b8f92e7"
@@ -1743,6 +1747,10 @@ function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
 
+fwd@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/fwd/-/fwd-0.2.2.tgz#0d19f99b40f8af83b8792203ba50dce7e46f7530"
+
 gauge@~2.7.3:
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/gauge/-/gauge-2.7.4.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"
@@ -2013,6 +2021,19 @@ gulp-header@1.8.9:
     gulp-util "*"
     object-assign "*"
     through2 "^2.0.0"
+
+gulp-hub@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/gulp-hub/-/gulp-hub-4.2.0.tgz#837fb3fe5b5cb9de53bc78ac672309180f3d70d4"
+  dependencies:
+    ansi-colors "^1.0.1"
+    callsite "^1.0.0"
+    fancy-log "^1.3.2"
+    fwd "^0.2.2"
+    glob "^7.1.1"
+    lodash.foreach "^4.0.0"
+    lodash.isstring "^4.0.0"
+    undertaker-forward-reference "^1.0.0"
 
 gulp-less@^3.0.0:
   version "3.5.0"
@@ -2840,6 +2861,10 @@ lodash.flatten@^4.2.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flatten/-/lodash.flatten-4.4.0.tgz#f31c22225a9632d2bbf8e4addbef240aa765a61f"
 
+lodash.foreach@^4.0.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.foreach/-/lodash.foreach-4.5.0.tgz#1a6a35eace401280c7f06dddec35165ab27e3e53"
+
 lodash.isarguments@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/lodash.isarguments/-/lodash.isarguments-3.1.0.tgz#2f573d85c6a24289ff00663b491c1d338ff3458a"
@@ -2853,6 +2878,10 @@ lodash.isobject@~2.4.1:
   resolved "https://registry.yarnpkg.com/lodash.isobject/-/lodash.isobject-2.4.1.tgz#5a2e47fe69953f1ee631a7eba1fe64d2d06558f5"
   dependencies:
     lodash._objecttypes "~2.4.1"
+
+lodash.isstring@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/lodash.isstring/-/lodash.isstring-4.0.1.tgz#d527dfb5456eca7cc9bb95d5daeaf88ba54a5451"
 
 lodash.keys@3.1.2, lodash.keys@^3.0.0, lodash.keys@~2.4.1:
   version "3.1.2"
@@ -4483,6 +4512,12 @@ underscore.string@^3.3.4:
 underscore@1.1.x, underscore@1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.7.0.tgz#6bbaf0877500d36be34ecaa584e0db9fef035209"
+
+undertaker-forward-reference@^1.0.0:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/undertaker-forward-reference/-/undertaker-forward-reference-1.0.2.tgz#24015dbe96946b533a8fb008baee16793f1057f6"
+  dependencies:
+    undertaker-registry "^1.0.0"
 
 undertaker-registry@^1.0.0:
   version "1.0.1"

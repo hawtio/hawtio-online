@@ -1,8 +1,5 @@
-// Packages Gulpfile
-const online      = require('./packages/online/gulpfile');
-const integration = require('./packages/integration/gulpfile');
-
 const gulp    = require('gulp'),
+      Hub     = require('gulp-hub'),
       del     = require('del'),
       fs      = require('fs'),
       path    = require('path'),
@@ -114,16 +111,8 @@ function backend(root, liveReload) {
   });
 }
 
-// TODO: better reuse package tasks, see https://github.com/gulpjs/undertaker#sharing-functionalities
-// Online package tasks
-gulp.task('online.build', online.get('build').unwrap());
-gulp.task('online.site', online.get('site').unwrap());
-gulp.task('online.watch', online.get('watch').unwrap());
-
-online.set('reload', () => gulp.src('packages/online').pipe(hawtio.reload()));
-
-// Integration package tasks
-gulp.task('integration.site', integration.get('site').unwrap());
+const hub = new Hub(['./packages/online/gulpfile.js', './packages/integration/gulpfile.js']);
+gulp.registry(hub);
 
 // Workspace tasks
 gulp.task('online.chdir', done => {
@@ -141,7 +130,7 @@ gulp.task('chdir', done => {
   done();
 });
 
-gulp.task('build', gulp.series('online.chdir', 'online.build', 'chdir'));
+gulp.task('build', gulp.series('online.chdir', 'online::build', 'chdir'));
 
 gulp.task('copy-online-site', () => gulp.src('packages/online/site/**/*')
   .pipe(gulp.dest('docker/site/online'))
@@ -156,8 +145,8 @@ gulp.task('site-clean', () => del('docker/site/'));
 // TODO: parallel site build
 gulp.task('site', gulp.series(
   'site-clean',
-  'online.chdir', 'online.site', 'chdir', 'copy-online-site',
-  'integration.chdir', 'integration.site', 'chdir', 'copy-integration-site'
+  'online.chdir', 'online::site', 'chdir', 'copy-online-site',
+  'integration.chdir', 'integration::site', 'chdir', 'copy-integration-site'
 ));
 
 gulp.task('serve-site', () => {
@@ -165,7 +154,11 @@ gulp.task('serve-site', () => {
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
-gulp.task('watch', gulp.series('online.watch'));
+gulp.task('watch', gulp.series('online::watch'));
+
+// Override the reload tasks
+hub._registry[path.join(__dirname, 'packages/online/gulpfile.js')]
+  .set('online::reload', () => gulp.src('packages/online').pipe(hawtio.reload()));
 
 gulp.task('connect', gulp.parallel('watch', function () {
   backend('packages/online', true);
