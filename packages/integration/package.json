@@ -7,7 +7,8 @@
     "build": "gulp build"
   },
   "dependencies": {
-    "@hawtio/integration": "^3.2.22"
+    "@hawtio/integration": "^3.2.22",
+    "patternfly": "^3.41.6"
   },
   "devDependencies": {
     "del": "^2.0.0",

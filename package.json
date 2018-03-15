@@ -6,7 +6,24 @@
       "packages/*"
     ],
     "nohoist": [
-      "**"
+      "**/@hawtio/*",
+      "**/@types/*",
+      "**/angular-*",
+      "**/angular-*/**",
+      "**/clipboard",
+      "**/codemirror",
+      "**/dagre-layout",
+      "**/dagre-layout/**",
+      "**/js-beautify",
+      "**/js-logger",
+      "**/jsonpath",
+      "**/kubernetes-label-selector",
+      "**/marked",
+      "**/ng-*",
+      "**/ng-*/**",
+      "**/patternfly",
+      "**/patternfly/**",
+      "**/urijs"
     ]
   },
   "scripts": {
