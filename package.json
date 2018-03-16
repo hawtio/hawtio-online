@@ -31,7 +31,7 @@
     "build": "gulp build"
   },
   "devDependencies": {
-    "@hawtio/node-backend": "^3.0.8",
+    "@hawtio/node-backend": "^3.1.2",
     "del": "^2.0.0",
     "gulp": "^4.0.0",
     "gulp-connect": "^2.0.0",

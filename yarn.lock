@@ -67,9 +67,9 @@
     "@hawtio/core" "^3.2.19"
     "@hawtio/oauth" "^3.0.11"
 
-"@hawtio/node-backend@^3.0.8":
-  version "3.0.8"
-  resolved "https://registry.yarnpkg.com/@hawtio/node-backend/-/node-backend-3.0.8.tgz#33cd104a74165bc22f1975a2cab07b4a1b140aad"
+"@hawtio/node-backend@^3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@hawtio/node-backend/-/node-backend-3.1.2.tgz#d03a3a3fb53d0691c65fc5cf77f9910b91083be0"
   dependencies:
     "@types/node" "^7.0.31"
     body-parser "^1.17.2"
