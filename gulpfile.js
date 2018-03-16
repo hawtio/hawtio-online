@@ -109,39 +109,32 @@ function backend(root, liveReload) {
 const hub = new Hub(['./packages/online/gulpfile.js', './packages/integration/gulpfile.js']);
 gulp.registry(hub);
 
+// Helpers
+const task = (name, fn) => {
+  fn.displayName = name; return fn;
+};
+
+const chdir = dir => done => {
+  process.chdir(path.join(__dirname, dir));
+  done();
+};
+
 // Workspace tasks
-gulp.task('online.chdir', done => {
-  process.chdir(path.join(__dirname, 'packages/online'));
-  done();
-});
-
-gulp.task('integration.chdir', done => {
-  process.chdir(path.join(__dirname, 'packages/integration'));
-  done();
-});
-
-gulp.task('chdir', done => {
-  process.chdir(__dirname);
-  done();
-});
-
 gulp.task('build', gulp.parallel('online::build', 'integration::build'));
-
-gulp.task('copy-online-site', () => gulp.src('packages/online/site/**/*')
-  .pipe(gulp.dest('docker/site/online'))
-);
-
-gulp.task('copy-integration-site', () => gulp.src('packages/integration/site/**/*')
-  .pipe(gulp.dest('docker/site/integration'))
-);
-
-gulp.task('site-clean', () => del('docker/site/'));
 
 // TODO: parallel site build
 gulp.task('site', gulp.series(
-  'site-clean',
-  'online.chdir', 'online::site', 'chdir', 'copy-online-site',
-  'integration.chdir', 'integration::site', 'chdir', 'copy-integration-site'
+  task('clean site dir', () => del('docker/site/')),
+  task('Set cwd to online dir', chdir('packages/online')),
+  'online::site',
+  task('Set cwd to root dir', chdir('.')),
+  task('Copy online site', () => gulp.src('packages/online/site/**/*')
+    .pipe(gulp.dest('docker/site/online'))),
+  task('Set cwd to integration dir', chdir('packages/integration')),
+  'integration::site',
+  task('Set cwd to root dir', chdir('.')),
+  task('Copy integration site', () => gulp.src('packages/integration/site/**/*')
+    .pipe(gulp.dest('docker/site/integration')))
 ));
 
 gulp.task('serve-site', () => {
@@ -149,33 +142,34 @@ gulp.task('serve-site', () => {
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
-gulp.task('watch', gulp.parallel('online::watch', 'integration::watch'));
-
 // Override the reload tasks
 hub._registry[path.join(__dirname, 'packages/online/gulpfile.js')]
   .set('online::reload', () => gulp.src('packages/online').pipe(hawtio.reload()));
+
 hub._registry[path.join(__dirname, 'packages/integration/gulpfile.js')]
   .set('integration::reload', () => gulp.src('packages/integration').pipe(hawtio.reload()));
 
-gulp.task('connect', gulp.parallel('watch', function () {
-  backend('packages', true);
+gulp.task('default', gulp.parallel(
+  'online::watch',
+  'integration::watch',
+  task('Start Hawtio backend', function () {
+    backend('packages', true);
 
-  // Serve images from @hawtio/integration
-  hawtio.use('/integration/img', (req, res) => {
-    const file = path.join(__dirname, 'packages/integration/node_modules/@hawtio/integration/dist/img', req.url);
-    if (fs.existsSync(file)) {
-      res.writeHead(200, {
-        'Content-Type'       : 'application/octet-stream',
-        'Content-Disposition': `attachment; filename=${file}`,
-      });
-      fs.createReadStream(file).pipe(res);
-    } else {
-      res.writeHead(400, { 'Content-Type': 'text/plain' });
-      res.end(`File ${file} does not exist in dependencies`);
-    }
-  });
+    // Serve images from @hawtio/integration
+    hawtio.use('/integration/img', (req, res) => {
+      const file = path.join(__dirname, 'packages/integration/node_modules/@hawtio/integration/dist/img', req.url);
+      if (fs.existsSync(file)) {
+        res.writeHead(200, {
+          'Content-Type'       : 'application/octet-stream',
+          'Content-Disposition': `attachment; filename=${file}`,
+        });
+        fs.createReadStream(file).pipe(res);
+      } else {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end(`File ${file} does not exist in dependencies`);
+      }
+    });
 
-  return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
-}));
-
-gulp.task('default', gulp.series('connect'));
+    return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
+  })
+));
