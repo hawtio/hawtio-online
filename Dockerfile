@@ -1,4 +1,4 @@
-FROM docker.io/node:9 as builder
+FROM docker.io/node:9.7.0 as builder
 
 RUN yarn global add gulp-cli
 
