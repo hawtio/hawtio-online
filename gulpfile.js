@@ -130,7 +130,7 @@ gulp.task('chdir', done => {
   done();
 });
 
-gulp.task('build', gulp.series('online.chdir', 'online::build', 'chdir'));
+gulp.task('build', gulp.parallel('online::build', 'integration::build'));
 
 gulp.task('copy-online-site', () => gulp.src('packages/online/site/**/*')
   .pipe(gulp.dest('docker/site/online'))

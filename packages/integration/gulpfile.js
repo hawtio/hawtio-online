@@ -157,7 +157,7 @@ gulp.task(ns('site-images'), function () {
     .pipe(gulp.dest('site/img'));
 });
 
-gulp.task(ns('build'), gulp.series(gulp.parallel(['concat', 'less', 'copy-images'].map(ns)), ns('clean')));
+gulp.task(ns('build'), gulp.series(gulp.parallel([/* 'concat' */'tsc', 'less', 'copy-images'].map(ns)), ns('clean')));
 
 gulp.task(ns('site'), gulp.series(ns('clean'), gulp.parallel(['site-fonts', 'site-files', 'site-usemin', 'site-tweak-urls', 'site-images', 'site-config'].map(ns))));
 
