@@ -51,11 +51,11 @@ gulp.task(ns('template'), gulp.series(ns('tsc'), () => gulp.src(config.templates
   }))
   .pipe(gulp.dest('.', { cwd: __dirname }))));
 
-gulp.task(ns('concat'), gulp.series(ns('template'), () =>
+gulp.task(ns('concat'), gulp.series(/* ns('template'), */ ns('tsc'), () =>
   gulp.src(
     [
       path.join(__dirname, 'compiled.js'),
-      path.join(__dirname, 'templates.js'),
+      // path.join(__dirname, 'templates.js'),
     ])
     .pipe(plugins.concat(config.js))
     .pipe(gulp.dest(config.dist, { cwd: __dirname }))));
@@ -157,7 +157,7 @@ gulp.task(ns('site-images'), function () {
     .pipe(gulp.dest('site/img'));
 });
 
-gulp.task(ns('build'), gulp.series(gulp.parallel([/* 'concat' */'tsc', 'less', 'copy-images'].map(ns)), ns('clean')));
+gulp.task(ns('build'), gulp.series(gulp.parallel(['concat', 'less', 'copy-images'].map(ns)), ns('clean')));
 
 gulp.task(ns('site'), gulp.series(ns('clean'), gulp.parallel(['site-fonts', 'site-files', 'site-usemin', 'site-tweak-urls', 'site-images', 'site-config'].map(ns))));
 
