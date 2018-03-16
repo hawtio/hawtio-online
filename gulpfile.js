@@ -149,11 +149,13 @@ gulp.task('serve-site', () => {
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
-gulp.task('watch', gulp.series('online::watch'));
+gulp.task('watch', gulp.parallel('online::watch', 'integration::watch'));
 
 // Override the reload tasks
 hub._registry[path.join(__dirname, 'packages/online/gulpfile.js')]
   .set('online::reload', () => gulp.src('packages/online').pipe(hawtio.reload()));
+hub._registry[path.join(__dirname, 'packages/integration/gulpfile.js')]
+  .set('integration::reload', () => gulp.src('packages/integration').pipe(hawtio.reload()));
 
 gulp.task('connect', gulp.parallel('watch', function () {
   backend('packages', true);
