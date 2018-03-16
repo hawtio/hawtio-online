@@ -157,6 +157,22 @@ hub._registry[path.join(__dirname, 'packages/online/gulpfile.js')]
 
 gulp.task('connect', gulp.parallel('watch', function () {
   backend('packages', true);
+
+  // Serve images from @hawtio/integration
+  hawtio.use('/integration/img', (req, res) => {
+    const file = path.join(__dirname, 'packages/integration/node_modules/@hawtio/integration/dist/img', req.url);
+    if (fs.existsSync(file)) {
+      res.writeHead(200, {
+        'Content-Type'       : 'application/octet-stream',
+        'Content-Disposition': `attachment; filename=${file}`,
+      });
+      fs.createReadStream(file).pipe(res);
+    } else {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end(`File ${file} does not exist in dependencies`);
+    }
+  });
+
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 }));
 
