@@ -104,6 +104,14 @@ function backend(root, liveReload) {
   });
 
   hawtio.use('/online/osconsole/config.js', osconsole);
+
+  hawtio.use('/', function (req, res, next) {
+    if (req.originalUrl === '/') {
+      res.redirect('/online');
+    } else {
+      next();
+    }
+  });
 }
 
 const hub = new Hub(['./packages/online/gulpfile.js', './packages/integration/gulpfile.js']);
