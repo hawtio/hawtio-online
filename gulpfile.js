@@ -75,16 +75,17 @@ function backend(root, liveReload) {
   hawtio.setConfig({
     logLevel : logger.INFO,
     port     : 2772,
-    staticAssets : [{
-      path : '/online',
-      dir  : root,
-    }],
-    staticProxies: [
+    staticAssets : [
       {
-        port       : 8080,
-        path       : '/integration',
-        targetPath : '/integration',
+        path : '/online',
+        dir  : path.join(root, 'online'),
       },
+      {
+        path : '/integration',
+        dir  : path.join(root, 'integration'),
+      }
+    ],
+    staticProxies: [
       {
         port       : master_api.port,
         proto      : master_api.protocol,
@@ -93,22 +94,16 @@ function backend(root, liveReload) {
         targetPath : '/',
       }
     ],
-    fallback   : urljoin(root, 'index.html'),
+    fallback   : {
+      '^/online.*'      : 'packages/online/index.html',
+      '^/integration.*' : 'packages/integration/index.html',
+    },
     liveReload : {
       enabled : liveReload,
     }
   });
 
   hawtio.use('/online/osconsole/config.js', osconsole);
-
-  hawtio.use('/', function (req, res, next) {
-    const path = req.originalUrl;
-    if (path === '/') {
-      res.redirect('/online');
-    } else {
-      next();
-    }
-  });
 }
 
 const hub = new Hub(['./packages/online/gulpfile.js', './packages/integration/gulpfile.js']);
@@ -150,7 +145,7 @@ gulp.task('site', gulp.series(
 ));
 
 gulp.task('serve-site', () => {
-  backend('docker/site/online', false);
+  backend('docker/site', false);
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
@@ -161,7 +156,7 @@ hub._registry[path.join(__dirname, 'packages/online/gulpfile.js')]
   .set('online::reload', () => gulp.src('packages/online').pipe(hawtio.reload()));
 
 gulp.task('connect', gulp.parallel('watch', function () {
-  backend('packages/online', true);
+  backend('packages', true);
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 }));
 
