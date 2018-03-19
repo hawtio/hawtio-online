@@ -152,10 +152,12 @@ gulp.task('serve-site', () => {
 
 // Override the reload tasks
 hub._registry[path.join(__dirname, 'packages/online/gulpfile.js')]
-  .set('online::reload', () => gulp.src('packages/online').pipe(hawtio.reload()));
+  .set('online::reload',
+    task('Reload online package', () => gulp.src('packages/online').pipe(hawtio.reload())));
 
 hub._registry[path.join(__dirname, 'packages/integration/gulpfile.js')]
-  .set('integration::reload', () => gulp.src('packages/integration').pipe(hawtio.reload()));
+  .set('integration::reload',
+    task('Reload integration package', () => gulp.src('packages/integration').pipe(hawtio.reload())));
 
 gulp.task('default', gulp.parallel(
   'online::watch',
