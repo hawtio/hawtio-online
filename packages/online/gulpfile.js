@@ -188,11 +188,11 @@ function watchTsFiles() {
   return gulp.watch(
     [...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), ...config.templates],
     { cwd: __dirname },
-    gulp.series(ns('concat'), ns('clean')));
+    gulp.series(compileTsFiles, compileTemplates, concatBuildFiles, cleanBuild));
 }
 
 function watchLessFiles() {
-  return gulp.watch(config.less, { cwd: __dirname }, gulp.series(ns('less')));
+  return gulp.watch(config.less, { cwd: __dirname }, compileLess);
 }
 
 function watchResources() {
