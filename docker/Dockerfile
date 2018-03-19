@@ -45,7 +45,9 @@ RUN rm /usr/share/nginx/html/index.html
 RUN touch config.js && \
     chown 998 config.js && chmod g=u config.js && \
     mkdir -p /usr/share/nginx/html/online/osconsole && \
-    ln -sf /config.js /usr/share/nginx/html/online/osconsole/config.js
+    ln -sf /config.js /usr/share/nginx/html/online/osconsole/config.js && \
+    mkdir -p /usr/share/nginx/html/integration/osconsole && \
+    ln -sf /config.js /usr/share/nginx/html/integration/osconsole/config.js
 
 USER 998
 
