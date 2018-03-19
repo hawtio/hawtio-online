@@ -105,6 +105,7 @@ function backend(root, liveReload) {
   });
 
   hawtio.use('/online/osconsole/config.js', osconsole);
+  hawtio.use('/integration/osconsole/config.js', osconsole);
 
   hawtio.use('/', function (req, res, next) {
     if (req.originalUrl === '/') {
