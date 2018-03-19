@@ -210,6 +210,7 @@
     "yargs-parser": "5.0.0",
     "is-valid-glob": "1.0.0",
     "to-absolute-glob": "2.0.2",
-    "@types/jqueryui": "1.12.2"
+    "@types/jqueryui": "1.12.2",
+    "@hawtio/oauth": "3.0.12"
   }
 }
