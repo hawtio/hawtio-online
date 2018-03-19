@@ -85,7 +85,7 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@^3.0.11", "@hawtio/oauth@^3.0.12":
+"@hawtio/oauth@3.0.12", "@hawtio/oauth@^3.0.11", "@hawtio/oauth@^3.0.12":
   version "3.0.12"
   resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-3.0.12.tgz#221ab216a83d9d2b3b56078746b9d5a97fca7cce"
   dependencies:
