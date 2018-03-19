@@ -22,10 +22,10 @@ const tsProject = plugins.typescript.createProject(path.join(__dirname, 'tsconfi
 
 // Helpers
 const task = (name, fn) => {
-  fn.displayName = name; return fn;
+  fn.displayName = `[online] ${name}`; return fn;
 };
 
-const ns = name => 'online::' + name;
+const ns = name => `online::${name}`;
 
 // Workspace tasks
 function cleanBuild() {
