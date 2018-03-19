@@ -90,11 +90,11 @@ gulp.task(ns('build'), gulp.series(
     gulp.series(
       task('Compile TS files', compileTsFiles),
       task('Compile templates', compileTemplates),
-      task('Concat compiled files', concatBuildFiles)),
+      task('Concat compiled files', concatBuildFiles),
+      task('Clean build', cleanBuild)),
     task('Compile LESS files', compileLess),
     task('Copy images', distImages)
-  ),
-  task('Clean build', cleanBuild)));
+  )));
 
 function cleanSite() {
   return del([path.join(__dirname, './site/')]);
