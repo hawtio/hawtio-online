@@ -7,6 +7,7 @@ const gulp    = require('gulp'),
       urljoin = require('url-join'),
       uri     = require('urijs'),
       logger  = require('js-logger'),
+      mime    = require('mime-types'),
       hawtio  = require('@hawtio/node-backend');
 
 const config = {
@@ -170,7 +171,7 @@ gulp.task('default', gulp.parallel(
       const file = path.join(__dirname, 'packages/integration/node_modules/@hawtio/integration/dist/img', req.url);
       if (fs.existsSync(file)) {
         res.writeHead(200, {
-          'Content-Type'       : 'application/octet-stream',
+          'Content-Type'       : mime.contentType(path.extname(file)),
           'Content-Disposition': `attachment; filename=${file}`,
         });
         fs.createReadStream(file).pipe(res);
