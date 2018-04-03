@@ -11,7 +11,7 @@
     "build": "gulp build"
   },
   "dependencies": {
-    "@hawtio/core": "^3.2.19",
+    "@hawtio/core": "^3.2.25",
     "@hawtio/kubernetes-api": "^3.0.0",
     "@hawtio/oauth": "^3.0.12",
     "angular-moment": "^1.2.0",
