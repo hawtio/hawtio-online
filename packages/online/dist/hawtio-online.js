@@ -435,11 +435,13 @@ var Online;
     addRoutes.$inject = ["$routeProvider"];
     addOnlineTab.$inject = ["HawtioNav"];
     addLogoutToUserDropdown.$inject = ["HawtioExtension", "$compile", "userDetails"];
+    addProductInfo.$inject = ["aboutService"];
     var module = angular
         .module('hawtio-online', ['hawtio-about'])
         .config(addRoutes)
         .run(addOnlineTab)
-        .run(addLogoutToUserDropdown);
+        .run(addLogoutToUserDropdown)
+        .run(addProductInfo);
     function addRoutes($routeProvider) {
         'ngInject';
         $routeProvider
@@ -469,6 +471,10 @@ var Online;
             var template = '<a href="" ng-click="userDetails.logout()">Logout</a>';
             return $compile(template)($scope);
         });
+    }
+    function addProductInfo(aboutService) {
+        'ngInject';
+        aboutService.addProductInfo('Hawtio Online', '1.1.0');
     }
     hawtioPluginLoader.addModule(module.name);
     Online.log = Logger.get(module.name);

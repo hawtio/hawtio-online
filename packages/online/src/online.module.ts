@@ -6,7 +6,8 @@ namespace Online {
     .module('hawtio-online', ['hawtio-about'])
     .config(addRoutes)
     .run(addOnlineTab)
-    .run(addLogoutToUserDropdown);
+    .run(addLogoutToUserDropdown)
+    .run(addProductInfo);
 
   function addRoutes($routeProvider: angular.route.IRouteProvider) {
     'ngInject';
@@ -46,6 +47,11 @@ namespace Online {
       const template = '<a href="" ng-click="userDetails.logout()">Logout</a>';
       return $compile(template)($scope);
     });
+  }
+
+  function addProductInfo(aboutService: About.AboutService) {
+    'ngInject';
+    aboutService.addProductInfo('Hawtio Online', 'PACKAGE_VERSION_PLACEHOLDER');
   }
 
   hawtioPluginLoader.addModule(module.name);
