@@ -9,7 +9,7 @@
   "scripts": {
     "start": "gulp",
     "build": "gulp online::build",
-    "version": "gulp online::version && git add -A dist"
+    "version": "gulp online::build && git add -A dist"
   },
   "dependencies": {
     "@hawtio/core": "^3.2.25",

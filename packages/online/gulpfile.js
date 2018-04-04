@@ -86,11 +86,11 @@ function distImages() {
   return gulp.src('./img/**/*').pipe(gulp.dest(path.join(config.dist, 'img')));
 }
 
-gulp.task(ns('version'), function() {
+function updateProductInfo() {
   return gulp.src(path.join(__dirname, config.dist, config.js))
     .pipe(plugins.replace('PACKAGE_VERSION_PLACEHOLDER', package.version))
     .pipe(gulp.dest(config.dist, { cwd: __dirname }));
-});
+}
 
 gulp.task(ns('build'), gulp.series(
   gulp.parallel(
@@ -98,7 +98,7 @@ gulp.task(ns('build'), gulp.series(
       task('Compile TS files', compileTsFiles),
       task('Compile templates', compileTemplates),
       task('Concat compiled files', concatBuildFiles),
-      ns('version'),
+      task('Update product info', updateProductInfo),
       task('Clean build', cleanBuild)),
     task('Compile LESS files', compileLess),
     task('Copy images', distImages)
