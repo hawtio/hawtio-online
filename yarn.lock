@@ -8,7 +8,7 @@
   dependencies:
     "@types/jquery" "~2.0.46"
 
-"@hawtio/core@3.2.22", "@hawtio/core@3.2.25", "@hawtio/core@^3.2.19", "@hawtio/core@^3.2.25", "@hawtio/core@~3.2.0":
+"@hawtio/core@3.2.22", "@hawtio/core@3.2.25", "@hawtio/core@^3.2.25", "@hawtio/core@~3.2.0":
   version "3.2.25"
   resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-3.2.25.tgz#4f1cece51fe8a209be4972bf84faa6498393de41"
   dependencies:
@@ -59,11 +59,11 @@
     angular-resizable "1.2.0"
     patternfly-bootstrap-treeview "2.1.5"
 
-"@hawtio/kubernetes-api@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-3.0.0.tgz#7340b1707ba424b15172c4c8be4ad9670acab5b6"
+"@hawtio/kubernetes-api@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-3.1.1.tgz#f4862b673f02d2287cfbdc558e0d5fba7b5ae74e"
   dependencies:
-    "@hawtio/core" "^3.2.19"
+    "@hawtio/core" "^3.2.25"
     "@hawtio/oauth" "^3.0.11"
 
 "@hawtio/node-backend@^3.1.3":
