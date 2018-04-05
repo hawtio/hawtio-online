@@ -30,7 +30,7 @@ function osconsole(_, res, _) {
   let answer;
   if (config.mode === 'namespace') {
     answer =
-    `window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
+    `window.OPENSHIFT_CONFIG = {
       master_uri : new URI().query('').path('/master').toString(),
       hawtio : {
         mode      : '${config.mode}',
@@ -45,7 +45,7 @@ function osconsole(_, res, _) {
     }`;
   } else if (config.mode === 'cluster') {
     answer =
-    `window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
+    `window.OPENSHIFT_CONFIG = {
       master_uri : new URI().query('').path('/master').toString(),
       hawtio : {
         mode : '${config.mode}',
