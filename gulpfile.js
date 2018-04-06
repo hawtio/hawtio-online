@@ -1,14 +1,13 @@
-const gulp    = require('gulp'),
-      Hub     = require('gulp-hub'),
-      del     = require('del'),
-      fs      = require('fs'),
-      path    = require('path'),
-      argv    = require('yargs').argv,
-      urljoin = require('url-join'),
-      uri     = require('urijs'),
-      logger  = require('js-logger'),
-      mime    = require('mime-types'),
-      hawtio  = require('@hawtio/node-backend');
+const gulp   = require('gulp'),
+      Hub    = require('gulp-hub'),
+      del    = require('del'),
+      fs     = require('fs'),
+      path   = require('path'),
+      argv   = require('yargs').argv,
+      uri    = require('urijs'),
+      logger = require('js-logger'),
+      mime   = require('mime-types'),
+      hawtio = require('@hawtio/node-backend');
 
 const config = {
   master    : argv.master,
@@ -121,7 +120,8 @@ gulp.registry(hub);
 
 // Helpers
 const task = (name, fn) => {
-  fn.displayName = name; return fn;
+  fn.displayName = name;
+  return fn;
 };
 
 const chdir = dir => done => {

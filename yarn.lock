@@ -8,7 +8,7 @@
   dependencies:
     "@types/jquery" "~2.0.46"
 
-"@hawtio/core@3.2.22", "@hawtio/core@^3.2.25", "@hawtio/core@~3.2.0", "@hawtio/core@~3.2.25":
+"@hawtio/core@3.2.22", "@hawtio/core@3.2.25", "@hawtio/core@^3.2.25", "@hawtio/core@~3.2.0", "@hawtio/core@~3.2.25":
   version "3.2.25"
   resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-3.2.25.tgz#4f1cece51fe8a209be4972bf84faa6498393de41"
   dependencies:
@@ -4246,7 +4246,7 @@ string-width@^1.0.1, string-width@^1.0.2:
     is-fullwidth-code-point "^1.0.0"
     strip-ansi "^3.0.0"
 
-string_decoder@0.10, string_decoder@1.0.3, string_decoder@~0.10.x, string_decoder@~1.0.3:
+string_decoder@0.10, string_decoder@1.0.3, string_decoder@~0.10.x, string_decoder@~1.0.3, string_decoder@~1.1.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.0.3.tgz#0fc67d7c141825de94282dd536bec6b9bce860ab"
   dependencies:
@@ -4574,10 +4574,6 @@ urijs@1.19.0, urijs@^1.18.10, urijs@^1.19.0:
 urix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
-
-url-join@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/url-join/-/url-join-1.0.0.tgz#886f5e9f9266db72af3dd4b218fdab1a3bfaccc7"
 
 use@^3.1.0:
   version "3.1.0"

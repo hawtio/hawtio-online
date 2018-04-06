@@ -42,7 +42,6 @@
     "js-logger": "^0.9.14",
     "mime-types": "^2.1.18",
     "urijs": "^1.19.0",
-    "url-join": "1.0.0",
     "yargs": "^6.0.0"
   },
   "flat": true,
