@@ -15,7 +15,7 @@ window.OPENSHIFT_CONFIG = {
   openshift: {
     master_uri: '${OPENSHIFT_MASTER}',
     oauth_authorize_uri: new URI('${OPENSHIFT_MASTER}').path('/oauth/authorize').toString(),
-    oauth_client_id: 'hawtio-online',
+    oauth_client_id: '${HAWTIO_OAUTH_CLIENT_ID:-hawtio-online}',
     scope: 'user:info user:check-access user:list-projects role:edit:*'
   }
 };
@@ -32,7 +32,7 @@ window.OPENSHIFT_CONFIG = {
   openshift: {
     master_uri: '${OPENSHIFT_MASTER}',
     oauth_authorize_uri: new URI('${OPENSHIFT_MASTER}').path('/oauth/authorize').toString(),
-    oauth_client_id: 'system:serviceaccount:${HAWTIO_ONLINE_NAMESPACE}:hawtio-online',
+    oauth_client_id: 'system:serviceaccount:${HAWTIO_ONLINE_NAMESPACE}:${HAWTIO_OAUTH_CLIENT_ID:-hawtio-online}',
     scope: 'user:info user:check-access role:edit:${HAWTIO_ONLINE_NAMESPACE}'
   }
 };
