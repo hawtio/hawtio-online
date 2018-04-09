@@ -60,8 +60,8 @@
     patternfly-bootstrap-treeview "2.1.5"
 
 "@hawtio/kubernetes-api@^3.1.1":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-3.1.1.tgz#f4862b673f02d2287cfbdc558e0d5fba7b5ae74e"
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-3.1.3.tgz#9a64a79172c11a62bf55c075b59e23b2bc342694"
   dependencies:
     "@hawtio/core" "^3.2.25"
     "@hawtio/oauth" "^3.0.11"
