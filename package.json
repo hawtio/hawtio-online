@@ -209,6 +209,7 @@
     "to-absolute-glob": "2.0.2",
     "@types/jqueryui": "1.12.2",
     "@hawtio/core-dts": "3.1.0",
+    "angular-animate": "1.6.9",
     "@hawtio/core": "3.2.25"
   }
 }
