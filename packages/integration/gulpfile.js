@@ -50,7 +50,7 @@ function compileTsFiles() {
 }
 
 function compileTemplates() {
-  return gulp.src(config.templates.map(glob => path.join(__dirname, glob)))
+  return gulp.src(config.templates, { cwd: __dirname })
   .pipe(plugins.angularTemplatecache({
     filename      : 'templates.js',
     root          : 'src/',
@@ -62,13 +62,13 @@ function compileTemplates() {
 }
 
 function concatBuildFiles() {
-  return gulp.src(['compiled.js', 'templates.js'].map(f => path.join(__dirname, f)), { allowEmpty: true })
+  return gulp.src(['compiled.js', 'templates.js'], { cwd: __dirname, allowEmpty: true })
     .pipe(plugins.concat(config.js))
     .pipe(gulp.dest(config.dist, { cwd: __dirname }));
 }
 
 function compileLess() {
-  return gulp.src(config.less.map(glob => path.join(__dirname, glob)))
+  return gulp.src(config.less, { cwd: __dirname })
   .pipe(plugins.less({
     paths: [path.join(__dirname, 'node_modules')]
   }))

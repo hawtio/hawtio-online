@@ -51,7 +51,7 @@ function compileTsFiles() {
 }
 
 function compileTemplates() {
-  return gulp.src(config.templates.map(glob => path.join(__dirname, glob)))
+  return gulp.src(config.templates, { cwd: __dirname })
   .pipe(plugins.angularTemplatecache({
     filename      : 'templates.js',
     root          : 'src/',
@@ -63,13 +63,13 @@ function compileTemplates() {
 }
 
 function concatBuildFiles() {
-  return gulp.src(['compiled.js', 'templates.js'].map(f => path.join(__dirname, f)))
+  return gulp.src(['compiled.js', 'templates.js'], { cwd: __dirname })
     .pipe(plugins.concat(config.js))
     .pipe(gulp.dest(config.dist, { cwd: __dirname }));
 }
 
 function compileLess() {
-  return gulp.src(config.less.map(glob => path.join(__dirname, glob)))
+  return gulp.src(config.less, { cwd: __dirname })
   .pipe(plugins.less({
     paths: [path.join(__dirname, 'node_modules')]
   }))
@@ -87,7 +87,7 @@ function distImages() {
 }
 
 function updateProductInfo() {
-  return gulp.src(path.join(__dirname, config.dist, config.js))
+  return gulp.src(path.join(config.dist, config.js), { cwd: __dirname })
     .pipe(plugins.replace('PACKAGE_VERSION_PLACEHOLDER', package.version))
     .pipe(gulp.dest(config.dist, { cwd: __dirname }));
 }
