@@ -121,6 +121,13 @@ objects:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          resources:
+            requests:
+              cpu: 0.2
+              memory: 32Mi
+            limits:
+              cpu: 1.0
+              memory: 32Mi
           volumeMounts:
           - name: hawtio-online
             mountPath: /usr/share/nginx/html/online/hawtconfig.json
