@@ -44,6 +44,17 @@ declare namespace Online {
     const labelsModule: angular.IModule;
 }
 declare namespace Online {
+    class ConsoleService {
+        private $http;
+        private _url;
+        constructor($http: ng.IHttpService);
+        readonly url: string;
+    }
+}
+declare namespace Online {
+    const openshiftModule: angular.IModule;
+}
+declare namespace Online {
     const statusModule: angular.IModule;
 }
 declare namespace Online {

@@ -285,6 +285,42 @@ var Online;
 })(Online || (Online = {}));
 var Online;
 (function (Online) {
+    var ConsoleService = /** @class */ (function () {
+        ConsoleService.$inject = ["$http"];
+        function ConsoleService($http) {
+            'ngInject';
+            var _this = this;
+            this.$http = $http;
+            $http({
+                method: 'GET',
+                url: new URI().query('').path('/console').toString(),
+            }).then(function (response) {
+                _this._url = response.headers('location');
+                Online.log.debug('Using OpenShift Web console URL:', _this._url);
+            }, function (error) {
+                Online.log.debug('Unable to retrieve OpenShift Web console URL');
+            });
+        }
+        Object.defineProperty(ConsoleService.prototype, "url", {
+            get: function () {
+                return this._url;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return ConsoleService;
+    }());
+    Online.ConsoleService = ConsoleService;
+})(Online || (Online = {}));
+/// <reference path="console.service.ts"/>
+var Online;
+(function (Online) {
+    Online.openshiftModule = angular
+        .module('hawtio-online-openshift', [])
+        .service('openShiftConsole', Online.ConsoleService);
+})(Online || (Online = {}));
+var Online;
+(function (Online) {
     Online.statusModule = angular
         .module('hawtio-online-status', [])
         .directive('statusIcon', statusIconDirective)
@@ -377,18 +413,21 @@ var Online;
 /// <reference path="httpSrc.directive.ts"/>
 /// <reference path="match-height.directive.ts"/>
 /// <reference path="../labels/labels.module.ts"/>
+/// <reference path="../openshift/openshift.module.ts"/>
 /// <reference path="../status/status.module.ts"/>
 var Online;
 (function (Online) {
     matchHeightDirective.$inject = ["$timeout"];
     httpSrcDirective.$inject = ["$http"];
     connectUrlFilter.$inject = ["userDetails"];
+    podDetailsUrlFilter.$inject = ["openShiftConsole"];
     Online.discoverModule = angular
         .module('hawtio-online-discover', [
         'angularMoment',
         'KubernetesAPI',
         'patternfly',
         Online.labelsModule.name,
+        Online.openshiftModule.name,
         Online.statusModule.name,
     ])
         .controller('DiscoverController', Online.DiscoverController)
@@ -424,8 +463,10 @@ var Online;
             });
         };
     }
-    function podDetailsUrlFilter() {
-        return function (pod) { return UrlHelpers.join(Core.pathGet(window, ['OPENSHIFT_CONFIG', 'openshift', 'master_uri']) || KubernetesAPI.masterUrl, 'console/project', pod.metadata.namespace, 'browse/pods', pod.metadata.name); };
+    function podDetailsUrlFilter(openShiftConsole) {
+        'ngInject';
+        return function (pod) { return UrlHelpers.join(openShiftConsole.url
+            || UrlHelpers.join(Core.pathGet(window, ['OPENSHIFT_CONFIG', 'openshift', 'master_uri']), 'console'), 'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name); };
     }
     hawtioPluginLoader.addModule(Online.discoverModule.name);
 })(Online || (Online = {}));

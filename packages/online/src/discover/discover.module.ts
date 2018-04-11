@@ -2,11 +2,10 @@
 /// <reference path="httpSrc.directive.ts"/>
 /// <reference path="match-height.directive.ts"/>
 /// <reference path="../labels/labels.module.ts"/>
+/// <reference path="../openshift/openshift.module.ts"/>
 /// <reference path="../status/status.module.ts"/>
 
 namespace Online {
-
-  declare const KubernetesAPI: any;
 
   export const discoverModule = angular
     .module('hawtio-online-discover', [
@@ -14,6 +13,7 @@ namespace Online {
       'KubernetesAPI',
       'patternfly',
       labelsModule.name,
+      openshiftModule.name,
       statusModule.name,
     ])
     .controller('DiscoverController', DiscoverController)
@@ -52,10 +52,12 @@ namespace Online {
       });
   }
 
-  function podDetailsUrlFilter() {
+  function podDetailsUrlFilter(openShiftConsole: ConsoleService) {
+    'ngInject';
     return pod => UrlHelpers.join(
-      Core.pathGet(window, ['OPENSHIFT_CONFIG', 'openshift', 'master_uri']) || KubernetesAPI.masterUrl,
-       'console/project', pod.metadata.namespace, 'browse/pods', pod.metadata.name);
+      openShiftConsole.url
+      || UrlHelpers.join(Core.pathGet(window, ['OPENSHIFT_CONFIG', 'openshift', 'master_uri']), 'console'),
+        'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name);
   }
 
   hawtioPluginLoader.addModule(discoverModule.name);
