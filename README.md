@@ -18,7 +18,6 @@ To deploy the Hawtio Online console, execute the following command:
 
 ```sh
 $ oc new-app -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-namespace.yml \
-  -p OPENSHIFT_MASTER=<URL> \
   -p ROUTE_HOSTNAME=<HOST>
 ```
 
@@ -31,7 +30,6 @@ You can obtain more information about the template parameters, by executing the 
 $ oc process --parameters -f https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-namespace.yml
 NAME                DESCRIPTION                                                                   GENERATOR           VALUE
 ROUTE_HOSTNAME      The externally-reachable host name that routes to the Hawtio Online service
-OPENSHIFT_MASTER    The OpenShift master URL used to obtain OAuth access tokens
 ```
 
 You can obtain the status of your deployment, by running:
