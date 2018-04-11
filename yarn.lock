@@ -59,9 +59,9 @@
     angular-resizable "1.2.0"
     patternfly-bootstrap-treeview "2.1.5"
 
-"@hawtio/kubernetes-api@^3.1.1":
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-3.1.4.tgz#c2174ee2ad359222ccc51dc0eb47cb382fed12ea"
+"@hawtio/kubernetes-api@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-3.2.0.tgz#fbc06a2bab0f6085e67be5724c3f382a89fc86cc"
   dependencies:
     "@hawtio/core" "^3.2.25"
     "@hawtio/oauth" "^3.0.11"
