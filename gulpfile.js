@@ -36,10 +36,9 @@ function osconsole(_, res, _) {
         namespace : '${config.namespace}',
       },
       openshift : {
-        master_uri          : '${master}',
-        oauth_authorize_uri : new URI('${master}').path('/oauth/authorize').toString(),
-        oauth_client_id     : 'system:serviceaccount:${config.namespace}:hawtio-online-dev',
-        scope               : 'user:info user:check-access role:edit:${config.namespace}',
+        oauth_metadata_uri : new URI().query('').path('/master/.well-known/oauth-authorization-server').toString(),
+        oauth_client_id    : 'system:serviceaccount:${config.namespace}:hawtio-online-dev',
+        scope              : 'user:info user:check-access role:edit:${config.namespace}',
       },
     }`;
   } else if (config.mode === 'cluster') {
@@ -50,10 +49,9 @@ function osconsole(_, res, _) {
         mode : '${config.mode}',
       },
       openshift : {
-        master_uri          : '${master}',
-        oauth_authorize_uri : new URI('${master}').path('/oauth/authorize').toString(),
-        oauth_client_id     : 'hawtio-online-dev',
-        scope               : 'user:info user:check-access user:list-projects role:edit:*',
+        oauth_metadata_uri : new URI().query('').path('/master/.well-known/oauth-authorization-server').toString(),
+        oauth_client_id    : 'hawtio-online-dev',
+        scope              : 'user:info user:check-access user:list-projects role:edit:*',
       },
     }`;
   } else {

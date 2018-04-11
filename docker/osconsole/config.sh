@@ -1,10 +1,5 @@
 #!/bin/sh
 
-if [ ! -n "${OPENSHIFT_MASTER:-}" ]; then
-  >&2 echo OPENSHIFT_MASTER must be set
-  exit 1
-fi
-
 if [ "${HAWTIO_ONLINE_MODE}" = "cluster" ]; then 
 cat << EOF
 window.OPENSHIFT_CONFIG = {
@@ -13,8 +8,7 @@ window.OPENSHIFT_CONFIG = {
     mode: '${HAWTIO_ONLINE_MODE}'
   },
   openshift: {
-    master_uri: '${OPENSHIFT_MASTER}',
-    oauth_authorize_uri: new URI('${OPENSHIFT_MASTER}').path('/oauth/authorize').toString(),
+    oauth_metadata_uri: new URI().query('').path('/master/.well-known/oauth-authorization-server').toString(),
     oauth_client_id: '${HAWTIO_OAUTH_CLIENT_ID:-hawtio-online}',
     scope: 'user:info user:check-access user:list-projects role:edit:*'
   }
@@ -30,8 +24,7 @@ window.OPENSHIFT_CONFIG = {
     namespace: '${HAWTIO_ONLINE_NAMESPACE}'
   },
   openshift: {
-    master_uri: '${OPENSHIFT_MASTER}',
-    oauth_authorize_uri: new URI('${OPENSHIFT_MASTER}').path('/oauth/authorize').toString(),
+    oauth_metadata_uri: new URI().query('').path('/master/.well-known/oauth-authorization-server').toString(),
     oauth_client_id: 'system:serviceaccount:${HAWTIO_ONLINE_NAMESPACE}:${HAWTIO_OAUTH_CLIENT_ID:-hawtio-online}',
     scope: 'user:info user:check-access role:edit:${HAWTIO_ONLINE_NAMESPACE}'
   }
