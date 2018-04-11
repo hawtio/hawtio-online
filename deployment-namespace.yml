@@ -5,9 +5,6 @@ metadata:
 parameters:
 - name: ROUTE_HOSTNAME
   description: The externally-reachable host name that routes to the Hawtio Online service
-- name: OPENSHIFT_MASTER
-  description: The OpenShift master URL used to obtain OAuth access tokens
-  required: true
 message: |-
   Hawtio Online is deployed.
 objects:
@@ -113,8 +110,6 @@ objects:
             periodSeconds: 5
             timeoutSeconds: 1
           env:
-          - name: OPENSHIFT_MASTER
-            value: ${OPENSHIFT_MASTER}
           - name: HAWTIO_ONLINE_MODE
             value: namespace
           - name: HAWTIO_ONLINE_NAMESPACE
