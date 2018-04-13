@@ -7,7 +7,7 @@
     "build": "gulp build"
   },
   "dependencies": {
-    "@hawtio/integration": "^3.2.27",
+    "@hawtio/integration": "^3.2.28",
     "@hawtio/kubernetes-api": "^3.2.0",
     "@hawtio/oauth": "^3.1.0",
     "patternfly": "^3.41.6"
