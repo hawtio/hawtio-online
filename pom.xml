@@ -132,13 +132,6 @@
                 <image>
                   <name>${image.ui}</name>
                   <build>
-                    <assembly>
-                      <inline>
-                        <fileSet>
-                          <directory>dist</directory>
-                        </fileSet>
-                      </inline>
-                    </assembly>
                     <dockerFile>${basedir}/docker/Dockerfile</dockerFile>
                   </build>
                 </image>
