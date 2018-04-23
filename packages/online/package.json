@@ -9,7 +9,8 @@
   "scripts": {
     "start": "gulp",
     "build": "gulp online::build",
-    "version": "gulp online::build && git add -A dist"
+    "version": "gulp online::build && git add -A dist",
+    "license": "license-reporter save --xml licenses.xml"
   },
   "dependencies": {
     "@hawtio/core": "^3.2.25",
@@ -51,6 +52,7 @@
     "gulp-usemin": "~0.3.0",
     "gulp-watch": "^3.0.0",
     "js-logger": "^0.9.14",
+    "license-reporter": "^1.2.0",
     "merge2": "^1.2.1",
     "typescript": "^2.0.0",
     "yargs": "^6.0.0"
