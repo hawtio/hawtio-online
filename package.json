@@ -45,7 +45,7 @@
     "license-reporter": "^1.2.0",
     "mime-types": "^2.1.18",
     "urijs": "^1.19.0",
-    "yargs": "^11.0.0"
+    "yargs": "^9.0.0"
   },
   "flat": true,
   "resolutions": {
@@ -212,7 +212,7 @@
     "@hawtio/core-dts": "3.1.0",
     "angular-animate": "1.6.9",
     "@hawtio/core": "3.2.25",
-    "yargs": "11.0.0",
+    "yargs": "9.0.0",
     "string-width": "2.1.1",
     "is-fullwidth-code-point": "2.0.0",
     "os-locale": "2.1.0",
@@ -227,6 +227,10 @@
     "spdx-correct": "3.0.0",
     "spdx-expression-parse": "3.0.0",
     "spdx-license-ids": "3.0.0",
-    "spdx-exceptions": "2.1.0"
+    "spdx-exceptions": "2.1.0",
+    "read-pkg-up": "2.0.0",
+    "read-pkg": "2.0.0",
+    "load-json-file": "2.0.0",
+    "path-type": "2.0.0"
   }
 }
