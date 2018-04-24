@@ -80,6 +80,7 @@
               <arguments>site</arguments>
             </configuration>
           </execution>
+          <!-- TODO: simplify when https://github.com/yarnpkg/rfcs/blob/452d5beb50a963c2803a8f6bcfb0c85e65ee3f54/accepted/0000-workspace-run-commands.md gets implemented -->
           <execution>
             <id>yarn online license</id>
             <goals>
