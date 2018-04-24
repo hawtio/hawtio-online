@@ -80,6 +80,42 @@
               <arguments>site</arguments>
             </configuration>
           </execution>
+          <execution>
+            <id>yarn online license</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <configuration>
+              <arguments>workspace @hawtio/online license</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>yarn integration license</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <configuration>
+              <arguments>workspace @hawtio/online-integration license</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>yarn merge license</id>
+            <goals>
+              <goal>yarn</goal>
+            </goals>
+            <configuration>
+              <arguments>license</arguments>
+            </configuration>
+          </execution>
+           <execution>
+            <id>gulp copy license</id>
+            <goals>
+              <goal>gulp</goal>
+            </goals>
+            <configuration>
+              <arguments>license</arguments>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>

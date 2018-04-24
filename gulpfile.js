@@ -150,6 +150,9 @@ gulp.task('serve-site', () => {
   return hawtio.listen(server => console.log(`Hawtio console started at http://localhost:${server.address().port}`));
 });
 
+// To remove when https://github.com/bucharest-gold/license-reporter/issues/303 is fixed
+gulp.task('license', () => gulp.src('licenses/licenses.xml').pipe(gulp.dest('docker/licenses')));
+
 // Override the reload tasks
 hub._registry[path.join(__dirname, 'packages/online/gulpfile.js')]
   .set('online::reload',
