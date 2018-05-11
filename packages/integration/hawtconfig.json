@@ -1,13 +1,13 @@
 {
   "about": {
-    "title": "Hawtio Management Console",
+    "title": "Red Hat Fuse Management Console",
     "productInfo": [],
-    "additionalInfo": "Hawtio Management Console is a lightweight and modular Web console with lots of plugins for managing Java applications.",
+    "additionalInfo": "The Red Hat Fuse Management Console eases the discovery and management of 'hawtio-enabled' applications deployed on OpenShift.",
     "copyright": ""
   },
   "branding": {
-    "appName": "Hawtio Management Console",
-    "appLogoUrl": "node_modules/@hawtio/core/dist/img/hawtio-logo.svg"
+    "appName": "Red Hat Fuse Management Console",
+    "appLogoUrl": "../online/img/fuse-logo.svg"
   },
   "disabledRoutes": []
 }
