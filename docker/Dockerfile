@@ -24,11 +24,7 @@ RUN curl -sO http://nginx.org/keys/nginx_signing.key && \
 
 # Copy licenses
 RUN mkdir -p /opt/fuse/licenses
-COPY licenses/licenses.css /opt/fuse/licenses
-COPY licenses/licenses.xml /opt/fuse/licenses
-COPY licenses/licenses.html /opt/fuse/licenses
-COPY licenses/mit.txt /opt/fuse/licenses
-COPY licenses/nginx.txt /opt/fuse/licenses
+COPY licenses /opt/fuse/licenses
 
 # forward request and error logs to docker log collector
 # - Change pid file location & remove nginx user & change port to 8080

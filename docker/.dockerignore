@@ -1,4 +1,5 @@
 *
+!licenses
 !site
 !osconsole/config.sh
 !nginx.conf
