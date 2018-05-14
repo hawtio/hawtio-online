@@ -108,15 +108,6 @@
               <arguments>license</arguments>
             </configuration>
           </execution>
-           <execution>
-            <id>gulp copy license</id>
-            <goals>
-              <goal>gulp</goal>
-            </goals>
-            <configuration>
-              <arguments>license</arguments>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <plugin>

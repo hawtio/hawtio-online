@@ -30,7 +30,7 @@
   "scripts": {
     "start": "gulp",
     "build": "gulp build",
-    "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml"
+    "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml -o=docker/licenses"
   },
   "devDependencies": {
     "@hawtio/node-backend": "^3.1.3",
