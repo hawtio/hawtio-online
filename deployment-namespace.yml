@@ -95,17 +95,19 @@ objects:
           name: hawtio-online
           ports:
           - name: nginx
-            containerPort: 8080
+            containerPort: 8443
           livenessProbe:
             httpGet:
               path: /online
               port: nginx
+              scheme: HTTPS
             periodSeconds: 10
             timeoutSeconds: 1
           readinessProbe:
             httpGet:
               path: /online
               port: nginx
+              scheme: HTTPS
             initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 1
@@ -130,13 +132,18 @@ objects:
           - name: hawtio-integration
             mountPath: /usr/share/nginx/html/integration/hawtconfig.json
             subPath: hawtconfig.json
+          - mountPath: /etc/tls/private
+            name: hawtio-online-tls
         volumes:
         - name: hawtio-online
           configMap:
             name: hawtio-online
         - name: hawtio-integration
           configMap:
-            name: hawtio-integration
+            name: hawtio-online
+        - name: hawtio-online-tls
+          secret:
+            secretName: hawtio-online-tls
     triggers:
     - imageChangeParams:
         automatic: true
@@ -153,10 +160,12 @@ objects:
     labels:
       app: hawtio
       component: online
+    annotations:
+      service.alpha.openshift.io/serving-cert-secret-name: hawtio-online-tls
     name: hawtio-online
   spec:
     ports:
-    - port: 80
+    - port: 443
       protocol: TCP
       targetPort: nginx
     selector:
@@ -176,7 +185,7 @@ objects:
       name: hawtio-online
     tls:
       insecureEdgeTerminationPolicy: Redirect
-      termination: edge
+      termination: reencrypt
 - apiVersion: v1
   kind: ServiceAccount
   metadata:
