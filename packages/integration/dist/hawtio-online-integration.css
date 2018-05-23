@@ -1,4 +1,4 @@
-.navbar-brand-name {
-  height: 18px;
-  margin-top: 4px !important;
+.navbar-brand {
+  line-height: 54px !important;
+  padding: unset !important;
 }
