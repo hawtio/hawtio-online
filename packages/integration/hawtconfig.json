@@ -1,13 +1,13 @@
 {
   "about": {
-    "title": "Red Hat Fuse Management Console",
+    "title": "Hawtio Console",
     "productInfo": [],
-    "additionalInfo": "The Red Hat Fuse Management Console eases the discovery and management of 'hawtio-enabled' applications deployed on OpenShift.",
+    "additionalInfo": "The Hawtio Console eases the discovery and management of 'hawtio-enabled' applications deployed on OpenShift.",
     "copyright": ""
   },
   "branding": {
-    "appName": "Red Hat Fuse Management Console",
-    "appLogoUrl": "../online/img/fuse-logo.svg"
+    "appName": "Hawtio Console",
+    "appLogoUrl": "node_modules/@hawtio/core/dist/img/hawtio-logo.svg"
   },
   "disabledRoutes": []
 }
