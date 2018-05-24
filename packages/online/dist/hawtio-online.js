@@ -518,6 +518,14 @@ var Online;
         aboutService.addProductInfo('Hawtio Online', '1.3.0');
     }
     hawtioPluginLoader.addModule(module.name);
+    hawtioPluginLoader.registerPreBootstrapTask({
+        name: 'HawtioTabTitle',
+        depends: 'ConfigLoader',
+        task: function (next) {
+            document.title = _.get(window, 'hawtconfig.branding.appName', 'Hawtio Console');
+            next();
+        }
+    });
     Online.log = Logger.get(module.name);
 })(Online || (Online = {}));
 var Online;

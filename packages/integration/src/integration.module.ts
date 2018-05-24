@@ -19,5 +19,14 @@ namespace Online {
 
   hawtioPluginLoader.addModule(module.name);
 
+  hawtioPluginLoader.registerPreBootstrapTask({
+    name: 'HawtioTabTitle',
+    depends: 'ConfigLoader',
+    task: (next) => {
+      document.title = _.get(window, 'hawtconfig.branding.appName', 'Hawtio Console');      
+      next();
+    }
+  });
+
   export const log = Logger.get(module.name);
 }
