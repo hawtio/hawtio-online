@@ -44,7 +44,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
     chown -R 998 /var/cache/nginx /etc/nginx && \
     chmod -R g=u /var/cache/nginx /etc/nginx
 
-EXPOSE 8080
+EXPOSE 443
 
 # Add symbolic link to config.json to avoid mounting issues
 RUN ln -sf /usr/share/nginx/html/config/config.json /usr/share/nginx/html/config.json
