@@ -11,7 +11,7 @@ LABEL name="nginxinc/nginx" \
 ### Required labels above - recommended below
 LABEL url="https://www.nginx.com/" \
       io.k8s.display-name="NGINX" \
-      io.openshift.expose-services="http:8080" \
+      io.openshift.expose-services="8443:https" \
       io.openshift.tags="nginx,nginxinc"
 
 ADD nginx.repo /etc/yum.repos.d/nginx.repo
