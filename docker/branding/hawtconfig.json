@@ -1,0 +1,13 @@
+{
+  "about": {
+    "title": "Red Hat Fuse Console",
+    "productInfo": [],
+    "additionalInfo": "The Red Hat Fuse Console eases the discovery and management of Fuse applications deployed on OpenShift.",
+    "copyright": ""
+  },
+  "branding": {
+    "appName": "Hawtio Console",
+    "appLogoUrl": "../online/img/fuse-logo.svg"
+  },
+  "disabledRoutes": []
+}

@@ -1,6 +1,7 @@
 */
 
 !/docker/
+!/docker/branding
 !/packages/
 !/packages/**/*
 
