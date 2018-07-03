@@ -211,7 +211,6 @@
     "@types/jqueryui": "1.12.2",
     "@hawtio/core-dts": "3.1.0",
     "angular-animate": "1.6.9",
-    "@hawtio/core": "3.2.25",
     "yargs": "9.0.0",
     "string-width": "2.1.1",
     "is-fullwidth-code-point": "2.0.0",
@@ -232,6 +231,7 @@
     "read-pkg": "2.0.0",
     "load-json-file": "2.0.0",
     "path-type": "2.0.0",
-    "bootstrap-select": "1.12.4"
+    "bootstrap-select": "1.12.4",
+    "@hawtio/core": "3.2.26"
   }
 }
