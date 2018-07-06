@@ -7,7 +7,7 @@ WORKDIR /hawtio-online
 COPY . .
 
 RUN yarn install && \
-    gulp site
+    gulp --series build site
 
 FROM docker.io/centos:7
 
