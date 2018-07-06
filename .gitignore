@@ -5,6 +5,7 @@
 !/packages/
 !/packages/**/*
 
+dist/
 licenses/
 node_modules/
 site/
