@@ -39,9 +39,9 @@
     "@hawtio/core-dts" "~3.0.0"
     "@hawtio/ui" "~3.2.0"
 
-"@hawtio/integration@^3.2.31":
-  version "3.2.31"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-3.2.31.tgz#23b665122072133a770906c9aa32747d6881040b"
+"@hawtio/integration@^3.2.32":
+  version "3.2.32"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-3.2.32.tgz#80005d40666dbb16cc737367193dbf3550c8e20a"
   dependencies:
     "@hawtio/core-dts" "3.1.0"
     "@hawtio/jmx" "~3.2.0"
