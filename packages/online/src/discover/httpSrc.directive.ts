@@ -53,7 +53,7 @@ namespace Online {
               });
               scope.objectURL = URL.createObjectURL(blob);
             })
-            .catch(error => {
+            .catch(_ => {
               scope.objectURL = 'img/java.svg';
             });
         }

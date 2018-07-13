@@ -42,8 +42,7 @@ namespace Online {
     return container => container.ports.find(port => port.name === 'jolokia');
   }
 
-  function connectUrlFilter(userDetails: Core.AuthService) {
-    'ngInject';
+  function connectUrlFilter() {
     return (pod, port = 8778) => new URI().path('/integration/')
       .query({
         jolokiaUrl : new URI().query('').path(`/master/api/v1/namespaces/${pod.metadata.namespace}/pods/https:${pod.metadata.name}:${port}/proxy/jolokia/`),

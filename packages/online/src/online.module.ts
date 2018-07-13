@@ -60,7 +60,7 @@ namespace Online {
     name: 'HawtioTabTitle',
     depends: 'ConfigLoader',
     task: (next) => {
-      document.title = _.get(window, 'hawtconfig.branding.appName', 'Hawtio Console');      
+      document.title = _.get(window, 'hawtconfig.branding.appName', 'Hawtio Console');
       next();
     }
   });
