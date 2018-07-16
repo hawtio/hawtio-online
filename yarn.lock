@@ -8,23 +8,24 @@
   dependencies:
     "@types/jquery" "~2.0.46"
 
-"@hawtio/core@3.2.22", "@hawtio/core@3.3.1", "@hawtio/core@^3.2.25", "@hawtio/core@^3.3.1", "@hawtio/core@~3.2.0", "@hawtio/core@~3.2.25":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-3.3.1.tgz#6474fcf6b64a6e8f413d0dc1ad0b750827176e23"
+"@hawtio/core@3.2.22", "@hawtio/core@4.0.3", "@hawtio/core@^3.2.25", "@hawtio/core@^4.0.3", "@hawtio/core@~3.2.0", "@hawtio/core@~3.2.25":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.0.3.tgz#b7a628f867fbbc81bad820f2cdce802161d4c755"
   dependencies:
     "@hawtio/core-dts" "3.0.18"
-    "@types/angular" "~1.6.0"
-    "@types/angular-route" "1.3.4"
+    "@types/angular" "*"
+    "@types/angular-route" "*"
     "@types/jasmine" "2.8.2"
     "@types/jquery" "~2.0.0"
     "@types/lodash" "4.14.91"
     "@types/marked" "0.3.0"
     "@types/urijs" "1.15.34"
-    angular "~1.6.0"
-    angular-animate "~1.6.0"
+    angular "~1.7.0"
+    angular-animate "~1.7.0"
     angular-patternfly "^4.0.0"
-    angular-route "~1.6.0"
-    angular-sanitize "~1.6.0"
+    angular-route "~1.7.0"
+    angular-sanitize "~1.7.0"
+    gulp-rename "~1.2.3"
     jquery "2.2.4"
     js-logger "1.4.1"
     lodash "4.17.4"
@@ -116,9 +117,9 @@
   dependencies:
     "@types/angular" "*"
 
-"@types/angular-route@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@types/angular-route/-/angular-route-1.3.4.tgz#10d3f7eb313fb8a4b832041f9401869803dcd4df"
+"@types/angular-route@*", "@types/angular-route@1.3.4":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@types/angular-route/-/angular-route-1.3.5.tgz#78b8e0b069d5efe55ec7072461f4e2f6ae20767b"
   dependencies:
     "@types/angular" "*"
 
@@ -443,7 +444,7 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
-angular-animate@1.5.*, angular-animate@1.6.9, angular-animate@~1.6.0:
+angular-animate@1.5.*, angular-animate@1.6.9, angular-animate@~1.6.0, angular-animate@~1.7.0:
   version "1.6.9"
   resolved "https://registry.yarnpkg.com/angular-animate/-/angular-animate-1.6.9.tgz#a0f926c1ba3190bd8929ef966a7fa79760682622"
 
@@ -489,11 +490,11 @@ angular-resource@~1.6.5:
   version "1.6.9"
   resolved "https://registry.yarnpkg.com/angular-resource/-/angular-resource-1.6.9.tgz#d02334b7cb96353e245966ad044c0c673df7b685"
 
-angular-route@1.6.9, angular-route@~1.6.0:
+angular-route@1.6.9, angular-route@~1.6.0, angular-route@~1.7.0:
   version "1.6.9"
   resolved "https://registry.yarnpkg.com/angular-route/-/angular-route-1.6.9.tgz#73c63cec6a8a6b924698aec635eac32aa41f5e2b"
 
-angular-sanitize@1.5.*, angular-sanitize@1.6.8, angular-sanitize@~1.6.0:
+angular-sanitize@1.5.*, angular-sanitize@1.6.8, angular-sanitize@~1.6.0, angular-sanitize@~1.7.0:
   version "1.6.8"
   resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.6.8.tgz#68175a1a5853a6439fffcb251a88a538a44a8e70"
 
@@ -505,7 +506,7 @@ angular-ui-bootstrap@2.3.x, angular-ui-bootstrap@2.5.6, angular-ui-bootstrap@^2.
   version "2.5.6"
   resolved "https://registry.yarnpkg.com/angular-ui-bootstrap/-/angular-ui-bootstrap-2.5.6.tgz#23937322ec641a6fbee16498cc32452aa199e7c5"
 
-angular@1.5.*, angular@1.6.8, angular@>=1.3.0, "angular@>=1.3.8 <1.6", angular@^1.2.0, angular@~1.6.0:
+angular@1.5.*, angular@1.6.8, angular@>=1.3.0, "angular@>=1.3.8 <1.6", angular@^1.2.0, angular@~1.6.0, angular@~1.7.0:
   version "1.6.8"
   resolved "https://registry.yarnpkg.com/angular/-/angular-1.6.8.tgz#5be378a58be91a5489e78b59c4518cd9fd273ffb"
 
@@ -2338,9 +2339,9 @@ gulp-notify@^2.0.0:
     node.extend "^1.1.3"
     through2 "^0.6.3"
 
-gulp-rename@^1.0.0:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/gulp-rename/-/gulp-rename-1.2.2.tgz#3ad4428763f05e2764dec1c67d868db275687817"
+gulp-rename@^1.0.0, gulp-rename@~1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/gulp-rename/-/gulp-rename-1.2.3.tgz#37b75298e9d3e6c0fe9ac4eac13ce3be5434646b"
 
 gulp-replace@~0.5.0:
   version "0.5.4"
