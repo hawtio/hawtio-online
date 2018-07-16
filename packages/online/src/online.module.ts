@@ -17,23 +17,14 @@ namespace Online {
       .when('/online/discover', { templateUrl: 'src/discover/discover.html' });
   }
 
-  function addOnlineTab(HawtioNav: Nav.Registry): void {
+  function addOnlineTab(mainNavService: Nav.MainNavService): void {
     'ngInject';
 
-    const builder = HawtioNav.builder();
-    const tab = builder.id('online')
-      .title(() => 'Online')
-      .defaultPage({
-        rank : 15,
-        isValid : (yes, no) => {
-          yes();
-        }
-      })
-      .href(() => '/online/discover')
-      .isValid(() => true)
-      .build();
-
-    HawtioNav.add(tab);
+    mainNavService.addItem({
+      title: 'Online',
+      href: '/online/discover',
+      isValid: () => true,
+    });
   }
 
   function addLogoutToUserDropdown(
