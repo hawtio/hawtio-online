@@ -8,9 +8,9 @@
   dependencies:
     "@types/jquery" "~2.0.46"
 
-"@hawtio/core@3.2.22", "@hawtio/core@^3.2.25", "@hawtio/core@^3.3.0", "@hawtio/core@~3.2.0", "@hawtio/core@~3.2.25":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-3.3.0.tgz#1fcc01de3e085dc5dacbd125454b397b1bdc3b6d"
+"@hawtio/core@3.2.22", "@hawtio/core@3.3.1", "@hawtio/core@^3.2.25", "@hawtio/core@^3.3.1", "@hawtio/core@~3.2.0", "@hawtio/core@~3.2.25":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-3.3.1.tgz#6474fcf6b64a6e8f413d0dc1ad0b750827176e23"
   dependencies:
     "@hawtio/core-dts" "3.0.18"
     "@types/angular" "~1.6.0"

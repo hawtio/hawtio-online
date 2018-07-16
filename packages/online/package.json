@@ -13,7 +13,7 @@
     "license": "license-reporter save --xml licenses.xml"
   },
   "dependencies": {
-    "@hawtio/core": "^3.3.0",
+    "@hawtio/core": "^3.3.1",
     "@hawtio/kubernetes-api": "^3.2.0",
     "@hawtio/oauth": "^3.1.0",
     "angular-moment": "^1.2.0",
