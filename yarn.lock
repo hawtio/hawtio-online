@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@hawtio/core-dts@3.0.18", "@hawtio/core-dts@3.1.0", "@hawtio/core-dts@~3.0.0":
+"@hawtio/core-dts@3.0.18", "@hawtio/core-dts@3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@hawtio/core-dts/-/core-dts-3.1.0.tgz#23b73d0f7f884fb1e1e8d9537d36d42bbdee18df"
   dependencies:
     "@types/jquery" "~2.0.46"
 
-"@hawtio/core@3.2.22", "@hawtio/core@4.0.3", "@hawtio/core@^3.2.25", "@hawtio/core@^4.0.3", "@hawtio/core@~3.2.0", "@hawtio/core@~3.2.25":
+"@hawtio/core@4.0.3", "@hawtio/core@^3.2.25", "@hawtio/core@^4.0.0", "@hawtio/core@^4.0.3", "@hawtio/core@~3.2.25":
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.0.3.tgz#b7a628f867fbbc81bad820f2cdce802161d4c755"
   dependencies:
@@ -32,33 +32,31 @@
     marked "0.3.9"
     urijs "1.19.0"
 
-"@hawtio/forms@~3.2.0":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@hawtio/forms/-/forms-3.2.1.tgz#5486e4c5685b7705ef40aeac89914567cd7f937c"
+"@hawtio/forms@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@hawtio/forms/-/forms-4.0.0.tgz#b5720ccf592c8c8820eb1076beeffb0021373b6d"
   dependencies:
-    "@hawtio/core" "~3.2.0"
-    "@hawtio/core-dts" "~3.0.0"
-    "@hawtio/ui" "~3.2.0"
+    "@hawtio/ui" "^4.0.0"
 
-"@hawtio/integration@^3.2.32":
-  version "3.2.32"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-3.2.32.tgz#80005d40666dbb16cc737367193dbf3550c8e20a"
+"@hawtio/integration@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.0.1.tgz#e8d38ca6be7f4233a9e81b8627808d6e1bd1e84e"
   dependencies:
     "@hawtio/core-dts" "3.1.0"
-    "@hawtio/jmx" "~3.2.0"
+    "@hawtio/jmx" "~4.0.0"
     "@types/angular-mocks" "~1.5.11"
     "@types/angular-ui-bootstrap" "~0.13.46"
-    "@types/jqueryui" "1.12.0"
+    "@types/jqueryui" "1.12.2"
     dagre-layout "0.8.0"
     ng-infinite-scroll "1.3.0"
 
-"@hawtio/jmx@~3.2.0":
-  version "3.2.34"
-  resolved "https://registry.yarnpkg.com/@hawtio/jmx/-/jmx-3.2.34.tgz#110e8e94debd23298cce0b6e52efa6d9b7740b21"
+"@hawtio/jmx@~4.0.0":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@hawtio/jmx/-/jmx-4.0.3.tgz#9c0c160046b9b47bdead08097aefa5b6a4bc933d"
   dependencies:
-    "@hawtio/core" "~3.2.0"
-    "@hawtio/forms" "~3.2.0"
-    "@hawtio/ui" "~3.2.0"
+    "@hawtio/core" "^4.0.0"
+    "@hawtio/forms" "^4.0.0"
+    "@hawtio/ui" "^4.0.0"
     "@types/angular-ui-bootstrap" "~0.13.46"
     angular-resizable "1.2.0"
     patternfly-bootstrap-treeview "2.1.5"
@@ -95,11 +93,11 @@
     "@hawtio/core" "~3.2.25"
     ng-idle "^1.3.2"
 
-"@hawtio/ui@~3.2.0":
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/@hawtio/ui/-/ui-3.2.5.tgz#ac17327c8d6196c4aa2c830da327363820058d63"
+"@hawtio/ui@^4.0.0":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@hawtio/ui/-/ui-4.0.1.tgz#747075eb87175cda378262cd524a87d75e5e7ebe"
   dependencies:
-    "@hawtio/core" "3.2.22"
+    "@hawtio/core" "^4.0.0"
     "@hawtio/core-dts" "3.0.18"
     "@types/bootstrap" "3.3.36"
     "@types/clipboard" "1.5.35"
@@ -117,7 +115,7 @@
   dependencies:
     "@types/angular" "*"
 
-"@types/angular-route@*", "@types/angular-route@1.3.4":
+"@types/angular-route@*", "@types/angular-route@1.3.4", "@types/angular-route@1.3.5":
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/@types/angular-route/-/angular-route-1.3.5.tgz#78b8e0b069d5efe55ec7072461f4e2f6ae20767b"
   dependencies:
@@ -347,7 +345,7 @@
   version "2.0.48"
   resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-2.0.48.tgz#3e90d8cde2d29015e5583017f7830cb3975b2eef"
 
-"@types/jqueryui@1.12.0", "@types/jqueryui@1.12.2":
+"@types/jqueryui@1.12.2":
   version "1.12.2"
   resolved "https://registry.yarnpkg.com/@types/jqueryui/-/jqueryui-1.12.2.tgz#8daa7ffa16880c78b1662ff287df058a2aceb651"
   dependencies:
