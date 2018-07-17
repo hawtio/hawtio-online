@@ -515,7 +515,7 @@ var Online;
     }
     function addProductInfo(aboutService) {
         'ngInject';
-        aboutService.addProductInfo('Hawtio Online', '1.3.0');
+        aboutService.addProductInfo('Hawtio Online', '1.3.1');
     }
     hawtioPluginLoader.addModule(module.name);
     Online.log = Logger.get(module.name);
