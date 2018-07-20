@@ -8,9 +8,9 @@
   dependencies:
     "@types/jquery" "~2.0.46"
 
-"@hawtio/core@4.0.3", "@hawtio/core@^3.2.25", "@hawtio/core@^4.0.0", "@hawtio/core@^4.0.3", "@hawtio/core@~3.2.25":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.0.3.tgz#b7a628f867fbbc81bad820f2cdce802161d4c755"
+"@hawtio/core@^3.2.25", "@hawtio/core@^4.0.0", "@hawtio/core@~3.3.0":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.0.4.tgz#03083bf002026e26fba33d4d5003e9d19618ff33"
   dependencies:
     "@hawtio/core-dts" "3.0.18"
     "@types/angular" "*"
@@ -86,7 +86,7 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@^3.0.11", "@hawtio/oauth@^4.0.0":
+"@hawtio/oauth@4.0.0", "@hawtio/oauth@^3.0.11", "@hawtio/oauth@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.0.0.tgz#debc940fe04b79de2278db472d5b6e5d24f212fd"
   dependencies:
