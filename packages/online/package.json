@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@hawtio/core": "^4.0.0",
-    "@hawtio/kubernetes-api": "^3.2.0",
+    "@hawtio/kubernetes-api": "^4.0.0",
     "@hawtio/oauth": "^4.0.0",
     "angular-moment": "^1.2.0",
     "angular-patternfly": "^4.15.0",

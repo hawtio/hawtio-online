@@ -8,7 +8,7 @@
   dependencies:
     "@types/jquery" "~2.0.46"
 
-"@hawtio/core@4.0.4", "@hawtio/core@^3.2.25", "@hawtio/core@^4.0.0", "@hawtio/core@~3.3.0":
+"@hawtio/core@^4.0.0":
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.0.4.tgz#03083bf002026e26fba33d4d5003e9d19618ff33"
   dependencies:
@@ -61,12 +61,12 @@
     angular-resizable "1.2.0"
     patternfly-bootstrap-treeview "2.1.5"
 
-"@hawtio/kubernetes-api@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-3.2.0.tgz#fbc06a2bab0f6085e67be5724c3f382a89fc86cc"
+"@hawtio/kubernetes-api@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-4.0.0.tgz#4b3109ae734d262c8473c35a24fe1f0dab218bfc"
   dependencies:
-    "@hawtio/core" "^3.2.25"
-    "@hawtio/oauth" "^3.0.11"
+    "@hawtio/core" "^4.0.0"
+    "@hawtio/oauth" "^4.0.0"
 
 "@hawtio/node-backend@^3.1.3":
   version "3.1.3"
@@ -86,7 +86,7 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@4.0.0", "@hawtio/oauth@^3.0.11", "@hawtio/oauth@^4.0.0":
+"@hawtio/oauth@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.0.0.tgz#debc940fe04b79de2278db472d5b6e5d24f212fd"
   dependencies:
@@ -115,7 +115,7 @@
   dependencies:
     "@types/angular" "*"
 
-"@types/angular-route@*", "@types/angular-route@1.3.4", "@types/angular-route@1.3.5":
+"@types/angular-route@*", "@types/angular-route@1.3.5":
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/@types/angular-route/-/angular-route-1.3.5.tgz#78b8e0b069d5efe55ec7072461f4e2f6ae20767b"
   dependencies:
@@ -127,7 +127,7 @@
   dependencies:
     "@types/angular" "*"
 
-"@types/angular@*", "@types/angular@1.6.40", "@types/angular@~1.6.0":
+"@types/angular@*", "@types/angular@1.6.40":
   version "1.6.40"
   resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.6.40.tgz#f4e5a77573068c07ccab320e63e1616e1f097fc9"
 
@@ -442,7 +442,7 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
-angular-animate@1.5.*, angular-animate@1.6.9, angular-animate@~1.6.0, angular-animate@~1.7.0:
+angular-animate@1.5.*, angular-animate@1.6.9, angular-animate@~1.7.0:
   version "1.6.9"
   resolved "https://registry.yarnpkg.com/angular-animate/-/angular-animate-1.6.9.tgz#a0f926c1ba3190bd8929ef966a7fa79760682622"
 
@@ -488,11 +488,11 @@ angular-resource@~1.6.5:
   version "1.6.9"
   resolved "https://registry.yarnpkg.com/angular-resource/-/angular-resource-1.6.9.tgz#d02334b7cb96353e245966ad044c0c673df7b685"
 
-angular-route@1.6.9, angular-route@~1.6.0, angular-route@~1.7.0:
+angular-route@1.6.9, angular-route@~1.7.0:
   version "1.6.9"
   resolved "https://registry.yarnpkg.com/angular-route/-/angular-route-1.6.9.tgz#73c63cec6a8a6b924698aec635eac32aa41f5e2b"
 
-angular-sanitize@1.5.*, angular-sanitize@1.6.8, angular-sanitize@~1.6.0, angular-sanitize@~1.7.0:
+angular-sanitize@1.5.*, angular-sanitize@1.6.8, angular-sanitize@~1.7.0:
   version "1.6.8"
   resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.6.8.tgz#68175a1a5853a6439fffcb251a88a538a44a8e70"
 
@@ -504,7 +504,7 @@ angular-ui-bootstrap@2.3.x, angular-ui-bootstrap@2.5.6, angular-ui-bootstrap@^2.
   version "2.5.6"
   resolved "https://registry.yarnpkg.com/angular-ui-bootstrap/-/angular-ui-bootstrap-2.5.6.tgz#23937322ec641a6fbee16498cc32452aa199e7c5"
 
-angular@1.5.*, angular@1.6.8, angular@>=1.3.0, "angular@>=1.3.8 <1.6", angular@^1.2.0, angular@~1.6.0, angular@~1.7.0:
+angular@1.5.*, angular@1.6.8, angular@>=1.3.0, "angular@>=1.3.8 <1.6", angular@^1.2.0, angular@~1.7.0:
   version "1.6.8"
   resolved "https://registry.yarnpkg.com/angular/-/angular-1.6.8.tgz#5be378a58be91a5489e78b59c4518cd9fd273ffb"
 
