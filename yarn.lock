@@ -456,7 +456,7 @@ angular-moment@^1.2.0:
   dependencies:
     moment ">=2.8.0 <3.0.0"
 
-angular-patternfly@4.15.0, angular-patternfly@^4.0.0, angular-patternfly@^4.15.0:
+angular-patternfly@^4.0.0, angular-patternfly@^4.15.0:
   version "4.15.0"
   resolved "https://registry.yarnpkg.com/angular-patternfly/-/angular-patternfly-4.15.0.tgz#17fd980f7ce84217e4bbbe7d773fcf655b7e912c"
   dependencies:
@@ -847,7 +847,7 @@ bootstrap-sass@^3.3.7:
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/bootstrap-sass/-/bootstrap-sass-3.3.7.tgz#6596c7ab40f6637393323ab0bc80d064fc630498"
 
-bootstrap-select@1.12.2, bootstrap-select@1.12.4, bootstrap-select@^1.12.2, bootstrap-select@~1.12.4:
+bootstrap-select@1.12.2, bootstrap-select@1.12.4, bootstrap-select@~1.12.4:
   version "1.12.4"
   resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.12.4.tgz#7f15d3c0ce978868d9c09c70f96624f55fa02ee1"
   dependencies:
@@ -3909,17 +3909,18 @@ patternfly-bootstrap-treeview@2.1.5, patternfly-bootstrap-treeview@~2.1.0:
     bootstrap "3.3.x"
     jquery ">= 2.1.x"
 
-patternfly@3.37.1, patternfly@^3.37.1, patternfly@^3.41.6:
-  version "3.37.1"
-  resolved "https://registry.yarnpkg.com/patternfly/-/patternfly-3.37.1.tgz#b988af3d6732cb3d0edba3f7e3b11bf10158ed4a"
+patternfly@^3.37.1:
+  version "3.52.2"
+  resolved "https://registry.yarnpkg.com/patternfly/-/patternfly-3.52.2.tgz#09d0db457fef15dc8987897feb299dbad0397443"
   dependencies:
     bootstrap "~3.3.7"
     font-awesome "^4.7.0"
     jquery "~3.2.1"
   optionalDependencies:
+    "@types/c3" "^0.6.0"
     bootstrap-datepicker "^1.7.1"
     bootstrap-sass "^3.3.7"
-    bootstrap-select "^1.12.2"
+    bootstrap-select "1.12.2"
     bootstrap-slider "^9.9.0"
     bootstrap-switch "~3.3.4"
     bootstrap-touchspin "~3.1.1"

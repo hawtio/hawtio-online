@@ -10,8 +10,7 @@
   "dependencies": {
     "@hawtio/integration": "^4.0.0",
     "@hawtio/kubernetes-api": "^4.0.0",
-    "@hawtio/oauth": "^4.0.0",
-    "patternfly": "^3.41.6"
+    "@hawtio/oauth": "^4.0.0"
   },
   "devDependencies": {
     "del": "^2.0.0",
