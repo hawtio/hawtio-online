@@ -9,8 +9,8 @@
   "scripts": {
     "start": "gulp",
     "build": "gulp online::build",
-    "version": "gulp online::build",
-    "license": "license-reporter save --xml licenses.xml"
+    "license": "license-reporter save --xml licenses.xml",
+    "prepack": "gulp online::build"
   },
   "dependencies": {
     "@hawtio/core": "^4.0.0",
