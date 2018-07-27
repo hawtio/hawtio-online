@@ -35,7 +35,7 @@ namespace Online {
 
     HawtioExtension.add('hawtio-logout', ($scope) => {
       $scope.userDetails = userDetails;
-      const template = '<a href="" ng-click="userDetails.logout()">Logout</a>';
+      const template = '<a href="" ng-click="userDetails.logout()">Logout ({{userDetails.username}})</a>';
       return $compile(template)($scope);
     });
   }
