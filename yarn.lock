@@ -88,8 +88,8 @@
     urijs "^1.18.10"
 
 "@hawtio/oauth@^4.0.0":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.0.2.tgz#07103a0824114bb2a82fea9d23178028de20a284"
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.0.4.tgz#4218f4775b4e69f03ae311704322a7f72fc1e046"
   dependencies:
     "@hawtio/core" "^4.0.0"
     ng-idle "^1.3.2"
