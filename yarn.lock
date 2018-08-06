@@ -51,8 +51,8 @@
     ng-infinite-scroll "1.3.0"
 
 "@hawtio/jmx@~4.0.0":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@hawtio/jmx/-/jmx-4.0.3.tgz#9c0c160046b9b47bdead08097aefa5b6a4bc933d"
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@hawtio/jmx/-/jmx-4.0.6.tgz#e16c9b6530538b535d716496c253d7af394f1702"
   dependencies:
     "@hawtio/core" "^4.0.0"
     "@hawtio/forms" "^4.0.0"
