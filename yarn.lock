@@ -95,8 +95,8 @@
     ng-idle "^1.3.2"
 
 "@hawtio/ui@^4.0.0":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@hawtio/ui/-/ui-4.0.1.tgz#747075eb87175cda378262cd524a87d75e5e7ebe"
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@hawtio/ui/-/ui-4.0.2.tgz#8231c23af9a594acc99fbf041ff1004fa3ceccab"
   dependencies:
     "@hawtio/core" "^4.0.0"
     "@hawtio/core-dts" "3.0.18"
