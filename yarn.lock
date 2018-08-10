@@ -39,8 +39,8 @@
     "@hawtio/ui" "^4.0.0"
 
 "@hawtio/integration@^4.0.0":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.0.4.tgz#0fa520e36ef5adab1f1c7de3c44b49cef28ce3c5"
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.0.5.tgz#5f1d7966630e4e31c87f304e50b0de845a13e89e"
   dependencies:
     "@hawtio/core-dts" "3.1.0"
     "@hawtio/jmx" "~4.0.0"
