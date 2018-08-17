@@ -2,7 +2,7 @@ namespace Online {
 
   export interface HttpSrcDirectiveScope extends ng.IScope {
     objectURL: string;
-}
+  }
 
   export class HttpSrcDirective implements ng.IDirective {
 
