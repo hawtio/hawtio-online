@@ -132,6 +132,12 @@
   version "1.6.40"
   resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.6.40.tgz#f4e5a77573068c07ccab320e63e1616e1f097fc9"
 
+"@types/bootstrap-select@^1.11.1":
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/@types/bootstrap-select/-/bootstrap-select-1.11.1.tgz#05dcbc0018f50428cf7943e6a1cda4d3a122051f"
+  dependencies:
+    "@types/jquery" "*"
+
 "@types/bootstrap@3.3.36":
   version "3.3.36"
   resolved "https://registry.yarnpkg.com/@types/bootstrap/-/bootstrap-3.3.36.tgz#5ca0b81655427398fe7c8728bccdc395069093d0"

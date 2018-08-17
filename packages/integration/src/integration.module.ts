@@ -1,7 +1,12 @@
+/// <reference path="app.component.ts"/>
+
 namespace Online {
 
   const module = angular
-    .module('hawtio-online-integration', [])
+    .module('hawtio-online-integration', [
+      'hawtio-online-integration-navigation',
+    ])
+    .component('hawtioIntegrationApp', appComponent)
     .run(addLogoutToUserDropdown);
 
   function addLogoutToUserDropdown(

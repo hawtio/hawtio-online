@@ -43,6 +43,8 @@
     <script src="node_modules/datatables.net-select/js/dataTables.select.js"></script>
     <!-- bootstrap -->
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- bootstrap-select -->
+    <script src="node_modules/bootstrap-select/dist/js/bootstrap-select.js"></script>
     <!-- patternfly -->
     <script src="node_modules/patternfly/dist/js/patternfly.min.js"></script>
     <!-- patternfly-bootstrap-treeview -->
@@ -120,6 +122,8 @@
     <!-- hawtio-kubernetes-api -->
     <script src="node_modules/eventemitter3/index.js"></script>
     <script src="node_modules/@hawtio/kubernetes-api/dist/hawtio-kubernetes-api.js"></script>
+    <!-- jsonpath -->
+    <script src="node_modules/jsonpath/jsonpath.js"></script>
     <!-- @hawtio/online-integration -->
     <script src="dist/hawtio-online-integration.js"></script>
 
@@ -127,6 +131,8 @@
 
   </head>
   <body>
-    <hawtio-app></hawtio-app>
+    <!-- Requires to customize the vertical navigation with context switcher -->
+    <!-- <hawtio-app></hawtio-app> -->
+    <hawtio-integration-app></hawtio-integration-app>
   </body>
 </html>
