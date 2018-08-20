@@ -8,14 +8,14 @@ namespace Online {
   export class PodsSelectorDirective implements ng.IDirective {
 
     template: string;
-    pods: PodsService;
+    openshift: OpenShiftService;
 
     constructor(
-      pods: PodsService,
+      openshift: OpenShiftService,
       private $window: ng.IWindowService,
     ) {
       'ngInject';
-      this.pods = pods;
+      this.openshift = openshift;
       this.template = `
         <div class="nav contextselector-pf">
           <select class="selectpicker" data-live-search="true" title="Loading..." required>
@@ -27,7 +27,7 @@ namespace Online {
 
     link(scope: SelectorDirectiveScope, elem: JQuery) {
       scope.selectedPod = new URI().query(true)['con'];
-      scope.pods = this.pods.items();
+      scope.pods = this.openshift.getPods();
 
       const getConnectUrl = function (pod) {
         const container = _.find(pod.spec.containers,
@@ -47,7 +47,7 @@ namespace Online {
 
       selector.change(() => {
         const selected = selector.val();
-        const pod = _.find(this.pods.items(), pod => pod.metadata.name === selected);
+        const pod = _.find(this.openshift.getPods(), pod => pod.metadata.name === selected);
         this.$window.location.href = getConnectUrl(pod);
       });
 

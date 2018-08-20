@@ -1,6 +1,6 @@
 namespace Online {
 
-  export class PodsService {
+  export class OpenShiftService {
 
     private _loading = 0;
     private pods = [];
@@ -29,11 +29,11 @@ namespace Online {
       pods.connect();
     }
 
-    loading() {
+    isLoading() {
       return this._loading > 0;
     }
 
-    items() {
+    getPods() {
       return this.pods;
     }
   }

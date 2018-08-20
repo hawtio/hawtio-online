@@ -9,8 +9,8 @@ namespace Online {
     .component('hawtioIntegrationNav', navComponent)
     .directive('podsSelector', podsSelectorDirective);
 
-  function podsSelectorDirective(pods: PodsService, $window: ng.IWindowService) {
+  function podsSelectorDirective(openshift: OpenShiftService, $window: ng.IWindowService) {
     'ngInject';
-    return new PodsSelectorDirective(pods, $window);
+    return new PodsSelectorDirective(openshift, $window);
   }
 }
