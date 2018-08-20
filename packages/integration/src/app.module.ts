@@ -7,7 +7,8 @@ namespace Online {
       'hawtio-online-integration-navigation',
     ])
     .component('hawtioIntegrationApp', appComponent)
-    .run(addLogoutToUserDropdown);
+    .run(addLogoutToUserDropdown)
+    .run(destroyBeforeUnload);
 
   function addLogoutToUserDropdown(
     HawtioExtension: Core.HawtioExtension,
@@ -20,6 +21,11 @@ namespace Online {
       const template = '<a href="" ng-click="userDetails.logout()">Logout ({{userDetails.username}})</a>';
       return $compile(template)($scope);
     });
+  }
+
+  function destroyBeforeUnload($rootScope: ng.IRootScopeService, $window: ng.IWindowService) {
+    'ngInject';
+    $window.onbeforeunload = () => $rootScope.$destroy();
   }
 
   hawtioPluginLoader.addModule(module.name);

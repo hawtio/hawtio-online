@@ -7,7 +7,8 @@ namespace Online {
     .config(addRoutes)
     .run(addOnlineTab)
     .run(addLogoutToUserDropdown)
-    .run(addProductInfo);
+    .run(addProductInfo)
+    .run(destroyBeforeUnload);
 
   function addRoutes($routeProvider: angular.route.IRouteProvider) {
     'ngInject';
@@ -43,6 +44,11 @@ namespace Online {
   function addProductInfo(aboutService: About.AboutService) {
     'ngInject';
     aboutService.addProductInfo('Hawtio Online', 'PACKAGE_VERSION_PLACEHOLDER');
+  }
+
+  function destroyBeforeUnload($rootScope: ng.IRootScopeService, $window: ng.IWindowService) {
+    'ngInject';
+    $window.onbeforeunload = () => $rootScope.$destroy();
   }
 
   hawtioPluginLoader.addModule(module.name);
