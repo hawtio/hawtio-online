@@ -4,6 +4,8 @@ namespace Online {
 
     private _loading = 0;
     private pods = [];
+    private pods_client;
+    private pods_watch;
 
     constructor(
       private $window: ng.IWindowService,
@@ -17,16 +19,14 @@ namespace Online {
       }
 
       this._loading++;
-      const pods = this.K8SClientFactory.create('pods', this.$window.OPENSHIFT_CONFIG.hawtio.namespace);
-      const pods_watch = pods.watch(pods => {
+      this.pods_client = this.K8SClientFactory.create('pods', this.$window.OPENSHIFT_CONFIG.hawtio.namespace);
+      this.pods_watch = this.pods_client.watch(pods => {
         this._loading--;
         this.pods.length = 0;
         this.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
       });
 
-      // this.$scope.$on('$destroy', _ => this.K8SClientFactory.destroy(pods, pods_watch));
-
-      pods.connect();
+      this.pods_client.connect();
     }
 
     isLoading() {
@@ -35,6 +35,10 @@ namespace Online {
 
     getPods() {
       return this.pods;
+    }
+
+    disconnect() {
+      this.K8SClientFactory.destroy(this.pods_client, this.pods_watch);
     }
   }
 }

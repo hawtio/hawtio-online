@@ -29,6 +29,8 @@ namespace Online {
       scope.selectedPod = new URI().query(true)['con'];
       scope.pods = this.openshift.getPods();
 
+      scope.$on('$destroy', _ => this.openshift.disconnect());
+
       const getConnectUrl = function (pod) {
         const container = _.find(pod.spec.containers,
           container => container.ports.some(port => port.name === 'jolokia'));
