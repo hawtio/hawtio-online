@@ -17,7 +17,7 @@ namespace Online {
       super(configManager, userDetails, mainNavService, $rootScope, $interval);
 
       this.fuseConsoleUrl = new URI().query('').path('/online/').valueOf();
-      this.openshiftConsoleUrl = openShiftConsole.url;
+      openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
     }
   }
 
