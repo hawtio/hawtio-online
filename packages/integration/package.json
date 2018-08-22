@@ -11,7 +11,8 @@
     "@hawtio/integration": "^4.0.0",
     "@hawtio/kubernetes-api": "^4.0.0",
     "@hawtio/oauth": "^4.0.0",
-    "jsonpath": "^1.0.0"
+    "jsonpath": "^1.0.0",
+    "openshift-logos-icon": "^1.6.0"
   },
   "devDependencies": {
     "@types/jsonpath": "^0.2.0",

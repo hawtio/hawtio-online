@@ -23,6 +23,7 @@
       "**/marked",
       "**/ng-*",
       "**/ng-*/**",
+      "**/openshift-logos-icon",
       "**/patternfly",
       "**/patternfly/**",
       "**/urijs"
