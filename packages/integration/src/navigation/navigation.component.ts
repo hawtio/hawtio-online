@@ -51,7 +51,7 @@ namespace Online {
                 </li>
                 <li class="applauncher-pf-item" role="presentation">
                   <a class="applauncher-pf-link" ng-href="{{$ctrl.openshiftConsoleUrl}}" role="menuitem">
-                    <i class="applauncher-pf-link-icon pficon pficon-storage-domain" aria-hidden="true"></i>
+                    <i class="applauncher-pf-link-icon font-icon icon-openshift" aria-hidden="true"></i>
                     <span class="applauncher-pf-link-title">OpenShift</span>
                   </a>
                 </li>
