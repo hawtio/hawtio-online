@@ -73,7 +73,7 @@ namespace Online {
         <!-- Vertical navigation -->
         <nav class="navbar navbar-pf-vertical">
 
-          <!-- Menu button and branding -->
+          <!-- Navigation bar header -->
           <div class="navbar-header" class="ignore-mobile">
             <button type="button" class="navbar-toggle" ng-click="$ctrl.handleNavBarToggleClick()">
               <span class="sr-only">Toggle navigation</span>
@@ -85,13 +85,12 @@ namespace Online {
               <img class="navbar-brand-icon" ng-if="$ctrl.brandSrc" ng-src="{{$ctrl.brandSrc}}" alt="{{$ctrl.brandAlt}}"/>
               <span class="navbar-brand-txt" ng-if="!$ctrl.brandSrc">{{$ctrl.brandAlt}}</span>
             </span>
-          </div>
-
-          <!-- Navigation bar -->
-          <nav class="collapse navbar-collapse" class="ignore-mobile">
 
             <pods-selector/>
+          </div>
 
+          <!-- Navigation bar menu -->
+          <nav class="collapse navbar-collapse" class="ignore-mobile">
             <ul class="nav navbar-nav navbar-right navbar-iconic">
               <!-- App launcher -->
               <li class="applauncher-pf applauncher-pf-block-list dropdown">
