@@ -2,32 +2,29 @@ namespace Online {
 
   export interface SelectorDirectiveScope extends ng.IScope {
     pods: any[];
-    selectedPod: string;
   }
 
   export class PodsSelectorDirective implements ng.IDirective {
 
     template: string;
-    openshift: OpenShiftService;
 
     constructor(
-      openshift: OpenShiftService,
+      private openshift: OpenShiftService,
       private $window: ng.IWindowService,
     ) {
       'ngInject';
       this.openshift = openshift;
       this.template = `
         <div class="nav contextselector-pf">
-          <select class="selectpicker" data-live-search="true" title="Loading..." required>
-            <option ng-repeat="pod in pods" ng-selected="pod.metadata.name === selectedPod">{{pod.metadata.name}}</option>
+          <select class="selectpicker" data-live-search="true">
           </select>
         </div>
       `;
     }
 
     link(scope: SelectorDirectiveScope, elem: JQuery) {
-      scope.selectedPod = new URI().query(true)['con'];
       scope.pods = this.openshift.getPods();
+      const selectedPod = new URI().query(true)['con'];
 
       scope.$on('$destroy', _ => this.openshift.disconnect());
 
@@ -47,13 +44,27 @@ namespace Online {
 
       const selector = elem.find('.selectpicker');
 
+      scope.$watch(() => this.openshift.isLoading(), loading => {
+        selector.selectpicker({ 'title': loading ? 'Loading...' : 'Select a container...' });
+        updatePodsPicker();
+      });
+
       selector.change(() => {
         const selected = selector.val();
         const pod = _.find(this.openshift.getPods(), pod => pod.metadata.name === selected);
         this.$window.location.href = getConnectUrl(pod);
       });
 
-      const updatePodsPicker = () => selector.selectpicker('refresh');
+      const updatePodsPicker = () => {
+        selector.empty();
+        scope.pods.forEach(pod => {
+          selector.append($('<option>')
+            .attr('value', pod.metadata.name)
+            .attr('selected', pod.metadata.name === selectedPod ? '' : null)
+            .text(pod.metadata.name));
+        });
+        selector.selectpicker('refresh');
+      };
 
       scope.$watchCollection('pods', function () {
         // wait for templates to render
