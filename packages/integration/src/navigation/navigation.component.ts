@@ -5,8 +5,6 @@ namespace Online {
     private fuseConsoleUrl: string;
     private openshiftConsoleUrl: string;
     private navCollapsed = false;
-    private $location: ng.ILocationService;
-    private $window: ng.IWindowService;
     private loading = true;
 
     constructor(
@@ -16,15 +14,12 @@ namespace Online {
       openShiftConsole: ConsoleService,
       userDetails: Core.AuthService,
       $interval: ng.IIntervalService,
-      $location: ng.ILocationService,
       $rootScope: ng.IRootScopeService,
-      $window: ng.IWindowService,
+      private $window: ng.IWindowService,
     ) {
       'ngInject';
       super(configManager, userDetails, mainNavService, $rootScope, $interval);
 
-      this.$location = $location;
-      this.$window = $window;
       this.fuseConsoleUrl = new URI().query('').path('/online/').valueOf();
       openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
     }
@@ -166,7 +161,7 @@ namespace Online {
               <li ng-repeat="item in $ctrl.items" class="list-group-item"
                   ng-class="{
                     'active': item.isActive,
-                    'is-hover': item.isHover
+                    'is-hover': item.isHover,
                   }">
                 <a ng-click="$ctrl.navigateToItem(item)">
                   <span class="list-group-item-value">{{item.title}}</span>
