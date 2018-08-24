@@ -7,12 +7,14 @@ namespace Online {
     private navCollapsed = false;
     private $location: ng.ILocationService;
     private $window: ng.IWindowService;
+    private loading = true;
 
     constructor(
       configManager: Core.ConfigManager,
-      userDetails: Core.AuthService,
+      private initService: Init.InitService,
       mainNavService: Nav.MainNavService,
       openShiftConsole: ConsoleService,
+      userDetails: Core.AuthService,
       $interval: ng.IIntervalService,
       $location: ng.ILocationService,
       $rootScope: ng.IRootScopeService,
@@ -27,7 +29,15 @@ namespace Online {
       openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
     }
 
+    $onInit() {
+      this.initService.init()
+        .then(() => this.loading = false)
+        .then(() => super.$onInit());
+    }
+
     handleNavBarToggleClick() {
+      if (this.loading) return;
+
       if (this.navCollapsed) {
         this.expandMenu();
       } else {
@@ -146,7 +156,7 @@ namespace Online {
           </nav>
 
           <!-- Vertical menu -->
-          <div class="nav-pf-vertical"
+          <div ng-show="!$ctrl.loading" class="nav-pf-vertical"
               ng-class="{
                 'nav-pf-persistent-secondary': $ctrl.persistentSecondary,
                 'hidden-icons-pf': true,
@@ -167,7 +177,13 @@ namespace Online {
         </nav>
 
         <!-- App container -->
-        <div class="container-fluid container-pf-nav-pf-vertical hidden-icons-pf">
+        <div ng-if="$ctrl.loading">
+          <div class="loading-centered">
+            <div class="spinner spinner-lg"></div>
+            <div class="loading-label">Loading...</div>
+          </div>
+        </div>
+        <div ng-if="!$ctrl.loading" class="container-fluid container-pf-nav-pf-vertical hidden-icons-pf">
           <ng-include src="$ctrl.templateUrl"></ng-include>
         </div>
       </div>
