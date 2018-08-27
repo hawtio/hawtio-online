@@ -3,7 +3,7 @@ namespace Online {
   class navController extends Nav.MainNavController {
 
     private navService: Nav.MainNavService;
-    private fuseConsoleUrl: string;
+    private homeUrl: string;
     private openshiftConsoleUrl: string;
     private navCollapsed = true;
     private loading = true;
@@ -16,13 +16,14 @@ namespace Online {
       userDetails: Core.AuthService,
       $interval: ng.IIntervalService,
       $rootScope: ng.IRootScopeService,
+      private $window: ng.IWindowService,
     ) {
       'ngInject';
       super(configManager, userDetails, mainNavService, $rootScope, $interval);
 
       // mainNavService from parent class could be made protected
       this.navService = mainNavService;
-      this.fuseConsoleUrl = new URI().query('').path('/online/').valueOf();
+      this.homeUrl = new URI().query('').path('/online/').valueOf();
       openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
     }
 
@@ -31,6 +32,11 @@ namespace Online {
         .then(() => this.loading = false)
         .then(() => super.$onInit())
         .then(() => this.toggleVerticalMenu());
+    }
+
+    goto(url:string) {
+      this.$window.location.assign(url);
+      return true;
     }
 
     hasVerticalNav() {
@@ -94,7 +100,7 @@ namespace Online {
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li class="applauncher-pf-item" role="presentation">
-                    <a class="applauncher-pf-link" ng-href="{{$ctrl.fuseConsoleUrl}}" role="menuitem">
+                    <a class="applauncher-pf-link" ng-href="{{$ctrl.homeUrl}}" role="menuitem">
                       <i class="applauncher-pf-link-icon pficon pficon-home" aria-hidden="true"></i>
                       <span class="applauncher-pf-link-title">Home</span>
                     </a>
@@ -162,9 +168,33 @@ namespace Online {
             <div class="loading-label">Loading...</div>
           </div>
         </div>
+
         <div ng-if="!$ctrl.loading" class="container-fluid container-pf-nav-pf-vertical hidden-icons-pf"
           ng-class="{'collapsed-nav': $ctrl.navCollapsed}">
+
+          <!-- Container view -->
           <ng-include src="$ctrl.templateUrl"></ng-include>
+
+          <!-- No selection -->
+          <div class="blank-slate-pf">
+            <div class="blank-slate-pf-icon">
+              <span class="pficon pficon pficon-unplugged"></span>
+            </div>
+            <h1>
+              No Selected Container
+            </h1>
+            <p>
+              Please select a container to connect to in the navigation bar above and access the management console.
+            </p>
+            <p>
+              You can alternatively click the navigation buttons below.
+            </p>
+            <div class="blank-slate-pf-secondary-action">
+              <button class="btn btn-default" ng-click="$ctrl.goto($ctrl.homeUrl);">Go to Home</button>
+              <button class="btn btn-default" ng-click="$ctrl.goto($ctrl.openShiftConsoleUrl);">Go to the OpenShift Console</button>
+            </div>
+          </div>
+
         </div>
       </div>
     `,
