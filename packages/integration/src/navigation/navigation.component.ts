@@ -2,6 +2,7 @@ namespace Online {
 
   class navController extends Nav.MainNavController {
 
+    private navService: Nav.MainNavService;
     private fuseConsoleUrl: string;
     private openshiftConsoleUrl: string;
     private navCollapsed = false;
@@ -20,6 +21,8 @@ namespace Online {
       'ngInject';
       super(configManager, userDetails, mainNavService, $rootScope, $interval);
 
+      // mainNavService from parent class could be made protected
+      this.navService = mainNavService;
       this.fuseConsoleUrl = new URI().query('').path('/online/').valueOf();
       openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
     }
@@ -30,8 +33,12 @@ namespace Online {
         .then(() => super.$onInit());
     }
 
+    hasVerticalNav() {
+      return !this.loading && this.navService.getValidItems().length;
+    }
+
     handleNavBarToggleClick() {
-      if (this.loading) return;
+      if (!this.hasVerticalNav()) return;
 
       if (this.navCollapsed) {
         this.expandMenu();
@@ -151,7 +158,7 @@ namespace Online {
           </nav>
 
           <!-- Vertical menu -->
-          <div ng-show="!$ctrl.loading" class="nav-pf-vertical"
+          <div ng-show="$ctrl.hasVerticalNav()" class="nav-pf-vertical"
               ng-class="{
                 'nav-pf-persistent-secondary': $ctrl.persistentSecondary,
                 'hidden-icons-pf': true,
