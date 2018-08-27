@@ -5,7 +5,7 @@ namespace Online {
     private navService: Nav.MainNavService;
     private fuseConsoleUrl: string;
     private openshiftConsoleUrl: string;
-    private navCollapsed = false;
+    private navCollapsed = true;
     private loading = true;
 
     constructor(
@@ -16,7 +16,6 @@ namespace Online {
       userDetails: Core.AuthService,
       $interval: ng.IIntervalService,
       $rootScope: ng.IRootScopeService,
-      private $window: ng.IWindowService,
     ) {
       'ngInject';
       super(configManager, userDetails, mainNavService, $rootScope, $interval);
@@ -30,41 +29,19 @@ namespace Online {
     $onInit() {
       this.initService.init()
         .then(() => this.loading = false)
-        .then(() => super.$onInit());
+        .then(() => super.$onInit())
+        .then(() => this.toggleVerticalMenu());
     }
 
     hasVerticalNav() {
       return !this.loading && this.navService.getValidItems().length;
     }
 
-    handleNavBarToggleClick() {
+    toggleVerticalMenu() {
       if (!this.hasVerticalNav()) return;
-
-      if (this.navCollapsed) {
-        this.expandMenu();
-      } else {
-        this.collapseMenu();
-      }
+      this.navCollapsed = !this.navCollapsed;
     }
 
-    private getBodyContentElement() {
-      return angular.element(document.querySelector('.container-pf-nav-pf-vertical'));
-    }
-
-    private collapseMenu() {
-      const bodyContentElement = this.getBodyContentElement();
-      this.navCollapsed = true;
-      bodyContentElement.addClass('collapsed-nav');
-    }
-
-    private expandMenu() {
-      const bodyContentElement = this.getBodyContentElement();
-      this.navCollapsed = false;
-      bodyContentElement.removeClass('collapsed-nav');
-      // Dispatch a resize event when showing the expanding then menu to
-      // allow content to adjust to the menu sizing
-      angular.element(this.$window).triggerHandler('resize');
-    }
     navigateToItem(item) {
       this.updateTemplateUrl(item);
       this.clearActiveItems();
@@ -87,7 +64,7 @@ namespace Online {
 
           <!-- Navigation bar header -->
           <div class="navbar-header" class="ignore-mobile">
-            <button type="button" class="navbar-toggle" ng-click="$ctrl.handleNavBarToggleClick()">
+            <button type="button" class="navbar-toggle" ng-click="$ctrl.toggleVerticalMenu()">
               <span class="sr-only">Toggle navigation</span>
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
@@ -185,7 +162,8 @@ namespace Online {
             <div class="loading-label">Loading...</div>
           </div>
         </div>
-        <div ng-if="!$ctrl.loading" class="container-fluid container-pf-nav-pf-vertical hidden-icons-pf">
+        <div ng-if="!$ctrl.loading" class="container-fluid container-pf-nav-pf-vertical hidden-icons-pf"
+          ng-class="{'collapsed-nav': $ctrl.navCollapsed}">
           <ng-include src="$ctrl.templateUrl"></ng-include>
         </div>
       </div>
