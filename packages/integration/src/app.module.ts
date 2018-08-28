@@ -1,5 +1,3 @@
-/// <reference path="app.component.ts"/>
-
 namespace Online {
 
   const module = angular
@@ -7,7 +5,6 @@ namespace Online {
       'hawtio-online-integration-navigation',
     ])
     .decorator('mainNavService', disableConnectPlugin)
-    .component('hawtioIntegrationApp', appComponent)
     .run(addLogoutToUserDropdown)
     .run(destroyBeforeUnload);
 
