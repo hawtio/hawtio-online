@@ -81,7 +81,7 @@ namespace Online {
               <span class="navbar-brand-txt" ng-if="!$ctrl.brandSrc">{{$ctrl.brandAlt}}</span>
             </span>
 
-            <pods-selector/>
+            <pods-selector selected="$ctrl.selectedPod" />
           </div>
 
           <!-- Navigation bar menu -->
@@ -176,7 +176,7 @@ namespace Online {
           <ng-include src="$ctrl.templateUrl"></ng-include>
 
           <!-- No selection -->
-          <div class="blank-slate-pf">
+          <div ng-if="!$ctrl.selectedPod" class="blank-slate-pf">
             <div class="blank-slate-pf-icon">
               <span class="pficon pficon pficon-unplugged"></span>
             </div>
