@@ -85,13 +85,13 @@
             </li>
           </ul>
         </div>
-        <div class="dropdown pull-right dropdown-kebab-pf">
+        <div ng-if="$ctrl.openshiftConsoleUrl" class="dropdown pull-right dropdown-kebab-pf">
           <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown">
             <span class="fa fa-ellipsis-v"></span>
           </button>
           <ul class="dropdown-menu dropdown-menu-right">
             <li class="dropdown-header">OpenShift Console</li>
-            <li><a href="#" ng-click="$ctrl.open(pod | podDetailsUrl)">Open pod details</a></li>
+            <li><a href="#" ng-click="$ctrl.open(pod | podDetailsUrl:$ctrl.openshiftConsoleUrl)">Open pod details</a></li>
           </ul>
         </div>
       </div>

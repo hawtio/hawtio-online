@@ -51,12 +51,8 @@ namespace Online {
       });
   }
 
-  function podDetailsUrlFilter(openShiftConsole: ConsoleService) {
-    'ngInject';
-    return pod => UrlHelpers.join(
-      openShiftConsole.url
-      || UrlHelpers.join(Core.pathGet(window, ['OPENSHIFT_CONFIG', 'openshift', 'master_uri']), 'console'),
-        'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name);
+  function podDetailsUrlFilter() {
+    return (pod, openShiftConsoleUrl: string) => UrlHelpers.join(openShiftConsoleUrl, 'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name);
   }
 
   hawtioPluginLoader.addModule(discoverModule.name);

@@ -2,20 +2,23 @@ namespace Online {
 
   export class DiscoverController {
 
-    _loading = 0;
-    pods = [];
-    filteredPods = [];
-    projects = [];
-    toolbarConfig;
-    viewType;
+    private _loading = 0;
+    private pods = [];
+    private filteredPods = [];
+    private projects = [];
+    private toolbarConfig;
+    private viewType;
+    private openshiftConsoleUrl: string;
 
     constructor(
       private $scope: ng.IScope,
       private $window: ng.IWindowService,
       private pfViewUtils,
       private K8SClientFactory: KubernetesAPI.K8SClientFactory,
+      openShiftConsole: ConsoleService,
     ) {
       'ngInject';
+      openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
     }
 
     $onInit() {
