@@ -1,7 +1,6 @@
 namespace Online {
 
   export interface SelectorDirectiveScope extends ng.IScope {
-    pods: any[];
     selected: string;
   }
 
@@ -28,7 +27,7 @@ namespace Online {
     }
 
     link(scope: SelectorDirectiveScope, elem: JQuery) {
-      scope.pods = this.openshift.getPods();
+      const pods = this.openshift.getPods();
       scope.selected = new URI().query(true)['con'];
 
       scope.$on('$destroy', _ => this.openshift.disconnect());
@@ -62,7 +61,7 @@ namespace Online {
 
       const updatePodsPicker = () => {
         selector.empty();
-        scope.pods.forEach(pod => {
+        pods.forEach(pod => {
           selector.append($('<option>')
             .attr('value', pod.metadata.name)
             .attr('selected', pod.metadata.name === scope.selected ? '' : null)
