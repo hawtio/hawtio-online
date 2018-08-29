@@ -2,7 +2,6 @@
 /// <reference path="httpSrc.directive.ts"/>
 /// <reference path="match-height.directive.ts"/>
 /// <reference path="../labels/labels.module.ts"/>
-/// <reference path="../openshift/openshift.module.ts"/>
 /// <reference path="../status/status.module.ts"/>
 
 namespace Online {
@@ -13,7 +12,6 @@ namespace Online {
       'KubernetesAPI',
       'patternfly',
       labelsModule.name,
-      openshiftModule.name,
       statusModule.name,
     ])
     .controller('DiscoverController', DiscoverController)

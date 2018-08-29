@@ -4,6 +4,7 @@ namespace Online {
 
   const module = angular
     .module('hawtio-online-integration-navigation', [
+      'hawtio-online-openshift',
       'hawtio-online-integration-openshift',
     ])
     .component('hawtioIntegrationNav', navComponent)

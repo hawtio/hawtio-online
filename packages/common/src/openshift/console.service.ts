@@ -1,5 +1,7 @@
 namespace Online {
 
+  const log = Logger.get('hawtio-online-openshift');
+
   export class ConsoleService {
 
     private _response: ng.IPromise<string|undefined>;
