@@ -155,6 +155,10 @@ gulp.task('serve-site', () => {
 });
 
 // Override the reload tasks
+hub._registry[path.join(__dirname, 'packages/common/gulpfile.js')]
+  .set('common::reload',
+    task('Reload common package dependencies', () => gulp.src(['packages/online', 'packages/integration']).pipe(hawtio.reload())));
+
 hub._registry[path.join(__dirname, 'packages/online/gulpfile.js')]
   .set('online::reload',
     task('Reload online package', () => gulp.src('packages/online').pipe(hawtio.reload())));

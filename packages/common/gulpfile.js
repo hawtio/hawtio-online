@@ -88,6 +88,14 @@ function watchLessFiles() {
   return gulp.watch(config.less, { cwd: __dirname }, compileLess);
 }
 
+function watchResources() {
+  return gulp.watch([path.join(config.dist, '*')], { cwd: __dirname },
+    gulp.series(ns('reload')));
+}
+
+gulp.task(ns('reload'), done => { done() });
+
 gulp.task(ns('watch'), gulp.parallel(
   task('Watch TS files', watchTsFiles),
-  task('Watch LESS files', watchLessFiles)));
+  task('Watch LESS files', watchLessFiles),
+  task('Watch resources', watchResources)));
