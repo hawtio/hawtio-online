@@ -70,7 +70,7 @@ namespace Online {
         selector.selectpicker('refresh');
       };
 
-      scope.$watchCollection('pods', function () {
+      scope.$watchCollection(() => pods, function () {
         // wait for templates to render
         scope.$evalAsync(function () {
           updatePodsPicker();
