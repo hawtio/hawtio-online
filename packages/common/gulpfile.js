@@ -27,7 +27,7 @@ const ns = name => `common::${name}`;
 
 // Workspace tasks
 function cleanBuild() {
-  return del(['compiled.js'].map(f => path.join(__dirname, f)));
+  return del(['compiled.js', 'templates.js'].map(f => path.join(__dirname, f)));
 }
 
 function compileTsFiles() {
