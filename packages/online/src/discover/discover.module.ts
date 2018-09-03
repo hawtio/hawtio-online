@@ -2,7 +2,6 @@
 /// <reference path="httpSrc.directive.ts"/>
 /// <reference path="match-height.directive.ts"/>
 /// <reference path="../labels/labels.module.ts"/>
-/// <reference path="../status/status.module.ts"/>
 
 namespace Online {
 
@@ -12,7 +11,7 @@ namespace Online {
       'KubernetesAPI',
       'patternfly',
       labelsModule.name,
-      statusModule.name,
+      'hawtio-online-status',
     ])
     .controller('DiscoverController', DiscoverController)
     .directive('matchHeight', matchHeightDirective)
