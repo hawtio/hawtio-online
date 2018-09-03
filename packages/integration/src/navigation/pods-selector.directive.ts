@@ -15,7 +15,7 @@ namespace Online {
     constructor(
       private openshift: OpenShiftService,
       private $window: ng.IWindowService,
-      private podStatusFilter: any,
+      private podStatusFilter: PodStatusFilter,
     ) {
       'ngInject';
       this.openshift = openshift;

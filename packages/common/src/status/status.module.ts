@@ -7,6 +7,10 @@ namespace Online {
     .filter('humanizeReason', humanizeReasonFilter)
     .filter('humanizePodStatus', humanizeReasonFilter => humanizeReasonFilter);
 
+  export interface PodStatusFilter {
+    (pod: object): string;
+  }
+
   function statusIconDirective() {
     return {
       restrict    : 'E',

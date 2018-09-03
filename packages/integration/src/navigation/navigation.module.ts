@@ -14,7 +14,7 @@ namespace Online {
   function podsSelectorDirective(
     openshift: OpenShiftService,
     $window: ng.IWindowService,
-    podStatusFilter: any,
+    podStatusFilter: PodStatusFilter,
   ) {
     'ngInject';
     return new PodsSelectorDirective(openshift, $window, podStatusFilter);
