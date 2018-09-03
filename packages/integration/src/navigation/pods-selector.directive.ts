@@ -15,6 +15,7 @@ namespace Online {
     constructor(
       private openshift: OpenShiftService,
       private $window: ng.IWindowService,
+      private podStatusFilter: any,
     ) {
       'ngInject';
       this.openshift = openshift;
@@ -61,12 +62,11 @@ namespace Online {
 
       const updatePodsPicker = () => {
         selector.empty();
-        pods.forEach(pod => {
-          selector.append($('<option>')
+        pods.filter(pod => this.podStatusFilter(pod) === 'Running')
+          .forEach(pod => selector.append($('<option>')
             .attr('value', pod.metadata.name)
             .attr('selected', pod.metadata.name === scope.selected ? '' : null)
-            .text(pod.metadata.name));
-        });
+            .text(pod.metadata.name)));
         selector.selectpicker('refresh');
       };
 
