@@ -47,8 +47,20 @@ function compileTsFiles() {
       .pipe(gulp.dest(config.dist, { cwd: __dirname })));
 }
 
+function compileTemplates() {
+  return gulp.src(config.templates, { cwd: __dirname })
+  .pipe(plugins.angularTemplatecache({
+    filename      : 'templates.js',
+    root          : 'src/',
+    standalone    : true,
+    module        : 'hawtio-online-common-templates',
+    templateFooter: '}]); hawtioPluginLoader.addModule("hawtio-online-common-templates");',
+  }))
+  .pipe(gulp.dest('.', { cwd: __dirname }));
+}
+
 function concatBuildFiles() {
-  return gulp.src(['compiled.js'], { cwd: __dirname })
+  return gulp.src(['compiled.js', 'templates.js'], { cwd: __dirname })
     .pipe(plugins.concat(config.js))
     .pipe(gulp.dest(config.dist, { cwd: __dirname }));
 }
@@ -71,6 +83,7 @@ gulp.task(ns('build'), gulp.series(
   gulp.parallel(
     gulp.series(
       task('Compile TS files', compileTsFiles),
+      task('Compile templates', compileTemplates),
       task('Concat compiled files', concatBuildFiles),
       task('Clean build', cleanBuild)),
     task('Compile LESS files', compileLess)
@@ -81,7 +94,7 @@ function watchTsFiles() {
   return gulp.watch(
     [...tsconfig.include, ...(tsconfig.exclude || []).map(e => `!${e}`), ...config.templates],
     { cwd: __dirname },
-    gulp.series(compileTsFiles, concatBuildFiles, cleanBuild));
+    gulp.series(compileTsFiles, compileTemplates, concatBuildFiles, cleanBuild));
 }
 
 function watchLessFiles() {
