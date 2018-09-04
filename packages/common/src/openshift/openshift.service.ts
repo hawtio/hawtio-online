@@ -1,14 +1,17 @@
 namespace Online {
 
+  interface Client {
+    collection: KubernetesAPI.Collection;
+    watch: (data: any[]) => void;
+  }
+
   export class OpenShiftService {
 
     private _loading = 0;
     private projects = [];
     private pods = [];
-    private projects_client;
-    private pods_client;
-    private projects_watch;
-    private pods_watch;
+    private projects_client: Client;
+    private pods_clients: { [key: string]: Client } = {};
 
     constructor(
       private $window: ng.IWindowService,
@@ -17,34 +20,33 @@ namespace Online {
       'ngInject';
 
       if (this.$window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
-        this.projects_client = this.K8SClientFactory.create('projects');
-        const pods_watches = {};
+        const projects_client = this.K8SClientFactory.create('projects');
         this._loading++;
-        this.projects_watch = this.projects_client.watch(projects => {
+        const projects_watch = projects_client.watch(projects => {
           // subscribe to pods update for new projects
           projects.filter(project => !this.projects.some(p => p.metadata.uid === project.metadata.uid))
             .forEach(project => {
               this._loading++;
-              const pods = this.K8SClientFactory.create('pods', project.metadata.name);
-              const pods_watch = pods.watch(pods => {
+              const pods_client = this.K8SClientFactory.create('pods', project.metadata.name);
+              const pods_watch = pods_client.watch(pods => {
                 this._loading--;
                 const others = this.pods.filter(pod => pod.metadata.namespace !== project.metadata.name);
                 this.pods.length = 0;
                 this.pods.push(...others, ..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
               });
-              pods_watches[project.metadata.name] = {
-                request : pods,
-                watch   : pods_watch,
+              this.pods_clients[project.metadata.name] = {
+                collection: pods_client,
+                watch: pods_watch,
               };
-              pods.connect();
+              pods_client.connect();
             });
 
           // handle delete projects
           this.projects.filter(project => !projects.some(p => p.metadata.uid === project.metadata.uid))
             .forEach(project => {
-              const handle = pods_watches[project.metadata.name];
-              this.K8SClientFactory.destroy(handle.request, handle.watch);
-              delete pods_watches[project.metadata.name];
+              const handle = this.pods_clients[project.metadata.name];
+              this.K8SClientFactory.destroy(handle.collection, handle.watch);
+              delete this.pods_clients[project.metadata.name];
             });
 
           this.projects.length = 0;
@@ -52,17 +54,20 @@ namespace Online {
           this._loading--;
         });
 
-        this.projects_client.connect();
+        this.projects_client = { collection: projects_client, watch: projects_watch };
+        projects_client.connect();
       } else {
         this._loading++;
-        this.pods_client = this.K8SClientFactory.create('pods', this.$window.OPENSHIFT_CONFIG.hawtio.namespace);
-        this.pods_watch = this.pods_client.watch(pods => {
+        const namespace = this.$window.OPENSHIFT_CONFIG.hawtio.namespace;
+        const pods_client = this.K8SClientFactory.create('pods', namespace);
+        const pods_watch = pods_client.watch(pods => {
           this._loading--;
           this.pods.length = 0;
           this.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
         });
 
-        this.pods_client.connect();
+        this.pods_clients[namespace] = { collection: pods_client, watch: pods_watch };
+        pods_client.connect();
       }
     }
 
@@ -80,10 +85,11 @@ namespace Online {
 
     disconnect() {
       if (this.$window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
-        this.K8SClientFactory.destroy(this.projects_client, this.projects_watch);
-      } else {
-        this.K8SClientFactory.destroy(this.pods_client, this.pods_watch);
+        this.K8SClientFactory.destroy(this.projects_client.collection, this.projects_client.watch);
       }
+      _.values(this.pods_clients).forEach(({ collection, watch }) => {
+        this.K8SClientFactory.destroy(collection, watch);
+      })
     }
   }
 }
