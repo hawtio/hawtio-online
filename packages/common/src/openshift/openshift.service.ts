@@ -74,9 +74,16 @@ namespace Online {
       return this.pods;
     }
 
+    getProjects() {
+      return this.projects;
+    }
+
     disconnect() {
-      this.K8SClientFactory.destroy(this.projects_client, this.projects_watch);
-      this.K8SClientFactory.destroy(this.pods_client, this.pods_watch);
+      if (this.$window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
+        this.K8SClientFactory.destroy(this.projects_client, this.projects_watch);
+      } else {
+        this.K8SClientFactory.destroy(this.pods_client, this.pods_watch);
+      }
     }
   }
 }

@@ -2,10 +2,8 @@ namespace Online {
 
   export class DiscoverController {
 
-    private _loading = 0;
     private pods = [];
     private filteredPods = [];
-    private projects = [];
     private toolbarConfig;
     private viewType;
     private openshiftConsoleUrl: string;
@@ -14,11 +12,12 @@ namespace Online {
       private $scope: ng.IScope,
       private $window: ng.IWindowService,
       private pfViewUtils,
-      private K8SClientFactory: KubernetesAPI.K8SClientFactory,
+      private openShiftService: OpenShiftService,
       openShiftConsole: ConsoleService,
     ) {
       'ngInject';
       openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
+      this.pods = this.openShiftService.getPods();
     }
 
     $onInit() {
@@ -110,66 +109,15 @@ namespace Online {
         );
       }
 
-      if (this.$window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
-        const projects = this.K8SClientFactory.create('projects');
-        const pods_watches = {};
-        this._loading++;
-        const projects_watch = projects.watch(projects => {
-          // subscribe to pods update for new projects
-          projects.filter(project => !this.projects.some(p => p.metadata.uid === project.metadata.uid))
-            .forEach(project => {
-              this._loading++;
-              const pods = this.K8SClientFactory.create('pods', project.metadata.name);
-              const pods_watch = pods.watch(pods => {
-                this._loading--;
-                const others = this.pods.filter(pod => pod.metadata.namespace !== project.metadata.name);
-                this.pods.length = 0;
-                this.pods.push(...others, ..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
-                applyFilters(filterConfig.appliedFilters);
-                // have to kick off a $digest here
-                this.$scope.$apply();
-              });
-              pods_watches[project.metadata.name] = {
-                request : pods,
-                watch   : pods_watch,
-              };
-              pods.connect();
-            });
+      this.$scope.$watchCollection(() => this.pods, function () {
+        applyFilters(filterConfig.appliedFilters);
+      });
 
-          // handle delete projects
-          this.projects.filter(project => !projects.some(p => p.metadata.uid === project.metadata.uid))
-            .forEach(project => {
-              const handle = pods_watches[project.metadata.name];
-              this.K8SClientFactory.destroy(handle.request, handle.watch);
-              delete pods_watches[project.metadata.name];
-            });
-
-          this.projects.length = 0;
-          this.projects.push(...projects);
-          this._loading--;
-        });
-        this.$scope.$on('$destroy', _ => this.K8SClientFactory.destroy(projects, projects_watch));
-
-        projects.connect();
-      } else {
-        this._loading++;
-        const pods = this.K8SClientFactory.create('pods', this.$window.OPENSHIFT_CONFIG.hawtio.namespace);
-        const pods_watch = pods.watch(pods => {
-          this._loading--;
-          this.pods.length = 0;
-          this.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
-          applyFilters(filterConfig.appliedFilters);
-          // have to kick off a $digest here
-          this.$scope.$apply();
-        });
-        this.$scope.$on('$destroy', _ => this.K8SClientFactory.destroy(pods, pods_watch));
-
-        pods.connect();
-      }
+      this.$scope.$on('$destroy', _ => this.openShiftService.disconnect());
     }
 
     loading() {
-      return this._loading > 0;
+      return this.openShiftService.isLoading();
     }
 
     open(url) {
