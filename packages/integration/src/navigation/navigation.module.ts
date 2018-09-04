@@ -6,17 +6,16 @@ namespace Online {
     .module('hawtio-online-integration-navigation', [
       'hawtio-online-status',
       'hawtio-online-openshift',
-      'hawtio-online-integration-openshift',
     ])
     .component('hawtioIntegrationNav', navComponent)
     .directive('podsSelector', podsSelectorDirective);
 
   function podsSelectorDirective(
-    openshift: OpenShiftService,
+    openShiftService: OpenShiftService,
     $window: ng.IWindowService,
     podStatusFilter: PodStatusFilter,
   ) {
     'ngInject';
-    return new PodsSelectorDirective(openshift, $window, podStatusFilter);
+    return new PodsSelectorDirective(openShiftService, $window, podStatusFilter);
   }
 }

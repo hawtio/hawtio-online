@@ -18,7 +18,6 @@ namespace Online {
       private podStatusFilter: PodStatusFilter,
     ) {
       'ngInject';
-      this.openshift = openshift;
       this.template = `
         <div class="nav contextselector-pf">
           <select class="selectpicker" data-live-search="true">
