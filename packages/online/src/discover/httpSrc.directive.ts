@@ -36,7 +36,7 @@ namespace Online {
           scope.objectURL = url;
         } else if (url) {
           this.$http
-            .get(url, {
+            .get<ArrayBuffer>(url, {
               responseType : 'arraybuffer',
               cache        : true,
               headers      : {
