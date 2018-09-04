@@ -62,11 +62,11 @@ namespace Online {
 
       const updatePodsPicker = () => {
         selector.empty();
-        pods.filter(pod => this.podStatusFilter(pod) === 'Running')
-          .forEach(pod => selector.append($('<option>')
-            .attr('value', pod.metadata.name)
-            .attr('selected', pod.metadata.name === scope.selected ? '' : null)
-            .text(pod.metadata.name)));
+        pods.forEach(pod => selector.append($('<option>')
+          .attr('value', pod.metadata.name)
+          .attr('disabled', this.podStatusFilter(pod) !== 'Running' ? '' : null)
+          .attr('selected', pod.metadata.name === scope.selected ? '' : null)
+          .text(pod.metadata.name)));
         selector.selectpicker('refresh');
       };
 
