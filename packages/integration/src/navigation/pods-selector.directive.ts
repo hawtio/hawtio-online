@@ -20,7 +20,9 @@ namespace Online {
       'ngInject';
       this.template = `
         <div class="nav contextselector-pf">
-          <select class="selectpicker" data-live-search="true">
+          <select class="selectpicker"
+            dropupAuto="false"
+            data-live-search="true">
           </select>
         </div>
       `;
