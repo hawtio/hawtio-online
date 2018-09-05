@@ -28,6 +28,7 @@ namespace Online {
 
     link(scope: SelectorDirectiveScope, elem: JQuery) {
       const pods = this.openshift.getPods();
+      const projects = this.openshift.getProjects();
       scope.selected = new URI().query(true)['con'];
 
       scope.$on('$destroy', _ => this.openshift.disconnect());
@@ -48,18 +49,13 @@ namespace Online {
 
       const selector = elem.find('.selectpicker');
 
-      scope.$watch(() => this.openshift.isLoading(), loading => {
-        selector.selectpicker({ 'title': loading ? 'Loading...' : 'Select a container...' });
-        updatePodsPicker();
-      });
-
       selector.change(() => {
         const selected = selector.val();
         const pod = _.find(this.openshift.getPods(), pod => pod.metadata.name === selected);
         this.$window.location.href = getConnectUrl(pod);
       });
 
-      const updatePodsPicker = () => {
+      const updateNamespaceMode = () => {
         selector.empty();
         pods.forEach(pod => selector.append($('<option>')
           .attr('value', pod.metadata.name)
@@ -69,14 +65,38 @@ namespace Online {
         selector.selectpicker('refresh');
       };
 
+      const updateClusterMode = () => {
+        selector.empty();
+        projects.forEach(project => {
+          const group = $('<optgroup>').attr('label', project.metadata.name);
+          pods.filter(pod => pod.metadata.namespace === project.metadata.name)
+            .forEach(pod => group.append($('<option>')
+            .attr('value', pod.metadata.name)
+            .attr('disabled', this.podStatusFilter(pod) !== 'Running' ? '' : null)
+            .attr('selected', pod.metadata.name === scope.selected ? '' : null)
+            .text(pod.metadata.name)));
+          selector.append(group);
+        });
+        selector.selectpicker('refresh');
+      };
+
+      const updateSelectPicker = this.openshift.is(HawtioMode.Cluster)
+        ? updateClusterMode
+        : updateNamespaceMode;
+
+      scope.$watch(() => this.openshift.isLoading(), loading => {
+        selector.selectpicker({ 'title': loading ? 'Loading...' : 'Select a container...' });
+        updateSelectPicker();
+      });
+
       scope.$watchCollection(() => pods, function () {
         // wait for templates to render
         scope.$evalAsync(function () {
-          updatePodsPicker();
+          updateSelectPicker();
         });
       });
 
-      updatePodsPicker();
+      updateSelectPicker();
     }
   }
 }
