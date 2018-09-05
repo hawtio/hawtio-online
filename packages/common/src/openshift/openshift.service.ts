@@ -1,5 +1,10 @@
 namespace Online {
 
+  export enum HawtioMode {
+    Cluster = 'cluster',
+    Namespace = 'namespace',
+  }
+
   interface Client {
     collection: KubernetesAPI.Collection;
     watch: (data: any[]) => void;
@@ -19,7 +24,7 @@ namespace Online {
     ) {
       'ngInject';
 
-      if (this.$window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
+      if (this.is(HawtioMode.Cluster)) {
         const projects_client = this.K8SClientFactory.create('projects');
         this._loading++;
         const projects_watch = projects_client.watch(projects => {
@@ -81,6 +86,10 @@ namespace Online {
 
     getProjects() {
       return this.projects;
+    }
+
+    is(mode: HawtioMode): boolean {
+      return mode === this.$window.OPENSHIFT_CONFIG.hawtio.mode;
     }
 
     disconnect() {
