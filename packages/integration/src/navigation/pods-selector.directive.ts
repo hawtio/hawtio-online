@@ -55,13 +55,15 @@ namespace Online {
         this.$window.location.href = getConnectUrl(pod);
       });
 
+      const podOption = pod => $('<option>')
+        .attr('value', pod.metadata.name)
+        .attr('disabled', this.podStatusFilter(pod) !== 'Running' ? '' : null)
+        .attr('selected', pod.metadata.name === scope.selected ? '' : null)
+        .text(pod.metadata.name);
+
       const updateNamespaceMode = () => {
         selector.empty();
-        pods.forEach(pod => selector.append($('<option>')
-          .attr('value', pod.metadata.name)
-          .attr('disabled', this.podStatusFilter(pod) !== 'Running' ? '' : null)
-          .attr('selected', pod.metadata.name === scope.selected ? '' : null)
-          .text(pod.metadata.name)));
+        pods.forEach(pod => selector.append(podOption(pod)));
         selector.selectpicker('refresh');
       };
 
@@ -69,12 +71,9 @@ namespace Online {
         selector.empty();
         projects.forEach(project => {
           const group = $('<optgroup>').attr('label', project.metadata.name);
-          pods.filter(pod => pod.metadata.namespace === project.metadata.name)
-            .forEach(pod => group.append($('<option>')
-            .attr('value', pod.metadata.name)
-            .attr('disabled', this.podStatusFilter(pod) !== 'Running' ? '' : null)
-            .attr('selected', pod.metadata.name === scope.selected ? '' : null)
-            .text(pod.metadata.name)));
+          pods
+            .filter(pod => pod.metadata.namespace === project.metadata.name)
+            .forEach(pod => group.append(podOption(pod)));
           selector.append(group);
         });
         selector.selectpicker('refresh');
