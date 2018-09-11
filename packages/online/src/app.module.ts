@@ -5,6 +5,7 @@ namespace Online {
   const module = angular
     .module('hawtio-online', [
       'hawtio-online-navigation',
+      'hawtio-online-management',
       'hawtio-about',
     ])
     .config(addRoutes)

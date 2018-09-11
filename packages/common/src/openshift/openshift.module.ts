@@ -3,7 +3,7 @@
 
 namespace Online {
 
-  export const openshiftModule = angular
+  const module = angular
     .module('hawtio-online-openshift', [])
     .service('openShiftConsole', ConsoleService)
     .service('openShiftService', OpenShiftService);

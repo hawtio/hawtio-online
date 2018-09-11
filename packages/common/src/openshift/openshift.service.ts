@@ -10,7 +10,7 @@ namespace Online {
     watch: (data: any[]) => void;
   }
 
-  export class OpenShiftService {
+  export class OpenShiftService extends EventEmitter {
 
     private _loading = 0;
     private projects = [];
@@ -23,6 +23,8 @@ namespace Online {
       private K8SClientFactory: KubernetesAPI.K8SClientFactory,
     ) {
       'ngInject';
+
+      super();
 
       if (this.is(HawtioMode.Cluster)) {
         const projects_client = this.K8SClientFactory.create('projects');
@@ -38,6 +40,7 @@ namespace Online {
                 const others = this.pods.filter(pod => pod.metadata.namespace !== project.metadata.name);
                 this.pods.length = 0;
                 this.pods.push(...others, ..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
+                this.emit('changed');
               });
               this.pods_clients[project.metadata.name] = {
                 collection: pods_client,
@@ -69,6 +72,7 @@ namespace Online {
           this._loading--;
           this.pods.length = 0;
           this.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
+          this.emit('changed');
         });
 
         this.pods_clients[namespace] = { collection: pods_client, watch: pods_watch };
