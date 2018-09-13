@@ -9,10 +9,13 @@ namespace Online {
     .service('managementService', ManagementService)
     .decorator('openShiftService', decorateOpenShiftService);
 
-  function decorateOpenShiftService($delegate: OpenShiftService) {
+  function decorateOpenShiftService(
+    $delegate: OpenShiftService,
+    $interval,
+    ) {
     'ngInject';
 
-    new ManagementService($delegate);
+    new ManagementService($delegate, $interval);
     return $delegate;
   }
 }
