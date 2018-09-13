@@ -14,6 +14,7 @@ namespace Online {
 
     constructor(
       openShiftService: OpenShiftService,
+      podStatusFilter: PodStatusFilter,
       $interval: ng.IIntervalService,
     ) {
       'ngInject';
@@ -39,14 +40,16 @@ namespace Online {
       $interval(() => {
         for (let uid in this.pods) {
           const mPod: ManagedPod = this.pods[uid];
-          mPod.jolokia.search('org.apache.camel:context=*,type=routes,*', {
-            success: (routes:[]) => {
-              Core.pathSet(mPod.pod, 'management.camel.routes_count', routes.length);
-            },
-            error: error => {
-              // TODO
-            }
-          });
+          if (podStatusFilter(mPod.pod) === 'Running') {
+            mPod.jolokia.search('org.apache.camel:context=*,type=routes,*', {
+              success: (routes:[]) => {
+                Core.pathSet(mPod.pod, 'management.camel.routes_count', routes.length);
+              },
+              error: error => {
+                // TODO
+              }
+           });
+          }
         }
       }, 10000);
       // TODO: Use Jolokia polling preference

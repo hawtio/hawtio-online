@@ -11,11 +11,12 @@ namespace Online {
 
   function decorateOpenShiftService(
     $delegate: OpenShiftService,
+    podStatusFilter,
     $interval,
     ) {
     'ngInject';
 
-    new ManagementService($delegate, $interval);
+    new ManagementService($delegate, podStatusFilter, $interval);
     return $delegate;
   }
 }
