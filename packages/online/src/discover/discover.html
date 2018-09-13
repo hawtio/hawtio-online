@@ -59,6 +59,15 @@
                 'other': 'containers'}">
               </ng-pluralize>
             </div>
+            <div class="list-view-pf-additional-info-item"
+                 ng-if="!!(routes_count = (pod | management:'camel.routes_count'))">
+              <span class="pficon font-icon icon-rh-integration"></span>
+              <strong>{{routes_count}}</strong>
+              <ng-pluralize count="routes_count" when="{
+                'one': 'route',
+                'other': 'routes'}">
+              </ng-pluralize>
+            </div>
           </div>
         </div>
       </div>
