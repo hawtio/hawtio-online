@@ -14,10 +14,12 @@ namespace Online {
       private pfViewUtils,
       private openShiftService: OpenShiftService,
       openShiftConsole: ConsoleService,
+      managementService: ManagementService,
     ) {
       'ngInject';
       openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
       this.pods = this.openShiftService.getPods();
+      managementService.on('updated', () => Core.$digest(this.$scope));
     }
 
     $onInit() {
