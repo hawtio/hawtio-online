@@ -20,7 +20,10 @@ namespace Online {
       openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
       this.pods = this.openShiftService.getPods();
       openShiftService.on('changed', () => Core.$digest(this.$scope));
-      managementService.on('updated', () => Core.$digest(this.$scope));
+      managementService.on('updated', () => {
+        Core.$digest(this.$scope);
+        this.$scope.$broadcast('matchHeight');
+      });
     }
 
     $onInit() {
