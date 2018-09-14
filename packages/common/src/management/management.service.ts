@@ -38,9 +38,11 @@ namespace Online {
             }
           }
         });
+        // let's kick a polling cycle
+        pollManagementData();
       });
 
-      $interval(() => {
+      const pollManagementData = _.debounce(() => {
         let req = 0, res = 0;
         for (let uid in this.pods) {
           const mPod: ManagedPod = this.pods[uid];
@@ -59,13 +61,15 @@ namespace Online {
                 res++;
                 if (res === req) {
                   this.emit('updated');
-              }
+                }
               },
            });
           }
         }
-      }, 10000);
+      }, 1000, { leading: false, trailing: true });
+
       // TODO: Use Jolokia polling preference
+      $interval(() => pollManagementData(), 10000);
     }
   }
 }
