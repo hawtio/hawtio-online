@@ -135,6 +135,17 @@
                   {{pod.spec.containers.length}}
                 </span>
               </div>
+              <div class="card-pf-item"
+                   ng-if="!!(routes_count = (pod | management:'camel.routes_count'))">
+                <span class="pficon font-icon icon-rh-integration"></span>
+                <span class="card-pf-item-text">
+                  {{routes_count}}
+                  <ng-pluralize count="routes_count" when="{
+                    'one': 'route',
+                    'other': 'routes'}">
+                  </ng-pluralize>
+                </span>
+              </div>
             </div>
             <div class="card-pf-info text-center">
               Created <span am-time-ago="pod.status.startTime" am-without-suffix="true"></span> ago
