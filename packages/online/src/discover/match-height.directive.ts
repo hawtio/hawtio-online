@@ -9,6 +9,7 @@ namespace Online {
     }
 
     link(scope: ng.IScope) {
+      $.fn.matchHeight._maintainScroll = true;
       const matchHeight = function () {
         $(".row-cards-pf > [class*='col'] > .card-pf .card-pf-title").matchHeight();
         $(".row-cards-pf > [class*='col'] > .card-pf .card-pf-items").matchHeight();
