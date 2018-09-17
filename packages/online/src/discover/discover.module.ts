@@ -14,12 +14,17 @@ namespace Online {
       'hawtio-online-status',
     ])
     .controller('DiscoverController', DiscoverController)
+    .directive('listRowExpand', expansionDirective)
     .directive('matchHeight', matchHeightDirective)
     .directive('httpSrc', httpSrcDirective)
     .filter('jolokiaContainers', jolokiaContainersFilter)
     .filter('jolokiaPort', jolokiaPortFilter)
     .filter('connectUrl', connectUrlFilter)
     .filter('podDetailsUrl', podDetailsUrlFilter);
+
+  function expansionDirective() {
+    return new ListRowExpandDirective();
+  }
 
   function matchHeightDirective($timeout: ng.ITimeoutService) {
     'ngInject';
