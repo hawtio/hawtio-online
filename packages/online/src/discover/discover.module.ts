@@ -1,6 +1,4 @@
 /// <reference path="discover.controller.ts"/>
-/// <reference path="httpSrc.directive.ts"/>
-/// <reference path="match-height.directive.ts"/>
 /// <reference path="../labels/labels.module.ts"/>
 
 namespace Online {
