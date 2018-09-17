@@ -32,7 +32,7 @@ namespace Online {
   }
 
   function jolokiaContainersFilter() {
-    return containers => containers.filter(container => container.ports.some(port => port.name === 'jolokia'));
+    return containers => (containers || []).filter(container => container.ports.some(port => port.name === 'jolokia'));
   }
 
   function jolokiaPortFilter() {
