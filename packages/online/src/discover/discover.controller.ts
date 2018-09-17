@@ -4,6 +4,7 @@ namespace Online {
 
     private pods = [];
     private filteredPods = [];
+    private groupedPods = [];
     private toolbarConfig;
     private viewType;
     private openshiftConsoleUrl: string;
@@ -50,7 +51,35 @@ namespace Online {
             value *= -1;
           }
           return value;
-        })
+        });
+        applyGroupByReplicas();
+      };
+
+      const applyGroupByReplicas = () => {
+        const groupedPods = [];
+        for (let i = 0; i < this.filteredPods.length; i++) {
+          const pod = this.filteredPods[i];
+          const rc = _.get(pod, 'metadata.ownerReferences[0].uid', null);
+          if (rc && i < this.filteredPods.length - 1) {
+            let j = 0, rcj;
+            do {
+              const p = this.filteredPods[i + j + 1];
+              rcj = _.get(p, 'metadata.ownerReferences[0].uid', null);
+            } while (rcj === rc && i + j++ < this.filteredPods.length - 1);
+            groupedPods.push(j > 0
+              ? {
+                kind: 'ReplicationController',
+                name: pod.metadata.ownerReferences[0].name,
+                replicas: this.filteredPods.slice(i, i + j + 1),
+              }
+              : pod);
+            i += j;
+          } else {
+            groupedPods.push(pod);
+          }
+        }
+        this.groupedPods.length = 0;
+        this.groupedPods.push(...groupedPods);
       };
 
       const matches = (item, filter) => {
