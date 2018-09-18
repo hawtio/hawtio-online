@@ -17,7 +17,24 @@ div.list-group-item-text labels {
 
 .tree-list-view-pf {
   margin-top: 20px;
+  .list-view-pf-expand {
+    padding-right: 5px;
+    .fa-angle-right {
+      font-size: 22px;
+      color: gray;
+    }
+  }
+  .list-view-pf-expand + .list-view-pf-main-info {
+    .list-view-pf-body {
+      padding-left: 10px;
+      border-left-color: lightgray;
+      border-left-style: solid;
+      border-left-width: 1px;
+    }
+  }
   .list-group-item-heading {
     width: auto;
+    margin-bottom: unset;
+    line-height: 2em;
   }
 }
