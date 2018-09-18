@@ -12,6 +12,7 @@ namespace Online {
       'hawtio-online-status',
     ])
     .controller('DiscoverController', DiscoverController)
+    .directive('listPodRow', listPodRowDirective)
     .directive('listRowExpand', expansionDirective)
     .directive('matchHeight', matchHeightDirective)
     .directive('httpSrc', httpSrcDirective)
@@ -19,6 +20,26 @@ namespace Online {
     .filter('jolokiaPort', jolokiaPortFilter)
     .filter('connectUrl', connectUrlFilter)
     .filter('podDetailsUrl', podDetailsUrlFilter);
+
+
+  function listPodRowDirective($window: ng.IWindowService) {
+    'ngInject';
+    return {
+      restrict    : 'E',
+      templateUrl : 'src/discover/podListRow.html',
+      scope       : {
+        pod                 : '=',
+        openshiftConsoleUrl : '@',
+      },
+      link: function ($scope: ng.IScope | any) {
+        $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType: 'listView' });
+        $scope.open = (url) => {
+          $window.open(url);
+          return true;
+        };
+      },
+    };
+  }
 
   function expansionDirective() {
     return new ListRowExpandDirective();
