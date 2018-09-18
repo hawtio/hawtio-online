@@ -37,9 +37,9 @@
   <div class="list-view-pf-main-info">
     <div class="list-view-pf-left">
       <status-icon status="status = (pod | podStatus)"
-                    class="getStatusClasses(pod, status)"
-                    uib-tooltip="{{status | humanizePodStatus}}"
-                    tooltip-placement="bottom">
+                   class="getStatusClasses(pod, status)"
+                   uib-tooltip="{{status | humanizePodStatus}}"
+                   tooltip-placement="bottom">
       </status-icon>
     </div>
     <div class="list-view-pf-body">
@@ -72,7 +72,7 @@
           </ng-pluralize>
         </div>
         <div ng-if="!!(routes_count = (pod | management:'camel.routes_count'))"
-              class="list-view-pf-additional-info-item">
+             class="list-view-pf-additional-info-item">
           <span class="pficon font-icon icon-rh-integration"></span>
           <strong>{{routes_count}}</strong>
           <ng-pluralize count="routes_count" when="{

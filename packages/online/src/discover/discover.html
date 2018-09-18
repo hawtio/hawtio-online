@@ -55,12 +55,12 @@
            class="list-group-item-container container-fluid hidden">
 
         <div class="list-group-item list-view-pf-stacked">
-            <list-pod-row pod="replica" openshift-console-url="$ctrl.openshiftConsoleUrl" />
+            <pod-list-row pod="replica" openshift-console-url="$ctrl.openshiftConsoleUrl" />
         </div>
       </div>
 
       <!-- Pod item -->
-      <list-pod-row ng-if="pod.kind !== 'ReplicationController'"
+      <pod-list-row ng-if="pod.kind !== 'ReplicationController'"
                     pod="pod" openshift-console-url="$ctrl.openshiftConsoleUrl" />
     </div>
   </div>
@@ -95,8 +95,8 @@
                   {{pod.spec.containers.length}}
                 </span>
               </div>
-              <div class="card-pf-item"
-                   ng-if="!!(routes_count = (pod | management:'camel.routes_count'))">
+              <div ng-if="!!(routes_count = (pod | management:'camel.routes_count'))"
+                   class="card-pf-item">
                 <span class="pficon font-icon icon-rh-integration"></span>
                 <span class="card-pf-item-text">
                   {{routes_count}}
@@ -122,8 +122,10 @@
                 Connect
               </button>
               <div ng-if="containers.length > 1" class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"
-                  ng-disabled="status !== 'Running'">
+                <button class="btn btn-primary dropdown-toggle"
+                        type="button"
+                        data-toggle="dropdown"
+                        ng-disabled="status !== 'Running'">
                   Connect
                   <span class="caret"></span>
                 </button>
