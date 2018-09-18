@@ -20,11 +20,14 @@ namespace Online {
       'ngInject';
       openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
       this.pods = this.openShiftService.getPods();
-      openShiftService.on('changed', () => Core.$digest(this.$scope));
-      managementService.on('updated', () => {
+
+      const update = _.debounce(() => {
         Core.$digest(this.$scope);
         this.$scope.$broadcast('matchHeight');
-      });
+      }, 100, { leading: true, trailing: true });
+
+      openShiftService.on('changed', update);
+      managementService.on('updated', update);
     }
 
     $onInit() {
