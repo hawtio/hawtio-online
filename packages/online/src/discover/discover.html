@@ -51,11 +51,11 @@
 
       <!-- Replicas pods -->
       <div ng-if="pod.kind === 'ReplicationController'"
-           ng-repeat="replica in pod.replicas"
            class="list-group-item-container container-fluid hidden">
-
-        <div class="list-group-item list-view-pf-stacked">
-            <pod-list-row pod="replica" openshift-console-url="$ctrl.openshiftConsoleUrl" />
+        <div ng-repeat="replica in pod.replicas"
+             class="list-group-item list-view-pf-stacked"
+             pod-list-row
+             pod="replica" openshift-console-url="$ctrl.openshiftConsoleUrl">
         </div>
       </div>
 

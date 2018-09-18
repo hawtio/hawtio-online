@@ -25,7 +25,7 @@ namespace Online {
   function podListRowDirective($window: ng.IWindowService) {
     'ngInject';
     return {
-      restrict    : 'E',
+      restrict    : 'EA',
       templateUrl : 'src/discover/podListRow.html',
       scope       : {
         pod                 : '=',
