@@ -23,16 +23,16 @@ namespace Online {
     .filter('podDetailsUrl', podDetailsUrlFilter);
 
 
-  function podListRowDirective($window: ng.IWindowService) {
+  function podListRowDirective($window: ng.IWindowService, openShiftConsole: ConsoleService) {
     'ngInject';
     return {
       restrict    : 'EA',
       templateUrl : 'src/discover/podListRow.html',
       scope       : {
-        pod                 : '=',
-        openshiftConsoleUrl : '<',
+        pod : '=',
       },
       link: function ($scope: ng.IScope | any) {
+        openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url);
         $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType: 'listView' });
         $scope.open = (url) => {
           $window.open(url);
@@ -42,16 +42,16 @@ namespace Online {
     };
   }
 
-  function podCardDirective($window: ng.IWindowService) {
+  function podCardDirective($window: ng.IWindowService, openShiftConsole: ConsoleService) {
     'ngInject';
     return {
       restrict    : 'EA',
       templateUrl : 'src/discover/podCard.html',
       scope       : {
-        pod                 : '=',
-        openshiftConsoleUrl : '<',
+        pod : '=',
       },
       link: function ($scope: ng.IScope | any) {
+        openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url);
         $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType: 'cardView' });
         $scope.open = (url) => {
           $window.open(url);

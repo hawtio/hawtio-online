@@ -7,18 +7,15 @@ namespace Online {
     private groupedPods = [];
     private toolbarConfig;
     private viewType;
-    private openshiftConsoleUrl: string;
 
     constructor(
       private $scope: ng.IScope,
       private $window: ng.IWindowService,
       private pfViewUtils,
       private openShiftService: OpenShiftService,
-      openShiftConsole: ConsoleService,
       managementService: ManagementService,
     ) {
       'ngInject';
-      openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
       this.pods = this.openShiftService.getPods();
 
       const update = _.debounce(() => {
