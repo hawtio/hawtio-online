@@ -3,6 +3,11 @@
 
 namespace Online {
 
+  enum ViewType {
+    listView = 'listView',
+    cardView = 'cardView',
+  }
+
   export const discoverModule = angular
     .module('hawtio-online-discover', [
       'angularMoment',
@@ -12,9 +17,9 @@ namespace Online {
       'hawtio-online-status',
     ])
     .controller('DiscoverController', DiscoverController)
-    .directive('podListRow', podListRowDirective)
+    .directive('podListRow', podDirective(ViewType.listView, 'src/discover/podListRow.html'))
     .directive('listRowExpand', expansionDirective)
-    .directive('podCard', podCardDirective)
+    .directive('podCard', podDirective(ViewType.cardView, 'src/discover/podCard.html'))
     .directive('matchHeight', matchHeightDirective)
     .directive('httpSrc', httpSrcDirective)
     .filter('jolokiaContainers', jolokiaContainersFilter)
@@ -23,42 +28,25 @@ namespace Online {
     .filter('podDetailsUrl', podDetailsUrlFilter);
 
 
-  function podListRowDirective($window: ng.IWindowService, openShiftConsole: ConsoleService) {
-    'ngInject';
-    return {
-      restrict    : 'EA',
-      templateUrl : 'src/discover/podListRow.html',
-      scope       : {
-        pod : '=',
-      },
-      link: function ($scope: ng.IScope | any) {
-        openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url);
-        $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType: 'listView' });
-        $scope.open = (url) => {
-          $window.open(url);
-          return true;
-        };
-      },
-    };
-  }
-
-  function podCardDirective($window: ng.IWindowService, openShiftConsole: ConsoleService) {
-    'ngInject';
-    return {
-      restrict    : 'EA',
-      templateUrl : 'src/discover/podCard.html',
-      scope       : {
-        pod : '=',
-      },
-      link: function ($scope: ng.IScope | any) {
-        openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url);
-        $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType: 'cardView' });
-        $scope.open = (url) => {
-          $window.open(url);
-          return true;
-        };
-      },
-    };
+  function podDirective(viewType: ViewType, templateUrl: string) {
+    return function podDirective($window: ng.IWindowService, openShiftConsole: ConsoleService) {
+      'ngInject';
+      return {
+        restrict    : 'EA',
+        templateUrl : templateUrl,
+        scope       : {
+          pod : '=',
+        },
+        link: function ($scope: ng.IScope | any) {
+          openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url);
+          $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType });
+          $scope.open = (url) => {
+            $window.open(url);
+            return true;
+          };
+        },
+      };
+    }
   }
 
   function expansionDirective() {
