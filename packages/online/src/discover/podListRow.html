@@ -45,7 +45,9 @@
     <div class="list-view-pf-body">
       <div class="list-view-pf-description">
         <div class="list-group-item-heading">
-          {{pod.metadata.name}}
+          <openshift-link path="'project/' + pod.metadata.namespace + '/browse/pods/' + pod.metadata.name">
+            {{pod.metadata.name}}
+          </openshift-link>
         </div>
         <div class="list-group-item-text">
           <labels labels="pod.metadata.labels"

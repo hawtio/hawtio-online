@@ -84,7 +84,9 @@
                 src="img/java.svg"/>
             </div>
             <h2 class="card-pf-title text-center">
-              {{pod.metadata.name}}
+              <openshift-link path="'project/' + pod.metadata.namespace + '/browse/pods/' + pod.metadata.name">
+                {{pod.metadata.name}}
+              </openshift-link>
             </h2>
             <div class="card-pf-items text-center">
               <div class="card-pf-item">

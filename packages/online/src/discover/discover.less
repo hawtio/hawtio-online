@@ -1,3 +1,5 @@
+@import (reference) "../main.less";
+
 div.list-group-item-text labels {
   line-height: 1.5;
 }
@@ -11,8 +13,14 @@ div.list-group-item-text labels {
   display: inline-block;
 }
 
-.card-pf .card-pf-icon-circle {
-  padding: 10px;
+.card-pf {
+  .card-pf-icon-circle {
+    padding: 10px;
+  }
+
+  &.card-pf-aggregate-status .card-pf-title a {
+    color: @color-pf-blue-400;
+  }
 }
 
 .tree-list-view-pf {
