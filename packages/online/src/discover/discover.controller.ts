@@ -158,14 +158,5 @@ namespace Online {
     loading() {
       return this.openShiftService.isLoading();
     }
-
-    open(url) {
-      this.$window.open(url);
-      return true;
-    }
-
-    getStatusClasses(pod, status) {
-      return getPodClasses(pod, { status, viewType: this.viewType });
-    }
   }
 }

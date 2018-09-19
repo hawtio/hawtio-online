@@ -14,6 +14,7 @@ namespace Online {
     .controller('DiscoverController', DiscoverController)
     .directive('podListRow', podListRowDirective)
     .directive('listRowExpand', expansionDirective)
+    .directive('podCard', podCardDirective)
     .directive('matchHeight', matchHeightDirective)
     .directive('httpSrc', httpSrcDirective)
     .filter('jolokiaContainers', jolokiaContainersFilter)
@@ -33,6 +34,25 @@ namespace Online {
       },
       link: function ($scope: ng.IScope | any) {
         $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType: 'listView' });
+        $scope.open = (url) => {
+          $window.open(url);
+          return true;
+        };
+      },
+    };
+  }
+
+  function podCardDirective($window: ng.IWindowService) {
+    'ngInject';
+    return {
+      restrict    : 'EA',
+      templateUrl : 'src/discover/podCard.html',
+      scope       : {
+        pod                 : '=',
+        openshiftConsoleUrl : '<',
+      },
+      link: function ($scope: ng.IScope | any) {
+        $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType: 'cardView' });
         $scope.open = (url) => {
           $window.open(url);
           return true;

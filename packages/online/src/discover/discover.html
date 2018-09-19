@@ -71,81 +71,10 @@
   <div ng-if="$ctrl.viewType == 'cardView'"
        class="container-fluid container-cards-pf">
     <div class="row row-cards-pf">
-      <div ng-repeat="pod in $ctrl.filteredPods" match-height class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select card-pf-aggregate-status">
-          <div class="card-pf-body">
-            <div class="card-pf-top-element">
-              <img ng-if="pod.metadata.annotations['fabric8.io/iconUrl']"
-                class="card-pf-icon-circle"
-                http-src="/integration/{{pod.metadata.annotations['fabric8.io/iconUrl']}}"
-                src="img/loader.svg"/>
-              <img ng-if="!pod.metadata.annotations['fabric8.io/iconUrl']"
-                class="card-pf-icon-circle"
-                src="img/java.svg"/>
-            </div>
-            <h2 class="card-pf-title text-center">
-              <openshift-link path="'project/' + pod.metadata.namespace + '/browse/pods/' + pod.metadata.name">
-                {{pod.metadata.name}}
-              </openshift-link>
-            </h2>
-            <div class="card-pf-items text-center">
-              <div class="card-pf-item">
-                <span class="pficon pficon-home"></span>
-                <span class="card-pf-item-text">{{pod.metadata.namespace}}</span>
-              </div>
-              <div class="card-pf-item">
-                <span class="pficon pficon-image"></span>
-                <span class="card-pf-item-text">
-                  {{pod.spec.containers.length}}
-                </span>
-              </div>
-              <div ng-if="!!(routes_count = (pod | management:'camel.routes_count'))"
-                   class="card-pf-item">
-                <span class="pficon font-icon icon-rh-integration"></span>
-                <span class="card-pf-item-text">
-                  {{routes_count}}
-                  <ng-pluralize count="routes_count" when="{
-                    'one': 'route',
-                    'other': 'routes'}">
-                  </ng-pluralize>
-                </span>
-              </div>
-            </div>
-            <div class="card-pf-info text-center">
-              Created <span am-time-ago="pod.status.startTime" am-without-suffix="true"></span> ago
-              <!-- TODO: add aggregate status notifications -->
-              <p>
-                <status-icon status="status = (pod | podStatus)"
-                             class="$ctrl.getStatusClasses(pod, status)"></status-icon>
-                {{status | humanizePodStatus}}
-              </p>
-              <button ng-if="(containers = (pod.spec.containers | jolokiaContainers)).length === 1"
-                      class="btn btn-primary"
-                      ng-click="$ctrl.open(pod | connectUrl: (containers[0] | jolokiaPort).containerPort)"
-                      ng-disabled="status !== 'Running'">
-                Connect
-              </button>
-              <div ng-if="containers.length > 1" class="dropdown">
-                <button class="btn btn-primary dropdown-toggle"
-                        type="button"
-                        data-toggle="dropdown"
-                        ng-disabled="status !== 'Running'">
-                  Connect
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                  <li class="dropdown-header">Containers</li>
-                  <li ng-repeat="container in containers" role="presentation">
-                    <a role="menuitem" tabindex="-1" href="#"
-                      ng-click="$ctrl.open(pod | connectUrl: (container | jolokiaPort).containerPort)">
-                      {{container.name}}
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div ng-repeat="pod in $ctrl.filteredPods"
+           class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+           pod-card pod="pod" openshift-console-url="$ctrl.openshiftConsoleUrl"
+           match-height>
       </div>
     </div>
   </div>
