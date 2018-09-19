@@ -1,0 +1,6 @@
+<a ng-if="url" target="_blank" ng-href="{{url}}">
+  <ng-transclude></ng-transclude>
+</a>
+<span ng-if="!url">
+  <ng-transclude></ng-transclude>
+</span>

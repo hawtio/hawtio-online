@@ -40,7 +40,9 @@
             <div class="list-view-pf-description">
               <div class="list-group-item-heading">
                 <div class="component-label">Replication Controller</div>
-                {{pod.name}}
+                  <openshift-link path="'project/' + pod.namespace + '/browse/rc/' + pod.name">
+                    {{pod.name}}
+                  </openshift-link>
               </div>
             </div>
           </div>

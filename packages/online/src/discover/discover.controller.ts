@@ -72,6 +72,7 @@ namespace Online {
             groupedPods.push(j > 0
               ? {
                 kind: 'ReplicationController',
+                namespace: pod.metadata.namespace,
                 name: pod.metadata.ownerReferences[0].name,
                 replicas: this.filteredPods.slice(i, i + j + 1),
               }

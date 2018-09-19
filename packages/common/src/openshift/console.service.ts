@@ -6,7 +6,7 @@ namespace Online {
 
     private _response: ng.IPromise<string|undefined>;
 
-    constructor(private $http: ng.IHttpService) {
+    constructor($http: ng.IHttpService) {
       'ngInject';
       this._response = $http({
         method : 'GET',
