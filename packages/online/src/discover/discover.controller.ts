@@ -76,30 +76,31 @@ namespace Online {
         for (let i = 0; i < pods.length; i++) {
           const pod = pods[i];
           const rc = _.get(pod, 'metadata.ownerReferences[0].uid', null);
-          if (rc && i < pods.length - 1) {
-            let j = 0, rcj;
+          if (!rc) {
+            groupedPods.push(pod);
+            continue;
+          }
+          let j = 0, rcj;
+          if (i < pods.length - 1) {
             do {
               const p = pods[i + j + 1];
               rcj = _.get(p, 'metadata.ownerReferences[0].uid', null);
             } while (rcj === rc && i + j++ < pods.length - 1);
-            groupedPods.push(j > 0
-              ? {
-                group     : 'ReplicationController',
-                namespace : pod.metadata.namespace,
-                name      : pod.metadata.ownerReferences[0].name,
-                replicas  : pods.slice(i, i + j + 1),
-                expanded  : (_.find(previousGroupedPods,
-                  {
-                    group: 'ReplicationController',
-                    namespace: pod.metadata.namespace,
-                    name: pod.metadata.ownerReferences[0].name,
-                  }) || {}).expanded || false,
-              }
-              : pod);
-            i += j;
-          } else {
-            groupedPods.push(pod);
           }
+          groupedPods.push(
+            {
+              group     : 'ReplicationController',
+              namespace : pod.metadata.namespace,
+              name      : pod.metadata.ownerReferences[0].name,
+              replicas  : pods.slice(i, i + j + 1),
+              expanded  : (_.find(previousGroupedPods,
+                {
+                  group: 'ReplicationController',
+                  namespace: pod.metadata.namespace,
+                  name: pod.metadata.ownerReferences[0].name,
+                }) || {}).expanded || false,
+            });
+          i += j;
         }
         return groupedPods;
       };
