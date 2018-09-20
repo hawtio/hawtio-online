@@ -4,9 +4,8 @@ namespace Online {
 
     private pods = [];
     private filteredPods = [];
-    private groupedPods = [];
     private toolbarConfig;
-    private viewType;
+    private viewType: ViewType;
 
     constructor(
       private $scope: ng.IScope,
@@ -28,59 +27,27 @@ namespace Online {
     }
 
     $onInit() {
-      const applyFilters = filters => {
-        this.filteredPods.length = 0;
-        if (filters && filters.length > 0) {
-          this.pods.forEach(pod => {
-            if (_.every(filters, filter => matches(pod, filter))) {
-              this.filteredPods.push(pod);
+      const filters = (pods: any[]) => {
+        const filters = filterConfig.appliedFilters;
+        if (!filters || filters.length === 0) {
+          return pods;
+        }
+        const filteredPods = [];
+        pods.forEach(pod => {
+          if (pod.kind) {
+            const replicas = pod.replicas
+              .filter(replica => _.every(filters, filter => matches(replica, filter)));
+            if (replicas.length > 0) {
+              pod.replicas = replicas;
+              filteredPods.push(pod);
             }
-          });
-        } else {
-          this.filteredPods.push(...this.pods);
-        }
-        this.toolbarConfig.filterConfig.resultsCount = this.filteredPods.length;
-        applySort();
-      };
-
-      const applySort = () => {
-        this.filteredPods.sort((pod1, pod2) => {
-          let value = 0;
-          value = pod1.metadata.name.localeCompare(pod2.metadata.name);
-          if (!this.toolbarConfig.sortConfig.isAscending) {
-            value *= -1;
-          }
-          return value;
-        });
-        applyGroupByReplicas();
-      };
-
-      const applyGroupByReplicas = () => {
-        const groupedPods = [];
-        for (let i = 0; i < this.filteredPods.length; i++) {
-          const pod = this.filteredPods[i];
-          const rc = _.get(pod, 'metadata.ownerReferences[0].uid', null);
-          if (rc && i < this.filteredPods.length - 1) {
-            let j = 0, rcj;
-            do {
-              const p = this.filteredPods[i + j + 1];
-              rcj = _.get(p, 'metadata.ownerReferences[0].uid', null);
-            } while (rcj === rc && i + j++ < this.filteredPods.length - 1);
-            groupedPods.push(j > 0
-              ? {
-                kind: 'ReplicationController',
-                namespace: pod.metadata.namespace,
-                name: pod.metadata.ownerReferences[0].name,
-                replicas: this.filteredPods.slice(i, i + j + 1),
-              }
-              : pod);
-            i += j;
           } else {
-            groupedPods.push(pod);
+            if (_.every(filters, filter => matches(pod, filter))) {
+              filteredPods.push(pod);
+            }
           }
-        }
-        this.groupedPods.length = 0;
-        this.groupedPods.push(...groupedPods);
+        });
+        return filteredPods;
       };
 
       const matches = (item, filter) => {
@@ -93,6 +60,68 @@ namespace Online {
         return match;
       };
 
+      const applySort = (pods: any[]) => {
+        pods.sort((pod1, pod2) => {
+          let value = 0;
+          value = pod1.metadata.name.localeCompare(pod2.metadata.name);
+          if (!this.toolbarConfig.sortConfig.isAscending) {
+            value *= -1;
+          }
+          return value;
+        });
+      };
+
+      const applyGroupByReplicas = (pods: any[], previousGroupedPods: any[]) => {
+        const groupedPods = [];
+        for (let i = 0; i < pods.length; i++) {
+          const pod = pods[i];
+          const rc = _.get(pod, 'metadata.ownerReferences[0].uid', null);
+          if (rc && i < pods.length - 1) {
+            let j = 0, rcj;
+            do {
+              const p = pods[i + j + 1];
+              rcj = _.get(p, 'metadata.ownerReferences[0].uid', null);
+            } while (rcj === rc && i + j++ < pods.length - 1);
+            groupedPods.push(j > 0
+              ? {
+                kind      : 'ReplicationController',
+                namespace : pod.metadata.namespace,
+                name      : pod.metadata.ownerReferences[0].name,
+                replicas  : pods.slice(i, i + j + 1),
+                expanded  : (_.find(previousGroupedPods,
+                  { kind: 'ReplicationController',
+                  namespace: pod.metadata.namespace,
+                  name: pod.metadata.ownerReferences[0].name,
+                  }) || {}).expanded || false,
+              }
+              : pod);
+            i += j;
+          } else {
+            groupedPods.push(pod);
+          }
+        }
+        return groupedPods;
+      };
+
+      let groupedPods = [];
+
+      const applyFilters = () => {
+        this.filteredPods.length = 0;
+        this.filteredPods.push(...filters(groupedPods));
+        this.toolbarConfig.filterConfig.resultsCount = resultCount();
+      };
+
+      const updateView = () => {
+        const sortedPods = [];
+        sortedPods.push(...this.pods);
+        applySort(sortedPods);
+        groupedPods = applyGroupByReplicas(sortedPods, groupedPods);
+        applyFilters();
+      };
+
+      const resultCount = () => this.filteredPods
+        .reduce((count, pod) => pod.kind ? count += pod.replicas.length : count++, 0);
+
       const filterConfig = {
         fields : [
           {
@@ -102,7 +131,7 @@ namespace Online {
             filterType  : 'text'
           },
         ],
-        resultsCount   : this.filteredPods.length,
+        resultsCount   : resultCount(),
         appliedFilters : [],
         onFilterChange : applyFilters,
       };
@@ -115,7 +144,7 @@ namespace Online {
             sortType : 'alpha',
           },
         ],
-        onSortChange: applySort,
+        onSortChange: _ => updateView(),
       };
 
       const viewsConfig: any = {
@@ -146,7 +175,7 @@ namespace Online {
       }
 
       this.$scope.$watchCollection(() => this.pods, function () {
-        applyFilters(filterConfig.appliedFilters);
+        updateView();
       });
 
       this.$scope.$on('$destroy', _ => this.openShiftService.disconnect());

@@ -3,7 +3,7 @@
 
 namespace Online {
 
-  enum ViewType {
+  export enum ViewType {
     listView = 'listView',
     cardView = 'cardView',
   }
