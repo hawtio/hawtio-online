@@ -2,7 +2,7 @@ namespace Online {
 
   export class MatchHeightDirective implements ng.IDirective {
 
-    restrict : 'A';
+    restrict = 'A';
 
     constructor(private $timeout: ng.ITimeoutService) {
       'ngInject';

@@ -6,8 +6,8 @@ namespace Online {
 
   export class HttpSrcDirective implements ng.IDirective {
 
-    scope: {
-      httpSrc: '@';
+    scope = {
+      httpSrc: '@',
     };
 
     constructor(private $http: ng.IHttpService) {
