@@ -182,6 +182,13 @@ namespace Online {
       this.$scope.$on('$destroy', _ => this.openShiftService.disconnect());
     }
 
+    flatten(pods: any[]) {
+      return pods.reduce((res, pod) => {
+        res.push(...pod.group ? pod.replicas : pod);
+        return res;
+      }, []);
+    }
+
     loading() {
       return this.openShiftService.isLoading();
     }
