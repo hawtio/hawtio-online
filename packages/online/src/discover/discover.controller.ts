@@ -98,7 +98,7 @@ namespace Online {
                   group: 'ReplicationController',
                   namespace: pod.metadata.namespace,
                   name: pod.metadata.ownerReferences[0].name,
-                }) || {}).expanded || false,
+                }) || {}).expanded || true,
             });
           i += j;
         }
