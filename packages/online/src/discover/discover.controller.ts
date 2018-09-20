@@ -34,7 +34,7 @@ namespace Online {
         }
         const filteredPods = [];
         pods.forEach(pod => {
-          if (pod.kind) {
+          if (pod.group) {
             const replicas = pod.replicas
               .filter(replica => _.every(filters, filter => matches(replica, filter)));
             if (replicas.length > 0) {
@@ -84,14 +84,15 @@ namespace Online {
             } while (rcj === rc && i + j++ < pods.length - 1);
             groupedPods.push(j > 0
               ? {
-                kind      : 'ReplicationController',
+                group     : 'ReplicationController',
                 namespace : pod.metadata.namespace,
                 name      : pod.metadata.ownerReferences[0].name,
                 replicas  : pods.slice(i, i + j + 1),
                 expanded  : (_.find(previousGroupedPods,
-                  { kind: 'ReplicationController',
-                  namespace: pod.metadata.namespace,
-                  name: pod.metadata.ownerReferences[0].name,
+                  {
+                    group: 'ReplicationController',
+                    namespace: pod.metadata.namespace,
+                    name: pod.metadata.ownerReferences[0].name,
                   }) || {}).expanded || false,
               }
               : pod);
@@ -120,7 +121,7 @@ namespace Online {
       };
 
       const resultCount = () => this.filteredPods
-        .reduce((count, pod) => pod.kind ? count += pod.replicas.length : count++, 0);
+        .reduce((count, pod) => pod.group ? count += pod.replicas.length : count++, 0);
 
       const filterConfig = {
         fields : [
