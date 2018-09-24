@@ -1,0 +1,61 @@
+<div id="main">
+  <pf-vertical-navigation brand-src="{{$ctrl.brandSrc}}" hidden-icons="true" items="$ctrl.items"
+                          item-click-callback="$ctrl.updateTemplateUrl" update-active-items-on-click="true"
+                          ignore-mobile="true">
+    <ul class="nav navbar-nav navbar-right navbar-iconic">
+      <!-- App launcher -->
+      <li class="applauncher-pf applauncher-pf-block-list dropdown">
+        <button class="btn btn-link dropdown-toggle nav-item-iconic" data-toggle="dropdown" href="#">
+          <span class="fa fa-th applauncher-pf-icon" aria-hidden="true"></span>
+          <span class="dropdown-title">
+            <span class="applauncher-pf-title">
+              Application Launcher
+              <span class="caret" aria-hidden="true"></span>
+            </span>
+          </span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li class="applauncher-pf-item" role="presentation">
+            <a class="applauncher-pf-link" ng-href="{{$ctrl.consoleUrl}}" role="menuitem">
+              <i class="applauncher-pf-link-icon font-icon icon-rh-integration" aria-hidden="true"></i>
+              <span class="applauncher-pf-link-title">Console</span>
+            </a>
+          </li>
+          <li class="applauncher-pf-item" role="presentation">
+            <a class="applauncher-pf-link" ng-href="{{$ctrl.openshiftConsoleUrl}}" role="menuitem">
+              <i class="applauncher-pf-link-icon font-icon icon-openshift" aria-hidden="true"></i>
+              <span class="applauncher-pf-link-title">OpenShift</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!-- Help -->
+      <li class="dropdown">
+        <a class="dropdown-toggle nav-item-iconic" id="helpDropdownMenu" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="true">
+          <span title="Help" class="fa pficon-help"></span>
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="helpDropdownMenu">
+          <li hawtio-extension name="hawtio-help"></li>
+          <li hawtio-extension name="hawtio-about"></li>
+        </ul>
+      </li>
+      <!-- User -->
+      <li class="dropdown">
+        <a class="dropdown-toggle nav-item-iconic" id="userDropdownMenu" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="true">
+          <span class="fa pf-icon pficon-user" aria-hidden="true"></span>
+          <span class="username truncate">{{$ctrl.username}}</span> <span class="caret" aria-hidden="true"></span>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="userDropdownMenu">
+          <li hawtio-extension name="hawtio-preferences"></li>
+          <li hawtio-extension name="hawtio-logout"></li>
+        </ul>
+      </li>
+    </ul>
+  </pf-vertical-navigation>
+  <div class="container-fluid container-pf-nav-pf-vertical">
+    <ng-include src="$ctrl.templateUrl"></ng-include>
+  </div>
+</div>

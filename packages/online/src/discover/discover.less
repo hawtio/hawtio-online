@@ -1,6 +1,4 @@
-div[pf-list-view] > .list-group {
-  border-top: 0;
-}
+@import (reference) "../main.less";
 
 div.list-group-item-text labels {
   line-height: 1.5;
@@ -15,6 +13,40 @@ div.list-group-item-text labels {
   display: inline-block;
 }
 
-.card-pf .card-pf-icon-circle {
-  padding: 10px;
+.card-pf {
+  .card-pf-icon-circle {
+    padding: 10px;
+  }
+
+  &.card-pf-aggregate-status .card-pf-title a {
+    color: @color-pf-blue-400;
+  }
+}
+
+.tree-list-view-pf {
+  margin-top: 20px;
+  .list-view-pf-expand {
+    padding-right: 5px;
+    .fa-angle-right {
+      font-size: 22px;
+      color: gray;
+    }
+  }
+  .list-view-pf-expand + .list-view-pf-main-info {
+    .list-view-pf-body {
+      padding-left: 10px;
+      border-left-color: lightgray;
+      border-left-style: solid;
+      border-left-width: 1px;
+    }
+  }
+  .list-group-item-heading {
+    width: auto;
+    margin-bottom: unset;
+  }
+  .list-group-item-container {
+    .list-group-item-heading {
+      line-height: 2em;
+    }
+  }
 }

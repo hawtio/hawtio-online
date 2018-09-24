@@ -2,12 +2,12 @@ namespace Online {
 
   export interface HttpSrcDirectiveScope extends ng.IScope {
     objectURL: string;
-}
+  }
 
   export class HttpSrcDirective implements ng.IDirective {
 
-    scope: {
-      httpSrc: '@';
+    scope = {
+      httpSrc: '@',
     };
 
     constructor(private $http: ng.IHttpService) {
@@ -36,7 +36,7 @@ namespace Online {
           scope.objectURL = url;
         } else if (url) {
           this.$http
-            .get(url, {
+            .get<ArrayBuffer>(url, {
               responseType : 'arraybuffer',
               cache        : true,
               headers      : {

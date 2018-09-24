@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="node_modules/codemirror/lib/codemirror.css" />
     <!-- angular-resizable -->
     <link rel="stylesheet" href="node_modules/angular-resizable/src/angular-resizable.css" />
+    <!-- openshift-logos-icon -->
+    <link rel="stylesheet" href="node_modules/openshift-logos-icon/style.css" />
     <!-- @hawtio/core -->
     <link rel="stylesheet" href="node_modules/@hawtio/core/dist/hawtio-core.css">
     <!-- @hawtio/ui -->
@@ -29,6 +31,8 @@
     <link rel="stylesheet" href="node_modules/@hawtio/jmx/dist/hawtio-jmx.css" />
     <!-- @hawtio/integration -->
     <link rel="stylesheet" href="node_modules/@hawtio/integration/dist/hawtio-integration.css" />
+    <!-- @hawtio/online-common -->
+    <link rel="stylesheet" href="node_modules/@hawtio/online-common/dist/hawtio-online-common.css">
     <!-- @hawtio/online-integration -->
     <link rel="stylesheet" href="dist/hawtio-online-integration.css" />
 
@@ -43,6 +47,8 @@
     <script src="node_modules/datatables.net-select/js/dataTables.select.js"></script>
     <!-- bootstrap -->
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- bootstrap-select -->
+    <script src="node_modules/bootstrap-select/dist/js/bootstrap-select.js"></script>
     <!-- patternfly -->
     <script src="node_modules/patternfly/dist/js/patternfly.min.js"></script>
     <!-- patternfly-bootstrap-treeview -->
@@ -104,6 +110,12 @@
     <script src="node_modules/dagre-layout/dist/dagre-layout.js"></script>
     <!-- ng-infinite-scroll -->
     <script src="node_modules/ng-infinite-scroll/build/ng-infinite-scroll.min.js"></script>
+    <!-- cubism -->
+    <script src="node_modules/cubism/cubism.v1.js"></script>
+    <!-- jolokia -->
+    <script src="node_modules/jolokia.js/jolokia.js"></script>
+    <script src="node_modules/jolokia.js/jolokia-simple.js"></script>
+    <script src="node_modules/jolokia.js/jolokia-cubism.js"></script>
     <!-- @hawtio/core -->
     <script src="node_modules/@hawtio/core/dist/hawtio-core.js"></script>
     <!-- @hawtio/ui -->
@@ -118,8 +130,12 @@
     <script src="node_modules/@hawtio/oauth/dist/hawtio-oauth.js"></script>
     <script src="node_modules/ng-idle/angular-idle.js"></script>
     <!-- hawtio-kubernetes-api -->
-    <script src="node_modules/@hawtio/kubernetes-api/dist/smokesignals.unminified.js"></script>
+    <script src="node_modules/eventemitter3/index.js"></script>
     <script src="node_modules/@hawtio/kubernetes-api/dist/hawtio-kubernetes-api.js"></script>
+    <!-- jsonpath -->
+    <script src="node_modules/jsonpath/jsonpath.js"></script>
+    <!-- @hawtio/online-common -->
+    <script src="node_modules/@hawtio/online-common/dist/hawtio-online-common.js"></script>
     <!-- @hawtio/online-integration -->
     <script src="dist/hawtio-online-integration.js"></script>
 
@@ -127,6 +143,8 @@
 
   </head>
   <body>
-    <hawtio-app></hawtio-app>
+    <!-- Required to customize the navigation bar -->
+    <!-- <hawtio-app></hawtio-app> -->
+    <hawtio-integration-nav></hawtio-integration-nav>
   </body>
 </html>

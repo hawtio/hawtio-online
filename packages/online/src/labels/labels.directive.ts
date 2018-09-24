@@ -29,7 +29,7 @@ namespace Online {
       filterCurrentPage : '=?', // optional don't navigate, just filter here
     };
 
-    templateUrl = 'plugins/online/labels/labels.html';
+    templateUrl = 'src/labels/labels.html';
 
     constructor(
       $location: ng.ILocationService,

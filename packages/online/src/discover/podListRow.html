@@ -1,0 +1,88 @@
+<div class="list-group-item-header">
+  <div class="list-view-pf-actions">
+    <button ng-if="(containers = (pod.spec.containers | jolokiaContainers)).length === 1"
+            class="btn btn-primary"
+            ng-click="open(pod | connectUrl: (containers[0] | jolokiaPort).containerPort)"
+            ng-disabled="status !== 'Running'">
+      Connect
+    </button>
+    <div ng-if="containers.length > 1" class="dropdown">
+      <button class="btn btn-primary dropdown-toggle"
+              type="button" data-toggle="dropdown"
+              ng-disabled="status !== 'Running'">
+        Connect
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-right" role="menu">
+        <li class="dropdown-header">Containers</li>
+        <li ng-repeat="container in containers" role="presentation">
+          <a role="menuitem" tabindex="-1" href="#"
+            ng-click="open(pod | connectUrl: (container | jolokiaPort).containerPort)">
+            {{container.name}}
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div ng-if="openshiftConsoleUrl" class="dropdown pull-right dropdown-kebab-pf">
+      <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown">
+        <span class="fa fa-ellipsis-v"></span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-right">
+        <li class="dropdown-header">OpenShift Console</li>
+        <li><a href="#" ng-click="open(pod | podDetailsUrl:openshiftConsoleUrl)">Open pod details</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="list-view-pf-main-info">
+    <div class="list-view-pf-left">
+      <status-icon status="status = (pod | podStatus)"
+                   class="getStatusClasses(pod, status)"
+                   uib-tooltip="{{status | humanizePodStatus}}"
+                   tooltip-placement="bottom">
+      </status-icon>
+    </div>
+    <div class="list-view-pf-body">
+      <div class="list-view-pf-description">
+        <div class="list-group-item-heading">
+          <openshift-link path="'project/' + pod.metadata.namespace + '/browse/pods/' + pod.metadata.name">
+            {{pod.metadata.name}}
+          </openshift-link>
+        </div>
+        <div class="list-group-item-text">
+          <labels labels="pod.metadata.labels"
+                  project-name="{{pod.metadata.namespace}}"
+                  limit="3">
+          </labels>
+        </div>
+      </div>
+      <div class="list-view-pf-additional-info">
+        <div class="list-view-pf-additional-info-item">
+          <span class="pficon pficon-home"></span>
+          {{pod.metadata.namespace}}
+        </div>
+        <div class="list-view-pf-additional-info-item">
+          <span class="pficon pficon-container-node"></span>
+          {{pod.spec.nodeName || pod.status.hostIP}}
+        </div>
+        <div class="list-view-pf-additional-info-item">
+          <span class="pficon pficon-image"></span>
+          <strong>{{pod.spec.containers.length}}</strong>
+          <ng-pluralize count="containers.length" when="{
+            'one': 'container',
+            'other': 'containers'}">
+          </ng-pluralize>
+        </div>
+        <div ng-if="!!(routes_count = (pod | management:'camel.routes_count'))"
+             class="list-view-pf-additional-info-item">
+          <span class="pficon font-icon icon-rh-integration"></span>
+          <strong>{{routes_count}}</strong>
+          <ng-pluralize count="routes_count" when="{
+            'one': 'route',
+            'other': 'routes'}">
+          </ng-pluralize>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

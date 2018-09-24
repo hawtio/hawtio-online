@@ -3,11 +3,16 @@
 namespace Online {
 
   const module = angular
-    .module('hawtio-online', ['hawtio-about'])
+    .module('hawtio-online', [
+      'hawtio-online-navigation',
+      'hawtio-online-management',
+      'hawtio-about',
+    ])
     .config(addRoutes)
     .run(addOnlineTab)
     .run(addLogoutToUserDropdown)
-    .run(addProductInfo);
+    .run(addProductInfo)
+    .run(destroyBeforeUnload);
 
   function addRoutes($routeProvider: angular.route.IRouteProvider) {
     'ngInject';
@@ -17,23 +22,14 @@ namespace Online {
       .when('/online/discover', { templateUrl: 'src/discover/discover.html' });
   }
 
-  function addOnlineTab(HawtioNav: Nav.Registry): void {
+  function addOnlineTab(mainNavService: Nav.MainNavService): void {
     'ngInject';
 
-    const builder = HawtioNav.builder();
-    const tab = builder.id('online')
-      .title(() => 'Online')
-      .defaultPage({
-        rank : 15,
-        isValid : (yes, no) => {
-          yes();
-        }
-      })
-      .href(() => '/online/discover')
-      .isValid(() => true)
-      .build();
-
-    HawtioNav.add(tab);
+    mainNavService.addItem({
+      title: 'Online',
+      href: '/online/discover',
+      isValid: () => true,
+    });
   }
 
   function addLogoutToUserDropdown(
@@ -44,7 +40,7 @@ namespace Online {
 
     HawtioExtension.add('hawtio-logout', ($scope) => {
       $scope.userDetails = userDetails;
-      const template = '<a href="" ng-click="userDetails.logout()">Logout</a>';
+      const template = '<a href="" ng-click="userDetails.logout()">Logout ({{userDetails.username}})</a>';
       return $compile(template)($scope);
     });
   }
@@ -52,6 +48,11 @@ namespace Online {
   function addProductInfo(aboutService: About.AboutService) {
     'ngInject';
     aboutService.addProductInfo('Hawtio Online', 'PACKAGE_VERSION_PLACEHOLDER');
+  }
+
+  function destroyBeforeUnload($rootScope: ng.IRootScopeService, $window: ng.IWindowService) {
+    'ngInject';
+    $window.onbeforeunload = () => $rootScope.$destroy();
   }
 
   hawtioPluginLoader.addModule(module.name);

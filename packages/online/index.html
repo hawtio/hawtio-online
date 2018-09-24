@@ -16,8 +16,12 @@
     <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly-additions.min.css">
     <!-- angular-patternfly -->
     <link rel="stylesheet" href="node_modules/angular-patternfly/dist/styles/angular-patternfly.min.css" />
+    <!-- openshift-logos-icon -->
+    <link rel="stylesheet" href="node_modules/openshift-logos-icon/style.css" />
     <!-- @hawtio/core -->
     <link rel="stylesheet" href="node_modules/@hawtio/core/dist/hawtio-core.css">
+    <!-- @hawtio/online-common -->
+    <link rel="stylesheet" href="node_modules/@hawtio/online-common/dist/hawtio-online-common.css">
     <!-- @hawtio/online -->
     <link rel="stylesheet" href="dist/hawtio-online.css" />
 
@@ -69,7 +73,7 @@
     <script src="node_modules/@hawtio/oauth/dist/hawtio-oauth.js"></script>
     <script src="node_modules/ng-idle/angular-idle.js"></script>
     <!-- hawtio-kubernetes-api -->
-    <script src="node_modules/@hawtio/kubernetes-api/dist/smokesignals.unminified.js"></script>
+    <script src="node_modules/eventemitter3/index.js"></script>
     <script src="node_modules/@hawtio/kubernetes-api/dist/hawtio-kubernetes-api.js"></script>
     <!-- jsonpath -->
     <script src="node_modules/jsonpath/jsonpath.js"></script>
@@ -78,6 +82,11 @@
     <script src="node_modules/kubernetes-label-selector/labelFilter.js"></script>
     <!-- angular-resource -->
     <script src="node_modules/angular-resource/angular-resource.min.js"></script>
+    <!-- jolokia -->
+    <script src="node_modules/jolokia.js/jolokia.js"></script>
+    <script src="node_modules/jolokia.js/jolokia-simple.js"></script>
+    <!-- @hawtio/online-common -->
+    <script src="node_modules/@hawtio/online-common/dist/hawtio-online-common.js"></script>
     <!-- @hawtio/online -->
     <script src="dist/hawtio-online.js"></script>
 
@@ -86,6 +95,8 @@
   </head>
 
   <body>
-    <hawtio-app></hawtio-app>
+    <!-- Required to customize the navigation bar -->
+    <!-- <hawtio-app></hawtio-app> -->
+    <hawtio-online-nav></hawtio-online-nav>
   </body>
 </html>

@@ -113,7 +113,11 @@ function backend(root, liveReload) {
   });
 }
 
-const hub = new Hub(['./packages/online/gulpfile.js', './packages/integration/gulpfile.js']);
+const hub = new Hub([
+  './packages/common/gulpfile.js',
+  './packages/online/gulpfile.js',
+  './packages/integration/gulpfile.js',
+]);
 gulp.registry(hub);
 
 // Helpers
@@ -128,7 +132,7 @@ const chdir = dir => done => {
 };
 
 // Workspace tasks
-gulp.task('build', gulp.parallel('online::build', 'integration::build'));
+gulp.task('build', gulp.series('common::build', gulp.parallel('online::build', 'integration::build')));
 
 // TODO: parallel site build
 gulp.task('site', gulp.series(
@@ -151,6 +155,10 @@ gulp.task('serve-site', () => {
 });
 
 // Override the reload tasks
+hub._registry[path.join(__dirname, 'packages/common/gulpfile.js')]
+  .set('common::reload',
+    task('Reload common package dependencies', () => gulp.src(['packages/online', 'packages/integration']).pipe(hawtio.reload())));
+
 hub._registry[path.join(__dirname, 'packages/online/gulpfile.js')]
   .set('online::reload',
     task('Reload online package', () => gulp.src('packages/online').pipe(hawtio.reload())));
@@ -160,6 +168,7 @@ hub._registry[path.join(__dirname, 'packages/integration/gulpfile.js')]
     task('Reload integration package', () => gulp.src('packages/integration').pipe(hawtio.reload())));
 
 gulp.task('default', gulp.parallel(
+  'common::watch',
   'online::watch',
   'integration::watch',
   task('Start Hawtio backend', function () {

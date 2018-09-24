@@ -2,47 +2,52 @@ namespace Online {
 
   export class DiscoverController {
 
-    _loading = 0;
-    pods = [];
-    filteredPods = [];
-    projects = [];
-    toolbarConfig;
-    viewType;
+    private pods = [];
+    private filteredPods = [];
+    private toolbarConfig;
+    private viewType: ViewType;
 
     constructor(
       private $scope: ng.IScope,
       private $window: ng.IWindowService,
       private pfViewUtils,
-      private K8SClientFactory: KubernetesAPI.K8SClientFactory,
+      private openShiftService: OpenShiftService,
+      managementService: ManagementService,
     ) {
       'ngInject';
+      this.pods = this.openShiftService.getPods();
+
+      const update = _.debounce(() => {
+        Core.$digest(this.$scope);
+        this.$scope.$broadcast('matchHeight');
+      }, 100, { leading: true, trailing: true });
+
+      openShiftService.on('changed', update);
+      managementService.on('updated', update);
     }
 
     $onInit() {
-      const applyFilters = filters => {
-        this.filteredPods.length = 0;
-        if (filters && filters.length > 0) {
-          this.pods.forEach(pod => {
-            if (_.every(filters, filter => matches(pod, filter))) {
-              this.filteredPods.push(pod);
-            }
-          });
-        } else {
-          this.filteredPods.push(...this.pods);
+      const filters = (pods: any[]) => {
+        const filters = filterConfig.appliedFilters;
+        if (!filters || filters.length === 0) {
+          return pods;
         }
-        this.toolbarConfig.filterConfig.resultsCount = this.filteredPods.length;
-        applySort();
-      };
-
-      const applySort = () => {
-        this.filteredPods.sort((pod1, pod2) => {
-          let value = 0;
-          value = pod1.metadata.name.localeCompare(pod2.metadata.name);
-          if (!this.toolbarConfig.sortConfig.isAscending) {
-            value *= -1;
+        const filteredPods = [];
+        pods.forEach(pod => {
+          if (pod.group) {
+            const replicas = pod.replicas
+              .filter(replica => _.every(filters, filter => matches(replica, filter)));
+            if (replicas.length > 0) {
+              pod.replicas = replicas;
+              filteredPods.push(pod);
+            }
+          } else {
+            if (_.every(filters, filter => matches(pod, filter))) {
+              filteredPods.push(pod);
+            }
           }
-          return value;
-        })
+        });
+        return filteredPods;
       };
 
       const matches = (item, filter) => {
@@ -55,6 +60,70 @@ namespace Online {
         return match;
       };
 
+      const applySort = (pods: any[]) => {
+        pods.sort((pod1, pod2) => {
+          let value = 0;
+          value = pod1.metadata.name.localeCompare(pod2.metadata.name);
+          if (!this.toolbarConfig.sortConfig.isAscending) {
+            value *= -1;
+          }
+          return value;
+        });
+      };
+
+      const applyGroupByReplicas = (pods: any[], previousGroupedPods: any[]) => {
+        const groupedPods = [];
+        for (let i = 0; i < pods.length; i++) {
+          const pod = pods[i];
+          const rc = _.get(pod, 'metadata.ownerReferences[0].uid', null);
+          if (!rc) {
+            groupedPods.push(pod);
+            continue;
+          }
+          let j = 0, rcj;
+          if (i < pods.length - 1) {
+            do {
+              const p = pods[i + j + 1];
+              rcj = _.get(p, 'metadata.ownerReferences[0].uid', null);
+            } while (rcj === rc && i + j++ < pods.length - 1);
+          }
+          groupedPods.push(
+            {
+              group     : 'ReplicationController',
+              namespace : pod.metadata.namespace,
+              name      : pod.metadata.ownerReferences[0].name,
+              replicas  : pods.slice(i, i + j + 1),
+              expanded  : (_.find(previousGroupedPods,
+                {
+                  group: 'ReplicationController',
+                  namespace: pod.metadata.namespace,
+                  name: pod.metadata.ownerReferences[0].name,
+                }) || {}).expanded || true,
+            });
+          i += j;
+        }
+        return groupedPods;
+      };
+
+      let groupedPods = [];
+
+      const applyFilters = () => {
+        this.filteredPods.length = 0;
+        this.filteredPods.push(...filters(groupedPods));
+        this.toolbarConfig.filterConfig.resultsCount = resultCount();
+      };
+
+      const updateView = () => {
+        const sortedPods = [];
+        sortedPods.push(...this.pods);
+        applySort(sortedPods);
+        groupedPods = applyGroupByReplicas(sortedPods, groupedPods);
+        applyFilters();
+      };
+
+      const resultCount = () => this.filteredPods
+        .reduce((count, pod) => pod.group ? count += pod.replicas.length : count++, 0);
+
       const filterConfig = {
         fields : [
           {
@@ -64,7 +133,7 @@ namespace Online {
             filterType  : 'text'
           },
         ],
-        resultsCount   : this.filteredPods.length,
+        resultsCount   : resultCount(),
         appliedFilters : [],
         onFilterChange : applyFilters,
       };
@@ -77,7 +146,7 @@ namespace Online {
             sortType : 'alpha',
           },
         ],
-        onSortChange: applySort,
+        onSortChange: _ => updateView(),
       };
 
       const viewsConfig: any = {
@@ -107,100 +176,22 @@ namespace Online {
         );
       }
 
-      if (this.$window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
-        const projects = this.K8SClientFactory.create('projects');
-        const pods_watches = {};
-        this._loading++;
-        const projects_watch = projects.watch(projects => {
-          // subscribe to pods update for new projects
-          projects.filter(project => !this.projects.some(p => p.metadata.uid === project.metadata.uid))
-            .forEach(project => {
-              this._loading++;
-              const pods = this.K8SClientFactory.create('pods', project.metadata.name);
-              const pods_watch = pods.watch(pods => {
-                this._loading--;
-                const others = this.pods.filter(pod => pod.metadata.namespace !== project.metadata.name);
-                this.pods.length = 0;
-                this.pods.push(...others, ..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
-                applyFilters(filterConfig.appliedFilters);
-                // have to kick off a $digest here
-                this.$scope.$apply();
-              });
-              pods_watches[project.metadata.name] = {
-                request : pods,
-                watch   : pods_watch,
-              };
-              pods.connect();
-            });
+      this.$scope.$watchCollection(() => this.pods, function () {
+        updateView();
+      });
 
-          // handle delete projects
-          this.projects.filter(project => !projects.some(p => p.metadata.uid === project.metadata.uid))
-            .forEach(project => {
-              const handle = pods_watches[project.metadata.name];
-              this.K8SClientFactory.destroy(handle.request, handle.watch);
-              delete pods_watches[project.metadata.name];
-            });
+      this.$scope.$on('$destroy', _ => this.openShiftService.disconnect());
+    }
 
-          this.projects.length = 0;
-          this.projects.push(...projects);
-          this._loading--;
-        });
-        this.$scope.$on('$destroy', _ => this.K8SClientFactory.destroy(projects, projects_watch));
-
-        projects.connect();
-      } else {
-        this._loading++;
-        const pods = this.K8SClientFactory.create('pods', this.$window.OPENSHIFT_CONFIG.hawtio.namespace);
-        const pods_watch = pods.watch(pods => {
-          this._loading--;
-          this.pods.length = 0;
-          this.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
-          applyFilters(filterConfig.appliedFilters);
-          // have to kick off a $digest here
-          this.$scope.$apply();
-        });
-        this.$scope.$on('$destroy', _ => this.K8SClientFactory.destroy(pods, pods_watch));
-
-        pods.connect();
-      }
+    flatten(pods: any[]) {
+      return pods.reduce((res, pod) => {
+        res.push(...pod.group ? pod.replicas : pod);
+        return res;
+      }, []);
     }
 
     loading() {
-      return this._loading > 0;
-    }
-
-    open(url) {
-      this.$window.open(url);
-      return true;
-    }
-
-    getStatusClasses(pod, status) {
-      let styles;
-      switch (status) {
-        case 'Running':
-          if (isPodReady(pod)) {
-            styles = this.viewType === 'listView'
-              ? 'list-view-pf-icon-success'
-              : 'text-success';
-          }
-          break;
-        case 'Complete':
-        case 'Completed':
-        case 'Succeeded':
-          styles = 'list-view-pf-icon-success';
-          break;
-        case 'Error':
-        case 'Terminating':
-        case 'Terminated':
-        case 'Unknown':
-          styles = 'list-view-pf-icon-danger';
-          break;
-        default:
-         styles = 'list-view-pf-icon-info';
-      }
-      return this.viewType === 'listView'
-        ? `list-view-pf-icon-md ${styles}`
-        : `card-pf-aggregate-status-notification ${styles}`;
+      return this.openShiftService.isLoading();
     }
   }
 }

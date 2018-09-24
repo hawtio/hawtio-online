@@ -1,11 +1,12 @@
 /// <reference path="discover.controller.ts"/>
-/// <reference path="httpSrc.directive.ts"/>
-/// <reference path="match-height.directive.ts"/>
 /// <reference path="../labels/labels.module.ts"/>
-/// <reference path="../openshift/openshift.module.ts"/>
-/// <reference path="../status/status.module.ts"/>
 
 namespace Online {
+
+  export enum ViewType {
+    listView = 'listView',
+    cardView = 'cardView',
+  }
 
   export const discoverModule = angular
     .module('hawtio-online-discover', [
@@ -13,16 +14,44 @@ namespace Online {
       'KubernetesAPI',
       'patternfly',
       labelsModule.name,
-      openshiftModule.name,
-      statusModule.name,
+      'hawtio-online-status',
     ])
     .controller('DiscoverController', DiscoverController)
+    .directive('podListRow', podDirective(ViewType.listView, 'src/discover/podListRow.html'))
+    .directive('listRowExpand', expansionDirective)
+    .directive('podCard', podDirective(ViewType.cardView, 'src/discover/podCard.html'))
     .directive('matchHeight', matchHeightDirective)
     .directive('httpSrc', httpSrcDirective)
     .filter('jolokiaContainers', jolokiaContainersFilter)
     .filter('jolokiaPort', jolokiaPortFilter)
     .filter('connectUrl', connectUrlFilter)
     .filter('podDetailsUrl', podDetailsUrlFilter);
+
+
+  function podDirective(viewType: ViewType, templateUrl: string) {
+    return function podDirective($window: ng.IWindowService, openShiftConsole: ConsoleService) {
+      'ngInject';
+      return {
+        restrict    : 'EA',
+        templateUrl : templateUrl,
+        scope       : {
+          pod : '=',
+        },
+        link: function ($scope: ng.IScope | any) {
+          openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url);
+          $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType });
+          $scope.open = (url) => {
+            $window.open(url);
+            return true;
+          };
+        },
+      };
+    }
+  }
+
+  function expansionDirective() {
+    return new ListRowExpandDirective();
+  }
 
   function matchHeightDirective($timeout: ng.ITimeoutService) {
     'ngInject';
@@ -35,7 +64,7 @@ namespace Online {
   }
 
   function jolokiaContainersFilter() {
-    return containers => containers.filter(container => container.ports.some(port => port.name === 'jolokia'));
+    return containers => (containers || []).filter(container => container.ports.some(port => port.name === 'jolokia'));
   }
 
   function jolokiaPortFilter() {
@@ -51,12 +80,8 @@ namespace Online {
       });
   }
 
-  function podDetailsUrlFilter(openShiftConsole: ConsoleService) {
-    'ngInject';
-    return pod => UrlHelpers.join(
-      openShiftConsole.url
-      || UrlHelpers.join(Core.pathGet(window, ['OPENSHIFT_CONFIG', 'openshift', 'master_uri']), 'console'),
-        'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name);
+  function podDetailsUrlFilter() {
+    return (pod, openShiftConsoleUrl: string) => UrlHelpers.join(openShiftConsoleUrl, 'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name);
   }
 
   hawtioPluginLoader.addModule(discoverModule.name);
