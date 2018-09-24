@@ -6,7 +6,7 @@
     "copyright": ""
   },
   "branding": {
-    "appName": "Hawtio Console",
+    "appName": "Fuse Console",
     "appLogoUrl": "../online/img/fuse-logo.svg"
   },
   "disabledRoutes": []
