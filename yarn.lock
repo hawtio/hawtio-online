@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@hawtio/core-dts@3.1.0", "@hawtio/core-dts@3.2.0":
-  version "3.1.0"
-  resolved "http://registry.npmjs.org/@hawtio/core-dts/-/core-dts-3.1.0.tgz#23b73d0f7f884fb1e1e8d9537d36d42bbdee18df"
+"@hawtio/core-dts@3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@hawtio/core-dts/-/core-dts-3.2.0.tgz#9a685349dcfb9733234f6de71da5005d69b613fb"
   dependencies:
     "@types/jquery" "~2.0.46"
 

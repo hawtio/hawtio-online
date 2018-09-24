@@ -211,7 +211,6 @@
     "is-valid-glob": "1.0.0",
     "to-absolute-glob": "2.0.2",
     "@types/jqueryui": "1.12.2",
-    "@hawtio/core-dts": "3.1.0",
     "angular-animate": "1.6.9",
     "yargs": "9.0.0",
     "string-width": "2.1.1",
