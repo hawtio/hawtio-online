@@ -16,10 +16,12 @@ namespace Online {
       userDetails: Core.AuthService,
       $interval: ng.IIntervalService,
       $rootScope: ng.IRootScopeService,
+      $timeout: ng.ITimeoutService,
+      $document: ng.IDocumentService,
       private $window: ng.IWindowService,
     ) {
       'ngInject';
-      super(configManager, userDetails, mainNavService, $rootScope, $interval);
+      super(configManager, userDetails, mainNavService, $rootScope, $interval, $timeout, $document);
 
       // mainNavService from parent class could be made protected
       this.navService = mainNavService;
