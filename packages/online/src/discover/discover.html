@@ -38,11 +38,21 @@
         <div class="list-view-pf-main-info">
           <div class="list-view-pf-body">
             <div class="list-view-pf-description">
-              <div class="list-group-item-heading">
+              <div ng-if="pod.config" class="list-group-item-heading">
+                <div class="component-label">Deployment Config</div>
+                <openshift-link path="'project/' + pod.namespace + '/browse/dc/' + pod.config">
+                  {{pod.config}}
+                </openshift-link>
+                ,
+                <openshift-link path="'project/' + pod.namespace + '/browse/rc/' + pod.deployment">
+                  #{{pod.version}}
+                </openshift-link>
+              </div>
+              <div ng-if="!pod.config" class="list-group-item-heading">
                 <div class="component-label">Deployment</div>
-                  <openshift-link path="'project/' + pod.namespace + '/browse/rc/' + pod.name">
-                    {{pod.deployment}}
-                  </openshift-link>
+                <openshift-link path="'project/' + pod.namespace + '/browse/rc/' + pod.name">
+                  {{pod.deployment}}
+                </openshift-link>
               </div>
             </div>
           </div>

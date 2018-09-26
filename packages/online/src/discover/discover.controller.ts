@@ -95,8 +95,8 @@ namespace Online {
           groupedPods.push(
             {
               owner      : owner,
-              config     : _.get(pod, 'metadata.annotations.openshift.io/deployment-config.name', null),
-              version    : _.get(pod, 'metadata.annotations.openshift.io/deployment-config.latest-version', null),
+              config     : _.get(pod, ['metadata', 'annotations', 'openshift.io/deployment-config.name'], null),
+              version    : _.get(pod, ['metadata', 'annotations', 'openshift.io/deployment-config.latest-version'], null),
               deployment : pod.metadata.ownerReferences[0].name,
               namespace  : pod.metadata.namespace,
               replicas   : pods.slice(i, i + j + 1),
