@@ -27,7 +27,7 @@
          class="list-group-item list-view-pf-stacked">
 
       <!-- Replicas group -->
-      <div ng-if="pod.group"
+      <div ng-if="pod.deployment"
            class="list-group-item-header"
            list-row-expand on-click="pod.expanded = !pod.expanded">
 
@@ -39,9 +39,9 @@
           <div class="list-view-pf-body">
             <div class="list-view-pf-description">
               <div class="list-group-item-heading">
-                <div class="component-label">Replication Controller</div>
+                <div class="component-label">Deployment</div>
                   <openshift-link path="'project/' + pod.namespace + '/browse/rc/' + pod.name">
-                    {{pod.name}}
+                    {{pod.deployment}}
                   </openshift-link>
               </div>
             </div>
@@ -52,7 +52,7 @@
       </div>
 
       <!-- Replicas pods -->
-      <div ng-if="pod.group"
+      <div ng-if="pod.deployment"
            class="list-group-item-container container-fluid"
            ng-class="{'hidden': !pod.expanded}">
         <div ng-repeat="replica in pod.replicas"
@@ -62,7 +62,7 @@
       </div>
 
       <!-- Pod item -->
-      <pod-list-row ng-if="!pod.group" pod="pod" />
+      <pod-list-row ng-if="!pod.deployment" pod="pod" />
     </div>
   </div>
 

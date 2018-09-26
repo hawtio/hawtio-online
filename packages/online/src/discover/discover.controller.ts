@@ -34,7 +34,7 @@ namespace Online {
         }
         const filteredPods = [];
         pods.forEach(pod => {
-          if (pod.group) {
+          if (pod.deployment) {
             const replicas = pod.replicas
               .filter(replica => _.every(filters, filter => matches(replica, filter)));
             if (replicas.length > 0) {
@@ -60,7 +60,7 @@ namespace Online {
         return match;
       };
 
-      const applySort = (pods: any[]) => {
+      const sortPods = (pods: any[]) => {
         pods.sort((pod1, pod2) => {
           let value = 0;
           value = pod1.metadata.name.localeCompare(pod2.metadata.name);
@@ -71,34 +71,36 @@ namespace Online {
         });
       };
 
-      const applyGroupByReplicas = (pods: any[], previousGroupedPods: any[]) => {
+      const groupPodsByDeployment = (pods: any[], previousGroupedPods: any[]) => {
         const groupedPods = [];
         for (let i = 0; i < pods.length; i++) {
           const pod = pods[i];
-          const rc = _.get(pod, 'metadata.ownerReferences[0].uid', null);
-          if (!rc) {
+          const owner = _.get(pod, 'metadata.ownerReferences[0].uid', null);
+          if (!owner) {
             groupedPods.push(pod);
             continue;
           }
-          let j = 0, rcj;
+          let j = 0, uid;
           if (i < pods.length - 1) {
             do {
               const p = pods[i + j + 1];
-              rcj = _.get(p, 'metadata.ownerReferences[0].uid', null);
-            } while (rcj === rc && i + j++ < pods.length - 1);
+              uid = _.get(p, 'metadata.ownerReferences[0].uid', null);
+            } while (uid === owner && i + j++ < pods.length - 1);
           }
+          const previous = _.find(previousGroupedPods, {
+            owner      : owner,
+            namespace  : pod.metadata.namespace,
+            deployment : pod.metadata.ownerReferences[0].name,
+          });
           groupedPods.push(
             {
-              group     : 'ReplicationController',
-              namespace : pod.metadata.namespace,
-              name      : pod.metadata.ownerReferences[0].name,
-              replicas  : pods.slice(i, i + j + 1),
-              expanded  : (_.find(previousGroupedPods,
-                {
-                  group: 'ReplicationController',
-                  namespace: pod.metadata.namespace,
-                  name: pod.metadata.ownerReferences[0].name,
-                }) || {}).expanded || true,
+              owner      : owner,
+              config     : _.get(pod, 'metadata.annotations.openshift.io/deployment-config.name', null),
+              version    : _.get(pod, 'metadata.annotations.openshift.io/deployment-config.latest-version', null),
+              deployment : pod.metadata.ownerReferences[0].name,
+              namespace  : pod.metadata.namespace,
+              replicas   : pods.slice(i, i + j + 1),
+              expanded   : previous ? previous.expanded : true,
             });
           i += j;
         }
@@ -116,13 +118,13 @@ namespace Online {
       const updateView = () => {
         const sortedPods = [];
         sortedPods.push(...this.pods);
-        applySort(sortedPods);
-        groupedPods = applyGroupByReplicas(sortedPods, groupedPods);
+        sortPods(sortedPods);
+        groupedPods = groupPodsByDeployment(sortedPods, groupedPods);
         applyFilters();
       };
 
       const resultCount = () => this.filteredPods
-        .reduce((count, pod) => pod.group ? count += pod.replicas.length : count++, 0);
+        .reduce((count, pod) => pod.deployment ? count += pod.replicas.length : count++, 0);
 
       const filterConfig = {
         fields : [
@@ -185,7 +187,7 @@ namespace Online {
 
     flatten(pods: any[]) {
       return pods.reduce((res, pod) => {
-        res.push(...pod.group ? pod.replicas : pod);
+        res.push(...pod.deployment ? pod.replicas : pod);
         return res;
       }, []);
     }
