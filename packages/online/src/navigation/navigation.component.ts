@@ -14,9 +14,11 @@ namespace Online {
       userDetails: Core.AuthService,
       $interval: ng.IIntervalService,
       $rootScope: ng.IRootScopeService,
+      $timeout: ng.ITimeoutService,
+      $document: ng.IDocumentService,
     ) {
       'ngInject';
-      super(configManager, userDetails, mainNavService, $rootScope, $interval);
+      super(configManager, userDetails, mainNavService, $rootScope, $interval, $timeout, $document);
 
       this.consoleUrl = new URI().query('').path('/integration/').valueOf();
       openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
