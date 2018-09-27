@@ -1,6 +1,6 @@
 {
   "name": "@hawtio/online",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "main": "dist/hawtio-online.js",
   "types": "dist/hawtio-online.d.ts",
   "files": [
@@ -13,10 +13,10 @@
     "prepack": "gulp online::build"
   },
   "dependencies": {
-    "@hawtio/online-common": "*",
     "@hawtio/core": "^4.0.0",
     "@hawtio/kubernetes-api": "^4.0.0",
     "@hawtio/oauth": "^4.0.0",
+    "@hawtio/online-common": "*",
     "angular-moment": "^1.2.0",
     "angular-patternfly": "^4.15.0",
     "angular-resource": "~1.6.5",
