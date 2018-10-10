@@ -39,8 +39,8 @@
     "@hawtio/ui" "^4.0.0"
 
 "@hawtio/integration@^4.0.0":
-  version "4.0.14"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.0.14.tgz#0a2708471ad850da58b9d3aefb36cd82df57822c"
+  version "4.0.15"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.0.15.tgz#b668d834e7e15046ea5ad3a450e46e70b11ffa16"
   dependencies:
     "@hawtio/jmx" "~4.0.0"
     "@types/angular-mocks" "~1.7.0"
