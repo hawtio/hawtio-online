@@ -8,7 +8,7 @@
   dependencies:
     "@types/jquery" "~2.0.46"
 
-"@hawtio/core@^4.0.0":
+"@hawtio/core@^4.0.0", "@hawtio/core@~4.0.0", "@hawtio/core@~4.1.0":
   version "4.0.18"
   resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.0.18.tgz#65d95a6ebbf48ea62b1ac3ecd7d459506abb0be7"
   dependencies:
@@ -32,15 +32,15 @@
     marked "0.3.9"
     urijs "1.19.0"
 
-"@hawtio/forms@^4.0.0":
+"@hawtio/forms@~4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@hawtio/forms/-/forms-4.0.0.tgz#b5720ccf592c8c8820eb1076beeffb0021373b6d"
   dependencies:
     "@hawtio/ui" "^4.0.0"
 
-"@hawtio/integration@^4.0.0":
-  version "4.0.15"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.0.15.tgz#b668d834e7e15046ea5ad3a450e46e70b11ffa16"
+"@hawtio/integration@~4.0.0":
+  version "4.0.17"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.0.17.tgz#06e9427f14ee56a8861f161f4cb7a798841e29cf"
   dependencies:
     "@hawtio/jmx" "~4.0.0"
     "@types/angular-mocks" "~1.7.0"
@@ -50,19 +50,19 @@
     ng-infinite-scroll "1.3.0"
 
 "@hawtio/jmx@~4.0.0":
-  version "4.0.18"
-  resolved "https://registry.yarnpkg.com/@hawtio/jmx/-/jmx-4.0.18.tgz#e1ca68cd15782fd71415f11f3d0dbed456dbaf68"
+  version "4.0.19"
+  resolved "https://registry.yarnpkg.com/@hawtio/jmx/-/jmx-4.0.19.tgz#3af29d01df29f054f6f5c87f146ba975c0a57040"
   dependencies:
-    "@hawtio/core" "^4.0.0"
-    "@hawtio/forms" "^4.0.0"
-    "@hawtio/ui" "^4.0.0"
+    "@hawtio/core" "~4.0.0"
+    "@hawtio/forms" "~4.0.0"
+    "@hawtio/ui" "~4.0.0"
     "@types/angular-ui-bootstrap" "~0.13.46"
     angular-resizable "1.2.0"
     cubism "^1.6.0"
     jolokia.js "^1.6.0-1"
     patternfly-bootstrap-treeview "~2.1.0"
 
-"@hawtio/kubernetes-api@^4.0.0":
+"@hawtio/kubernetes-api@~4.0.0":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-4.0.2.tgz#ad63259768e9910a72471a41f3bd1fbf979112cf"
   dependencies:
@@ -88,14 +88,14 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@^4.0.0":
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.0.6.tgz#2434aecd310ab219ca4a64ad31d0516684e2df21"
+"@hawtio/oauth@^4.0.0", "@hawtio/oauth@~4.0.0":
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.0.7.tgz#f5e88d7dcc4001f6cb1d8e6b6e062828b9d02d80"
   dependencies:
     "@hawtio/core" "^4.0.0"
     ng-idle "^1.3.2"
 
-"@hawtio/ui@^4.0.0":
+"@hawtio/ui@^4.0.0", "@hawtio/ui@~4.0.0":
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/@hawtio/ui/-/ui-4.0.3.tgz#2568974045be62643105e003e2d0f58793fe337d"
   dependencies:
