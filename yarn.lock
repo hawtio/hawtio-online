@@ -8,7 +8,7 @@
   dependencies:
     "@types/jquery" "~2.0.46"
 
-"@hawtio/core@^4.0.0":
+"@hawtio/core@^4.0.0", "@hawtio/core@~4.1.0":
   version "4.0.18"
   resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.0.18.tgz#65d95a6ebbf48ea62b1ac3ecd7d459506abb0be7"
   dependencies:
@@ -89,10 +89,10 @@
     urijs "^1.18.10"
 
 "@hawtio/oauth@^4.0.0":
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.0.6.tgz#2434aecd310ab219ca4a64ad31d0516684e2df21"
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.1.0.tgz#18340083bf6f9ced3f1207f3eb3912b64a34f477"
   dependencies:
-    "@hawtio/core" "^4.0.0"
+    "@hawtio/core" "~4.1.0"
     ng-idle "^1.3.2"
 
 "@hawtio/ui@^4.0.0":
