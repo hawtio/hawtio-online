@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="layout-pf layout-pf-fixed">
+<html>
 
   <head>
     <title>hawtio-online</title>
@@ -11,9 +11,11 @@
 
     <!-- datatables -->
     <link rel="stylesheet" href="node_modules/datatables.net-dt/css/jquery.dataTables.css" />
-    <!-- patternfly -->
+    <!-- patternfly 3 -->
     <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly.min.css">
     <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly-additions.min.css">
+    <!-- patternfly 4 -->
+    <link rel="stylesheet" href="node_modules/@hawtio/core/dist/css/patternfly.css">
     <!-- angular-patternfly -->
     <link rel="stylesheet" href="node_modules/angular-patternfly/dist/styles/angular-patternfly.min.css" />
     <!-- openshift-logos-icon -->
@@ -42,6 +44,8 @@
     <script src="node_modules/patternfly/dist/js/patternfly.min.js"></script>
     <!-- angular -->
     <script src="node_modules/angular/angular.js"></script>
+    <!-- angular-animate -->
+    <script src="node_modules/angular-animate/angular-animate.min.js"></script>
     <!-- angular-sanitize -->
     <script src="node_modules/angular-sanitize/angular-sanitize.js"></script>
     <!-- angular-route -->
@@ -95,8 +99,6 @@
   </head>
 
   <body>
-    <!-- Required to customize the navigation bar -->
-    <!-- <hawtio-app></hawtio-app> -->
-    <hawtio-online-nav></hawtio-online-nav>
+    <hawtio-app></hawtio-app>
   </body>
 </html>

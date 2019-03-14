@@ -8,9 +8,9 @@
     "license": "license-reporter save --xml licenses.xml"
   },
   "dependencies": {
+    "@hawtio/integration": "~4.5.0",
+    "@hawtio/oauth": "~4.5.0",
     "@hawtio/online-common": "*",
-    "@hawtio/integration": "~4.0.0",
-    "@hawtio/oauth": "~4.0.0",
     "openshift-logos-icon": "^1.6.0"
   },
   "devDependencies": {
@@ -38,7 +38,7 @@
     "gulp-watch": "^3.0.0",
     "js-logger": "^0.9.14",
     "license-reporter": "^1.2.1",
-    "typescript": "^3.0.0",
+    "typescript": "^3.3.0",
     "yargs": "^6.0.0"
   },
   "license": "Apache-2.0",

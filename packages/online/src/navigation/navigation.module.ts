@@ -1,4 +1,4 @@
-/// <reference path="navigation.component.ts"/>
+/// <reference path="navigation.config.ts"/>
 
 namespace Online {
 
@@ -6,6 +6,6 @@ namespace Online {
     .module('hawtio-online-navigation', [
       'hawtio-online-openshift',
     ])
-    .component('hawtioOnlineNav', navComponent);
+    .run(addHeaderTools);
 
 }
