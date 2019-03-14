@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="layout-pf layout-pf-fixed">
+<html>
   <head>
     <title>hawtio-integration</title>
     <base href='/integration/'>
@@ -10,9 +10,11 @@
 
     <!-- datatables -->
     <link rel="stylesheet" href="node_modules/datatables.net-dt/css/jquery.dataTables.css" />
-    <!-- patternfly -->
+    <!-- patternfly 3 -->
     <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly.min.css">
     <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly-additions.min.css">
+    <!-- patternfly 4 -->
+    <link rel="stylesheet" href="node_modules/@hawtio/core/dist/css/patternfly.css">
     <!-- angular-patternfly -->
     <link rel="stylesheet" href="node_modules/angular-patternfly/dist/styles/angular-patternfly.min.css" />
     <!-- codemirror -->
@@ -25,8 +27,6 @@
     <link rel="stylesheet" href="node_modules/@hawtio/core/dist/hawtio-core.css">
     <!-- @hawtio/ui -->
     <link rel="stylesheet" href="node_modules/@hawtio/ui/dist/hawtio-ui.css" />
-    <!-- @hawtio/forms -->
-    <link rel="stylesheet" href="node_modules/@hawtio/forms/dist/hawtio-forms.css" />
     <!-- @hawtio/jmx -->
     <link rel="stylesheet" href="node_modules/@hawtio/jmx/dist/hawtio-jmx.css" />
     <!-- @hawtio/integration -->
@@ -55,6 +55,8 @@
     <script src="node_modules/patternfly-bootstrap-treeview/dist/bootstrap-treeview.js"></script>
     <!-- angular -->
     <script src="node_modules/angular/angular.js"></script>
+    <!-- angular-animate -->
+    <script src="node_modules/angular-animate/angular-animate.min.js"></script>
     <!-- angular-sanitize -->
     <script src="node_modules/angular-sanitize/angular-sanitize.js"></script>
     <!-- angular-route -->
@@ -120,8 +122,6 @@
     <script src="node_modules/@hawtio/core/dist/hawtio-core.js"></script>
     <!-- @hawtio/ui -->
     <script src="node_modules/@hawtio/ui/dist/hawtio-ui.js"></script>
-    <!-- @hawtio/forms -->
-    <script src="node_modules/@hawtio/forms/dist/hawtio-forms.js"></script>
     <!-- @hawtio/jmx -->
     <script src="node_modules/@hawtio/jmx/dist/hawtio-jmx.js"></script>
     <!-- @hawtio/integration -->
@@ -143,8 +143,6 @@
 
   </head>
   <body>
-    <!-- Required to customize the navigation bar -->
-    <!-- <hawtio-app></hawtio-app> -->
-    <hawtio-integration-nav></hawtio-integration-nav>
+    <hawtio-app></hawtio-app>
   </body>
 </html>

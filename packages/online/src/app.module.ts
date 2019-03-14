@@ -27,8 +27,7 @@ namespace Online {
 
     mainNavService.addItem({
       title: 'Online',
-      href: '/online/discover',
-      isValid: () => true,
+      href: '/online/discover'
     });
   }
 
@@ -40,7 +39,7 @@ namespace Online {
 
     HawtioExtension.add('hawtio-logout', ($scope) => {
       $scope.userDetails = userDetails;
-      const template = '<a href="" ng-click="userDetails.logout()">Logout ({{userDetails.username}})</a>';
+      const template = '<li><a class="pf-c-dropdown__menu-item" href="#" ng-focus="userDetails.logout()">Logout ({{userDetails.username}})</a></li>';
       return $compile(template)($scope);
     });
   }
