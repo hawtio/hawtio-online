@@ -24,13 +24,13 @@
 
   <name>hawtio-online</name>
   <description>HawtIO Online :: ${project.artifactId}</description>
-  
+
   <properties>
     <fabric8.maven.plugin.version>3.5.33</fabric8.maven.plugin.version>
     <maven.exec.plugin.version>1.2.1</maven.exec.plugin.version>
     <clean-maven-plugin-version>2.4.1</clean-maven-plugin-version>
     <frontend-maven-plugin-version>1.6</frontend-maven-plugin-version>
-    <node.version>v8.9.1</node.version>
+    <node.version>v8.9.4</node.version>
     <yarn.version>v1.5.1</yarn.version>
     <yarn.install.args>--no-progress</yarn.install.args>
     <image.ui>hawtio-online</image.ui>
@@ -38,78 +38,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>com.github.eirslett</groupId>
-        <artifactId>frontend-maven-plugin</artifactId>
-        <version>${frontend-maven-plugin-version}</version>
-        <executions>
-          <execution>
-            <id>install node and npm</id>
-            <goals>
-              <goal>install-node-and-npm</goal>
-            </goals>
-            <configuration>
-              <nodeVersion>${node.version}</nodeVersion>
-            </configuration>
-          </execution>
-          <execution>
-            <id>install yarn</id>
-            <goals>
-              <goal>install-node-and-yarn</goal>
-            </goals>
-            <configuration>
-              <nodeVersion>${node.version}</nodeVersion>
-              <yarnVersion>${yarn.version}</yarnVersion>
-            </configuration>
-          </execution>
-          <execution>
-            <id>yarn install</id>
-            <goals>
-              <goal>yarn</goal>
-            </goals>
-            <configuration>
-              <arguments>install ${yarn.install.args}</arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>gulp site</id>
-            <goals>
-              <goal>gulp</goal>
-            </goals>
-            <configuration>
-              <arguments>--series build site</arguments>
-            </configuration>
-          </execution>
-          <!-- TODO: simplify when https://github.com/yarnpkg/rfcs/blob/452d5beb50a963c2803a8f6bcfb0c85e65ee3f54/accepted/0000-workspace-run-commands.md gets implemented -->
-          <execution>
-            <id>yarn online license</id>
-            <goals>
-              <goal>yarn</goal>
-            </goals>
-            <configuration>
-              <arguments>workspace @hawtio/online license</arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>yarn integration license</id>
-            <goals>
-              <goal>yarn</goal>
-            </goals>
-            <configuration>
-              <arguments>workspace @hawtio/online-integration license</arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>yarn merge license</id>
-            <goals>
-              <goal>yarn</goal>
-            </goals>
-            <configuration>
-              <arguments>license</arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
@@ -126,10 +54,262 @@
           </filesets>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>dist</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <ignoreMissingDescriptor>false</ignoreMissingDescriptor>
+              <descriptors>
+                <descriptor>src/assembly/site-dist.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
   <profiles>
+    <profile>
+      <id>noproxy</id>
+      <activation>
+        <property>
+          <name>!proxy</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>${frontend-maven-plugin-version}</version>
+            <executions>
+              <execution>
+                <id>install node and npm</id>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+                <configuration>
+                  <nodeVersion>${node.version}</nodeVersion>
+                </configuration>
+              </execution>
+              <execution>
+                <id>install yarn</id>
+                <goals>
+                  <goal>install-node-and-yarn</goal>
+                </goals>
+                <configuration>
+                  <nodeVersion>${node.version}</nodeVersion>
+                  <yarnVersion>${yarn.version}</yarnVersion>
+                </configuration>
+              </execution>
+              <execution>
+                <id>yarn install</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <arguments>install ${yarn.install.args}</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>gulp site</id>
+                <goals>
+                  <goal>gulp</goal>
+                </goals>
+                <configuration>
+                  <arguments>--series build site</arguments>
+                </configuration>
+              </execution>
+              <!-- TODO: simplify when https://github.com/yarnpkg/rfcs/blob/452d5beb50a963c2803a8f6bcfb0c85e65ee3f54/accepted/0000-workspace-run-commands.md gets implemented -->
+              <execution>
+                <id>yarn online license</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <arguments>workspace @hawtio/online license</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>yarn integration license</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <arguments>workspace @hawtio/online-integration license</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>yarn merge license</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <arguments>license</arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>proxy</id>
+      <activation>
+        <property>
+          <name>proxy</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>${frontend-maven-plugin-version}</version>
+            <executions>
+              <execution>
+                <id>install node and npm</id>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+                <configuration>
+                  <nodeVersion>${node.version}</nodeVersion>
+                </configuration>
+              </execution>
+              <execution>
+                <id>install yarn</id>
+                <goals>
+                  <goal>install-node-and-yarn</goal>
+                </goals>
+                <configuration>
+                  <nodeVersion>${node.version}</nodeVersion>
+                  <yarnVersion>${yarn.version}</yarnVersion>
+                </configuration>
+              </execution>
+              <!-- Prod fixes -->
+              <execution>
+                <id>set https proxy</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>config set https-proxy http://${buildContentId}+tracking:${accessToken}@${proxyServer}:${proxyPort}</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>set http proxy</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>config set proxy http://${buildContentId}+tracking:${accessToken}@${proxyServer}:${proxyPort}</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>set maxconn</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>config set maxsockets 30</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>set verbosity</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>config set loglevel silly</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>npm set registry</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>config set registry ${npmRegistryURL}</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>yarn set registry</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <arguments>config set registry ${npmRegistryURL}</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>yarn set no-strict ssl</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <arguments>config set strict-ssl false</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>yarn install</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <arguments>install ${yarn.install.args}</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>gulp site</id>
+                <goals>
+                  <goal>gulp</goal>
+                </goals>
+                <configuration>
+                  <arguments>--series build site</arguments>
+                </configuration>
+              </execution>
+              <!-- TODO: simplify when https://github.com/yarnpkg/rfcs/blob/452d5beb50a963c2803a8f6bcfb0c85e65ee3f54/accepted/0000-workspace-run-commands.md gets implemented -->
+              <execution>
+                <id>yarn online license</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <arguments>workspace @hawtio/online license</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>yarn integration license</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                <configuration>
+                  <arguments>workspace @hawtio/online-integration license</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>yarn merge license</id>
+                <goals>
+                  <goal>yarn</goal>
+                </goals>
+                  <configuration>
+                    <arguments>license</arguments>
+                  </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- End Prod fixes -->
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>image</id>
       <activation>
