@@ -27,14 +27,14 @@ namespace Online {
       super();
 
       if (this.is(HawtioMode.Cluster)) {
-        const projects_client = this.K8SClientFactory.create('projects');
+        const projects_client = this.K8SClientFactory.create(KubernetesAPI.WatchTypes.PROJECTS);
         this._loading++;
         const projects_watch = projects_client.watch(projects => {
           // subscribe to pods update for new projects
           projects.filter(project => !this.projects.some(p => p.metadata.uid === project.metadata.uid))
             .forEach(project => {
               this._loading++;
-              const pods_client = this.K8SClientFactory.create('pods', project.metadata.name);
+              const pods_client = this.K8SClientFactory.create(KubernetesAPI.WatchTypes.PODS, project.metadata.name);
               const pods_watch = pods_client.watch(pods => {
                 this._loading--;
                 const others = this.pods.filter(pod => pod.metadata.namespace !== project.metadata.name);
@@ -67,7 +67,7 @@ namespace Online {
       } else {
         this._loading++;
         const namespace = this.$window.OPENSHIFT_CONFIG.hawtio.namespace;
-        const pods_client = this.K8SClientFactory.create('pods', namespace);
+        const pods_client = this.K8SClientFactory.create(KubernetesAPI.WatchTypes.PODS, namespace);
         const pods_watch = pods_client.watch(pods => {
           this._loading--;
           this.pods.length = 0;
