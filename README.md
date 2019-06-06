@@ -83,7 +83,7 @@ See [OAuth Clients](https://docs.openshift.com/container-platform/latest/archite
 $ oc create -f serviceaccount.yml
 ```
 
-See [Service Accounts as OAuth Clients](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/authentication.html#service-accounts-as-oauth-clients) for more information.
+See [Service Accounts as OAuth Clients](https://docs.openshift.com/container-platform/latest/authentication/using-service-accounts-as-oauth-client.html) for more information.
 
 ### Run
 
