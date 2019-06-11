@@ -59,7 +59,7 @@ COPY nginx.conf /etc/nginx/conf.d
 COPY nginx.sh .
 COPY osconsole/config.sh .
 COPY site /usr/share/nginx/html
-COPY branding/favicon.png branding/fuse-logo.svg /usr/share/nginx/html/online/img/
+COPY branding/favicon.ico branding/Logo-Red_Hat-Fuse-A-Reverse-RGB.png branding/Logo-RedHat-A-Reverse-RGB.png /usr/share/nginx/html/online/img/
 COPY branding/hawtconfig.json /usr/share/nginx/html/online
 COPY branding/hawtconfig.json /usr/share/nginx/html/integration
 
