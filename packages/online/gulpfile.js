@@ -130,7 +130,7 @@ function copyImages() {
 function siteBundle() {
   return gulp.src('index.html')
     .pipe(plugins.usemin({
-      css: [plugins.minifyCss({ keepBreaks: true }), 'concat'],
+      css: [plugins.cleanCss({ format: 'keep-breaks', inline: false }), 'concat'],
       js : [plugins.uglify(), plugins.rev()],
     }))
     .pipe(plugins.debug({ title: 'site bundle' }))

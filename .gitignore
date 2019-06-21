@@ -10,3 +10,5 @@ dist/
 licenses/
 node_modules/
 site/
+
+.project
