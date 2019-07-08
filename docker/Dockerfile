@@ -1,6 +1,7 @@
 FROM docker.io/centos:7
 
 ENV NGINX_VERSION 1.17.1-1.el7
+ENV NGINX_MODULE_NJS_VERSION 1.17.1.0.3.3-1.el7
 
 LABEL name="nginxinc/nginx" \
       vendor="NGINX Inc." \
@@ -18,7 +19,7 @@ ADD nginx.repo /etc/yum.repos.d/nginx.repo
 
 RUN curl -sO http://nginx.org/keys/nginx_signing.key && \
     rpm --import ./nginx_signing.key && \
-    yum -y install --setopt=tsflags=nodocs nginx-${NGINX_VERSION}.ngx && \
+    yum -y install --setopt=tsflags=nodocs nginx-${NGINX_VERSION}.ngx nginx-module-njs-${NGINX_MODULE_NJS_VERSION}.ngx && \
     rm -f ./nginx_signing.key && \
     yum clean all
 
