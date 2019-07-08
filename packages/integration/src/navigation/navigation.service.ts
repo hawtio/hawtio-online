@@ -6,7 +6,7 @@ namespace Online {
       private openShiftConsole: ConsoleService) {
       'ngInject';
     }
-    
+
     isLoadingPods(): boolean {
       return this.openShiftService.isLoading();
     }
@@ -24,7 +24,7 @@ namespace Online {
         } else if (labelA > labelB) {
           return 1;
         } else {
-          return 0;          
+          return 0;
         }
       });
       return pods;
@@ -37,7 +37,7 @@ namespace Online {
       return new URI()
         .path('/integration/')
         .query({
-          jolokiaUrl: new URI().query('').path(`/master/api/v1/namespaces/${pod.metadata.namespace}/pods/https:${pod.metadata.name}:${port}/proxy/jolokia/`),
+          jolokiaUrl: new URI().query('').path(`/management/namespaces/${pod.metadata.namespace}/pods/https:${pod.metadata.name}:${port}/jolokia`),
           title: pod.metadata.name,
           // returnTo   : new URI().toString(),
         })
@@ -57,5 +57,4 @@ namespace Online {
       return appLauncherItems;
     }
   }
-
 }
