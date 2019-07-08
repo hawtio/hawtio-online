@@ -132,8 +132,10 @@ objects:
           - name: hawtio-integration
             mountPath: /usr/share/nginx/html/integration/hawtconfig.json
             subPath: hawtconfig.json
-          - mountPath: /etc/tls/private
-            name: hawtio-online-tls
+          - mountPath: /etc/tls/private/serving
+            name: hawtio-online-tls-serving
+          - mountPath: /etc/tls/private/proxying
+            name: hawtio-online-tls-proxying
         volumes:
         - name: hawtio-online
           configMap:
@@ -141,9 +143,12 @@ objects:
         - name: hawtio-integration
           configMap:
             name: hawtio-online
-        - name: hawtio-online-tls
+        - name: hawtio-online-tls-serving
           secret:
-            secretName: hawtio-online-tls
+            secretName: hawtio-online-tls-serving
+        - name: hawtio-online-tls-proxying
+          secret:
+            secretName: hawtio-online-tls-proxying
     triggers:
     - imageChangeParams:
         automatic: true
@@ -161,7 +166,7 @@ objects:
       app: hawtio
       component: online
     annotations:
-      service.alpha.openshift.io/serving-cert-secret-name: hawtio-online-tls
+      service.alpha.openshift.io/serving-cert-secret-name: hawtio-online-tls-serving
     name: hawtio-online
   spec:
     ports:
