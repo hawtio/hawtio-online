@@ -28,7 +28,7 @@ namespace Online {
           if (!mPod) {
             // FIXME: read Jolokia port from container spec
             const port = 8778;
-            const url = new URI().query('').path(`/master/api/v1/namespaces/${pod.metadata.namespace}/pods/https:${pod.metadata.name}:${port}/proxy/jolokia/`)
+            const url = new URI().query('').path(`/management/namespaces/${pod.metadata.namespace}/pods/https:${pod.metadata.name}:${port}/jolokia`)
             this.pods[pod.metadata.uid] = new ManagedPod(pod, new Jolokia(url.valueOf()));
           } else {
             pod.management = mPod.pod.management;
