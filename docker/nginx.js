@@ -1,5 +1,9 @@
 function proxyJolokiaAgent(req) {
   var parts = req.uri.match(/\/management\/namespaces\/(.+)\/pods\/(http|https):(.+):(\d+)\/(.*)/);
+  if (!parts) {
+    req.return(404);
+    return;
+  }
   var namespace = parts[1];
   var protocol = parts[2];
   var pod = parts[3];
