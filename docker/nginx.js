@@ -10,21 +10,17 @@ function proxyJolokiaAgent(req) {
     req.return(res.status, res.responseBody);
   }
 
-  function selfSubjectAccessReview() {
-    req.subrequest(`/master/apis/authorization.k8s.io/v1/namespaces/${namespace}/localsubjectaccessreviews`,
+  function selfLocalSubjectAccessReview() {
+    req.subrequest(`/master/apis/authorization.openshift.io/v1/namespaces/${namespace}/localsubjectaccessreviews`,
       {
         method: 'POST',
         body: JSON.stringify({
           kind: 'LocalSubjectAccessReview',
-          apiVersion: 'authorization.k8s.io/v1',
-          spec: {
-            resourceAttributes: {
-              namespace: namespace,
-              verb: 'edit',
-              resource: 'pods',
-              name: pod,
-            },
-          },
+          apiVersion: 'authorization.openshift.io/v1',
+          namespace: namespace,
+          verb: 'update',
+          resource: 'pods',
+          name: pod,
         }),
       },
       function (res) {
@@ -35,10 +31,10 @@ function proxyJolokiaAgent(req) {
   }
 
   function checkAuthorization(sar) {
-    if (sar.status.allowed) {
+    if (sar.allowed) {
       getPodIP();
     } else {
-      req.return(403, sar.status.reason);
+      req.return(403, sar.reason);
     }
   }
 
@@ -55,5 +51,5 @@ function proxyJolokiaAgent(req) {
     req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: req.method, body: req.requestBody }, response);
   }
 
-  selfSubjectAccessReview();
+  selfLocalSubjectAccessReview();
 }
