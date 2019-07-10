@@ -4,8 +4,7 @@ const gulp            = require('gulp'),
       fs              = require('fs'),
       merge           = require('merge2'),
       path            = require('path'),
-      argv            = require('yargs').argv,
-      logger          = require('js-logger');
+      argv            = require('yargs').argv;
 
 const plugins = gulpLoadPlugins({});
 

@@ -36,7 +36,6 @@
     "gulp-uglify": "^2.0.0",
     "gulp-usemin": "~0.3.0",
     "gulp-watch": "^3.0.0",
-    "js-logger": "^0.9.14",
     "license-reporter": "^1.2.1",
     "typescript": "^3.3.0",
     "yargs": "^6.0.0"
