@@ -5,9 +5,8 @@ metadata:
 parameters:
 - name: ROUTE_HOSTNAME
   description: The externally-reachable host name that routes to the Hawtio Online service
-  required: true
 message: |-
-  Hawtio Online is deployed to ${ROUTE_HOSTNAME}.
+  Hawtio Online is deployed.
 objects:
 - apiVersion: v1
   kind: ConfigMap
@@ -35,10 +34,15 @@ objects:
   data:
     hawtconfig.json: |
       {
+        "about": {
+          "title": "Hawtio Integration Console",
+          "productInfo": [],
+          "additionalInfo": "The Hawtio Integration Console enables introspecting Java applications.",
+          "copyright": ""
+        },
         "branding": {
           "appName": "Hawtio Integration Console",
-          "appLogoUrl": "img/hawtio-logo.svg",
-          "aboutDescription": "The Hawtio Integration Console enables introspecting Java applications."
+          "appLogoUrl": "img/hawtio-logo.svg"
         },
         "disabledRoutes": []
       }
@@ -109,7 +113,13 @@ objects:
             timeoutSeconds: 1
           env:
           - name: HAWTIO_ONLINE_MODE
-            value: cluster
+            value: namespace
+          - name: HAWTIO_ONLINE_POD_PROXY
+            value: 'true'
+          - name: HAWTIO_ONLINE_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
           resources:
             requests:
               cpu: 0.2
@@ -126,16 +136,21 @@ objects:
             subPath: hawtconfig.json
           - mountPath: /etc/tls/private/serving
             name: hawtio-online-tls-serving
+          - mountPath: /etc/tls/private/proxying
+            name: hawtio-online-tls-proxying
         volumes:
         - name: hawtio-online
           configMap:
             name: hawtio-online
         - name: hawtio-integration
           configMap:
-            name: hawtio-integration
+            name: hawtio-online
         - name: hawtio-online-tls-serving
           secret:
             secretName: hawtio-online-tls-serving
+        - name: hawtio-online-tls-proxying
+          secret:
+            secretName: hawtio-online-tls-proxying
     triggers:
     - imageChangeParams:
         automatic: true
@@ -179,8 +194,12 @@ objects:
       insecureEdgeTerminationPolicy: Redirect
       termination: reencrypt
 - apiVersion: v1
-  kind: OAuthClient
+  kind: ServiceAccount
   metadata:
     name: hawtio-online
-  redirectURIs:
-  - https://${ROUTE_HOSTNAME}
+    labels:
+      app: hawtio-online
+    annotations:
+      # All HTTPS ingresses for the Hawtio Online route
+      serviceaccounts.openshift.io/oauth-redirecturi.route: https://
+      serviceaccounts.openshift.io/oauth-redirectreference.route: '{"kind": "OAuthRedirectReference", "apiVersion": "v1", "reference": {"kind": "Route", "name": "hawtio-online"}}'

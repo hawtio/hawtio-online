@@ -110,6 +110,8 @@ objects:
           env:
           - name: HAWTIO_ONLINE_MODE
             value: cluster
+          - name: HAWTIO_ONLINE_POD_PROXY
+            value: 'true'
           resources:
             requests:
               cpu: 0.2
@@ -126,6 +128,8 @@ objects:
             subPath: hawtconfig.json
           - mountPath: /etc/tls/private/serving
             name: hawtio-online-tls-serving
+          - mountPath: /etc/tls/private/proxying
+            name: hawtio-online-tls-proxying
         volumes:
         - name: hawtio-online
           configMap:
@@ -136,6 +140,9 @@ objects:
         - name: hawtio-online-tls-serving
           secret:
             secretName: hawtio-online-tls-serving
+        - name: hawtio-online-tls-proxying
+          secret:
+            secretName: hawtio-online-tls-proxying
     triggers:
     - imageChangeParams:
         automatic: true
