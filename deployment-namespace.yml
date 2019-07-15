@@ -90,7 +90,7 @@ objects:
           deploymentconfig: hawtio-online
       spec:
         containers:
-        - image: 'hawtio/online'
+        - image: hawtio/online
           imagePullPolicy: Always
           name: hawtio-online
           ports:
@@ -134,8 +134,6 @@ objects:
             subPath: hawtconfig.json
           - mountPath: /etc/tls/private/serving
             name: hawtio-online-tls-serving
-          - mountPath: /etc/tls/private/proxying
-            name: hawtio-online-tls-proxying
         volumes:
         - name: hawtio-online
           configMap:
@@ -146,9 +144,6 @@ objects:
         - name: hawtio-online-tls-serving
           secret:
             secretName: hawtio-online-tls-serving
-        - name: hawtio-online-tls-proxying
-          secret:
-            secretName: hawtio-online-tls-proxying
     triggers:
     - imageChangeParams:
         automatic: true
