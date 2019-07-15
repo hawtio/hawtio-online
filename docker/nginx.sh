@@ -7,6 +7,13 @@
 set -eu
 
 ./config.sh > config.js
+
+if [ "${HAWTIO_ONLINE_POD_PROXY:-}" = "true" ]; then
+  ln -sf /nginx-pod-proxy.conf /etc/nginx/conf.d/nginx.conf
+else
+  ln -sf /nginx.conf /etc/nginx/conf.d/nginx.conf
+fi
+
 if [ $? = 0 ]; then
   echo Starting NGINX...
   nginx -g 'daemon off;'
