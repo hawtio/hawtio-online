@@ -160,7 +160,7 @@ objects:
       app: hawtio
       component: online
     annotations:
-      service.alpha.openshift.io/serving-cert-secret-name: hawtio-online-tls-serving
+      service.beta.openshift.io/serving-cert-secret-name: hawtio-online-tls-serving
     name: hawtio-online
   spec:
     ports:
