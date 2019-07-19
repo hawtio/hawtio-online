@@ -183,8 +183,9 @@ gulp.task(ns('site'), gulp.series(
   task('Clean site', cleanSite),
   gulp.parallel(
     task('Copy fonts to site', copyFonts),
-    task('Copy images to site', copyImages),
-    task('Copy deps images to site', copyDepsImages),
+    gulp.series(
+      task('Copy deps images to site', copyDepsImages),
+      task('Copy images to site', copyImages)),
     gulp.series(
       task('Site bundle', siteBundle),
       task('Copy config to site', copyConfig),
