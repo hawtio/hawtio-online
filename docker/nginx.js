@@ -47,7 +47,7 @@ function proxyJolokiaAgent(req) {
   }
 
   function getPodIP() {
-    req.subrequest(`/master/api/v1/namespaces/${namespace}/pods/${pod}`, { method: 'GET' },
+    req.subrequest(`/podIP/${namespace}/${pod}`, { method: 'GET' },
       function (res) {
         res.status === 200
           ? callJolokiaAgent(JSON.parse(res.responseBody).status.podIP)
