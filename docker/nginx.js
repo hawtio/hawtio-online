@@ -19,7 +19,7 @@ function proxyJolokiaAgent(req) {
   }
 
   function selfLocalSubjectAccessReview() {
-    req.subrequest(`/master/apis/authorization.openshift.io/v1/namespaces/${namespace}/localsubjectaccessreviews`,
+    req.subrequest(`/authorization/namespaces/${namespace}/localsubjectaccessreviews`,
       {
         method: 'POST',
         body: JSON.stringify({
