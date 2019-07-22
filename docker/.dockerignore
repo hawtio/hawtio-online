@@ -4,7 +4,7 @@
 !site
 !osconsole/config.sh
 !nginx.conf
-!nginx-pod-proxy.conf
+!nginx-gateway.conf
 !nginx.repo
 !nginx.js
 !nginx.sh

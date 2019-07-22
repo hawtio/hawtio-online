@@ -114,7 +114,7 @@ objects:
           env:
           - name: HAWTIO_ONLINE_MODE
             value: namespace
-          - name: HAWTIO_ONLINE_POD_PROXY
+          - name: HAWTIO_ONLINE_GATEWAY
             value: 'true'
           - name: HAWTIO_ONLINE_NAMESPACE
             valueFrom:

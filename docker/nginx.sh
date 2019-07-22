@@ -8,8 +8,8 @@ set -eu
 
 ./config.sh > config.js
 
-if [ "${HAWTIO_ONLINE_POD_PROXY:-}" = "true" ]; then
-  ln -sf /nginx-pod-proxy.conf /etc/nginx/conf.d/nginx.conf
+if [ "${HAWTIO_ONLINE_GATEWAY:-}" = "true" ]; then
+  ln -sf /nginx-gateway.conf /etc/nginx/conf.d/nginx.conf
 else
   ln -sf /nginx.conf /etc/nginx/conf.d/nginx.conf
 fi

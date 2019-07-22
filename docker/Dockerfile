@@ -58,7 +58,7 @@ RUN touch config.js && \
 USER 998
 
 COPY nginx.js /etc/nginx/conf.d/
-COPY nginx.conf nginx-pod-proxy.conf osconsole/config.sh nginx.sh ./
+COPY nginx.conf nginx-gateway.conf osconsole/config.sh nginx.sh ./
 COPY site /usr/share/nginx/html
 COPY branding/favicon.ico branding/Logo-Red_Hat-Fuse-A-Reverse-RGB.png branding/Logo-RedHat-A-Reverse-RGB.png /usr/share/nginx/html/online/img/
 COPY branding/hawtconfig.json /usr/share/nginx/html/online

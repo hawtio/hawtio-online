@@ -110,7 +110,7 @@ objects:
           env:
           - name: HAWTIO_ONLINE_MODE
             value: cluster
-          - name: HAWTIO_ONLINE_POD_PROXY
+          - name: HAWTIO_ONLINE_GATEWAY
             value: 'true'
           resources:
             requests:
