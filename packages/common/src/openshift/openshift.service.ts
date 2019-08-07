@@ -21,6 +21,7 @@ namespace Online {
     constructor(
       private $window: ng.IWindowService,
       private K8SClientFactory: KubernetesAPI.K8SClientFactory,
+      private $q: ng.IQService,
     ) {
       'ngInject';
 
@@ -90,6 +91,12 @@ namespace Online {
 
     getProjects() {
       return this.projects;
+    }
+
+    getClusterVersion(): ng.IPromise<string | undefined> {
+      const cluster_version = this.$window.OPENSHIFT_CONFIG.openshift.cluster_version;
+      // We may want to get the ClusterVersion resource using the Config API available in OpenShift 4
+      return this.$q.resolve(cluster_version);
     }
 
     is(mode: HawtioMode): boolean {
