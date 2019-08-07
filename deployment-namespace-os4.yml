@@ -5,6 +5,8 @@ metadata:
 parameters:
 - name: ROUTE_HOSTNAME
   description: The externally-reachable host name that routes to the Hawtio Online service
+- name: OPENSHIFT_WEB_CONSOLE_URL
+  description: The externally-reachable URL that routes to the OpenShift Web console
 message: |-
   Hawtio Online is deployed.
 objects:
@@ -120,6 +122,8 @@ objects:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: OPENSHIFT_WEB_CONSOLE_URL
+            value: ${OPENSHIFT_WEB_CONSOLE_URL}
           resources:
             requests:
               cpu: 0.2

@@ -6,6 +6,9 @@ parameters:
 - name: ROUTE_HOSTNAME
   description: The externally-reachable host name that routes to the Hawtio Online service
   required: true
+- name: OPENSHIFT_WEB_CONSOLE_URL
+  description: The externally-reachable URL that routes to the OpenShift Web console
+  required: false
 message: |-
   Hawtio Online is deployed to ${ROUTE_HOSTNAME}.
 objects:
@@ -112,6 +115,8 @@ objects:
             value: cluster
           - name: HAWTIO_ONLINE_GATEWAY
             value: 'true'
+          - name: OPENSHIFT_WEB_CONSOLE_URL
+            value: ${OPENSHIFT_WEB_CONSOLE_URL}
           resources:
             requests:
               cpu: 0.2
