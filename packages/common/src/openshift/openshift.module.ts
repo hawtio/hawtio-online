@@ -9,21 +9,38 @@ namespace Online {
     .service('openShiftService', OpenShiftService)
     .directive('openshiftLink', openshiftLinkDirective);
 
-  function openshiftLinkDirective(openShiftConsole: ConsoleService) {
+  const OS4 = {
+    'dc': 'deploymentconfigs',
+    'rc': 'replicationcontrollers',
+  };
+
+  function openshiftLinkDirective(
+    openShiftConsole: ConsoleService,
+    openShiftService: OpenShiftService,
+    $q: ng.IQService,
+  ) {
     'ngInject';
     return {
-      restrict    : 'EA',
-      templateUrl : 'src/openshift/openshiftLink.html',
-      transclude  : true,
-      scope       : {
-        path : '<',
+      restrict: 'EA',
+      templateUrl: 'src/openshift/openshiftLink.html',
+      transclude: true,
+      scope: {
+        namespace: '<',
+        resources: '<',
+        name: '<',
       },
       link: function ($scope: ng.IScope | any) {
-        openShiftConsole.url.then(openShiftConsoleUrl => {
-          if (openShiftConsoleUrl) {
-            $scope.url = UrlHelpers.join(openShiftConsoleUrl, $scope.path);
-          }
-        });
+        $q.all([openShiftService.getClusterVersion(), openShiftConsole.url])
+          .then(([clusterVersion, consoleUrl]) => {
+            const major = parseInt((clusterVersion || '3').split('.')[0], 10);
+            if (consoleUrl) {
+              if (major >= 4) {
+                $scope.url = UrlHelpers.join(consoleUrl, 'k8s', 'ns', $scope.namespace, OS4[$scope.resources] || $scope.resources, $scope.name);
+              } else {
+                $scope.url = UrlHelpers.join(consoleUrl, 'project', $scope.namespace, 'browse', $scope.resources, $scope.name);
+              }
+            }
+          });
       },
     };
   }

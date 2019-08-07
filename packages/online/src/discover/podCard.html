@@ -10,7 +10,7 @@
         src="img/java.svg"/>
     </div>
     <h2 class="card-pf-title text-center">
-      <openshift-link path="'project/' + pod.metadata.namespace + '/browse/pods/' + pod.metadata.name">
+      <openshift-link namespace="pod.metadata.namespace" resources="'pods'" name="pod.metadata.name">
         {{pod.metadata.name}}
       </openshift-link>
     </h2>
