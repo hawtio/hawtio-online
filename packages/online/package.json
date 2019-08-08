@@ -13,8 +13,6 @@
     "prepack": "gulp online::build"
   },
   "dependencies": {
-    "@hawtio/core": "~4.5.2",
-    "@hawtio/kubernetes-api": "~4.6.0",
     "@hawtio/oauth": "~4.6.0",
     "@hawtio/online-common": "*",
     "angular-moment": "^1.2.0",
