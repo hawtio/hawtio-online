@@ -8,12 +8,13 @@
   dependencies:
     "@types/jquery" "2.0.53"
 
-"@hawtio/core@4.5.2", "@hawtio/core@~4.5.0", "@hawtio/core@~4.5.2", "@hawtio/core@~4.7.0":
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.5.2.tgz#7a6b19274e00e820921ffc47fa3ef9725f654e25"
+"@hawtio/core@4.7.0", "@hawtio/core@~4.5.0", "@hawtio/core@~4.7.0":
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.7.0.tgz#c74657275939899abcd3011bea11efda99f74509"
+  integrity sha512-rW2IXhqGWWS/WXYrq9jFdYV8+DVtYNffNVYGxmVE4NC3HPIWyoooOkea/w6juYLjwECkioiQ7kh9sycJuMXNMw==
   dependencies:
     "@hawtio/core-dts" "~3.3.0"
-    "@patternfly/patternfly" "~1.0.192"
+    "@patternfly/patternfly" "^2.0.0"
     "@types/angular" "*"
     "@types/angular-route" "*"
     "@types/jasmine" "~2.8.0"
@@ -26,7 +27,7 @@
     jquery "2.2.4"
     js-logger "1.4.1"
     lodash "4.17.11"
-    marked "0.6.0"
+    marked "0.6.1"
     typescript "^3.0.3"
     urijs "1.19.0"
 
@@ -83,7 +84,7 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@~4.6.0", "@hawtio/oauth@~4.7.1":
+"@hawtio/oauth@4.7.1", "@hawtio/oauth@~4.6.0", "@hawtio/oauth@~4.7.1":
   version "4.7.1"
   resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.7.1.tgz#575fe346584bffb50ba3eb5362a71f2ca84c80c6"
   integrity sha512-YDpQQrXFKCvhtF2Qe2ZJqqLIAX2AsfTbm4LFXCmvXOVZ5ynS3wwqF17AWPtF6o8qEWyCQXIQxTihRYAbI9ry6Q==
@@ -3359,7 +3360,7 @@ marked-terminal@^2.0.0:
     lodash.assign "^4.2.0"
     node-emoji "^1.4.1"
 
-marked@0.3.15, marked@0.6.0, marked@0.6.1, marked@^0.3.12:
+marked@0.3.15, marked@0.6.1, marked@^0.3.12:
   version "0.3.15"
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.15.tgz#de96982e54c880962f5093a2fa93d0866bf73668"
 
