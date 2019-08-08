@@ -13,7 +13,7 @@
     "prepack": "gulp online::build"
   },
   "dependencies": {
-    "@hawtio/oauth": "~4.7.1",
+    "@hawtio/oauth": "~4.7.3",
     "@hawtio/online-common": "*",
     "angular-moment": "^1.2.0",
     "angular-resource": "^1.7.0",
