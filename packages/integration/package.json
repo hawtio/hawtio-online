@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@hawtio/integration": "~4.6.2",
-    "@hawtio/oauth": "~4.6.0",
+    "@hawtio/oauth": "~4.7.1",
     "@hawtio/online-common": "*",
     "openshift-logos-icon": "^1.6.0"
   },
