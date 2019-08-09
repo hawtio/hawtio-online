@@ -19,7 +19,7 @@
 
   <groupId>io.hawt</groupId>
   <artifactId>hawtio-online</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0.fuse-731002</version>
   <packaging>pom</packaging>
 
   <name>hawtio-online</name>
