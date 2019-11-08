@@ -73,19 +73,19 @@ Here are the steps to be performed prior to the deployment:
     $ openssl genrsa -out server.key 2048
     # Write the CSR config file
     $ cat <<EOT >> csr.conf
-      [ req ]
-      default_bits = 2048
-      prompt = no
-      default_md = sha256
-      distinguished_name = dn
-
-      [ dn ]
-      CN = hawtio-online.hawtio.svc
-
-      [ v3_ext ]
-      authorityKeyIdentifier=keyid,issuer:always
-      keyUsage=keyEncipherment,dataEncipherment,digitalSignature
-      extendedKeyUsage=serverAuth,clientAuth
+    [ req ]
+    default_bits = 2048
+    prompt = no
+    default_md = sha256
+    distinguished_name = dn
+    
+    [ dn ]
+    CN = hawtio-online.hawtio.svc
+    
+    [ v3_ext ]
+    authorityKeyIdentifier=keyid,issuer:always
+    keyUsage=keyEncipherment,dataEncipherment,digitalSignature
+    extendedKeyUsage=serverAuth,clientAuth
     EOT
     # Generate the CSR
     $ openssl req -new -key server.key -out server.csr -config csr.conf
