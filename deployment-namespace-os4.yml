@@ -124,6 +124,8 @@ objects:
                 fieldPath: metadata.namespace
           - name: OPENSHIFT_WEB_CONSOLE_URL
             value: ${OPENSHIFT_WEB_CONSOLE_URL}
+          - name: OPENSHIFT_CLUSTER_VERSION
+            value: '4'
           resources:
             requests:
               cpu: 0.2
