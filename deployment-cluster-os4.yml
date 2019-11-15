@@ -196,5 +196,6 @@ objects:
   kind: OAuthClient
   metadata:
     name: hawtio-online
+  grantMethod: auto
   redirectURIs:
   - https://${ROUTE_HOSTNAME}
