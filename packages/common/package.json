@@ -12,7 +12,7 @@
     "build": "gulp build"
   },
   "dependencies": {
-    "@hawtio/core": "~4.7.0",
+    "@hawtio/core": "~4.7.2",
     "@hawtio/kubernetes-api": "~4.6.2",
     "eventemitter3": "^3.1.0",
     "jolokia.js": "^1.6.0-1",
