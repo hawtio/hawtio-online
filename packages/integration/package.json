@@ -8,7 +8,7 @@
     "license": "license-reporter save --xml licenses.xml"
   },
   "dependencies": {
-    "@hawtio/integration": "~4.7.4",
+    "@hawtio/integration": "~4.7.14",
     "@hawtio/oauth": "~4.7.3",
     "@hawtio/online-common": "*",
     "openshift-logos-icon": "^1.6.0"
