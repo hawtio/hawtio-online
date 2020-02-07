@@ -8,21 +8,18 @@ namespace Online {
   }
 
   export function addContextSelector($compile: ng.ICompileService, $window: ng.IWindowService,
-    HawtioExtension: Core.HawtioExtension, navigationService: NavigationService) {
+    $timeout: ng.ITimeoutService, $interval: ng.IIntervalService, HawtioExtension: Core.HawtioExtension,
+    navigationService: NavigationService) {
     'ngInject';
 
     HawtioExtension.add('context-selector', $scope => {
-      $scope.contextSelectorLabel = '';
-      $scope.contextSelectorItems = [];
+      $scope.contextSelectorLabel = 'Loading...';
 
-      $scope.$watch(() => navigationService.isLoadingPods(), (isLoading: boolean) => {
-        if (isLoading) {
-          $scope.contextSelectorLabel = 'Loading...';
-        } else {
-          $scope.contextSelectorLabel = 'Select a container...';
-          $scope.contextSelectorItems = navigationService.getPods();
-        }
-      });
+      $timeout(() => {
+        $scope.contextSelectorLabel = 'Select a container...';
+        updateContextSelectorItems($scope, navigationService);
+      }, 2000);
+      $interval(() => updateContextSelectorItems($scope, navigationService), 20000);
 
       $scope.onContextSelectorChange = (pod: any) => {
         $window.location.href = navigationService.getConnectUrl(pod);
@@ -36,6 +33,14 @@ namespace Online {
       `;
       return $compile(template)($scope);
     });
+  }
+
+  function updateContextSelectorItems($scope: any, navigationService: NavigationService) {
+    const pods = navigationService.getPods();
+    if (!_.isEqual(pods, $scope.contextSelectorItems)) {
+      log.debug('updating context selector items', pods);
+      $scope.contextSelectorItems = pods;
+    }
   }
 
   export function addHeaderTools($compile: ng.ICompileService, $window: ng.IWindowService,
