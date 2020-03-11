@@ -10,5 +10,10 @@
     "appName": "Fuse Console",
     "appLogoUrl": "../online/img/Logo-Red_Hat-Fuse-A-Reverse-RGB.png"
   },
-  "disabledRoutes": []
+  "disabledRoutes": [
+    "/camel/source",
+    "/diagnostics",
+    "/jvm/discover",
+    "/jvm/local"
+  ]
 }
