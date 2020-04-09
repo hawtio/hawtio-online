@@ -4,10 +4,11 @@ RUN yarn global add gulp-cli
 
 WORKDIR /hawtio-online
 
-COPY . .
+COPY gulpfile.js package.json yarn.lock ./
+ADD packages/ packages/
 
-RUN yarn install && \
-    gulp --series build site
+RUN yarn install
+RUN gulp --series build site
 
 FROM docker.io/centos:7
 
