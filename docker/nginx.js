@@ -1,3 +1,9 @@
+// http://nginx.org/en/docs/njs
+// https://github.com/nginx/njs
+// https://github.com/xeioex/njs-examples
+
+import rbac from '/rbac.js';
+
 function proxyJolokiaAgent(req) {
   var parts = req.uri.match(/\/management\/namespaces\/(.+)\/pods\/(http|https):(.+):(\d+)\/(.*)/);
   if (!parts) {
@@ -18,7 +24,7 @@ function proxyJolokiaAgent(req) {
     req.return(res.status, res.responseBody);
   }
 
-  function selfLocalSubjectAccessReview() {
+  function selfLocalSubjectAccessReview(verb, then) {
     req.subrequest(`/authorization/namespaces/${namespace}/localsubjectaccessreviews`,
       {
         method: 'POST',
@@ -26,23 +32,46 @@ function proxyJolokiaAgent(req) {
           kind: 'LocalSubjectAccessReview',
           apiVersion: 'authorization.openshift.io/v1',
           namespace: namespace,
-          verb: 'update',
+          verb: verb,
           resource: 'pods',
           name: pod,
         }),
       },
-      function (res) {
-        res.status === 201
-          ? checkAuthorization(JSON.parse(res.responseBody))
-          : response(res);
-      });
+      then);
   }
 
-  function checkAuthorization(sar) {
-    if (sar.allowed) {
-      getPodIP();
+  function checkAuthorization(role, then) {
+    var body = JSON.parse(req.requestBody);
+    if (Array.isArray(body)) {
+      // TODO: support batch request
     } else {
-      req.return(403, sar.reason);
+      var mbean = body.mbean;
+      var i = mbean.indexOf(':');
+      var domain = mbean.substring(0, i);
+      var properties = mbean.substring(i + 1);
+      var regexp = /([^,]+)=([^,]+)+/g;
+      var objectName = {};
+      var match;
+      while ((match = regexp.exec(properties)) !== null) {
+        objectName[match[1]] = match[2];
+      }
+
+      var jolokia = {
+        type: body.type,
+        attribute: body.attribute,
+        operation: body.operation,
+        domain: domain,
+        properties: objectName,
+      };
+
+      var res = rbac(role, jolokia);
+      // console.log(JSON.stringify(res));
+      // TODO: should canInvoke operation be handled for seemless compatibility with client-side RBAC plugin?
+      if (res.allowed) {
+        then();
+        return;
+      }
+      req.return(403, res.reason /* JSON.stringify(rbac) */);
     }
   }
 
@@ -59,5 +88,33 @@ function proxyJolokiaAgent(req) {
     req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: req.method, body: req.requestBody }, response);
   }
 
-  selfLocalSubjectAccessReview();
+  selfLocalSubjectAccessReview('update', function (res) {
+    if (res.status !== 201) {
+      response(res);
+      return;
+    }
+
+    var sar = JSON.parse(res.responseBody);
+    if (sar.allowed) {
+      // admin role
+      checkAuthorization('admin', getPodIP);
+      return;
+    }
+
+    selfLocalSubjectAccessReview('get', function (res) {
+      if (res.status !== 201) {
+        response(res);
+        return;
+      }
+
+      sar = JSON.parse(res.responseBody);
+      if (sar.allowed) {
+        // viewer role
+        checkAuthorization('viewer', getPodIP);
+        return;
+      }
+
+      req.return(403, sar.reason);
+    });
+  });
 }
