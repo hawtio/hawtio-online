@@ -3,7 +3,7 @@ import jsyaml from '/js-yaml.js';
 var fs = require('fs');
 
 // TODO: ACL location should be parameterized
-var ACL = jsyaml.load(fs.readFileSync('ACL.yaml'));
+var ACL = jsyaml.safeLoad(fs.readFileSync('ACL.yaml'));
 
 var regex = /^\/.*\/$/;
 
