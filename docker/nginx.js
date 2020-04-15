@@ -18,32 +18,39 @@ function proxyJolokiaAgent(req) {
 
   function response(res) {
     // Iterate over headersOut properties when it becomes enumerable
-    req.headersOut['Content-Type'] = res.headersOut['Content-Type'];
-    req.headersOut['Content-Length'] = res.headersOut['Content-Length'];
-    req.headersOut['Cache-Control'] = res.headersOut['Cache-Control'];
+    if (res.headersOut) {
+      req.headersOut['Content-Type'] = res.headersOut['Content-Type'];
+      req.headersOut['Content-Length'] = res.headersOut['Content-Length'];
+      req.headersOut['Cache-Control'] = res.headersOut['Cache-Control'];
+    }
     req.return(res.status, res.responseBody);
   }
 
-  function selfLocalSubjectAccessReview(verb, then) {
-    req.subrequest(`/authorization/namespaces/${namespace}/localsubjectaccessreviews`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          kind: 'LocalSubjectAccessReview',
-          apiVersion: 'authorization.openshift.io/v1',
-          namespace: namespace,
-          verb: verb,
-          resource: 'pods',
-          name: pod,
-        }),
-      },
-      then);
+  function reject(status, message) {
+    return Promise.reject({
+      status: status,
+      responseBody: message,
+    });
   }
 
-  function checkAuthorization(role, then) {
+  function selfLocalSubjectAccessReview(verb) {
+    return req.subrequest(`/authorization/namespaces/${namespace}/localsubjectaccessreviews`, {
+      method: 'POST',
+      body: JSON.stringify({
+        kind: 'LocalSubjectAccessReview',
+        apiVersion: 'authorization.openshift.io/v1',
+        namespace: namespace,
+        verb: verb,
+        resource: 'pods',
+        name: pod,
+      }),
+    });
+  }
+
+  function checkAuthorization(role) {
     var body = JSON.parse(req.requestBody);
     if (Array.isArray(body)) {
-      // TODO: support batch request
+      throw Error('Unsupported operation');
     } else {
       var mbean = body.mbean;
       var i = mbean.indexOf(':');
@@ -55,7 +62,6 @@ function proxyJolokiaAgent(req) {
       while ((match = regexp.exec(properties)) !== null) {
         objectName[match[1]] = match[2];
       }
-
       var jolokia = {
         type: body.type,
         attribute: body.attribute,
@@ -63,58 +69,66 @@ function proxyJolokiaAgent(req) {
         domain: domain,
         properties: objectName,
       };
-
-      var res = rbac(role, jolokia);
-      // console.log(JSON.stringify(res));
-      // TODO: should canInvoke operation be handled for seemless compatibility with client-side RBAC plugin?
-      if (res.allowed) {
-        then();
-        return;
-      }
-      req.return(403, res.reason /* JSON.stringify(rbac) */);
+      return rbac(role, jolokia);
     }
   }
 
   function getPodIP() {
-    req.subrequest(`/podIP/${namespace}/${pod}`, { method: 'GET' },
-      function (res) {
-        res.status === 200
-          ? callJolokiaAgent(JSON.parse(res.responseBody).status.podIP)
-          : response(res);
+    return req.subrequest(`/podIP/${namespace}/${pod}`, { method: 'GET' })
+      .then(function (res) {
+        if (res.status !== 200) {
+          return Promise.reject(res);
+        }
+        return JSON.parse(res.responseBody).status.podIP;
       });
   }
 
   function callJolokiaAgent(podIP) {
-    req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: req.method, body: req.requestBody }, response);
+    return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: req.method, body: req.requestBody });
   }
 
-  selfLocalSubjectAccessReview('update', function (res) {
-    if (res.status !== 201) {
-      response(res);
-      return;
-    }
-
-    var sar = JSON.parse(res.responseBody);
-    if (sar.allowed) {
-      // admin role
-      checkAuthorization('admin', getPodIP);
-      return;
-    }
-
-    selfLocalSubjectAccessReview('get', function (res) {
+  selfLocalSubjectAccessReview('update')
+    .then(function (res) {
       if (res.status !== 201) {
-        response(res);
-        return;
+        return Promise.reject(res);
       }
-
-      sar = JSON.parse(res.responseBody);
+      var sar = JSON.parse(res.responseBody);
       if (sar.allowed) {
-        // viewer role
-        checkAuthorization('viewer', getPodIP);
-        return;
+        // map the 'update' verb to the 'admin' role
+        return 'admin';
       }
-
-      req.return(403, sar.reason);
+      return selfLocalSubjectAccessReview('get')
+        .then(function (res) {
+          if (res.status !== 201) {
+            return Promise.reject(res);
+          }
+          sar = JSON.parse(res.responseBody);
+          if (sar.allowed) {
+            // map the 'get' verb to the 'viewer' role
+            return 'viewer';
+          }
+          return reject(403, sar.reason);
+        })
+    })
+    .then(function (role) {
+      var rbac = checkAuthorization(role);
+      // console.log(JSON.stringify(rbac));
+      if (!rbac.allowed) {
+        return reject(403, rbac.reason);
+      }
+      return getPodIP();
+    })
+    .then(function (podIP) {
+      // TODO: process 'canInvoke' operations for seamless compatibility with client-side RBAC plugin
+      return callJolokiaAgent(podIP).then(response);
+    })
+    .catch(function (error) {
+      if (error instanceof Error) {
+        req.return(502, error);
+      } else if (typeof error === 'object') {
+        response(error);
+      } else {
+        req.return(500, error);
+      }
     });
-  });
 }
