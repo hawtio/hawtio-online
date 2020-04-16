@@ -17,7 +17,7 @@ function requestWithViewerRoleTest() {
   });
 }
 
-function batchRequestWithViewerRoleTest() {
+function bulkRequestWithViewerRoleTest() {
   proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify([
@@ -57,6 +57,25 @@ function doWithViewerRole(uri, options) {
       }),
     };
   }
+  if (uri.startsWith('/podIP')) {
+    res = {
+      status: 200,
+      responseBody: JSON.stringify({
+        status: {
+          podIP: '0.0.0.0',
+        },
+      }),
+    };
+  }
+  if (uri.startsWith('/proxy')) {
+    res = {
+      status: 200,
+      responseBody: JSON.stringify(Array.isArray(body)
+        ? body.map(b => ({ request: b, status: 200, value: 'VALUE' }))
+        : { request: body, status: 200, value: 'VALUE' },
+      ),
+    };
+  }
   if (!res) {
     return Promise.reject(Error(`No stub for ${uri}`));
   }
@@ -67,4 +86,4 @@ function doWithViewerRole(uri, options) {
 }
 
 requestWithViewerRoleTest();
-batchRequestWithViewerRoleTest();
+bulkRequestWithViewerRoleTest();
