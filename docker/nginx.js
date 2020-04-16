@@ -47,30 +47,24 @@ function proxyJolokiaAgent(req) {
     });
   }
 
-  function checkAuthorization(role) {
-    var body = JSON.parse(req.requestBody);
-    if (Array.isArray(body)) {
-      throw Error('Unsupported operation');
-    } else {
-      var mbean = body.mbean;
-      var i = mbean.indexOf(':');
-      var domain = mbean.substring(0, i);
-      var properties = mbean.substring(i + 1);
-      var regexp = /([^,]+)=([^,]+)+/g;
-      var objectName = {};
-      var match;
-      while ((match = regexp.exec(properties)) !== null) {
-        objectName[match[1]] = match[2];
-      }
-      var jolokia = {
-        type: body.type,
-        attribute: body.attribute,
-        operation: body.operation,
-        domain: domain,
-        properties: objectName,
-      };
-      return rbac(role, jolokia);
+  function checkAuthorization(role, request) {
+    var mbean = request.mbean;
+    var i = mbean.indexOf(':');
+    var domain = mbean.substring(0, i);
+    var properties = mbean.substring(i + 1);
+    var regexp = /([^,]+)=([^,]+)+/g;
+    var objectName = {};
+    var match;
+    while ((match = regexp.exec(properties)) !== null) {
+      objectName[match[1]] = match[2];
     }
+    return rbac(role, {
+      type: request.type,
+      attribute: request.attribute,
+      operation: request.operation,
+      domain: domain,
+      properties: objectName,
+    });
   }
 
   function getPodIP() {
@@ -83,8 +77,8 @@ function proxyJolokiaAgent(req) {
       });
   }
 
-  function callJolokiaAgent(podIP) {
-    return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: req.method, body: req.requestBody });
+  function callJolokiaAgent(podIP, request) {
+    return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: req.method, body: request });
   }
 
   selfLocalSubjectAccessReview('update')
@@ -111,17 +105,44 @@ function proxyJolokiaAgent(req) {
         })
     })
     .then(function (role) {
-      var rbac = checkAuthorization(role);
-      // console.log(JSON.stringify(rbac));
-      if (!rbac.allowed) {
-        return reject(403, rbac.reason);
-      }
-      return getPodIP();
-    })
-    .then(function (podIP) {
       // TODO: process 'canInvoke' operations for seamless compatibility with client-side RBAC plugin
-      return callJolokiaAgent(podIP).then(response);
+      var request = JSON.parse(req.requestBody);
+      if (Array.isArray(request)) {
+        var rbac = request.map(r => checkAuthorization(role, r));
+        return getPodIP().then(function (podIP) {
+          return callJolokiaAgent(podIP, JSON.stringify(request.filter((_, i) => rbac[i].allowed)))
+            .then(response => {
+              var body = JSON.parse(response.responseBody);
+              var bulk = rbac.reduce((res, rbac, i) => {
+                if (rbac.allowed) {
+                  res.push(body.splice(0, 1)[0]);
+                } else {
+                  res.push({
+                    request: request[i],
+                    status: 403,
+                    reason: rbac.reason,
+                  });
+                }
+                return res;
+              }, []);
+              return {
+                status: response.status,
+                responseBody: JSON.stringify(bulk),
+                headersOut: response.headersOut,
+              };
+            });
+        });
+      } else {
+        var rbac = checkAuthorization(role, request);
+        if (!rbac.allowed) {
+          return reject(403, rbac.reason);
+        }
+        return getPodIP().then(function (podIP) {
+          return callJolokiaAgent(podIP, req.requestBody);
+        });
+      }
     })
+    .then(response)
     .catch(function (error) {
       if (error instanceof Error) {
         req.return(502, error);
