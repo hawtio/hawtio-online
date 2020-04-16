@@ -81,7 +81,7 @@ function proxyJolokiaAgent(req) {
     return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: req.method, body: request });
   }
 
-  selfLocalSubjectAccessReview('update')
+  return selfLocalSubjectAccessReview('update')
     .then(function (res) {
       if (res.status !== 201) {
         return Promise.reject(res);
