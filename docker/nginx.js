@@ -50,7 +50,7 @@ function proxyJolokiaAgent(req) {
   function checkAuthorization(role, request) {
     var mbean = request.mbean;
     var i = mbean.indexOf(':');
-    var domain = mbean.substring(0, i);
+    var domain = i === -1 ? mbean : mbean.substring(0, i);
     var properties = mbean.substring(i + 1);
     var regexp = /([^,]+)=([^,]+)+/g;
     var objectName = {};
