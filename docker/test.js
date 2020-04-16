@@ -3,7 +3,7 @@
 import proxyJolokiaAgent from './nginx.js'
 
 function requestWithViewerRoleTest() {
-  proxyJolokiaAgent({
+  return proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       mbean: 'org.apache.camel:type=context',
@@ -18,7 +18,7 @@ function requestWithViewerRoleTest() {
 }
 
 function bulkRequestWithViewerRoleTest() {
-  proxyJolokiaAgent({
+  return proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify([
       {
@@ -85,5 +85,6 @@ function doWithViewerRole(uri, options) {
   return Promise.resolve(res);
 }
 
-requestWithViewerRoleTest();
-bulkRequestWithViewerRoleTest();
+Promise.resolve()
+  .then(requestWithViewerRoleTest)
+  .then(bulkRequestWithViewerRoleTest);
