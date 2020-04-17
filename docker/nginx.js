@@ -49,14 +49,16 @@ function proxyJolokiaAgent(req) {
 
   function checkAuthorization(role, request) {
     var mbean = request.mbean;
-    var i = mbean.indexOf(':');
-    var domain = i === -1 ? mbean : mbean.substring(0, i);
-    var properties = mbean.substring(i + 1);
-    var regexp = /([^,]+)=([^,]+)+/g;
-    var objectName = {};
-    var match;
-    while ((match = regexp.exec(properties)) !== null) {
-      objectName[match[1]] = match[2];
+    var domain, objectName = {};
+    if (mbean) {
+      var i = mbean.indexOf(':');
+      domain = i === -1 ? mbean : mbean.substring(0, i);
+      var properties = mbean.substring(i + 1);
+      var regexp = /([^,]+)=([^,]+)+/g;
+      var match;
+      while ((match = regexp.exec(properties)) !== null) {
+        objectName[match[1]] = match[2];
+      }
     }
     return rbac(role, {
       type: request.type,
