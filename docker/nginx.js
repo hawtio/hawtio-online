@@ -111,8 +111,8 @@ function proxyJolokiaAgent(req) {
         var rbac = request.map(r => checkAuthorization(role, r));
         return getPodIP().then(function (podIP) {
           return callJolokiaAgent(podIP, JSON.stringify(request.filter((_, i) => rbac[i].allowed)))
-            .then(response => {
-              var body = JSON.parse(response.responseBody);
+            .then(jolokia => {
+              var body = JSON.parse(jolokia.responseBody);
               var bulk = rbac.reduce((res, rbac, i) => {
                 if (rbac.allowed) {
                   res.push(body.splice(0, 1)[0]);
@@ -125,11 +125,14 @@ function proxyJolokiaAgent(req) {
                 }
                 return res;
               }, []);
-              return {
-                status: response.status,
+              var response = {
+                status: jolokia.status,
                 responseBody: JSON.stringify(bulk),
-                headersOut: response.headersOut,
+                headersOut: jolokia.headersOut,
               };
+              // Override the content length that changed while re-assembling the bulk response
+              response.headersOut['Content-Length'] = response.responseBody.length;
+              return response;
             });
         });
       } else {
