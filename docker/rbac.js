@@ -64,16 +64,18 @@ function checkRoles(role, jolokia, name, key, roles) {
 export default function check(role, jolokia) {
   var rbac;
   // lookup ACL by domain and type
-  if (jolokia.properties.type) {
+  if (jolokia.properties && jolokia.properties.type) {
     rbac = checkACL(role, jolokia, `${jolokia.domain}.${jolokia.properties.type}`);
     if (rbac) {
       return rbac;
     } 
   }
   // lookup ACL by domain
-  rbac = checkACL(role, jolokia, jolokia.domain);
-  if (rbac) {
-    return rbac;
+  if (jolokia.domain) {
+    rbac = checkACL(role, jolokia, jolokia.domain);
+    if (rbac) {
+      return rbac;
+    }
   }
   // fallback to default ACL if any
   rbac = checkACL(role, jolokia, 'default');
