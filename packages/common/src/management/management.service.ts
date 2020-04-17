@@ -51,6 +51,7 @@ namespace Online {
           if (podStatusFilter(mPod.pod) === 'Running') {
             req++;
             mPod.jolokia.search('org.apache.camel:context=*,type=routes,*', {
+              method: 'POST',
               success: (routes:[]) => {
                 res++;
                 Core.pathSet(mPod.pod, 'management.camel.routes_count', routes.length);
