@@ -147,12 +147,10 @@ function proxyJolokiaAgent(req) {
     })
     .then(response)
     .catch(function (error) {
-      if (error instanceof Error) {
-        req.return(502, error);
-      } else if (typeof error === 'object') {
+      if (error.status) {
         response(error);
       } else {
-        req.return(500, error);
+        req.return(502, error);
       }
     });
 }
