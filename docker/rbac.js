@@ -37,6 +37,10 @@ function checkRoles(role, jolokia, name, key, roles) {
   var allowed = { allowed: true, reason: `Role '${role}' allowed by '${name}[${key}]: ${roles}'` };
   var denied = { allowed: false, reason: `Role '${role}' denied by '${name}[${key}]: ${roles}'` };
 
+  if (typeof roles === 'string') {
+    roles = roles.split(',').map(r => r.trim()).filter(r => r);
+  }
+
   if (Array.isArray(roles)) {
     // direct match?
     if (roles.includes(role)) {
@@ -48,16 +52,8 @@ function checkRoles(role, jolokia, name, key, roles) {
       return allowed;
     }
     return denied;
-
-  } else if (typeof roles === 'string') {
-    if (roles === role) {
-      return allowed;
-    }
-    if (regex.test(roles) && new RegExp(roles.substring(1, roles.length - 1)).test(role)) {
-      return allowed;
-    }
-    return denied;
   }
+
   throw Error(`Unsupported roles '${roles}' in '${name}[${key}]'`);
 }
 

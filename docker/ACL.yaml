@@ -1,15 +1,15 @@
 # TODO: complete and document
 
 default:
-  - /list.*/: [admin, viewer]
-  - /get.*/: [admin, viewer]
-  - /is.*/: [admin, viewer]
+  - /list.*/: admin, viewer
+  - /get.*/: admin, viewer
+  - /is.*/: admin, viewer
   - /set.*/: admin
   - /.*/: admin
 
 com.sun.management:
-  dumpHeap: [admin, viewer]
-  getVMOption: [admin, viewer]
+  dumpHeap: admin, viewer
+  getVMOption: admin, viewer
   setVMOption: admin
 
 java.lang.Memory:
@@ -17,12 +17,12 @@ java.lang.Memory:
 java.lang.MemoryPool:
   resetPeakUsage: admin
 java.lang.Threading:
-  /find.*/: [admin, viewer]
-  dumpAllThreads: [admin, viewer]
+  /find.*/: admin, viewer
+  dumpAllThreads: admin, viewer
   resetPeakThreadCount: admin
 
 org.apache.camel:
   /.*/: /.*/
 
 org.apache.camel.context:
-  dumpRoutesAsXml: [admin, viewer]
+  dumpRoutesAsXml: admin, viewer
