@@ -22,10 +22,11 @@ export default function check(role, request) {
   }
   return checkACLs(role, {
     type: request.type,
-    attribute: request.attribute,
-    operation: request.operation,
     domain: domain,
     properties: objectName,
+    attribute: request.attribute,
+    operation: request.operation,
+    arguments: request.arguments,
   });
 }
 
@@ -59,10 +60,20 @@ function checkACL(role, jolokia, name) {
   if (!acl) {
     return null;
   }
-  var member = jolokia.operation || jolokia.attribute;
+  var member;
+  if (jolokia.operation) {
+    if (jolokia.arguments && jolokia.arguments.length > 0) {
+      member = jolokia.operation + '[' + jolokia.arguments.toString() + ']';
+    } else {
+      member = jolokia.operation.slice(0, -2);
+    }
+  } else {
+    member = jolokia.attribute;
+  }
+
   if (Array.isArray(acl)) {
     var entry = acl.map(a => Object.entries(a)[0])
-      .find(e => e[0] === member || regex.test(e[0]) && new RegExp(e[0].substring(1, e[0].length - 1)).test(member));
+      .find(e => e[0] === member || regex.test(e[0]) && new RegExp(e[0].slice(1, -1)).test(member));
     if (entry) {
       return checkRoles(role, jolokia, name, entry[0], entry[1]);
     }
@@ -72,9 +83,23 @@ function checkACL(role, jolokia, name) {
       return checkRoles(role, jolokia, name, member, acl[member]);
     }
     // test regex keys
-    var entry = Object.entries(acl).filter(e => regex.test(e[0])).find(e => new RegExp(e[0].substring(1, e[0].length - 1)).test(member));
+    var entry = Object.entries(acl).filter(e => regex.test(e[0])).find(e => new RegExp(e[0].slice(1, -1)).test(member));
     if (entry) {
       return checkRoles(role, jolokia, name, entry[0], entry[1]);
+    }
+    // direct match without arguments?
+    if (jolokia.operation && jolokia.arguments && jolokia.arguments.length > 0) {
+      member = jolokia.operation;
+      if (acl[member]) {
+        return checkRoles(role, jolokia, name, member, acl[member]);
+      }
+    }
+    // direct match without signature?
+    if (jolokia.operation) {
+      member = jolokia.operation.slice(0, jolokia.operation.indexOf('('));
+      if (acl[member]) {
+        return checkRoles(role, jolokia, name, member, acl[member]);
+      }
     }
   }
   return null;
@@ -94,7 +119,7 @@ function checkRoles(role, jolokia, name, key, roles) {
       return allowed;
     }
     // test regex roles
-    var match = roles.filter(r => regex.test(r)).find(r => new RegExp(r.substring(1, r.length - 1)).test(role));
+    var match = roles.filter(r => regex.test(r)).find(r => new RegExp(r.slice(1, -1)).test(role));
     if (match) {
       return allowed;
     }

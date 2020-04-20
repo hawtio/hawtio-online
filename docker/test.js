@@ -7,7 +7,7 @@ function requestWithViewerRoleTest() {
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       mbean: 'org.apache.camel:type=context',
-      operation: 'dumpRoutesAsXml',
+      operation: 'dumpRoutesAsXml()',
     }),
     headersOut: {},
     subrequest: doWithViewerRole,
@@ -23,13 +23,50 @@ function bulkRequestWithViewerRoleTest() {
     requestBody: JSON.stringify([
       {
         mbean: 'org.apache.camel:type=context',
-        operation: 'dumpRoutesAsXml',
+        operation: 'dumpRoutesAsXml()',
       },
       {
         mbean: 'java.lang.Memory',
-        operation: 'gc',
+        operation: 'gc()',
       },
     ]),
+    headersOut: {},
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
+  });
+}
+
+function requestOperationWithArgumentsAndNoRoleTest() {
+  return proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
+      mbean: 'org.apache.karaf:type=bundle',
+      operation: 'uninstall(java.lang.String)',
+      arguments: [
+        '0',
+      ],
+    }),
+    headersOut: {},
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
+  });
+}
+
+function requestOperationWithArgumentsAndViewerRoleTest() {
+  return proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
+      mbean: 'org.apache.karaf:type=bundle',
+      operation: 'update(java.lang.String,java.lang.String)',
+      arguments: [
+        '50',
+        'value',
+      ],
+    }),
     headersOut: {},
     subrequest: doWithViewerRole,
     return: (code, message) => {
@@ -87,4 +124,6 @@ function doWithViewerRole(uri, options) {
 
 Promise.resolve()
   .then(requestWithViewerRoleTest)
-  .then(bulkRequestWithViewerRoleTest);
+  .then(bulkRequestWithViewerRoleTest)
+  .then(requestOperationWithArgumentsAndNoRoleTest)
+  .then(requestOperationWithArgumentsAndViewerRoleTest);

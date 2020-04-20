@@ -243,42 +243,42 @@ org.apache.karaf.bundle:
   resolve: admin
   restart: admin
   status: admin, viewer
-  setStartLevel(java.lang.String,int)[/([1-4])?[0-9]/,/.*/]: admin
+  /setStartLevel\(java\.lang\.String,int\)\[[1-4]?[0-9],.*\]/: admin
   setStartLevel: admin
-  start(java.lang.String)[/([1-4])?[0-9]/]: admin
+  /start\(java\.lang\.String\)\[[1-4]?[0-9]\]/: admin
   start: admin
-  stop(java.lang.String)[/([1-4])?[0-9]/]: admin
+  /stop\(java\.lang\.String\)\[[1-4]?[0-9]\]/: admin
   stop: admin
-  uninstall(java.lang.String)["0"]: #this is a comment, no roles can perform this operation
+  uninstall(java.lang.String)[0]: [] # no roles can perform this operation
   uninstall: admin
-  update(java.lang.String)[/([1-4])?[0-9]/]: admin
-  update(java.lang.String,java.lang.String)[/([1-4])?[0-9]/,/.*/]: admin
+  /update\(java\.lang\.String\)\[[1-4]?[0-9]\]/: admin
+  /update\(java\.lang\.String,java\.lang\.String\)\[[1-4]?[0-9],.*\]/: admin
   update: admin
 org.apache.karaf.config:
   listProperties: admin, viewer
-  appendProperty(java.lang.String,java.lang.String,java.lang.String)[/jmx[.]acl.*/,/.*/,/.*/]: admin
-  appendProperty(java.lang.String,java.lang.String,java.lang.String)[/org[.]apache[.]karaf[.]command[.]acl.+/,/.*/,/.*/]: admin
-  appendProperty(java.lang.String,java.lang.String,java.lang.String)[/org[.]apache[.]karaf[.]service[.]acl.+/,/.*/,/.*/]: admin
+  /appendProperty\(java\.lang\.String,java\.lang\.String,java\.lang\.String\)\[jmx\.acl\..*,.*,.*\]/: admin
+  /appendProperty\(java\.lang\.String,java\.lang\.String,java\.lang\.String\)\[org\.apache\.karaf\.command\.acl\..+,.*,.*\]/: admin
+  /appendProperty\(java\.lang\.String,java\.lang\.String,java\.lang\.String\)\[org\.apache\.karaf\.service\.acl\..+,.*,.*\]/: admin
   appendProperty(java.lang.String,java.lang.String,java.lang.String): admin
-  create(java.lang.String)[/jmx[.]acl.*/]: admin
-  create(java.lang.String)[/org[.]apache[.]karaf[.]command[.]acl.+/]: admin
-  create(java.lang.String)[/org[.]apache[.]karaf[.]service[.]acl.+/]: admin
+  /create\(java\.lang\.String\)\[jmx\.acl\..*\]/: admin
+  /create\(java\.lang\.String\)\[org\.apache\.karaf\.command\.acl\..+\]/: admin
+  /create\(java\.lang\.String\)\[org\.apache\.karaf\.service\.acl\..+\]/: admin
   create(java.lang.String): admin
-  delete(java.lang.String)[/jmx[.]acl.*/]: admin
-  delete(java.lang.String)[/org[.]apache[.]karaf[.]command[.]acl.+/]: admin
-  delete(java.lang.String)[/org[.]apache[.]karaf[.]service[.]acl.+/]: admin
+  /delete\(java\.lang\.String\)\[jmx\.acl\..*\]/: admin
+  /delete\(java\.lang\.String\)\[org\.apache\.karaf\.command\.acl\..+\]/: admin
+  /delete\(java\.lang\.String\)\[org\.apache\.karaf\.service\.acl\..+\]/: admin
   delete(java.lang.String): admin
-  deleteProperty(java.lang.String,java.lang.String)[/jmx[.]acl.*/,/.*/]: admin
-  deleteProperty(java.lang.String,java.lang.String)[/org[.]apache[.]karaf[.]command[.]acl.+/,/.*/]: admin
-  deleteProperty(java.lang.String,java.lang.String)[/org[.]apache[.]karaf[.]service[.]acl.+/,/.*/]: admin
+  /deleteProperty\(java\.lang\.String,java\.lang\.String\)\[jmx\.acl\..*,.*\]/: admin
+  /deleteProperty\(java\.lang\.String,java\.lang\.String\)\[org\.apache\.karaf\.command\.acl\..+,.*\]/: admin
+  /deleteProperty\(java\.lang\.String,java\.lang\.String\)\[org\.apache\.karaf\.service\.acl\..+,.*\]/: admin
   deleteProperty(java.lang.String,java.lang.String): admin
-  setProperty(java.lang.String,java.lang.String,java.lang.String)[/jmx[.]acl.*/,/.*/,/.*/]: admin
-  setProperty(java.lang.String,java.lang.String,java.lang.String)[/org[.]apache[.]karaf[.]command[.]acl.+/,/.*/,/.*/]: admin
-  setProperty(java.lang.String,java.lang.String,java.lang.String)[/org[.]apache[.]karaf[.]service[.]acl.+/,/.*/,/.*/]: admin
+  /setProperty\(java\.lang\.String,java\.lang\.String,java\.lang\.String\)\[jmx\.acl\..*,.*,.*\]/: admin
+  /setProperty\(java\.lang\.String,java\.lang\.String,java\.lang\.String\)\[org\.apache\.karaf\.command\.acl\..+,.*,.*\]/: admin
+  /setProperty\(java\.lang\.String,java\.lang\.String,java\.lang\.String\)\[org\.apache\.karaf\.service\.acl\..+,.*,.*\]/: admin
   setProperty(java.lang.String,java.lang.String,java.lang.String): admin
-  update(java.lang.String,java.util.Map)[/jmx[.]acl.*/,/.*/]: admin
-  update(java.lang.String,java.util.Map)[/org[.]apache[.]karaf[.]command[.]acl.+/,/.*/]: admin
-  update(java.lang.String,java.util.Map)[/org[.]apache[.]karaf[.]service[.]acl.+/,/.*/]: admin
+  /update\(java\.lang\.String,java\.util\.Map\)\[jmx\.acl\..*,.*\]/: admin
+  /update\(java\.lang\.String,java\.util\.Map\)\[org\.apache\.karaf\.command\.acl\..+,.*\]/: admin
+  /update\(java\.lang\.String,java\.util\.Map\)\[org\.apache\.karaf\.service\.acl\..+,.*\]/: admin
   update(java.lang.String,java.util.Map): admin
 org.apache.karaf.diagnostic:
   createDump: admin, viewer
@@ -320,30 +320,30 @@ org.apache.karaf.system:
   rebootCleanAll: admin
 
 osgi.compendium.cm:
-  createFactoryConfiguration(java.lang.String)[/jmx[.]acl.*/]: admin
-  createFactoryConfiguration(java.lang.String)[/org[.]apache[.]karaf[.]command[.]acl[.].+/]: admin
-  createFactoryConfiguration(java.lang.String)[/org[.]apache[.]karaf[.]service[.]acl[.].+/]: admin
+  /createFactoryConfiguration\(java\.lang\.String\)\[jmx\.acl\..*\]/: admin
+  /createFactoryConfiguration\(java\.lang\.String\)\[org\.apache\.karaf\.command\.acl\.\..+\]/: admin
+  /createFactoryConfiguration\(java\.lang\.String\)\[org\.apache\.karaf\.service\.acl\.\..+\]/: admin
   createFactoryConfiguration(java.lang.String): admin
-  createFactoryConfigurationForLocation(java.lang.String,java.lang.String)[/jmx[.]acl.*/,/.*/]: admin
-  createFactoryConfigurationForLocation(java.lang.String,java.lang.String)[/org[.]apache[.]karaf[.]command[.]acl[.].+/,/.*/]: admin
-  createFactoryConfigurationForLocation(java.lang.String,java.lang.String)[/org[.]apache[.]karaf[.]service[.]acl[.].+/,/.*/]: admin
+  /createFactoryConfigurationForLocation\(java\.lang\.String,java\.lang\.String\)\[jmx\.acl\..*,.*\]/: admin
+  /createFactoryConfigurationForLocation\(java\.lang\.String,java\.lang\.String\)\[org\.apache\.karaf\.command\.acl\..+,.*\]/: admin
+  /createFactoryConfigurationForLocation\(java\.lang\.String,java\.lang\.String\)\[org\.apache\.karaf\.service\.acl\..+,.*\]/: admin
   createFactoryConfigurationForLocation(java.lang.String,java.lang.String): admin
-  delete(java.lang.String)[/jmx[.]acl.*/]: admin
-  delete(java.lang.String)[/org[.]apache[.]karaf[.]command[.]acl[.].+/]: admin
-  delete(java.lang.String)[/org[.]apache[.]karaf[.]service[.]acl[.].+/]: admin
+  /delete\(java\.lang\.String\)\[jmx\.acl\..*\]/: admin
+  /delete\(java\.lang\.String\)\[org\.apache\.karaf\.command\.acl\..+\]/: admin
+  /delete\(java\.lang\.String\)\[org\.apache\.karaf\.service\.acl\..+\]/: admin
   delete(java.lang.String): admin
   deleteConfigurations: admin
-  deleteForLocation(java.lang.String,java.lang.String)[/jmx[.]acl.*/,/.*/]: admin
-  deleteForLocation(java.lang.String,java.lang.String)[/org[.]apache[.]karaf[.]command[.]acl[.].+/,/.*/]: admin
-  deleteForLocation(java.lang.String,java.lang.String)[/org[.]apache[.]karaf[.]service[.]acl[.].+/,/.*/]: admin
+  /deleteForLocation\(java\.lang\.String,java\.lang\.String\)\[jmx\.acl\..*,.*\]/: admin
+  /deleteForLocation\(java\.lang\.String,java\.lang\.String\)\[org\.apache\.karaf\.command\.acl\..+,.*\]/: admin
+  /deleteForLocation\(java\.lang\.String,java\.lang\.String\)\[org\.apache\.karaf\.service\.acl\..+,.*\]/: admin
   deleteForLocation(java.lang.String,java.lang.String): admin
-  update(java.lang.String,javax.management.openmbean.TabularData)[/jmx[.]acl.*/,/.*/]: admin
-  update(java.lang.String,javax.management.openmbean.TabularData)[/org[.]apache[.]karaf[.]command[.]acl[.].+/,/.*/]: admin
-  update(java.lang.String,javax.management.openmbean.TabularData)[/org[.]apache[.]karaf[.]service[.]acl[.].+/,/.*/]: admin
+  /update\(java\.lang\.String,javax\.management\.openmbean\.TabularData\)\[jmx\.acl\..*,.*\]/: admin
+  /update\(java\.lang\.String,javax\.management\.openmbean\.TabularData\)\[org\.apache\.karaf\.command\.acl\..+,.*\]/: admin
+  /update\(java\.lang\.String,javax\.management\.openmbean\.TabularData\)\[org\.apache\.karaf\.service\.acl\..+,.*\]/: admin
   update(java.lang.String,javax.management.openmbean.TabularData): admin
-  updateForLocation(java.lang.String,java.lang.String,javax.management.openmbean.TabularData)[/jmx[.]acl.*/,/.*/,/.*/]: admin
-  updateForLocation(java.lang.String,java.lang.String,javax.management.openmbean.TabularData)[/org[.]apache[.]karaf[.]command[.]acl[.].+/,/.*/,/.*/]: admin
-  updateForLocation(java.lang.String,java.lang.String,javax.management.openmbean.TabularData)[/org[.]apache[.]karaf[.]service[.]acl[.].+/,/.*/,/.*/]: admin
+  /updateForLocation\(java\.lang\.String,java\.lang\.String,javax\.management\.openmbean\.TabularData\)\[jmx\.acl\..*,.*,.*\]/: admin
+  /updateForLocation\(java\.lang\.String,java\.lang\.String,javax\.management\.openmbean\.TabularData\)\[org\.apache\.karaf\.command\.acl\..+,.*,.*\]/: admin
+  /updateForLocation\(java\.lang\.String,java\.lang\.String,javax\.management\.openmbean\.TabularData\)\[org\.apache\.karaf\.service\.acl\..+,.*,.*\]/: admin
   updateForLocation(java.lang.String,java.lang.String,javax.management.openmbean.TabularData): admin
 osgi.core.bundleState:
   getRequiredBundles: admin, viewer
@@ -378,7 +378,7 @@ osgi.core.framework:
   startBundle: admin
   updateBundle: admin
   stopBundle: admin
-  stopBundle(long)["0"]: #this is a comment, no roles can perform this operation
+  stopBundle(long)[0]: [] # no roles can perform this operation
   uninstallBundle: admin
   resolveBundles: admin
   getDependencyClosure: admin, viewer
