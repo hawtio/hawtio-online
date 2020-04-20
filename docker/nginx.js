@@ -2,7 +2,7 @@
 // https://github.com/nginx/njs
 // https://github.com/xeioex/njs-examples
 
-import rbac from '/rbac.js';
+import check from '/rbac.js';
 
 function proxyJolokiaAgent(req) {
   var parts = req.uri.match(/\/management\/namespaces\/(.+)\/pods\/(http|https):(.+):(\d+)\/(.*)/);
@@ -47,28 +47,6 @@ function proxyJolokiaAgent(req) {
     });
   }
 
-  function checkAuthorization(role, request) {
-    var mbean = request.mbean;
-    var domain, objectName = {};
-    if (mbean) {
-      var i = mbean.indexOf(':');
-      domain = i === -1 ? mbean : mbean.substring(0, i);
-      var properties = mbean.substring(i + 1);
-      var regexp = /([^,]+)=([^,]+)+/g;
-      var match;
-      while ((match = regexp.exec(properties)) !== null) {
-        objectName[match[1]] = match[2];
-      }
-    }
-    return rbac(role, {
-      type: request.type,
-      attribute: request.attribute,
-      operation: request.operation,
-      domain: domain,
-      properties: objectName,
-    });
-  }
-
   function getPodIP() {
     return req.subrequest(`/podIP/${namespace}/${pod}`, { method: 'GET' })
       .then(function (res) {
@@ -110,7 +88,7 @@ function proxyJolokiaAgent(req) {
       // TODO: process 'canInvoke' operations for seamless compatibility with client-side RBAC plugin
       var request = JSON.parse(req.requestBody);
       if (Array.isArray(request)) {
-        var rbac = request.map(r => checkAuthorization(role, r));
+        var rbac = request.map(r => check(role, r));
         return getPodIP().then(function (podIP) {
           return callJolokiaAgent(podIP, JSON.stringify(request.filter((_, i) => rbac[i].allowed)))
             .then(jolokia => {
@@ -138,7 +116,7 @@ function proxyJolokiaAgent(req) {
             });
         });
       } else {
-        var rbac = checkAuthorization(role, request);
+        var rbac = check(role, request);
         if (!rbac.allowed) {
           return reject(403, rbac.reason);
         }
