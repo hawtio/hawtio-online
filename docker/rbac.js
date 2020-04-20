@@ -7,6 +7,53 @@ var ACL = jsyaml.safeLoad(fs.readFileSync('ACL.yaml'));
 
 var regex = /^\/.*\/$/;
 
+export default function check(role, request) {
+  var mbean = request.mbean;
+  var domain, objectName = {};
+  if (mbean) {
+    var i = mbean.indexOf(':');
+    domain = i === -1 ? mbean : mbean.substring(0, i);
+    var properties = mbean.substring(i + 1);
+    var regexp = /([^,]+)=([^,]+)+/g;
+    var match;
+    while ((match = regexp.exec(properties)) !== null) {
+      objectName[match[1]] = match[2];
+    }
+  }
+  return checkACLs(role, {
+    type: request.type,
+    attribute: request.attribute,
+    operation: request.operation,
+    domain: domain,
+    properties: objectName,
+  });
+}
+
+function checkACLs(role, jolokia) {
+  var rbac;
+  // lookup ACL by domain and type
+  if (jolokia.properties && jolokia.properties.type) {
+    rbac = checkACL(role, jolokia, `${jolokia.domain}.${jolokia.properties.type}`);
+    if (rbac) {
+      return rbac;
+    }
+  }
+  // lookup ACL by domain
+  if (jolokia.domain) {
+    rbac = checkACL(role, jolokia, jolokia.domain);
+    if (rbac) {
+      return rbac;
+    }
+  }
+  // fallback to default ACL if any
+  rbac = checkACL(role, jolokia, 'default');
+  if (rbac) {
+    return rbac;
+  }
+  // unauthorize by default
+  return { allowed: false, reason: `No ACL matching request ${JSON.stringify(jolokia)}` };
+}
+
 function checkACL(role, jolokia, name) {
   var acl = ACL[name];
   if (!acl) {
@@ -55,29 +102,4 @@ function checkRoles(role, jolokia, name, key, roles) {
   }
 
   throw Error(`Unsupported roles '${roles}' in '${name}[${key}]'`);
-}
-
-export default function check(role, jolokia) {
-  var rbac;
-  // lookup ACL by domain and type
-  if (jolokia.properties && jolokia.properties.type) {
-    rbac = checkACL(role, jolokia, `${jolokia.domain}.${jolokia.properties.type}`);
-    if (rbac) {
-      return rbac;
-    } 
-  }
-  // lookup ACL by domain
-  if (jolokia.domain) {
-    rbac = checkACL(role, jolokia, jolokia.domain);
-    if (rbac) {
-      return rbac;
-    }
-  }
-  // fallback to default ACL if any
-  rbac = checkACL(role, jolokia, 'default');
-  if (rbac) {
-    return rbac;
-  }
-  // unauthorize by default
-  return { allowed: false, reason: `No ACL matching request ${JSON.stringify(jolokia)}` };
 }
