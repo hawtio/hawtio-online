@@ -2,7 +2,7 @@
 // https://github.com/nginx/njs
 // https://github.com/xeioex/njs-examples
 
-import check from '/rbac.js';
+import RBAC from '/rbac.js';
 
 function proxyJolokiaAgent(req) {
   var parts = req.uri.match(/\/management\/namespaces\/(.+)\/pods\/(http|https):(.+):(\d+)\/(.*)/);
@@ -88,14 +88,25 @@ function proxyJolokiaAgent(req) {
       // TODO: process 'canInvoke' operations for seamless compatibility with client-side RBAC plugin
       var request = JSON.parse(req.requestBody);
       if (Array.isArray(request)) {
-        var rbac = request.map(r => check(role, r));
+        var rbac = request.map(r => RBAC.check(role, r));
+        var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r));
         return getPodIP().then(function (podIP) {
-          return callJolokiaAgent(podIP, JSON.stringify(request.filter((_, i) => rbac[i].allowed)))
+          return callJolokiaAgent(podIP, JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request)))
             .then(jolokia => {
               var body = JSON.parse(jolokia.responseBody);
-              var bulk = rbac.reduce((res, rbac, i) => {
-                if (rbac.allowed) {
+              // Unroll intercepted requests
+              var bulk = intercept.reduce((res, rbac, i) => {
+                if (rbac.intercepted) {
+                  res.push(rbac.response);
+                } else {
                   res.push(body.splice(0, 1)[0]);
+                }
+                return res;
+              }, []);
+              // Unroll denied requests
+              bulk = rbac.reduce((res, rbac, i) => {
+                if (rbac.allowed) {
+                  res.push(bulk.splice(0, 1)[0]);
                 } else {
                   res.push({
                     request: request[i],
@@ -105,6 +116,7 @@ function proxyJolokiaAgent(req) {
                 }
                 return res;
               }, []);
+              // Re-assembled bulk response
               var response = {
                 status: jolokia.status,
                 responseBody: JSON.stringify(bulk),
@@ -116,9 +128,13 @@ function proxyJolokiaAgent(req) {
             });
         });
       } else {
-        var rbac = check(role, request);
+        var rbac = RBAC.check(role, request);
         if (!rbac.allowed) {
           return reject(403, rbac.reason);
+        }
+        rbac = RBAC.intercept(request);
+        if (rbac.intercepted) {
+          return Promise.resolve({ status: rbac.response.status, responseBody: JSON.stringify(rbac.response) });
         }
         return getPodIP().then(function (podIP) {
           return callJolokiaAgent(podIP, req.requestBody);
