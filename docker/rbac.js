@@ -67,8 +67,10 @@ function checkACL(role, jolokia, name) {
     } else {
       member = jolokia.operation.slice(0, -2);
     }
-  } else {
+  } else if (jolokia.attribute) {
     member = jolokia.attribute;
+  } else {
+    member = jolokia.type;
   }
 
   if (Array.isArray(acl)) {

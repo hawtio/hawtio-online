@@ -6,6 +6,7 @@ function requestWithViewerRoleTest() {
   return proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
+      type: 'exec',
       mbean: 'org.apache.camel:type=context',
       operation: 'dumpRoutesAsXml()',
     }),
@@ -22,10 +23,12 @@ function bulkRequestWithViewerRoleTest() {
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify([
       {
+        type: 'exec',
         mbean: 'org.apache.camel:type=context',
         operation: 'dumpRoutesAsXml()',
       },
       {
+        type: 'exec',
         mbean: 'java.lang.Memory',
         operation: 'gc()',
       },
@@ -42,6 +45,7 @@ function requestOperationWithArgumentsAndNoRoleTest() {
   return proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
+      type: 'exec',
       mbean: 'org.apache.karaf:type=bundle',
       operation: 'uninstall(java.lang.String)',
       arguments: [
@@ -60,12 +64,43 @@ function requestOperationWithArgumentsAndViewerRoleTest() {
   return proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
+      type: 'exec',
       mbean: 'org.apache.karaf:type=bundle',
       operation: 'update(java.lang.String,java.lang.String)',
       arguments: [
         '50',
         'value',
       ],
+    }),
+    headersOut: {},
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
+  });
+}
+
+function searchCamelRoutesTest() {
+  return proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
+      type: 'search',
+      mbean: 'org.apache.camel:context=*,type=routes,*',
+    }),
+    headersOut: {},
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
+  });
+}
+
+function searchRbacMBeanTest() {
+  return proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
+      type: 'search',
+      mbean: '*:type=security,area=jmx,*',
     }),
     headersOut: {},
     subrequest: doWithViewerRole,
@@ -126,4 +161,7 @@ Promise.resolve()
   .then(requestWithViewerRoleTest)
   .then(bulkRequestWithViewerRoleTest)
   .then(requestOperationWithArgumentsAndNoRoleTest)
-  .then(requestOperationWithArgumentsAndViewerRoleTest);
+  .then(requestOperationWithArgumentsAndViewerRoleTest)
+  .then(searchCamelRoutesTest)
+  .then(searchRbacMBeanTest)
+  ;
