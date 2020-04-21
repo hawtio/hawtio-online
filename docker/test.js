@@ -110,6 +110,32 @@ function searchRbacMBeanTest() {
   });
 }
 
+function bulkRequestWithInterceptionTest() {
+  return proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify([
+      {
+        type: 'search',
+        mbean: '*:type=security,area=jmx,*',
+      },
+      {
+        type: 'exec',
+        mbean: 'java.lang.Memory',
+        operation: 'gc()',
+      },
+      {
+        type: 'search',
+        mbean: 'org.apache.camel:context=*,type=routes,*',
+      },
+    ]),
+    headersOut: {},
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
+  });
+}
+
 function doWithViewerRole(uri, options) {
   var body = JSON.parse(options.body || '{}');
   var res;
@@ -164,4 +190,5 @@ Promise.resolve()
   .then(requestOperationWithArgumentsAndViewerRoleTest)
   .then(searchCamelRoutesTest)
   .then(searchRbacMBeanTest)
+  .then(bulkRequestWithInterceptionTest)
   ;

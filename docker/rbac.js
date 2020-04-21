@@ -7,7 +7,33 @@ var ACL = jsyaml.safeLoad(fs.readFileSync('ACL.yaml'));
 
 var regex = /^\/.*\/$/;
 
-export default function check(role, request) {
+export default {
+  check: check,
+  intercept: intercept,
+};
+
+function intercept(request) {
+  if (request.type === 'search' && request.mbean === '*:type=security,area=jmx,*') {
+    return {
+      intercepted: true,
+      request: request,
+      response: {
+        status: 200,
+        request: request,
+        value: [
+          'io.hawt:area=jmx,type=security',
+        ],
+        timestamp: new Date().getTime(),
+      }
+    };
+  }
+  return {
+    intercepted: false,
+    request: request,
+  };
+}
+
+function check(role, request) {
   var mbean = request.mbean;
   var domain, objectName = {};
   if (mbean) {
