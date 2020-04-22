@@ -17,7 +17,7 @@ connector:
   stop: admin
   start: admin
 
-hawio.plugin:
+hawtio.plugin:
   /.*/: /.*/
 hawtio.ConfigAdmin:
   configAdminUpdate: admin
@@ -29,6 +29,8 @@ hawtio.QuartzFacade:
   updateCronTrigger: admin
 hawtio.SchemaLookup:
   getSchemaForClass: admin, viewer
+hawtio.security:
+  canInvoke: admin, viewer
 
 java.lang.Memory:
   gc: admin
@@ -308,8 +310,6 @@ org.apache.karaf.log:
 org.apache.karaf.package:
   getImports: admin, viewer
   getExports: admin, viewer
-org.apache.karaf.security:
-  canInvoke: admin, viewer
 org.apache.karaf.service:
   getServices: admin, viewer
 org.apache.karaf.system:
