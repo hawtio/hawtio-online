@@ -48,13 +48,22 @@ function proxyJolokiaAgent(req) {
   }
 
   function getPodIP() {
-    return req.subrequest(`/podIP/${namespace}/${pod}`, { method: 'GET' })
-      .then(function (res) {
-        if (res.status !== 200) {
-          return Promise.reject(res);
-        }
-        return JSON.parse(res.responseBody).status.podIP;
-      });
+    return req.subrequest(`/podIP/${namespace}/${pod}`, { method: 'GET' }).then(res => {
+      if (res.status !== 200) {
+        return Promise.reject(res);
+      }
+      return JSON.parse(res.responseBody).status.podIP;
+    });
+  }
+
+  // FIXME: should be cached
+  function listMBeans(podIP) {
+    return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: 'POST', body: JSON.stringify({ type: 'list' }) }).then(res => {
+      if (res.status !== 200) {
+        return Promise.reject(res);
+      }
+      return JSON.parse(res.responseBody).value;
+    });
   }
 
   function callJolokiaAgent(podIP, request) {
@@ -85,14 +94,13 @@ function proxyJolokiaAgent(req) {
         })
     })
     .then(function (role) {
-      // TODO: process 'canInvoke' operations for seamless compatibility with client-side RBAC plugin
       var request = JSON.parse(req.requestBody);
       if (Array.isArray(request)) {
-        var rbac = request.map(r => RBAC.check(role, r));
-        var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r));
         return getPodIP().then(function (podIP) {
-          return callJolokiaAgent(podIP, JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request)))
-            .then(jolokia => {
+          return listMBeans(podIP).then(beans => {
+            var rbac = request.map(r => RBAC.check(r, role));
+            var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r, role, beans));
+            return callJolokiaAgent(podIP, JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request))).then(jolokia => {
               var body = JSON.parse(jolokia.responseBody);
               // Unroll intercepted requests
               var bulk = intercept.reduce((res, rbac, i) => {
@@ -126,18 +134,21 @@ function proxyJolokiaAgent(req) {
               response.headersOut['Content-Length'] = response.responseBody.length;
               return response;
             });
+          })
         });
       } else {
-        var rbac = RBAC.check(role, request);
-        if (!rbac.allowed) {
-          return reject(403, rbac.reason);
-        }
-        rbac = RBAC.intercept(request);
-        if (rbac.intercepted) {
-          return Promise.resolve({ status: rbac.response.status, responseBody: JSON.stringify(rbac.response) });
-        }
-        return getPodIP().then(function (podIP) {
-          return callJolokiaAgent(podIP, req.requestBody);
+        return getPodIP().then(podIP => {
+          return listMBeans(podIP).then(beans => {
+            var rbac = RBAC.check(request, role);
+            if (!rbac.allowed) {
+              return reject(403, rbac.reason);
+            }
+            rbac = RBAC.intercept(request, role, beans);
+            if (rbac.intercepted) {
+              return Promise.resolve({ status: rbac.response.status, responseBody: JSON.stringify(rbac.response) });
+            }
+            return callJolokiaAgent(podIP, req.requestBody);
+          })
         });
       }
     })
