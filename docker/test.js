@@ -1,3 +1,7 @@
+var fs = require('fs');
+
+var listMBeans = fs.readFileSync('test.listMBeans.json');
+
 //TODO: find a way to load main file
 // https://github.com/nginx/njs/issues/115
 import proxyJolokiaAgent from './nginx.js'
@@ -136,6 +140,26 @@ function bulkRequestWithInterceptionTest() {
   });
 }
 
+function singleCanInvokeOperationTest() {
+  return proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
+      "type": "exec",
+      "mbean": "hawtio:area=jmx,type=security",
+      "operation": "canInvoke(java.lang.String)",
+      "arguments": [
+        // "java.lang:name=Compressed Class Space,type=MemoryPool",
+        "org.apache.camel:context=MyCamel,name=\"simple-route\",type=routes",
+      ]
+    }),
+    headersOut: {},
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
+  });
+}
+
 function doWithViewerRole(uri, options) {
   var body = JSON.parse(options.body || '{}');
   var res;
@@ -166,12 +190,19 @@ function doWithViewerRole(uri, options) {
     };
   }
   if (uri.startsWith('/proxy')) {
-    res = {
-      status: 200,
-      responseBody: JSON.stringify(Array.isArray(body)
-        ? body.map(b => ({ request: b, status: 200, value: 'VALUE' }))
-        : { request: body, status: 200, value: 'VALUE' },
-      ),
+    if (body.type === 'list') {
+      res = {
+        status: 200,
+        responseBody: listMBeans,
+      };
+    } else {
+      res = {
+        status: 200,
+        responseBody: JSON.stringify(Array.isArray(body)
+          ? body.map(b => ({ request: b, status: 200, value: 'VALUE' }))
+          : { request: body, status: 200, value: 'VALUE' },
+        ),
+      }
     };
   }
   if (!res) {
@@ -191,4 +222,5 @@ Promise.resolve()
   .then(searchCamelRoutesTest)
   .then(searchRbacMBeanTest)
   .then(bulkRequestWithInterceptionTest)
+  .then(singleCanInvokeOperationTest)
   ;

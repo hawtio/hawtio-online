@@ -12,7 +12,9 @@ export default {
   intercept: intercept,
 };
 
-function intercept(request) {
+var rbacMBean = 'hawtio:area=jmx,type=security';
+
+function intercept(request, role, mbeans) {
   if (request.type === 'search' && request.mbean === '*:type=security,area=jmx,*') {
     return {
       intercepted: true,
@@ -20,20 +22,61 @@ function intercept(request) {
       response: {
         status: 200,
         request: request,
-        value: [
-          'io.hawt:area=jmx,type=security',
-        ],
+        value: [rbacMBean],
         timestamp: new Date().getTime(),
       }
     };
   }
+
+  if (request.type === 'exec' && request.mbean === rbacMBean && request.operation === 'canInvoke(java.lang.String)') {
+    var mbean = request.arguments[0];
+    var i = mbean.indexOf(':');
+    var domain = i === -1 ? mbean : mbean.substring(0, i);
+    var properties = mbean.substring(i + 1);
+
+    var response = value => ({
+      intercepted: true,
+      request: request,
+      response: {
+        status: 200,
+        request: request,
+        value: value,
+        timestamp: new Date().getTime(),
+      },
+    });
+
+    var infos = (mbeans[domain] || {})[properties];
+    if (!infos) {
+      return response(false);
+    }
+
+    var res = Object.entries(infos.op)
+      // handle overloaded methods
+      .map(op => Array.isArray(op[1]) ? op[1].map(o => [op[0], o]) : [op])
+      // flatMap shim
+      .reduce((a, v) => a.concat(v), [])
+      .find(op => {
+        var signature = op[0] + '(' + op[1].args.map(arg => arg.type).toString() + ')';
+        var rbac = check({ type: 'exec', mbean: mbean, operation: signature }, role);
+        return rbac.allowed;
+      });
+
+    if (res) {
+      return response(true);
+    }
+
+    // TODO: iterate over attributes
+
+    return response(false);
+  }
+
   return {
     intercepted: false,
     request: request,
   };
 }
 
-function check(role, request) {
+function check(request, role) {
   var mbean = request.mbean;
   var domain, objectName = {};
   if (mbean) {
