@@ -140,7 +140,7 @@ function bulkRequestWithInterceptionTest() {
   });
 }
 
-function singleCanInvokeOperationTest() {
+function canInvokeSingleOperationTest() {
   return proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
@@ -150,6 +150,26 @@ function singleCanInvokeOperationTest() {
       "arguments": [
         // "java.lang:name=Compressed Class Space,type=MemoryPool",
         "org.apache.camel:context=MyCamel,name=\"simple-route\",type=routes",
+      ]
+    }),
+    headersOut: {},
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
+  });
+}
+
+function canInvokeSingleAttributeTest() {
+  return proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
+      "type": "exec",
+      "mbean": "hawtio:area=jmx,type=security",
+      "operation": "canInvoke(java.lang.String)",
+      "arguments": [
+        // "java.lang:name=PS Scavenge,type=GarbageCollector",
+        "java.lang:name=PS Old Gen,type=MemoryPool",
       ]
     }),
     headersOut: {},
@@ -222,5 +242,6 @@ Promise.resolve()
   .then(searchCamelRoutesTest)
   .then(searchRbacMBeanTest)
   .then(bulkRequestWithInterceptionTest)
-  .then(singleCanInvokeOperationTest)
+  .then(canInvokeSingleOperationTest)
+  .then(canInvokeSingleAttributeTest)
   ;
