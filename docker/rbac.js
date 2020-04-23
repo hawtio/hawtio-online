@@ -68,6 +68,25 @@ function intercept(request, role, mbeans) {
     return response(typeof res !== 'undefined');
   }
 
+  // Intercept client-side RBAC canInvoke(java.util.Map) request
+  if (request.type === 'exec' && request.mbean === rbacMBean && request.operation === 'canInvoke(java.util.Map)') {
+    var value = Object.entries(request.arguments[0]).reduce((res, e) => {
+      var mbean = e[0];
+      var operations = e[1];
+      res[mbean] = operations.reduce((r, op) => {
+        r[op] = {
+          CanInvoke: check({ type: 'exec', mbean: mbean, operation: op }, role).allowed,
+          Method: op,
+          ObjectName: mbean,
+        };
+        return r;
+      }, {});
+      return res;
+    }, {});
+
+    return response(value);
+  }
+
   return {
     intercepted: false,
     request: request,

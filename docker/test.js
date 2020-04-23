@@ -144,12 +144,12 @@ function canInvokeSingleOperationTest() {
   return proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
-      "type": "exec",
-      "mbean": "hawtio:area=jmx,type=security",
-      "operation": "canInvoke(java.lang.String)",
-      "arguments": [
-        // "java.lang:name=Compressed Class Space,type=MemoryPool",
-        "org.apache.camel:context=MyCamel,name=\"simple-route\",type=routes",
+      'type': 'exec',
+      'mbean': 'hawtio:area=jmx,type=security',
+      'operation': 'canInvoke(java.lang.String)',
+      'arguments': [
+        // 'java.lang:name=Compressed Class Space,type=MemoryPool',
+        'org.apache.camel:context=MyCamel,name="simple-route",type=routes',
       ]
     }),
     headersOut: {},
@@ -164,12 +164,43 @@ function canInvokeSingleAttributeTest() {
   return proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
-      "type": "exec",
-      "mbean": "hawtio:area=jmx,type=security",
-      "operation": "canInvoke(java.lang.String)",
-      "arguments": [
-        // "java.lang:name=PS Scavenge,type=GarbageCollector",
-        "java.lang:name=PS Old Gen,type=MemoryPool",
+      'type': 'exec',
+      'mbean': 'hawtio:area=jmx,type=security',
+      'operation': 'canInvoke(java.lang.String)',
+      'arguments': [
+        // 'java.lang:name=PS Scavenge,type=GarbageCollector',
+        'java.lang:name=PS Old Gen,type=MemoryPool',
+      ]
+    }),
+    headersOut: {},
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
+  });
+}
+
+function canInvokeMapTest() {
+  return proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
+      'type': 'exec',
+      'mbean': 'hawtio:area=jmx,type=security',
+      'operation': 'canInvoke(java.util.Map)',
+      'arguments': [
+        {
+          'java.lang:type=Memory': [
+            'gc()',
+          ],
+          'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context': [
+            'addOrUpdateRoutesFromXml(java.lang.String)',
+            'addOrUpdateRoutesFromXml(java.lang.String,boolean)',
+            'dumpStatsAsXml(boolean)',
+            'getCamelId()',
+            'getRedeliveries()',
+            'sendStringBody(java.lang.String,java.lang.String)',
+          ],
+        },
       ]
     }),
     headersOut: {},
@@ -244,4 +275,5 @@ Promise.resolve()
   .then(bulkRequestWithInterceptionTest)
   .then(canInvokeSingleOperationTest)
   .then(canInvokeSingleAttributeTest)
+  .then(canInvokeMapTest)
   ;
