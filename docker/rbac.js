@@ -156,7 +156,7 @@ function checkACL(role, jolokia, name) {
   } else if (jolokia.attribute) {
     member = jolokia.attribute;
   } else {
-    member = jolokia.type;
+    member = jolokia.type.toLowerCase();
   }
 
   if (Array.isArray(acl)) {
