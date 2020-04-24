@@ -1,6 +1,8 @@
 # TODO: complete and document
 
 default:
+  - list: admin, viewer
+  - read: admin, viewer
   - search: admin, viewer
   - /list.*/: admin, viewer
   - /get.*/: admin, viewer
