@@ -37,7 +37,8 @@ function proxyJolokiaAgent(req) {
   }
 
   function selfLocalSubjectAccessReview(verb) {
-    return req.subrequest(`/authorization/namespaces/${namespace}/localsubjectaccessreviews`, {
+    // Work-around same-location sub-requests caching issue
+    return req.subrequest(`/authorization${verb === 'get' ? '2' : ''}/namespaces/${namespace}/localsubjectaccessreviews`, {
       method: 'POST',
       body: JSON.stringify({
         kind: 'LocalSubjectAccessReview',
