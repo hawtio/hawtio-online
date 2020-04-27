@@ -30,6 +30,9 @@ function proxyJolokiaAgent(req) {
     return Promise.reject({
       status: status,
       responseBody: message,
+      headersOut: {
+        'Content-Type': 'application/json',
+      }
     });
   }
 
@@ -90,7 +93,7 @@ function proxyJolokiaAgent(req) {
             // map the 'get' verb to the 'viewer' role
             return 'viewer';
           }
-          return reject(403, sar.reason);
+          return reject(403, JSON.stringify(sar));
         })
     })
     .then(function (role) {
