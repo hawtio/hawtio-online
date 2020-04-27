@@ -10,9 +10,14 @@ var regex = /^\/.*\/$/;
 export default {
   check: check,
   intercept: intercept,
+  isCanInvokeRequest: isCanInvokeRequest,
 };
 
 var rbacMBean = 'hawtio:area=jmx,type=security';
+
+function isCanInvokeRequest(request) {
+  return request.type === 'exec' && request.mbean === rbacMBean && request.operation === 'canInvoke(java.lang.String)';
+}
 
 function intercept(request, role, mbeans) {
   var response = value => ({
@@ -32,7 +37,7 @@ function intercept(request, role, mbeans) {
   }
 
   // Intercept client-side RBAC canInvoke(java.lang.String) request
-  if (request.type === 'exec' && request.mbean === rbacMBean && request.operation === 'canInvoke(java.lang.String)') {
+  if (isCanInvokeRequest(request)) {
     var mbean = request.arguments[0];
     var i = mbean.indexOf(':');
     var domain = i === -1 ? mbean : mbean.substring(0, i);
