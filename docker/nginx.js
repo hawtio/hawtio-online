@@ -4,6 +4,9 @@
 
 import RBAC from '/rbac.js';
 
+// Only Jolokia requests using the POST method are currently supported,
+// as this is more comprehensive and it's what the front-end uses.
+// Still, we may want to support GET requests as well, by adapting the inputs.
 function proxyJolokiaAgent(req) {
   var parts = req.uri.match(/\/management\/namespaces\/(.+)\/pods\/(http|https):(.+):(\d+)\/(.*)/);
   if (!parts) {
@@ -60,7 +63,7 @@ function proxyJolokiaAgent(req) {
     });
   }
 
-  // FIXME: should be cached
+  // This is usually called once upon the front-end loads, still we may want to cache it
   function listMBeans(podIP) {
     return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: 'POST', body: JSON.stringify({ type: 'list' }) }).then(res => {
       if (res.status !== 200) {
@@ -99,9 +102,11 @@ function proxyJolokiaAgent(req) {
     })
     .then(function (role) {
       var request = JSON.parse(req.requestBody);
+      var requireMBeanDefinition;
       if (Array.isArray(request)) {
+        requireMBeanDefinition = request.find(r => RBAC.isCanInvokeRequest(r));
         return getPodIP().then(function (podIP) {
-          return listMBeans(podIP).then(beans => {
+          return (requireMBeanDefinition ? listMBeans(podIP) : Promise.resolve()).then(beans => {
             var rbac = request.map(r => RBAC.check(r, role));
             var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r, role, beans));
             return callJolokiaAgent(podIP, JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request))).then(jolokia => {
@@ -141,8 +146,9 @@ function proxyJolokiaAgent(req) {
           })
         });
       } else {
+        requireMBeanDefinition = RBAC.isCanInvokeRequest(request);
         return getPodIP().then(podIP => {
-          return listMBeans(podIP).then(beans => {
+          return (requireMBeanDefinition ? listMBeans(podIP) : Promise.resolve()).then(beans => {
             var rbac = RBAC.check(request, role);
             if (!rbac.allowed) {
               return reject(403, rbac.reason);
