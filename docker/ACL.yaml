@@ -13,7 +13,7 @@
 # string or regexp, and whose values can either be string or array of strings,
 # that represent roles that are allowed to invoke the MBean member.
 #
-# The system looks for required roles using the following process:
+# The system looks for allowed roles using the following process:
 #
 # The most specific key is tried first. E.g. for the
 # above example, the java.lang.Threading key is looked up first.
@@ -36,12 +36,21 @@
 #      dumpStatsAsXml: admin, viewer
 # If the key matches the operation invocation, it is used and the process will not
 # look for any other keys. So the most specific key always takes precedence.
-# Its value is used to match the role that impersonate the request, against the roles
+# Its value is used to match the role that impersonates the request, against the roles
 # that are allowed to invoke the operation.
 # If the current key does not match, the less specific key is looked up
 # and matched following the steps 1 to 4 above, up until the 'default' key.
 # Otherwise, the operation invocation is denied.
+#
+# For the time being, only the viewer and admin roles are supported. Once the current
+# invocation is authenticated, these roles are inferred from the permissions the user
+# impersonating the request is granted for the pod hosting the operation being invoked.
+# A user that's granted the 'update' verb on the pod resource is bound to the 'admin' role.
+# Else, a user granted the 'get' verb on the pod resource is bound the 'viewer' role.
+# Otherwise the use is not bound any roles.
 
+# Default, generic rules, declared as an ordered map, so that the most specific keys
+# are tested first.
 default:
   - list: admin, viewer
   - read: admin, viewer
