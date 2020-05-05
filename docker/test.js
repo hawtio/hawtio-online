@@ -1,3 +1,8 @@
+// This test file can be run using the NJS CLI.
+// The test result depends on the HAWTIO_ONLINE_RBAC_ACL environment variable.
+// To test with RBAC enabled:
+// HAWTIO_ONLINE_RBAC_ACL= njs test.js
+
 import gateway from 'nginx.js';
 
 var fs = require('fs');
