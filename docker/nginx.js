@@ -4,6 +4,8 @@
 
 import RBAC from 'rbac.js';
 
+var isRbacEnabled = typeof process.env['HAWTIO_ONLINE_RBAC_ACL'] !== 'undefined';
+
 export default { proxyJolokiaAgent };
 
 // Only Jolokia requests using the POST method are currently supported,
@@ -76,93 +78,115 @@ function proxyJolokiaAgent(req) {
     return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: req.method, body: request });
   }
 
-  return selfLocalSubjectAccessReview('update')
-    .then(function (res) {
-      if (res.status !== 201) {
-        return Promise.reject(res);
-      }
-      var sar = JSON.parse(res.responseBody);
-      if (sar.allowed) {
-        // map the 'update' verb to the 'admin' role
-        return 'admin';
-      }
-      return selfLocalSubjectAccessReview('get')
-        .then(function (res) {
-          if (res.status !== 201) {
-            return Promise.reject(res);
-          }
-          sar = JSON.parse(res.responseBody);
-          if (sar.allowed) {
-            // map the 'get' verb to the 'viewer' role
-            return 'viewer';
-          }
+  function proxyJolokiaAgentWithoutRbac() {
+    // Only requests impersonating a user granted the `update` verb on for the pod
+    // hosting the Jolokia endpoint is authorized
+    return selfLocalSubjectAccessReview('update')
+      .then(res => {
+        if (res.status !== 201) {
+          return Promise.reject(res);
+        }
+        var sar = JSON.parse(res.responseBody);
+        if (!sar.allowed) {
           return reject(403, JSON.stringify(sar));
-        })
-    })
-    .then(function (role) {
-      var request = JSON.parse(req.requestBody);
-      var requireMBeanDefinition;
-      if (Array.isArray(request)) {
-        requireMBeanDefinition = request.find(r => RBAC.isCanInvokeRequest(r));
-        return getPodIP().then(function (podIP) {
-          return (requireMBeanDefinition ? listMBeans(podIP) : Promise.resolve()).then(beans => {
-            var rbac = request.map(r => RBAC.check(r, role));
-            var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r, role, beans));
-            return callJolokiaAgent(podIP, JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request))).then(jolokia => {
-              var body = JSON.parse(jolokia.responseBody);
-              // Unroll intercepted requests
-              var bulk = intercept.reduce((res, rbac, i) => {
-                if (rbac.intercepted) {
-                  res.push(rbac.response);
-                } else {
-                  res.push(body.splice(0, 1)[0]);
-                }
-                return res;
-              }, []);
-              // Unroll denied requests
-              bulk = rbac.reduce((res, rbac, i) => {
-                if (rbac.allowed) {
-                  res.push(bulk.splice(0, 1)[0]);
-                } else {
-                  res.push({
-                    request: request[i],
-                    status: 403,
-                    reason: rbac.reason,
-                  });
-                }
-                return res;
-              }, []);
-              // Re-assembled bulk response
-              var response = {
-                status: jolokia.status,
-                responseBody: JSON.stringify(bulk),
-                headersOut: jolokia.headersOut,
-              };
-              // Override the content length that changed while re-assembling the bulk response
-              response.headersOut['Content-Length'] = response.responseBody.length;
-              return response;
-            });
-          })
-        });
-      } else {
-        requireMBeanDefinition = RBAC.isCanInvokeRequest(request);
+        }
         return getPodIP().then(podIP => {
-          return (requireMBeanDefinition ? listMBeans(podIP) : Promise.resolve()).then(beans => {
-            var rbac = RBAC.check(request, role);
-            if (!rbac.allowed) {
-              return reject(403, rbac.reason);
-            }
-            rbac = RBAC.intercept(request, role, beans);
-            if (rbac.intercepted) {
-              return Promise.resolve({ status: rbac.response.status, responseBody: JSON.stringify(rbac.response) });
-            }
-            return callJolokiaAgent(podIP, req.requestBody);
-          })
+          return callJolokiaAgent(podIP, req.requestBody);
         });
-      }
-    })
+      });
+  }
+
+  function proxyJolokiaAgentWithRbac() {
+    return selfLocalSubjectAccessReview('update')
+      .then(function (res) {
+        if (res.status !== 201) {
+          return Promise.reject(res);
+        }
+        var sar = JSON.parse(res.responseBody);
+        if (sar.allowed) {
+          // map the `update` verb to the `admin` role
+          return 'admin';
+        }
+        return selfLocalSubjectAccessReview('get')
+          .then(function (res) {
+            if (res.status !== 201) {
+              return Promise.reject(res);
+            }
+            sar = JSON.parse(res.responseBody);
+            if (sar.allowed) {
+              // map the `get` verb to the `viewer` role
+              return 'viewer';
+            }
+            return reject(403, JSON.stringify(sar));
+          })
+      })
+      .then(function (role) {
+        var request = JSON.parse(req.requestBody);
+        var requireMBeanDefinition;
+        if (Array.isArray(request)) {
+          requireMBeanDefinition = request.find(r => RBAC.isCanInvokeRequest(r));
+          return getPodIP().then(function (podIP) {
+            return (requireMBeanDefinition ? listMBeans(podIP) : Promise.resolve()).then(beans => {
+              var rbac = request.map(r => RBAC.check(r, role));
+              var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r, role, beans));
+              return callJolokiaAgent(podIP, JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request))).then(jolokia => {
+                var body = JSON.parse(jolokia.responseBody);
+                // Unroll intercepted requests
+                var bulk = intercept.reduce((res, rbac, i) => {
+                  if (rbac.intercepted) {
+                    res.push(rbac.response);
+                  } else {
+                    res.push(body.splice(0, 1)[0]);
+                  }
+                  return res;
+                }, []);
+                // Unroll denied requests
+                bulk = rbac.reduce((res, rbac, i) => {
+                  if (rbac.allowed) {
+                    res.push(bulk.splice(0, 1)[0]);
+                  } else {
+                    res.push({
+                      request: request[i],
+                      status: 403,
+                      reason: rbac.reason,
+                    });
+                  }
+                  return res;
+                }, []);
+                // Re-assembled bulk response
+                var response = {
+                  status: jolokia.status,
+                  responseBody: JSON.stringify(bulk),
+                  headersOut: jolokia.headersOut,
+                };
+                // Override the content length that changed while re-assembling the bulk response
+                response.headersOut['Content-Length'] = response.responseBody.length;
+                return response;
+              });
+            })
+          });
+        } else {
+          requireMBeanDefinition = RBAC.isCanInvokeRequest(request);
+          return getPodIP().then(podIP => {
+            return (requireMBeanDefinition ? listMBeans(podIP) : Promise.resolve()).then(beans => {
+              var rbac = RBAC.check(request, role);
+              if (!rbac.allowed) {
+                return reject(403, rbac.reason);
+              }
+              rbac = RBAC.intercept(request, role, beans);
+              if (rbac.intercepted) {
+                return Promise.resolve({ status: rbac.response.status, responseBody: JSON.stringify(rbac.response) });
+              }
+              return callJolokiaAgent(podIP, req.requestBody);
+            })
+          });
+        }
+      });
+  }
+
+  return (isRbacEnabled ? proxyJolokiaAgentWithRbac() : proxyJolokiaAgentWithoutRbac())
     .then(response)
-    .catch(function (error) {
+    .catch(error => {
       if (error.status) {
         response(error);
       } else {
