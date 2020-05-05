@@ -1,13 +1,11 @@
+import gateway from 'nginx.js';
+
 var fs = require('fs');
 
 var listMBeans = fs.readFileSync('test.listMBeans.json');
 
-//TODO: find a way to load main file
-// https://github.com/nginx/njs/issues/115
-import proxyJolokiaAgent from './nginx.js'
-
 function requestWithViewerRoleTest() {
-  return proxyJolokiaAgent({
+  return gateway.proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       type: 'exec',
@@ -23,7 +21,7 @@ function requestWithViewerRoleTest() {
 }
 
 function bulkRequestWithViewerRoleTest() {
-  return proxyJolokiaAgent({
+  return gateway.proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify([
       {
@@ -46,7 +44,7 @@ function bulkRequestWithViewerRoleTest() {
 }
 
 function requestOperationWithArgumentsAndNoRoleTest() {
-  return proxyJolokiaAgent({
+  return gateway.proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       type: 'exec',
@@ -65,7 +63,7 @@ function requestOperationWithArgumentsAndNoRoleTest() {
 }
 
 function requestOperationWithArgumentsAndViewerRoleTest() {
-  return proxyJolokiaAgent({
+  return gateway.proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       type: 'exec',
@@ -85,7 +83,7 @@ function requestOperationWithArgumentsAndViewerRoleTest() {
 }
 
 function searchCamelRoutesTest() {
-  return proxyJolokiaAgent({
+  return gateway.proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       type: 'search',
@@ -100,7 +98,7 @@ function searchCamelRoutesTest() {
 }
 
 function searchRbacMBeanTest() {
-  return proxyJolokiaAgent({
+  return gateway.proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       type: 'search',
@@ -115,7 +113,7 @@ function searchRbacMBeanTest() {
 }
 
 function bulkRequestWithInterceptionTest() {
-  return proxyJolokiaAgent({
+  return gateway.proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify([
       {
@@ -141,7 +139,7 @@ function bulkRequestWithInterceptionTest() {
 }
 
 function canInvokeSingleOperationTest() {
-  return proxyJolokiaAgent({
+  return gateway.proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       'type': 'exec',
@@ -161,7 +159,7 @@ function canInvokeSingleOperationTest() {
 }
 
 function canInvokeSingleAttributeTest() {
-  return proxyJolokiaAgent({
+  return gateway.proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       'type': 'exec',
@@ -181,7 +179,7 @@ function canInvokeSingleAttributeTest() {
 }
 
 function canInvokeMapTest() {
-  return proxyJolokiaAgent({
+  return gateway.proxyJolokiaAgent({
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       'type': 'exec',
