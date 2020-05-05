@@ -2,8 +2,7 @@ import jsyaml from 'js-yaml.js';
 
 var fs = require('fs');
 
-// TODO: ACL location should be parameterized
-var ACL = jsyaml.safeLoad(fs.readFileSync('ACL.yaml'));
+var ACL = jsyaml.safeLoad(fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || 'ACL.yaml'));
 var regex = /^\/.*\/$/;
 var rbacMBean = 'hawtio:area=jmx,type=security';
 
