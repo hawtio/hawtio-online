@@ -2,7 +2,7 @@
 // https://github.com/nginx/njs
 // https://github.com/xeioex/njs-examples
 
-import RBAC from '/rbac.js';
+import RBAC from 'rbac.js';
 
 export default { proxyJolokiaAgent };
 
