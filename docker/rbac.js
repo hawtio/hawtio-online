@@ -1,19 +1,13 @@
-import jsyaml from '/js-yaml.js';
+import jsyaml from 'js-yaml.js';
 
 var fs = require('fs');
 
 // TODO: ACL location should be parameterized
 var ACL = jsyaml.safeLoad(fs.readFileSync('ACL.yaml'));
-
 var regex = /^\/.*\/$/;
-
-export default {
-  check: check,
-  intercept: intercept,
-  isCanInvokeRequest: isCanInvokeRequest,
-};
-
 var rbacMBean = 'hawtio:area=jmx,type=security';
+
+export default { check, intercept, isCanInvokeRequest };
 
 function isCanInvokeRequest(request) {
   return request.type === 'exec' && request.mbean === rbacMBean && request.operation === 'canInvoke(java.lang.String)';
