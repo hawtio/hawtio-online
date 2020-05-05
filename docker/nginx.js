@@ -22,11 +22,8 @@ function proxyJolokiaAgent(req) {
   var path = parts[5];
 
   function response(res) {
-    // Iterate over headersOut properties when it becomes enumerable
-    if (res.headersOut) {
-      req.headersOut['Content-Type'] = res.headersOut['Content-Type'];
-      req.headersOut['Content-Length'] = res.headersOut['Content-Length'];
-      req.headersOut['Cache-Control'] = res.headersOut['Cache-Control'];
+    for (var header in res.headersOut) {
+      req.headersOut[header] = res.headersOut[header];
     }
     req.return(res.status, res.responseBody);
   }
