@@ -4,6 +4,8 @@
 
 import RBAC from '/rbac.js';
 
+export default { proxyJolokiaAgent };
+
 // Only Jolokia requests using the POST method are currently supported,
 // as this is more comprehensive and it's what the front-end uses.
 // Still, we may want to support GET requests as well, by adapting the inputs.
