@@ -12,8 +12,8 @@ RUN gulp --series build site
 
 FROM docker.io/centos:7
 
-ENV NGINX_VERSION 1.18.0-1.el7
-ENV NGINX_MODULE_NJS_VERSION 1.18.0.0.4.0-1.el7
+ENV NGINX_VERSION 1.17.10-1.el7
+ENV NGINX_MODULE_NJS_VERSION 1.17.10.0.4.0-1.el7
 
 LABEL name="nginxinc/nginx" \
       vendor="NGINX Inc." \
