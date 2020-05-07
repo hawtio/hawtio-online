@@ -47,7 +47,7 @@
 # impersonating the request is granted for the pod hosting the operation being invoked.
 # A user that's granted the 'update' verb on the pod resource is bound to the 'admin' role.
 # Else, a user granted the 'get' verb on the pod resource is bound the 'viewer' role.
-# Otherwise the use is not bound any roles.
+# Otherwise the user is not bound any roles.
 
 # Default, generic rules, declared as an ordered map, so that the most specific keys
 # are tested first.
