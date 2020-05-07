@@ -1,7 +1,7 @@
 FROM docker.io/centos:7
 
-ENV NGINX_VERSION 1.17.1-1.el7
-ENV NGINX_MODULE_NJS_VERSION 1.17.1.0.3.3-1.el7
+ENV NGINX_VERSION 1.17.10-1.el7
+ENV NGINX_MODULE_NJS_VERSION 1.17.10.0.4.0-1.el7
 
 LABEL name="nginxinc/nginx" \
       vendor="NGINX Inc." \
@@ -41,7 +41,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
 
 #VOLUME ["/var/cache/nginx"]
 
-EXPOSE 443
+EXPOSE 8443
 
 # Add symbolic link to config.json to avoid mounting issues
 RUN ln -sf /usr/share/nginx/html/config/config.json /usr/share/nginx/html/config.json
@@ -57,8 +57,8 @@ RUN touch config.js && \
 
 USER 998
 
-COPY nginx.js /etc/nginx/conf.d/
-COPY nginx.conf nginx-gateway.conf osconsole/config.sh nginx.sh ./
+COPY nginx.js rbac.js js-yaml.js /etc/nginx/conf.d/
+COPY nginx.conf nginx-gateway.conf osconsole/config.sh nginx.sh ACL.yaml /
 COPY site /usr/share/nginx/html
 COPY branding/favicon.ico branding/Logo-Red_Hat-Fuse-A-Reverse-RGB.png branding/Logo-RedHat-A-Reverse-RGB.png /usr/share/nginx/html/online/img/
 COPY branding/hawtconfig.json /usr/share/nginx/html/online
