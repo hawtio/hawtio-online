@@ -16,9 +16,11 @@ There exist different OpenShift templates to choose from, depending on the follo
 | Template | Descripton |
 | -------- | ---------- |
 | [deployment-cluster.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-cluster.yml) | Use an OAuth client that requires the `cluster-admin` role to be created. The Hawtio Online console can discover and connect to _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed across multiple namespaces / projects. |
-| [deployment-cluster-os4.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-cluster-os4.yml) | Same as `deployment-cluster.yml`, to be used for OpenShift 4. By default, this requires the generation of a client certificate, signed with the [service signing certificate][service-signing-certificate] authority, prior to the deployment. See [OpenShift 4](#openshift-4) section for more information. |
+| [deployment-cluster-os4.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-cluster-os4.yml) | Same as `deployment-cluster.yml`, to be used for OpenShift 4. By default, this requires the generation of a client certificate, signed with the [service signing certificate][service-signing-certificate] authority, prior to the deployment. See the [OpenShift 4](#openshift-4) section for more information. |
 | [deployment-namespace.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-namespace.yml) | Use a service account as OAuth client, which only requires `admin` role in a project to be created. This restricts the Hawtio Online console access to this single project, and as such acts as a single tenant deployment. |
-| [deployment-namespace-os4.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-namespace-os4.yml) | Same as `deployment-namespace.yml`, to be used for OpenShift 4. By default, this requires the generation of a client certificate, signed with the [service signing certificate][service-signing-certificate] authority, prior to the deployment. See [OpenShift 4](#openshift-4) section for more information. |
+| [deployment-namespace-os4.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-namespace-os4.yml) | Same as `deployment-namespace.yml`, to be used for OpenShift 4. By default, this requires the generation of a client certificate, signed with the [service signing certificate][service-signing-certificate] authority, prior to the deployment. See the [OpenShift 4](#openshift-4) section for more information. |
+| [deployment-namespace-rbac.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-namespace-rbac.yml) | Same as `deployment-namespace-os4.yml`, with configurable RBAC for Jolokia requests authorization. See the [RBAC](#rbac) section for more information. |
+| [deployment-cluster-rbac.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-cluster-rbac.yml) | Same as `deployment-cluster-os4.yml`, with configurable RBAC for Jolokia requests authorization. See the [RBAC](#rbac) section for more information. |
 
 [service-signing-certificate]: https://docs.openshift.com/container-platform/4.1/authentication/certificates/service-serving-certificate.html
 
@@ -101,6 +103,65 @@ Here are the steps to be performed prior to the deployment:
 Note that `CN=hawtio-online.hawtio.svc` must be trusted by the Jolokia agents, for which client certification authentication is enabled. See the `clientPrincipal` parameter from the [Jolokia agent configuration options](https://jolokia.org/reference/html/agents.html#agent-jvm-config).
 
 You can then proceed with the [deployment](#deployment).
+
+## RBAC
+
+### Configuration
+
+The `deployment-cluster-rbac.yml` and `deployment-namespace-rbac.yml` templates create a _ConfigMap_, that contains the configuration file used to define the roles allowed for MBean operations.
+This _ConfigMap_ is mounted into the Hawtio Online container, and the `HAWTIO_ONLINE_RBAC_ACL` environment variable is used to pass the configuration file path to the server.
+If that environment variable is not set, RBAC support is disabled, and only users granted the `update` verb on the pod resources are authorized to call MBeans operations.
+
+### Roles
+
+For the time being, only the `viewer` and `admin` roles are supported.
+Once the current invocation is authenticated, these roles are inferred from the permissions the user impersonating the request is granted for the pod hosting the operation being invoked.
+A user that's granted the `update` verb on the pod resource is bound to the `admin` role.
+Else, a user granted the `get` verb on the pod resource is bound the `viewer` role.
+Otherwise the user is not bound any roles.
+
+### ACL
+
+The ACL definition for JMX operations works as follows:
+
+Based on the _ObjectName_ of the JMX MBean, a key composed with the _ObjectName_ domain, optionally followed by the `type` attribute, can be declared, using the convention `<domain>.<type>`.
+For example, the `java.lang.Threading` key for the MBean with the _ObjectName_ `java.lang:type=Threading` can be declared.
+A more generic key with the domain only can be declared (e.g. `java.lang`).
+A `default` top-level key can also be declared.
+A key can either be an unordered or ordered map, whose keys can either be string or regexp, and whose values can either be string or array of strings, that represent roles that are allowed to invoke the MBean member.
+
+The default ACL definition can be found in the `hawtio-rbac` _ConfigMap_ from the `deployment-cluster-rbac.yml` and `deployment-namespace-rbac.yml` templates.
+
+### Authorization
+
+The system looks for allowed roles using the following process:
+
+The most specific key is tried first. E.g. for the above example, the `java.lang.Threading` key is looked up first.
+If the most specific key does not exist, the domain-only key is looked up, otherwise, the `default` key is looked up.
+Using the matching key, the system looks up its map value for:
+
+1. An exact match for the operation invocation, using the operation signature, and the invocation arguments, e.g.:
+
+   `uninstall(java.lang.String)[0]: [] # no roles can perform this operation`
+
+2. A regexp match for the operation invocation, using the operation signature, and the invocation arguments, e.g.:
+
+   `/update\(java\.lang\.String,java\.lang\.String\)\[[1-4]?[0-9],.*\]/: admin`
+
+   Note that, if the value is an ordered map, the iteration order is guaranteed, and the first matching regexp key is selected;
+
+3. An exact match for the operation invocation, using the operation signature, without the invocation arguments, e.g.:
+
+   `delete(java.lang.String): admin`
+
+4. An exact match for the operation invocation, using the operation name, e.g.:
+
+   `dumpStatsAsXml: admin, viewer`
+
+If the key matches the operation invocation, it is used and the process will not look for any other keys. So the most specific key always takes precedence.
+Its value is used to match the role that impersonates the request, against the roles that are allowed to invoke the operation.
+If the current key does not match, the less specific key is looked up and matched following the steps 1 to 4 above, up until the `default` key.
+Otherwise, the operation invocation is denied.
 
 ## Development
 
