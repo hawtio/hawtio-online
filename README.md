@@ -116,6 +116,7 @@ If that environment variable is not set, RBAC support is disabled, and only user
 
 For the time being, only the `viewer` and `admin` roles are supported.
 Once the current invocation is authenticated, these roles are inferred from the permissions the user impersonating the request is granted for the pod hosting the operation being invoked.
+
 A user that's granted the `update` verb on the pod resource is bound to the `admin` role, i.e.:
 
 ```sh
