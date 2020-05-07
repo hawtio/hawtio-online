@@ -1,10 +1,13 @@
 *
+!ACL.yaml
 !branding
+!js-yaml.js
 !licenses
-!site
 !osconsole/config.sh
 !nginx.conf
 !nginx-gateway.conf
 !nginx.repo
 !nginx.js
 !nginx.sh
+!rbac.js
+!site
