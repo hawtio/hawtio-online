@@ -116,9 +116,26 @@ If that environment variable is not set, RBAC support is disabled, and only user
 
 For the time being, only the `viewer` and `admin` roles are supported.
 Once the current invocation is authenticated, these roles are inferred from the permissions the user impersonating the request is granted for the pod hosting the operation being invoked.
-A user that's granted the `update` verb on the pod resource is bound to the `admin` role.
-Else, a user granted the `get` verb on the pod resource is bound the `viewer` role.
-Otherwise the user is not bound any roles.
+A user that's granted the `update` verb on the pod resource is bound to the `admin` role, i.e.:
+
+```sh
+$ oc auth can-i update pods/<pod> --as <user>
+yes
+```
+
+Else, a user granted the `get` verb on the pod resource is bound the `viewer` role, i.e.:
+
+```sh
+$ oc auth can-i get pods/<pod> --as <user>
+yes
+```
+
+Otherwise the user is not bound any roles, i.e.:
+
+```sh
+$ oc auth can-i get pods/<pod> --as <user>
+no
+```
 
 ### ACL
 
