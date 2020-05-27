@@ -6050,14 +6050,14 @@ yallist@3.0.3, yallist@^2.1.2, yallist@^3.0.0, yallist@^3.0.2:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.3.tgz#b4b049e314be545e3ce802236d6cd22cd91c3de9"
   integrity sha512-S+Zk8DEWE6oKpV+vI3qWkaK+jSbIK86pCwe2IF/xwIpQ8jEuxpw9NyaGjmp9+BoJv5FV2piqCDcoCtStppiq2A==
 
-yargs-parser@5.0.0-security.0, yargs-parser@9.0.2, yargs-parser@^11.1.1, yargs-parser@^13.1.2, yargs-parser@^4.2.0, yargs-parser@^7.0.0:
+yargs-parser@5.0.0-security.0, yargs-parser@9.0.2, yargs-parser@^11.1.1, yargs-parser@^13.1.2, yargs-parser@^7.0.0:
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-9.0.2.tgz#9ccf6a43460fe4ed40a9bb68f48d43b8a68cc077"
   integrity sha1-nM9qQ0YP5O1Aqbto9I1DuKaMwHc=
   dependencies:
     camelcase "^4.1.0"
 
-yargs@9.0.0, yargs@^12.0.5, yargs@^13.3.2, yargs@^6.0.0, yargs@^7.1.0, yargs@^9.0.0, yargs@~3.10.0:
+yargs@9.0.0, yargs@^12.0.5, yargs@^13.3.2, yargs@^7.1.0, yargs@^9.0.0, yargs@~3.10.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-9.0.0.tgz#efe5b1ad3f94bdc20423411b90628eeec0b25f3c"
   integrity sha1-7+WxrT+UvcIEI0EbkGKO7sCyXzw=
