@@ -51,7 +51,7 @@
     "license-reporter": "^1.2.1",
     "merge2": "^1.2.1",
     "typescript": "^3.3.0",
-    "yargs": "^6.0.0"
+    "yargs": "^9.0.0"
   },
   "license": "Apache-2.0",
   "repository": {

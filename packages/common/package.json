@@ -40,7 +40,7 @@
     "gulp-uglify": "^2.0.0",
     "gulp-usemin": "~0.3.0",
     "typescript": "^3.3.0",
-    "yargs": "^6.0.0"
+    "yargs": "^9.0.0"
   },
   "license": "Apache-2.0",
   "flat": true
