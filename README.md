@@ -19,11 +19,11 @@ An Hawtio console that eases the discovery and management of _hawtio-enabled_ <s
      * [Tools](#tools)
      * [Build](#build)
      * [Install](#install)
-           * [Cluster mode](#cluster-mode)
-           * [Namespace mode](#namespace-mode)
+        * [Cluster mode](#cluster-mode)
+        * [Namespace mode](#namespace-mode)
      * [Run](#run)
-           * [Cluster mode](#cluster-mode-1)
-           * [Namespace mode](#namespace-mode-1)
+        * [Cluster mode](#cluster-mode-1)
+        * [Namespace mode](#namespace-mode-1)
 
 ## Deployment
 
