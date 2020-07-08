@@ -41,7 +41,7 @@ There exist different OpenShift templates to choose from, depending on the follo
 | [deployment-namespace-rbac.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-namespace-rbac.yml) | Same as `deployment-namespace-os4.yml`, with configurable RBAC for Jolokia requests authorization. See the [RBAC](#rbac) section for more information. |
 | [deployment-cluster-rbac.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-cluster-rbac.yml) | Same as `deployment-cluster-os4.yml`, with configurable RBAC for Jolokia requests authorization. See the [RBAC](#rbac) section for more information. |
 
-[service-signing-certificate]: https://docs.openshift.com/container-platform/4.1/authentication/certificates/service-serving-certificate.html
+[service-signing-certificate]: https://docs.openshift.com/container-platform/latest/authentication/certificates/service-serving-certificate.html
 
 To deploy the Hawtio Online console, execute the following command:
 
