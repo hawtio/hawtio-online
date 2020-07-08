@@ -6,6 +6,25 @@ An Hawtio console that eases the discovery and management of _hawtio-enabled_ <s
   <img align="center" src="docs/overview.gif">
 </p>
 
+## Table of Contents
+
+  * [Deployment](#deployment)
+  * [OpenShift 4](#openshift-4)
+  * [RBAC](#rbac)
+     * [Configuration](#configuration)
+     * [Roles](#roles)
+     * [ACL](#acl)
+     * [Authorization](#authorization)
+  * [Development](#development)
+     * [Tools](#tools)
+     * [Build](#build)
+     * [Install](#install)
+           * [Cluster mode](#cluster-mode)
+           * [Namespace mode](#namespace-mode)
+     * [Run](#run)
+           * [Cluster mode](#cluster-mode-1)
+           * [Namespace mode](#namespace-mode-1)
+
 ## Deployment
 
 You can run the following instructions to deploy the Hawtio Online console on your OpenShift cluster.
