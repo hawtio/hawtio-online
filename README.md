@@ -10,6 +10,7 @@ An Hawtio console that eases the discovery and management of _hawtio-enabled_ <s
 
   * [Deployment](#deployment)
   * [OpenShift 4](#openshift-4)
+     * [Manual steps](#manual-steps)
   * [RBAC](#rbac)
      * [Configuration](#configuration)
      * [Roles](#roles)
@@ -78,7 +79,21 @@ Open the route URL displayed above from your Web browser to access the Hawtio On
 
 To secure the communication between Hawtio Online and the Jolokia agents, a client certificate must be generated and mounted into the Hawtio Online pod with a secret, to be used for TLS client authentication. This client certificate must be signed using the [service signing certificate][service-signing-certificate] authority private key.
 
-Here are the steps to be performed prior to the deployment:
+Prior to the deployment, run the following script to generate and set up a client certificate for Hawtio Online:
+
+```sh
+$ ./scripts/generate-certificate.sh
+```
+
+Or if you have Yarn intalled, this will also do the same thing:
+
+```sh
+$ yarn generate-certificate
+```
+
+### Manual steps
+
+Instead of running the script, you can choose to perform everything manually. Here are the steps to be performed:
 
 1. First, retrieve the service signing certificate authority keys, by executing the following commmands as a _cluster-admin_ user:
     ```sh
