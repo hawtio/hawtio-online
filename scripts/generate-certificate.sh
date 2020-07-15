@@ -2,6 +2,9 @@
 
 set -e
 
+SECRET_NAME=${1:-hawtio-online-tls-proxying}
+CN=${2:-hawtio-online.hawtio.svc}
+
 # The CA certificate
 oc get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.crt']}" | base64 --decode > ca.crt
 
@@ -20,7 +23,7 @@ default_md = sha256
 distinguished_name = dn
 
 [ dn ]
-CN = hawtio-online.hawtio.svc
+CN = $CN
 
 [ v3_ext ]
 authorityKeyIdentifier=keyid,issuer:always
@@ -35,4 +38,4 @@ openssl req -new -key server.key -out server.csr -config csr.conf
 openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 10000 -extensions v3_ext -extfile csr.conf
 
 # Create the secret for Hawtio Online
-oc create secret tls hawtio-online-tls-proxying --cert server.crt --key server.key
+oc create secret tls $SECRET_NAME --cert server.crt --key server.key
