@@ -5,6 +5,7 @@
 !/docs/
 !/packages/
 !/packages/**/*
+!/scripts/
 
 dist/
 licenses/
