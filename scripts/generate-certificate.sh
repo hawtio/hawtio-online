@@ -2,8 +2,25 @@
 
 set -e
 
+trap exithandler EXIT
+
+TEMP_DIR=$(mktemp --tmpdir -d generate-certificate.XXXXXX)
+
+exithandler() {
+  exitcode=$?
+  if [ "$exitcode" != "0" ]; then
+    echo "WARNING: unsuccessful exit code: $?" >&2
+  fi
+
+  rm -rf "$TEMP_DIR"
+
+  exit $exitcode
+}
+
 SECRET_NAME=${1:-hawtio-online-tls-proxying}
 CN=${2:-hawtio-online.hawtio.svc}
+
+cd "$TEMP_DIR"
 
 # The CA certificate
 oc get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.crt']}" | base64 --decode > ca.crt
