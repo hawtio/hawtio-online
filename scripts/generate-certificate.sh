@@ -17,6 +17,30 @@ exithandler() {
   exit $exitcode
 }
 
+usage() {
+  cat <<EOT
+This script generates a client certificate and create a secret with it
+on OpenShift 4.
+
+Usage:
+  $(basename $0) [-h] [SECRET_NAME] [CN]
+
+Options:
+  -h    Show this help
+EOT
+  exit
+}
+
+while getopts h OPT; do
+  case $OPT in
+    h)
+      usage
+      ;;
+    *)
+      ;;
+  esac
+done
+
 SECRET_NAME=${1:-hawtio-online-tls-proxying}
 CN=${2:-hawtio-online.hawtio.svc}
 
