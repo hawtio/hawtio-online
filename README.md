@@ -25,6 +25,7 @@ An Hawtio console that eases the discovery and management of _hawtio-enabled_ <s
      * [Run](#run)
         * [Cluster mode](#cluster-mode-1)
         * [Namespace mode](#namespace-mode-1)
+        * [Disable Jolokia authentication for deployments (dev only)](#disable-jolokia-authentication-for-deployments-dev-only)
 
 ## Deployment
 
@@ -266,6 +267,22 @@ $ yarn start --master=`oc whoami --show-server` --mode=namespace --namespace=`oc
 ```
 
 You can access the console at <http://localhost:2772/>.
+
+### Disable Jolokia authentication for deployments (dev only)
+
+In order for a local hawtio-online to detect the hawtio-enabled applications, each application container needs to be configured with the following environment variables:
+
+```
+AB_JOLOKIA_AUTH_OPENSHIFT=false
+AB_JOLOKIA_PASSWORD_RANDOM=false
+AB_JOLOKIA_OPTS=useSslClientAuthentication=false,protocol=https
+```
+
+The following script lets you apply the above environment variables to all the deployments with a label `provider=fabric8` in a batch:
+
+```sh
+$ ./scripts/disable-jolokia-auth.sh
+```
 
 ---
 
