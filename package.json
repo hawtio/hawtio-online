@@ -33,6 +33,8 @@
   },
   "scripts": {
     "start": "gulp",
+    "start-cluster": "gulp --master=`oc whoami --show-server` --mode=cluster",
+    "start-namespace": "gulp --master=`oc whoami --show-server` --mode=namespace --namespace=`oc project -q`",
     "build": "gulp build",
     "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml -o=docker/licenses",
     "generate-certificate": "./scripts/generate-certificate.sh",
