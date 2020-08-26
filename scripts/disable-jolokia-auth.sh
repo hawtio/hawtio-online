@@ -1,7 +1,11 @@
 #!/bin/sh
 
 # target dc labeled 'provider=fabric8'
-names=$(oc get dc --selector='provider=fabric8' -o 'jsonpath={.items[*].metadata.name}')
+if [ -z $1 ]; then
+  names=$(oc get dc --selector='provider=fabric8' -o 'jsonpath={.items[*].metadata.name}')
+else
+  names=$1
+fi
 
 echo $names | tr " " "\n"
 read -p "Disable Jolokia authentication & SSL for these deployment configs? [y/N]: " yn
