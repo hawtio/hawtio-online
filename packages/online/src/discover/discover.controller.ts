@@ -27,6 +27,8 @@ namespace Online {
     }
 
     $onInit() {
+      this.$scope.$emit(Page.CLOSE_MAIN_NAV_EVENT);
+
       const filters = (pods: any[]) => {
         const filters = filterConfig.appliedFilters;
         if (!filters || filters.length === 0) {
