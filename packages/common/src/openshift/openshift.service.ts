@@ -1,5 +1,7 @@
 namespace Online {
 
+  const log = Logger.get('hawtio-online-openshift');
+
   export enum HawtioMode {
     Cluster = 'cluster',
     Namespace = 'namespace',
@@ -12,9 +14,12 @@ namespace Online {
 
   export class OpenShiftService extends EventEmitter {
 
+    // port named 'console-jolokia' is for Artemis brokers
+    readonly jolokiaPortQuery = '$.spec.containers[*].ports[?(@.name=="jolokia" || @.name=="console-jolokia")]';
+
     private _loading = 0;
-    private projects = [];
-    private pods = [];
+    private projects: any[] = [];
+    private pods: any[] = [];
     private projects_client: Client;
     private pods_clients: { [key: string]: Client } = {};
 
@@ -40,7 +45,8 @@ namespace Online {
                 this._loading--;
                 const others = this.pods.filter(pod => pod.metadata.namespace !== project.metadata.name);
                 this.pods.length = 0;
-                this.pods.push(...others, ..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
+                const jolokiaPods = _.filter(pods, pod => jsonpath.query(pod, this.jolokiaPortQuery).length > 0);
+                this.pods.push(...others, ...jolokiaPods);
                 this.emit('changed');
               });
               this.pods_clients[project.metadata.name] = {
@@ -72,7 +78,8 @@ namespace Online {
         const pods_watch = pods_client.watch(pods => {
           this._loading--;
           this.pods.length = 0;
-          this.pods.push(..._.filter(pods, pod => jsonpath.query(pod, '$.spec.containers[*].ports[?(@.name=="jolokia")]').length > 0));
+          const jolokiaPods = _.filter(pods, pod => jsonpath.query(pod, this.jolokiaPortQuery).length > 0);
+          this.pods.push(...jolokiaPods);
           this.emit('changed');
         });
 
@@ -81,15 +88,15 @@ namespace Online {
       }
     }
 
-    isLoading() {
+    isLoading(): boolean {
       return this._loading > 0;
     }
 
-    getPods() {
+    getPods(): any[] {
       return this.pods;
     }
 
-    getProjects() {
+    getProjects(): any[] {
       return this.projects;
     }
 
@@ -103,7 +110,7 @@ namespace Online {
       return mode === this.$window.OPENSHIFT_CONFIG.hawtio.mode;
     }
 
-    disconnect() {
+    disconnect(): void {
       if (this.$window.OPENSHIFT_CONFIG.hawtio.mode === 'cluster') {
         this.K8SClientFactory.destroy(this.projects_client.collection, this.projects_client.watch);
       }

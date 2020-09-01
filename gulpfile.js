@@ -105,12 +105,13 @@ function backend(root, liveReload) {
   hawtio.use('/integration/osconsole/config.js', osconsole);
 
   hawtio.use('/management', function (req, res, next) {
-    const url = /\/management\/namespaces\/(.+)\/pods\/https:(.+)\/jolokia(.*)/;
+    const url = /\/management\/namespaces\/(.+)\/pods\/(http|https):([^/]+)\/(.+)/;
     const match = req.originalUrl.match(url);
-    console.log(`namespace: ${match[1]}, pod: ${match[2]}, params: ${match[3]}`);
+    const redirectPath = `/master/api/v1/namespaces/${match[1]}/pods/${match[2]}:${match[3]}/proxy/${match[4]}`;
+    console.log('redirect:', redirectPath);
     if (match) {
       // 307 - post redirect
-      res.redirect(307, `/master/api/v1/namespaces/${match[1]}/pods/https:${match[2]}/proxy/jolokia${match[3]}`);
+      res.redirect(307, redirectPath);
     } else {
       next();
     }

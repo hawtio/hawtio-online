@@ -1,10 +1,17 @@
 namespace Online {
 
   class ManagedPod {
-    constructor(
-      public pod,
-      public jolokia: Jolokia.IJolokia,
-    ) {
+    readonly jolokia: Jolokia.IJolokia;
+
+    constructor(public pod: any, private openShiftService: OpenShiftService) {
+      const port = this.jolokiaPort(pod);
+      const path = getManagementJolokiaPath(pod, port);
+      this.jolokia = new Jolokia(new URI().query('').path(path).valueOf());
+    }
+
+    private jolokiaPort(pod: any): number {
+      const ports = jsonpath.query(pod, this.openShiftService.jolokiaPortQuery);
+      return ports[0].containerPort || 8778;
     }
   }
 
@@ -26,10 +33,7 @@ namespace Online {
         openShiftService.getPods().forEach(pod => {
           const mPod = this.pods[pod.metadata.uid];
           if (!mPod) {
-            // FIXME: read Jolokia port from container spec
-            const port = 8778;
-            const url = new URI().query('').path(`/management/namespaces/${pod.metadata.namespace}/pods/https:${pod.metadata.name}:${port}/jolokia`)
-            this.pods[pod.metadata.uid] = new ManagedPod(pod, new Jolokia(url.valueOf()));
+            this.pods[pod.metadata.uid] = new ManagedPod(pod, openShiftService);
           } else {
             pod.management = mPod.pod.management;
             mPod.pod = pod;
@@ -52,7 +56,7 @@ namespace Online {
             req++;
             mPod.jolokia.search('org.apache.camel:context=*,type=routes,*', {
               method: 'POST',
-              success: (routes:[]) => {
+              success: (routes: []) => {
                 res++;
                 Core.pathSet(mPod.pod, 'management.camel.routes_count', routes.length);
                 if (res === req) {
@@ -66,7 +70,7 @@ namespace Online {
                   this.emit('updated');
                 }
               },
-           });
+            });
           }
         }
       }, 1000, { leading: false, trailing: true });
