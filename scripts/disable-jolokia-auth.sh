@@ -7,6 +7,11 @@ else
   names=$1
 fi
 
+if [ -z $names ]; then
+  echo "No deployment configs are selected."
+  exit 1
+fi
+
 echo $names | tr " " "\n"
 read -p "Disable Jolokia authentication & SSL for these deployment configs? [y/N]: " yn
 if [ "$yn" != "y" ]; then
