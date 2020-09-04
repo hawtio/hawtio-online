@@ -34,9 +34,9 @@
     urijs "1.19.0"
 
 "@hawtio/integration@~4.13.0":
-  version "4.13.6"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.13.6.tgz#686c7d3db6c17532f9dbcccda7d6296c56c03b49"
-  integrity sha512-tCn9wwUygbxKtlFvwaLIS4gJMSgfO/U6Ml1JNYdXJRlqgey8mTpTWSZaoBEyGH6m4jcmm+5lxXyLxUF3D/J1ug==
+  version "4.13.7"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.13.7.tgz#ad50721464cc709c09c9266ba14b318cc9a96dab"
+  integrity sha512-UozwYpMNHn9uPiw8hQ0dl89cFIBILR6mP0er8dYO3CNYbDs+Xi5tjjc/6akMDFEdtLs0aM5qRMBi98KZSBJbdg==
   dependencies:
     "@hawtio/core" "^4.13.0"
     "@types/angular-cookies" "^1.4.5"

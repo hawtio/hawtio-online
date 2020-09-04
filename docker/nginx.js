@@ -6,7 +6,7 @@ import RBAC from 'rbac.js';
 
 var isRbacEnabled = typeof process.env['HAWTIO_ONLINE_RBAC_ACL'] !== 'undefined';
 
-export default { proxyJolokiaAgent };
+export default { proxyJolokiaAgent, readCredentials };
 
 // Only Jolokia requests using the POST method are currently supported,
 // as this is more comprehensive and it's what the front-end uses.
@@ -22,6 +22,14 @@ function proxyJolokiaAgent(req) {
   var pod = parts[3];
   var port = parts[4];
   var path = parts[5];
+
+  // extract basic auth credentials
+  var credentials;
+  if (pod.includes('@')) {
+    var split = pod.split('@');
+    credentials = split[0];
+    pod = split[1];
+  }
 
   function response(res) {
     for (var header in res.headersOut) {
@@ -75,7 +83,11 @@ function proxyJolokiaAgent(req) {
   }
 
   function callJolokiaAgent(podIP, request) {
-    return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: req.method, body: request });
+    var args = '';
+    if (credentials) {
+      args = `credentials=${credentials}`;
+    }
+    return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: req.method, body: request, args: args });
   }
 
   function proxyJolokiaAgentWithoutRbac() {
@@ -193,4 +205,11 @@ function proxyJolokiaAgent(req) {
         req.return(502, error);
       }
     });
+}
+
+function readCredentials(req) {
+  if (req.args.credentials) {
+    return `Basic ${req.args.credentials}`;
+  }
+  return "";
 }

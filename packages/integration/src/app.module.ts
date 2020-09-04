@@ -6,7 +6,37 @@ namespace Online {
     ])
     .decorator('mainNavService', disableConnectPlugin)
     .run(addLogoutToUserDropdown)
+    .run(overrideCreateJolokia)
     .run(destroyBeforeUnload);
+
+  function overrideCreateJolokia(connectService: JVM.ConnectService) {
+    'ngInject';
+    const original = connectService.createJolokia;
+    connectService.createJolokia = (options: JVM.ConnectOptions, checkCredentials = false) => {
+      if (checkCredentials) {
+        return new Jolokia({
+          url: createServerConnectionUrl(options),
+          method: 'post',
+          mimeType: 'application/json'
+        });
+      } else {
+        return original(options);
+      }
+    };
+  }
+
+  function createServerConnectionUrl(options: JVM.ConnectOptions): string {
+    log.debug("Connect to server, options:", StringHelpers.toString(options));
+    const match = options.jolokiaUrl.match(/\/management\/namespaces\/(.+)\/pods\/(http|https):([^/]+)\/(.+)/);
+    const namespace = match[1];
+    const protocol = match[2];
+    const pod = match[3];
+    const path = match[4];
+    const auth = window.btoa(options.userName + ':' + options.password);
+    const answer = `/management/namespaces/${namespace}/pods/${protocol}:${auth}@${pod}/${path}`;
+    log.debug("Using URL:", answer);
+    return answer;
+  }
 
   function disableConnectPlugin($delegate: Nav.MainNavService) {
     'ngInject';
