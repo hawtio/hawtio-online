@@ -152,7 +152,7 @@ objects:
             name: hawtio-online
         - name: hawtio-integration
           configMap:
-            name: hawtio-online
+            name: hawtio-integration
         - name: hawtio-rbac
           configMap:
             name: hawtio-rbac
