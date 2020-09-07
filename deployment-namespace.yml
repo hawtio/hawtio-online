@@ -140,7 +140,7 @@ objects:
             name: hawtio-online
         - name: hawtio-integration
           configMap:
-            name: hawtio-online
+            name: hawtio-integration
         - name: hawtio-online-tls-serving
           secret:
             secretName: hawtio-online-tls-serving
