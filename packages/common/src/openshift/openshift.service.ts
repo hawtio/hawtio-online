@@ -14,8 +14,7 @@ namespace Online {
 
   export class OpenShiftService extends EventEmitter {
 
-    // port named 'console-jolokia' is for Artemis brokers
-    readonly jolokiaPortQuery = '$.spec.containers[*].ports[?(@.name=="jolokia" || @.name=="console-jolokia")]';
+    readonly jolokiaPortQuery = '$.spec.containers[*].ports[?(@.name=="jolokia")]';
 
     private _loading = 0;
     private projects: any[] = [];

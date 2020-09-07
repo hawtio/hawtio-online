@@ -64,11 +64,11 @@ namespace Online {
   }
 
   function jolokiaContainersFilter() {
-    return containers => (containers || []).filter(container => container.ports.some(port => port.name === 'jolokia' || port.name === 'console-jolokia'));
+    return containers => (containers || []).filter(container => container.ports.some(port => port.name === 'jolokia'));
   }
 
   function jolokiaPortFilter() {
-    return container => container.ports.find(port => port.name === 'jolokia' || port.name === 'console-jolokia');
+    return container => container.ports.find(port => port.name === 'jolokia');
   }
 
   function connectUrlFilter() {
