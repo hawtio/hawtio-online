@@ -32,10 +32,10 @@ namespace Online {
     return function podDirective($window: ng.IWindowService, openShiftConsole: ConsoleService) {
       'ngInject';
       return {
-        restrict    : 'EA',
-        templateUrl : templateUrl,
-        scope       : {
-          pod : '=',
+        restrict: 'EA',
+        templateUrl: templateUrl,
+        scope: {
+          pod: '=',
         },
         link: function ($scope: ng.IScope | any) {
           openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url);
@@ -72,12 +72,15 @@ namespace Online {
   }
 
   function connectUrlFilter() {
-    return (pod, port = 8778) => new URI().path('/integration/')
-      .query({
-        jolokiaUrl : new URI().query('').path(`/management/namespaces/${pod.metadata.namespace}/pods/https:${pod.metadata.name}:${port}/jolokia`),
-        title      : pod.metadata.name,
-        returnTo   : new URI().toString(),
-      });
+    return (pod, port = 8778) => {
+      const jolokiaPath = getManagementJolokiaPath(pod, port);
+      return new URI().path('/integration/')
+        .query({
+          jolokiaUrl: new URI().query('').path(jolokiaPath),
+          title: pod.metadata.name,
+          returnTo: new URI().toString(),
+        });
+    }
   }
 
   function podDetailsUrlFilter() {

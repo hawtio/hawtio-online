@@ -34,10 +34,11 @@ namespace Online {
       const container = _.find(pod.spec.containers,
         container => container.ports.some(port => port.name === 'jolokia'));
       const port = _.find(container.ports, port => port.name === 'jolokia').containerPort;
+      const jolokiaPath = getManagementJolokiaPath(pod, port);
       return new URI()
         .path('/integration/')
         .query({
-          jolokiaUrl: new URI().query('').path(`/management/namespaces/${pod.metadata.namespace}/pods/https:${pod.metadata.name}:${port}/jolokia`),
+          jolokiaUrl: new URI().query('').path(jolokiaPath),
           title: pod.metadata.name,
           // returnTo   : new URI().toString(),
         })
