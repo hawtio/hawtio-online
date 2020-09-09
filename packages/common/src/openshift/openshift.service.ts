@@ -26,13 +26,19 @@ namespace Online {
       private $window: ng.IWindowService,
       private K8SClientFactory: KubernetesAPI.K8SClientFactory,
       private $q: ng.IQService,
+      private configManager: Core.ConfigManager,
     ) {
       'ngInject';
 
       super();
 
       if (this.is(HawtioMode.Cluster)) {
-        const projects_client = this.K8SClientFactory.create(KubernetesAPI.WatchTypes.PROJECTS);
+        const projects_client = this.K8SClientFactory.create(
+          {
+           kind: KubernetesAPI.WatchTypes.PROJECTS,
+           labelSelector: _.get(configManager.config, "online.projectSelector", null),
+          }
+        );
         this._loading++;
         const projects_watch = projects_client.watch(projects => {
           // subscribe to pods update for new projects
