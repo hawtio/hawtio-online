@@ -38,7 +38,7 @@
     "build": "gulp build",
     "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml -o=docker/licenses",
     "generate-certificate": "./scripts/generate-certificate.sh",
-    "nginx-test": "cd docker/ && njs test.js"
+    "nginx-test": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js"
   },
   "devDependencies": {
     "@hawtio/node-backend": "^4.1.0",
