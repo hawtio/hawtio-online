@@ -11,6 +11,7 @@
       "**/@types/*",
       "**/angular-*",
       "**/angular-*/**",
+      "**/artemis-plugin-npm",
       "**/clipboard",
       "**/codemirror",
       "**/cubism",
