@@ -242,7 +242,7 @@ In order to authenticate and obtain OAuth access tokens for the Hawtio console b
 $ oc create -f oauthclient.yml
 ```
 
-See [OAuth Clients](https://docs.openshift.com/container-platform/4.6/authentication/configuring-oauth-clients.html#oauth-default-clients_configuring-oauth-clients) for more information.
+See [OAuth Clients](https://docs.openshift.com/container-platform/latest/authentication/configuring-oauth-clients.html#oauth-default-clients_configuring-oauth-clients) for more information.
 
 ##### Namespace mode
 
