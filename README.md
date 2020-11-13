@@ -30,7 +30,7 @@ An Hawtio console that eases the discovery and management of _hawtio-enabled_ <s
 ## Deployment
 
 You can run the following instructions to deploy the Hawtio Online console on your OpenShift cluster.
-You may want to read how to [get started with the CLI](https://docs.openshift.org/latest/cli_reference/get_started_cli.html) for more information about the `oc` client tool.
+You may want to read how to [get started with the CLI](https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/getting-started-cli.html) for more information about the `oc` client tool.
 
 There exist different OpenShift templates to choose from, depending on the following characteristics:
 
@@ -43,7 +43,7 @@ There exist different OpenShift templates to choose from, depending on the follo
 | [deployment-namespace-rbac.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-namespace-rbac.yml) | Same as `deployment-namespace-os4.yml`, with configurable RBAC for Jolokia requests authorization. See the [RBAC](#rbac) section for more information. |
 | [deployment-cluster-rbac.yml](https://raw.githubusercontent.com/hawtio/hawtio-online/master/deployment-cluster-rbac.yml) | Same as `deployment-cluster-os4.yml`, with configurable RBAC for Jolokia requests authorization. See the [RBAC](#rbac) section for more information. |
 
-[service-signing-certificate]: https://docs.openshift.com/container-platform/latest/authentication/certificates/service-serving-certificate.html
+[service-signing-certificate]: https://docs.openshift.com/container-platform/latest/security/certificates/service-serving-certificate.html
 
 To deploy the Hawtio Online console, execute the following command:
 
@@ -242,7 +242,7 @@ In order to authenticate and obtain OAuth access tokens for the Hawtio console b
 $ oc create -f oauthclient.yml
 ```
 
-See [OAuth Clients](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/authentication.html#oauth-clients) for more information.
+See [OAuth Clients](https://docs.openshift.com/container-platform/latest/authentication/configuring-oauth-clients.html#oauth-default-clients_configuring-oauth-clients) for more information.
 
 ##### Namespace mode
 
