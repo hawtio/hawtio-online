@@ -9,7 +9,7 @@
   dependencies:
     "@types/jquery" "2.0.53"
 
-"@hawtio/core@^4.0.0", "@hawtio/core@^4.13.0", "@hawtio/core@~4.14.0":
+"@hawtio/core@^4.0.0", "@hawtio/core@^4.14.0", "@hawtio/core@~4.14.0":
   version "4.14.0"
   resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.14.0.tgz#dfcf898ad76b16b8425fbfae3ca04863bc086c9c"
   integrity sha512-WSEH1E5YWPYH2bRG3MaglmQquQrTpM+cIjQ36by9qWMUxoUsK/ucmkX8d9gI69FBxXcWi2uJH0aJgsXNR0IQsA==
@@ -33,12 +33,12 @@
     typescript "^3.0.3"
     urijs "1.19.0"
 
-"@hawtio/integration@~4.13.0":
-  version "4.13.6"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.13.6.tgz#686c7d3db6c17532f9dbcccda7d6296c56c03b49"
-  integrity sha512-tCn9wwUygbxKtlFvwaLIS4gJMSgfO/U6Ml1JNYdXJRlqgey8mTpTWSZaoBEyGH6m4jcmm+5lxXyLxUF3D/J1ug==
+"@hawtio/integration@~4.15.0":
+  version "4.15.0"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.15.0.tgz#740f97b451da3bc8361b9d7f6acdc27dafca1a6f"
+  integrity sha512-TbJV6LDP2It3Rb+AsB1dTWBoz45LYXdR/k3FBvjsTkxdvKG8/wCTXMUFve0Icn5ayDoPrthz03WxFtQ66kNUMQ==
   dependencies:
-    "@hawtio/core" "^4.13.0"
+    "@hawtio/core" "^4.14.0"
     "@types/angular-cookies" "^1.4.5"
     "@types/angular-mocks" "~1.7.0"
     "@types/angular-ui-bootstrap" "~0.13.46"
@@ -49,6 +49,7 @@
     "@types/js-beautify" "0.0.30"
     angular-cookies "^1.7.9"
     angular-resizable "1.2.0"
+    angular-sanitize "^1.8.1"
     angular-ui-bootstrap "2.5.6"
     clipboard "~2.0.0"
     codemirror "5.33.0"
@@ -87,12 +88,12 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@4.12.3", "@hawtio/oauth@^4.0.0", "@hawtio/oauth@~4.12.0":
-  version "4.12.3"
-  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.12.3.tgz#7a2b2d7a884029ae327c897a449a0685d712d07b"
-  integrity sha512-Pbmaoe43Fwu4n/cQlDUcAGssmi7LHYqWpKvkrPfvp8mIgycMWmf7V+UeZggUnCwLvOV63wYbJRtqvS+JyFuAHw==
+"@hawtio/oauth@^4.0.0", "@hawtio/oauth@~4.12.0":
+  version "4.12.4"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.12.4.tgz#87b00dfd64ee039ef1db049e757b907f4cee9706"
+  integrity sha512-jT2b0JqEVN2ECpX08VnTpxWJMxtVbCyxpU6GquBim/E/Br91VyoiEYRFVWLhFE8+CYRqgt3zAKsRLxCr3dpKVg==
   dependencies:
-    "@hawtio/core" "^4.13.0"
+    "@hawtio/core" "^4.14.0"
     "@types/angular-cookies" "^1.4.5"
     angular-cookies "^1.7.9"
     ng-idle "^1.3.2"
@@ -561,7 +562,7 @@ angular-route@1.7.8, angular-route@^1.7.7:
   resolved "https://registry.yarnpkg.com/angular-route/-/angular-route-1.7.8.tgz#d502aa605dcbb253a93e844c0adf51c9bc36b9fa"
   integrity sha512-VVk89PH0fsY5kfbx+N7IVX1IwnaPWYhMGY0uA+rjej2v1sjvrTx1SLkxUK4E0UpW1hXeLJhN7ncBcwoBiPtAtA==
 
-angular-sanitize@1.7.8, angular-sanitize@^1.7.7:
+angular-sanitize@1.7.8, angular-sanitize@^1.7.7, angular-sanitize@^1.8.1:
   version "1.7.8"
   resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.7.8.tgz#87d59f754bb18d286dfd9d6ce867299c094c6719"
   integrity sha512-sVq51is1cVNiPytH4JIEd7iRW0OBIRQGNETWkz1c/jnLv2sBf9oDxEd8enwDz/W2ULBIpqJPK/3AsIxmZyh9pA==

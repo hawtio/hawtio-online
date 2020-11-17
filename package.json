@@ -274,7 +274,6 @@
     "p-locate": "3.0.0",
     "p-limit": "2.3.0",
     "p-try": "2.2.0",
-    "@hawtio/oauth": "4.12.3",
     "vinyl": "2.1.0",
     "process-nextick-args": "2.0.1",
     "readable-stream": "2.3.7",
