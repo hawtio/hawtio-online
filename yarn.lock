@@ -60,10 +60,10 @@
     ng-infinite-scroll "1.3.0"
     patternfly-bootstrap-treeview "~2.1.0"
 
-"@hawtio/kubernetes-api@~4.12.0":
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-4.12.0.tgz#0ba4aa38f1c528894aa1d6534a93e6208928a186"
-  integrity sha512-bCGsTZI6cZ8SFJZX3eCxgcOsDpazT28FhF9QXe6ewHhqGRC+jpst8bf6G6ZhPgJqyOcQMu1875om9bRKJpzzFA==
+"@hawtio/kubernetes-api@~4.12.1":
+  version "4.12.1"
+  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-4.12.1.tgz#72096cf8b24fd8d52a3afe86affc9b43c0361ab1"
+  integrity sha512-SF9YJM2NYkqfjAl/CK25LorcrQ4h3KQgxJh3846ABE3HouhHEFg5d75k6+uJi7eiH8sq48kDYWeQkjhoihnN1A==
   dependencies:
     "@hawtio/core" "^4.0.0"
     "@hawtio/oauth" "^4.0.0"
