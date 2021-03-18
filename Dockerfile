@@ -1,4 +1,4 @@
-FROM docker.io/node:12.17.0 as builder
+FROM docker.io/node:12.21.0 as builder
 
 RUN yarn global add gulp-cli
 
@@ -10,10 +10,11 @@ ADD packages/ packages/
 RUN yarn install
 RUN gulp --series build site
 
-FROM docker.io/centos:7
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 
-ENV NGINX_VERSION 1.17.10-1.el7
-ENV NGINX_MODULE_NJS_VERSION 1.17.10.0.4.0-1.el7
+# njs > 0.4.3 fails to run js-yaml.js
+ENV NGINX_VERSION 1.18.0-1.el8
+ENV NGINX_MODULE_NJS_VERSION 1.18.0.0.4.3-1.el8
 
 LABEL name="nginxinc/nginx" \
       vendor="NGINX Inc." \
@@ -31,9 +32,9 @@ ADD docker/nginx.repo /etc/yum.repos.d/nginx.repo
 
 RUN curl -sO http://nginx.org/keys/nginx_signing.key && \
     rpm --import ./nginx_signing.key && \
-    yum -y install --setopt=tsflags=nodocs nginx-${NGINX_VERSION}.ngx nginx-module-njs-${NGINX_MODULE_NJS_VERSION}.ngx && \
+    microdnf -y install --setopt=tsflags=nodocs nginx-${NGINX_VERSION}.ngx nginx-module-njs-${NGINX_MODULE_NJS_VERSION}.ngx && \
     rm -f ./nginx_signing.key && \
-    yum clean all
+    microdnf clean all
 
 # forward request and error logs to docker log collector
 # - Change pid file location & remove nginx user & change port to 8080
