@@ -9,10 +9,10 @@
   dependencies:
     "@types/jquery" "2.0.53"
 
-"@hawtio/core@^4.0.0", "@hawtio/core@^4.13.0", "@hawtio/core@~4.14.0":
-  version "4.14.0"
-  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.14.0.tgz#dfcf898ad76b16b8425fbfae3ca04863bc086c9c"
-  integrity sha512-WSEH1E5YWPYH2bRG3MaglmQquQrTpM+cIjQ36by9qWMUxoUsK/ucmkX8d9gI69FBxXcWi2uJH0aJgsXNR0IQsA==
+"@hawtio/core@4.14.1", "@hawtio/core@^4.0.0", "@hawtio/core@^4.14.1", "@hawtio/core@~4.14.1":
+  version "4.14.1"
+  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.14.1.tgz#fd7b23c3525e617ca955ac98b493ef932720d8dd"
+  integrity sha512-d+DeI0teqfXiwX7AGqN8oOYe+RwJCnKfAzzey0hEccWtqc/24VBvbDf7SiDMBcNKStUXGBO94HjW8UBiAwA3dQ==
   dependencies:
     "@hawtio/core-dts" "~3.3.0"
     "@patternfly/patternfly" "^2.0.0"
@@ -33,12 +33,12 @@
     typescript "^3.0.3"
     urijs "1.19.0"
 
-"@hawtio/integration@~4.13.0":
-  version "4.13.6"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.13.6.tgz#686c7d3db6c17532f9dbcccda7d6296c56c03b49"
-  integrity sha512-tCn9wwUygbxKtlFvwaLIS4gJMSgfO/U6Ml1JNYdXJRlqgey8mTpTWSZaoBEyGH6m4jcmm+5lxXyLxUF3D/J1ug==
+"@hawtio/integration@~4.16.2":
+  version "4.16.2"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.16.2.tgz#f9a545029fbaa8ced575a4f37fd0eb3351bcb4d7"
+  integrity sha512-y3lmWXcg96C8vHqXnSP9706H1d9Q13K7z+bFk1L1daNaMkOQmmoQGZj0RUrpHVBJYOFImtrbN/wK2Dy+NLuKeg==
   dependencies:
-    "@hawtio/core" "^4.13.0"
+    "@hawtio/core" "^4.14.1"
     "@types/angular-cookies" "^1.4.5"
     "@types/angular-mocks" "~1.7.0"
     "@types/angular-ui-bootstrap" "~0.13.46"
@@ -49,6 +49,7 @@
     "@types/js-beautify" "0.0.30"
     angular-cookies "^1.7.9"
     angular-resizable "1.2.0"
+    angular-sanitize "^1.8.1"
     angular-ui-bootstrap "2.5.6"
     clipboard "~2.0.0"
     codemirror "5.33.0"
@@ -59,10 +60,10 @@
     ng-infinite-scroll "1.3.0"
     patternfly-bootstrap-treeview "~2.1.0"
 
-"@hawtio/kubernetes-api@~4.12.0":
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-4.12.0.tgz#0ba4aa38f1c528894aa1d6534a93e6208928a186"
-  integrity sha512-bCGsTZI6cZ8SFJZX3eCxgcOsDpazT28FhF9QXe6ewHhqGRC+jpst8bf6G6ZhPgJqyOcQMu1875om9bRKJpzzFA==
+"@hawtio/kubernetes-api@~4.12.1":
+  version "4.12.1"
+  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-4.12.1.tgz#72096cf8b24fd8d52a3afe86affc9b43c0361ab1"
+  integrity sha512-SF9YJM2NYkqfjAl/CK25LorcrQ4h3KQgxJh3846ABE3HouhHEFg5d75k6+uJi7eiH8sq48kDYWeQkjhoihnN1A==
   dependencies:
     "@hawtio/core" "^4.0.0"
     "@hawtio/oauth" "^4.0.0"
@@ -87,12 +88,12 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@4.12.3", "@hawtio/oauth@^4.0.0", "@hawtio/oauth@~4.12.0":
-  version "4.12.3"
-  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.12.3.tgz#7a2b2d7a884029ae327c897a449a0685d712d07b"
-  integrity sha512-Pbmaoe43Fwu4n/cQlDUcAGssmi7LHYqWpKvkrPfvp8mIgycMWmf7V+UeZggUnCwLvOV63wYbJRtqvS+JyFuAHw==
+"@hawtio/oauth@4.12.5", "@hawtio/oauth@^4.0.0", "@hawtio/oauth@~4.12.5":
+  version "4.12.5"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.12.5.tgz#299d222c6d1ba230a2e9740fccd928bf3faba282"
+  integrity sha512-bmVuAyH8Acm0YQ6VMd82VuUypO9hoaF3a66sWVRF9S67ezsoM7GRMZiKH1rhk8ixUWYhMaWewAEqiHtgv9oCEg==
   dependencies:
-    "@hawtio/core" "^4.13.0"
+    "@hawtio/core" "^4.14.1"
     "@types/angular-cookies" "^1.4.5"
     angular-cookies "^1.7.9"
     ng-idle "^1.3.2"
