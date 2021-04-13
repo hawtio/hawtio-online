@@ -277,6 +277,8 @@
     "vinyl": "2.1.0",
     "process-nextick-args": "2.0.1",
     "readable-stream": "2.3.7",
-    "@types/jquery": "2.0.53"
+    "@types/jquery": "2.0.53",
+    "@hawtio/core": "4.14.1",
+    "@hawtio/oauth": "4.12.5"
   }
 }
