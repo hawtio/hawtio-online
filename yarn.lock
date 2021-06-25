@@ -9,10 +9,10 @@
   dependencies:
     "@types/jquery" "2.0.53"
 
-"@hawtio/core@^4.0.0", "@hawtio/core@^4.14.0", "@hawtio/core@^4.14.1", "@hawtio/core@~4.14.1":
-  version "4.14.1"
-  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.14.1.tgz#fd7b23c3525e617ca955ac98b493ef932720d8dd"
-  integrity sha512-d+DeI0teqfXiwX7AGqN8oOYe+RwJCnKfAzzey0hEccWtqc/24VBvbDf7SiDMBcNKStUXGBO94HjW8UBiAwA3dQ==
+"@hawtio/core@^4.0.0", "@hawtio/core@^4.14.1", "@hawtio/core@^4.14.2", "@hawtio/core@~4.14.2":
+  version "4.14.2"
+  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.14.2.tgz#3c3185cfdf8694005bdb711366b85fea4dec25a1"
+  integrity sha512-lwTrS5jRmbnW6C9y/sk9BsBzVKb0skWzR7bNjWhPpLPY/u3g04vOA7Tb6CLvwsT3kXQxmzdnZTxsOTPhobEMHw==
   dependencies:
     "@hawtio/core-dts" "~3.3.0"
     "@patternfly/patternfly" "^2.0.0"
@@ -28,17 +28,17 @@
     angular-route "^1.7.7"
     jquery "2.2.4"
     js-logger "1.4.1"
-    lodash "~4.17.0"
+    lodash "~4.17.21"
     marked "0.6.1"
     typescript "^3.0.3"
     urijs "1.19.0"
 
-"@hawtio/integration@~4.16.2":
-  version "4.16.2"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.16.2.tgz#f9a545029fbaa8ced575a4f37fd0eb3351bcb4d7"
-  integrity sha512-y3lmWXcg96C8vHqXnSP9706H1d9Q13K7z+bFk1L1daNaMkOQmmoQGZj0RUrpHVBJYOFImtrbN/wK2Dy+NLuKeg==
+"@hawtio/integration@~4.16.3":
+  version "4.16.3"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.16.3.tgz#6e99ffff1eb073fa1c0b3fa8a95ba08b10338ce8"
+  integrity sha512-P80oHx3DlVrNd/85NnuzJxvmf6O3vs9FKJVMIc4ujYSm+h9HzKXQ+HEnC1zuXS12MWkLZLkGCY8uqY3IAk6gzQ==
   dependencies:
-    "@hawtio/core" "^4.14.1"
+    "@hawtio/core" "^4.14.2"
     "@types/angular-cookies" "^1.4.5"
     "@types/angular-mocks" "~1.7.0"
     "@types/angular-ui-bootstrap" "~0.13.46"
@@ -88,12 +88,12 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@^4.0.0", "@hawtio/oauth@~4.12.5":
-  version "4.12.5"
-  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.12.5.tgz#299d222c6d1ba230a2e9740fccd928bf3faba282"
-  integrity sha512-bmVuAyH8Acm0YQ6VMd82VuUypO9hoaF3a66sWVRF9S67ezsoM7GRMZiKH1rhk8ixUWYhMaWewAEqiHtgv9oCEg==
+"@hawtio/oauth@^4.0.0", "@hawtio/oauth@~4.12.6":
+  version "4.12.6"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.12.6.tgz#3d11db341d0460f5fa5a0820f4bccc00350f0b95"
+  integrity sha512-PE97Ey0+dO3bcFilO6rT6Xjkv3/LjzJMiu0t4PDYIGfYTMVQx7d7y7NzaaNlAmf+vVVSBYKKHa9BQcAYEhqasQ==
   dependencies:
-    "@hawtio/core" "^4.14.1"
+    "@hawtio/core" "^4.14.2"
     "@types/angular-cookies" "^1.4.5"
     angular-cookies "^1.7.9"
     ng-idle "^1.3.2"
@@ -3698,10 +3698,10 @@ lodash.uniq@^4.3.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@4.17.4, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@~1.0.1, lodash@~4.17.0, lodash@~4.17.10:
-  version "4.17.4"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
-  integrity sha1-eCA6TRwyiuHYbcpkYONptX9AVa4=
+lodash@4.17.21, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@~1.0.1, lodash@~4.17.0, lodash@~4.17.10, lodash@~4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 longest@^1.0.1:
   version "1.0.1"
@@ -3882,7 +3882,7 @@ microplugin@0.0.3:
   resolved "https://registry.yarnpkg.com/microplugin/-/microplugin-0.0.3.tgz#1fc2e1bb7c9e19e82bd84bba9137bbe71250d8cd"
   integrity sha1-H8Lhu3yeGegr2Eu6kTe75xJQ2M0=
 
-mime-db@1.32.0, mime-db@1.47.0, "mime-db@>= 1.43.0 < 2", mime-db@~1.33.0:
+mime-db@1.32.0, mime-db@1.48.0, "mime-db@>= 1.43.0 < 2", mime-db@~1.33.0:
   version "1.32.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.32.0.tgz#485b3848b01a3cda5f968b4882c0771e58e09414"
   integrity sha512-+ZWo/xZN40Tt6S+HyakUxnSOgff+JEdaneLWIm0Z6LmpCn5DMcZntLyUY5c/rTDog28LhXLKOUZKoTxTCAdBVw==
@@ -6059,7 +6059,7 @@ yallist@3.0.3, yallist@^2.1.2, yallist@^3.0.0, yallist@^3.0.2:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.3.tgz#b4b049e314be545e3ce802236d6cd22cd91c3de9"
   integrity sha512-S+Zk8DEWE6oKpV+vI3qWkaK+jSbIK86pCwe2IF/xwIpQ8jEuxpw9NyaGjmp9+BoJv5FV2piqCDcoCtStppiq2A==
 
-yargs-parser@5.0.0-security.0, yargs-parser@9.0.2, yargs-parser@^11.1.1, yargs-parser@^13.1.2, yargs-parser@^7.0.0:
+yargs-parser@9.0.2, yargs-parser@^11.1.1, yargs-parser@^13.1.2, yargs-parser@^5.0.1, yargs-parser@^7.0.0:
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-9.0.2.tgz#9ccf6a43460fe4ed40a9bb68f48d43b8a68cc077"
   integrity sha1-nM9qQ0YP5O1Aqbto9I1DuKaMwHc=
