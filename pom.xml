@@ -19,14 +19,14 @@
 
   <groupId>io.hawt</groupId>
   <artifactId>hawtio-online</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0.fuse-790030</version>
   <packaging>pom</packaging>
 
   <name>hawtio-online</name>
   <description>HawtIO Online :: ${project.artifactId}</description>
 
   <properties>
-    <fabric8.maven.plugin.version>3.5.33</fabric8.maven.plugin.version>
+    <fabric8.maven.plugin.version>4.3.0.fuse-790039</fabric8.maven.plugin.version>
     <maven.exec.plugin.version>1.2.1</maven.exec.plugin.version>
     <clean-maven-plugin-version>2.4.1</clean-maven-plugin-version>
     <frontend-maven-plugin-version>1.6</frontend-maven-plugin-version>
