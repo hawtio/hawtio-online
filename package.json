@@ -68,7 +68,7 @@
     "colors": "1.0.3",
     "body-parser": "1.18.2",
     "connect-livereload": "0.6.0",
-    "lodash": "4.17.4",
+    "lodash": "4.17.21",
     "request": "2.83.0",
     "tiny-lr": "1.0.5",
     "bytes": "3.0.0",
@@ -279,6 +279,6 @@
     "process-nextick-args": "2.0.1",
     "readable-stream": "2.3.7",
     "@types/jquery": "2.0.53",
-    "@hawtio/core": "4.14.1"
+    "@hawtio/core": "4.14.2"
   }
 }
