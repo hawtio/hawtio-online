@@ -1,3 +1,4 @@
+# vim: set filetype=nginx:
 js_import gateway from conf.d/nginx.js;
 
 proxy_cache_path /var/cache/nginx/pods levels=1:2 keys_zone=pods:1m max_size=2m inactive=60m use_temp_path=off;
@@ -23,9 +24,9 @@ server {
     root                /usr/share/nginx/html/;
 
     # Performance tuning
-    subrequest_output_buffer_size 10m;
-    client_body_buffer_size       256k;
-    proxy_buffers                 16 128k;
+    subrequest_output_buffer_size ${NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE};
+    client_body_buffer_size       ${NGINX_CLIENT_BODY_BUFFER_SIZE};
+    proxy_buffers                 ${NGINX_PROXY_BUFFERS};
 
     if ($new) {
         rewrite ^ $new redirect;
