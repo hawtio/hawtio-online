@@ -10,6 +10,11 @@ ADD packages/ packages/
 RUN yarn install
 RUN gulp --series build site
 
+# Build stage to extract envsubst
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3 as envsubst
+
+RUN microdnf -y install gettext
+
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 
 # njs > 0.4.3 fails to run js-yaml.js
@@ -63,9 +68,10 @@ RUN touch config.js && \
     ln -sf /config.js /usr/share/nginx/html/integration/osconsole/config.js
 
 COPY docker/nginx.js docker/rbac.js docker/js-yaml.js /etc/nginx/conf.d/
-COPY docker/nginx.conf docker/nginx-gateway.conf docker/osconsole/config.sh docker/nginx.sh docker/ACL.yaml /
+COPY docker/nginx.conf docker/nginx-gateway.conf.template docker/osconsole/config.sh docker/nginx.sh docker/ACL.yaml /
 
 COPY --from=builder /hawtio-online/docker/site /usr/share/nginx/html/
+COPY --from=envsubst /usr/bin/envsubst /usr/local/bin/
 
 USER 998
 
