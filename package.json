@@ -37,6 +37,8 @@
     "start-cluster": "gulp --master=`oc whoami --show-server` --mode=cluster",
     "start-namespace": "gulp --master=`oc whoami --show-server` --mode=namespace --namespace=`oc project -q`",
     "build": "gulp build",
+    "site": "gulp site",
+    "image": "docker build -t docker.io/hawtio/hawtio-online .",
     "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml -o=docker/licenses",
     "generate-certificate": "./scripts/generate-certificate.sh",
     "nginx-test": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js"
