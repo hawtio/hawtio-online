@@ -1,9 +1,9 @@
 # vim: set filetype=nginx:
 js_import gateway from conf.d/nginx.js;
 
-proxy_cache_path /var/cache/nginx/pods levels=1:2 keys_zone=pods:1m max_size=2m inactive=60m use_temp_path=off;
-proxy_cache_path /var/cache/nginx/rbac levels=1:2 keys_zone=rbac:100k max_size=1m inactive=60m use_temp_path=off;
-proxy_cache_path /var/cache/nginx/rbac2 levels=1:2 keys_zone=rbac2:100k max_size=1m inactive=60m use_temp_path=off;
+proxy_cache_path /var/cache/nginx/pods levels=1:2 keys_zone=pods:2m max_size=4m inactive=60m use_temp_path=off;
+proxy_cache_path /var/cache/nginx/rbac levels=1:2 keys_zone=rbac:256k max_size=3m inactive=60m use_temp_path=off;
+proxy_cache_path /var/cache/nginx/rbac2 levels=1:2 keys_zone=rbac2:256k max_size=3m inactive=60m use_temp_path=off;
 
 map $uri $new {
     / /online/;
