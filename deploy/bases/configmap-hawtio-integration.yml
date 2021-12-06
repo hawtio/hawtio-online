@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hawtio-integration
+data:
+  hawtconfig.json: |
+    {
+      "about": {
+        "title": "Hawtio Integration Console",
+        "productInfo": [],
+        "additionalInfo": "The Hawtio Integration Console enables introspecting Java applications.",
+        "copyright": ""
+      },
+      "branding": {
+        "appName": "Hawtio Integration Console",
+        "appLogoUrl": "img/hawtio-logo.svg"
+      },
+      "disabledRoutes": []
+    }
