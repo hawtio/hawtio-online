@@ -926,6 +926,19 @@ batch@0.5.3:
   resolved "https://registry.yarnpkg.com/batch/-/batch-0.5.3.tgz#3f3414f380321743bfc1042f9a83ff1d5824d464"
   integrity sha1-PzQU84AyF0O/wQQvmoP/HVgk1GQ=
 
+bats-assert@bats-core/bats-assert#v2.0.0:
+  version "2.0.0"
+  resolved "https://codeload.github.com/bats-core/bats-assert/tar.gz/d750c5a1b44bf6fc96726aea76f4621db5fd602f"
+
+bats-support@bats-core/bats-support#v0.3.0:
+  version "0.3.0"
+  resolved "https://codeload.github.com/bats-core/bats-support/tar.gz/24a72e14349690bcbf7c151b9d2d1cdd32d36eb1"
+
+bats@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/bats/-/bats-1.5.0.tgz#683f522e89df7d8fc99bf3631d35501f35445166"
+  integrity sha512-83YgQw24Yi2c1ctB0Vd7WCsACUMSWuEtOboxQZyFQYfiv9hDMW7nk7bdloqGLg3vK5pOODCBGBQjhvRmHKsJuA==
+
 bcrypt-pbkdf@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.2.tgz#a4301d389b6a43f9b67ff3ca11a3f6637e360e9e"
