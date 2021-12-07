@@ -39,11 +39,16 @@
     "build": "gulp build",
     "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml -o=docker/licenses",
     "generate-certificate": "./scripts/generate-certificate.sh",
-    "nginx-test": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js",
+    "test": "yarn test:bats",
+    "test:bats": "cd docker/osconsole/ && bats config.bats",
+    "test:nginx": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js",
     "deploy:k8s": "kubectl apply --kustomize deploy/"
   },
   "devDependencies": {
     "@hawtio/node-backend": "^4.1.0",
+    "bats": "^1.5.0",
+    "bats-assert": "bats-core/bats-assert#v2.0.0",
+    "bats-support": "bats-core/bats-support#v0.3.0",
     "del": "^2.0.0",
     "gulp": "^4.0.0",
     "gulp-connect": "^2.0.0",
