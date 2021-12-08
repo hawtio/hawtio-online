@@ -60,6 +60,7 @@
     "js-logger": "^0.9.14",
     "license-reporter": "^1.2.1",
     "mime-types": "^2.1.18",
+    "stringify-object": "~2.4.0",
     "urijs": "^1.19.0",
     "yargs": "^9.0.0"
   },
@@ -285,6 +286,7 @@
     "vinyl": "2.1.0",
     "process-nextick-args": "2.0.1",
     "readable-stream": "2.3.7",
-    "@types/jquery": "2.0.53"
+    "@types/jquery": "2.0.53",
+    "uglify-js": "3.14.4"
   }
 }
