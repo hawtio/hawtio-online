@@ -1,18 +1,22 @@
-const gulp   = require('gulp'),
-      Hub    = require('gulp-hub'),
-      del    = require('del'),
-      fs     = require('fs'),
-      path   = require('path'),
-      argv   = require('yargs').argv,
-      uri    = require('urijs'),
-      logger = require('js-logger'),
-      mime   = require('mime-types'),
-      hawtio = require('@hawtio/node-backend');
+const
+  gulp = require('gulp'),
+  Hub = require('gulp-hub'),
+  del = require('del'),
+  fs = require('fs'),
+  path = require('path'),
+  argv = require('yargs').argv,
+  uri = require('urijs'),
+  logger = require('js-logger'),
+  mime = require('mime-types'),
+  stringifyObject = require('stringify-object'),
+  hawtio = require('@hawtio/node-backend');
 
 const config = {
-  master    : argv.master,
-  mode      : argv.mode || 'namespace',
-  namespace : argv.namespace || 'hawtio',
+  port: argv.port || 2772,
+  master: argv.master,
+  mode: argv.mode || 'namespace',
+  namespace: argv.namespace || 'hawtio',
+  form: argv.form || process.env.HAWTIO_AUTH_FORM
 };
 
 function getMaster() {
@@ -25,39 +29,42 @@ function getMaster() {
 }
 
 function osconsole(_, res, _) {
-  const master = getMaster();
-  let answer;
-  if (config.mode === 'namespace') {
-    answer =
-    `window.OPENSHIFT_CONFIG = {
-      master_uri : new URI().query('').path('/master').toString(),
-      hawtio : {
-        mode      : '${config.mode}',
-        namespace : '${config.namespace}',
-      },
-      openshift : {
-        oauth_metadata_uri : new URI().query('').path('/master/.well-known/oauth-authorization-server').toString(),
-        oauth_client_id    : 'system:serviceaccount:${config.namespace}:hawtio-online-dev',
-        scope              : 'user:info user:check-access role:edit:${config.namespace}',
-      },
-    }`;
-  } else if (config.mode === 'cluster') {
-    answer =
-    `window.OPENSHIFT_CONFIG = {
-      master_uri : new URI().query('').path('/master').toString(),
-      hawtio : {
-        mode : '${config.mode}',
-      },
-      openshift : {
-        oauth_metadata_uri : new URI().query('').path('/master/.well-known/oauth-authorization-server').toString(),
-        oauth_client_id    : 'hawtio-online-dev',
-        scope              : 'user:info user:check-access user:list-projects role:edit:*',
-      },
-    }`;
-  } else {
-    console.error('Invalid value for the Hawtio Online mode, must be one of [cluster, namespace]');
-    process.exit(1);
+  const oscConfig = {
+    master_uri: `http://localhost:${config.port}/master`,
+    hawtio: {
+      mode: config.mode
+    },
+  };
+  switch (config.mode) {
+    case 'namespace':
+      oscConfig.hawtio.namespace = config.namespace;
+      if (!config.form) {
+        oscConfig.openshift = {
+          oauth_metadata_uri: `http://localhost:${config.port}/master/.well-known/oauth-authorization-server`,
+          oauth_client_id: `system:serviceaccount:${config.namespace}:hawtio-online-dev`,
+          scope: `user:info user:check-access role:edit:${config.namespace}`,
+        };
+      }
+      break;
+    case 'cluster':
+      if (!config.form) {
+        oscConfig.openshift = {
+          oauth_metadata_uri: `http://localhost:${config.port}/master/.well-known/oauth-authorization-server`,
+          oauth_client_id: `hawtio-online-dev`,
+          scope: `user:info user:check-access user:list-projects role:edit:*`,
+        };
+      }
+      break;
+    default:
+      console.error('Invalid value for the Hawtio Online mode, must be one of [cluster, namespace]');
+      process.exit(1);
   }
+  if (config.form) {
+    oscConfig.form = {
+      uri: config.form
+    };
+  }
+  const answer = `window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = ${stringifyObject(oscConfig)}`;
   res.set('Content-Type', 'application/javascript');
   res.send(answer);
 }
@@ -71,33 +78,33 @@ function backend(root, liveReload) {
   const master_api = uri.parse(master);
 
   hawtio.setConfig({
-    logLevel : logger.INFO,
-    port     : 2772,
-    staticAssets : [
+    logLevel: logger.INFO,
+    port: config.port,
+    staticAssets: [
       {
-        path : '/online',
-        dir  : path.join(root, 'online'),
+        path: '/online',
+        dir: path.join(root, 'online'),
       },
       {
-        path : '/integration',
-        dir  : path.join(root, 'integration'),
+        path: '/integration',
+        dir: path.join(root, 'integration'),
       }
     ],
     staticProxies: [
       {
-        port       : master_api.port,
-        proto      : master_api.protocol,
-        path       : '/master',
-        hostname   : master_api.hostname,
-        targetPath : '/',
+        port: master_api.port,
+        proto: master_api.protocol,
+        path: '/master',
+        hostname: master_api.hostname,
+        targetPath: '/',
       }
     ],
-    fallback   : {
-      '^/online.*'      : 'packages/online/index.html',
-      '^/integration.*' : 'packages/integration/index.html',
+    fallback: {
+      '^/online.*': path.join(root, 'online/index.html'),
+      '^/integration.*': path.join(root, 'integration/index.html'),
     },
-    liveReload : {
-      enabled : liveReload,
+    liveReload: {
+      enabled: liveReload,
     }
   });
 
@@ -192,7 +199,7 @@ gulp.task('default', gulp.parallel(
       const file = path.join(__dirname, 'packages/integration/node_modules/@hawtio/integration/dist/img', req.url);
       if (fs.existsSync(file)) {
         res.writeHead(200, {
-          'Content-Type'       : mime.contentType(path.extname(file)),
+          'Content-Type': mime.contentType(path.extname(file)),
           'Content-Disposition': `attachment; filename=${file}`,
         });
         fs.createReadStream(file).pipe(res);

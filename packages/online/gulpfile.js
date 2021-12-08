@@ -127,10 +127,10 @@ function copyImages() {
 }
 
 function siteBundle() {
-  return gulp.src('index.html')
+  return gulp.src('@(index|login).html')
     .pipe(plugins.usemin({
-      css: [plugins.cleanCss({ format: 'keep-breaks', inline: false })],
-      js : [plugins.uglify(), plugins.rev()],
+      css: [() => plugins.cleanCss({ format: 'keep-breaks', inline: false })],
+      js: [plugins.uglify, plugins.rev],
     }))
     .pipe(plugins.debug({ title: 'site bundle' }))
     .pipe(gulp.dest('site'));
@@ -204,7 +204,7 @@ function watchLessFiles() {
 }
 
 function watchResources() {
-  return gulp.watch(['index.html', path.join(config.dist, '*')], { cwd: __dirname },
+  return gulp.watch(['@(index|login).html', path.join(config.dist, '*')], { cwd: __dirname },
     gulp.series(ns('reload')));
 }
 
