@@ -8,7 +8,9 @@ namespace Online {
       private $window: ng.IWindowService) {
       'ngInject';
       this.homeUrl = new URI().query('').path('/online/').valueOf();
-      openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
+      if (openShiftConsole.enabled) {
+        openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
+      }
     }
 
     $onInit() {

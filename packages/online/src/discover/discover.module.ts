@@ -11,10 +11,10 @@ namespace Online {
   export const discoverModule = angular
     .module('hawtio-online-discover', [
       'angularMoment',
-      'KubernetesAPI',
       'patternfly',
-      labelsModule.name,
-      'hawtio-online-status',
+      KubernetesAPI.pluginName,
+      labelsModule,
+      statusModule,
     ])
     .controller('DiscoverController', DiscoverController)
     .directive('podListRow', podDirective(ViewType.listView, 'src/discover/podListRow.html'))
@@ -25,7 +25,8 @@ namespace Online {
     .filter('jolokiaContainers', jolokiaContainersFilter)
     .filter('jolokiaPort', jolokiaPortFilter)
     .filter('connectUrl', connectUrlFilter)
-    .filter('podDetailsUrl', podDetailsUrlFilter);
+    .filter('podDetailsUrl', podDetailsUrlFilter)
+    .name;
 
 
   function podDirective(viewType: ViewType, templateUrl: string) {
@@ -38,7 +39,9 @@ namespace Online {
           pod: '=',
         },
         link: function ($scope: ng.IScope | any) {
-          openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url);
+          if (openShiftConsole.enabled) {
+            openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url);
+          }
           $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType });
           $scope.open = (url) => {
             $window.open(url);
@@ -46,7 +49,7 @@ namespace Online {
           };
         },
       };
-    }
+    };
   }
 
   function expansionDirective() {
@@ -80,12 +83,12 @@ namespace Online {
           title: pod.metadata.name,
           returnTo: new URI().toString(),
         });
-    }
+    };
   }
 
   function podDetailsUrlFilter() {
     return (pod, openShiftConsoleUrl: string) => UrlHelpers.join(openShiftConsoleUrl, 'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name);
   }
 
-  hawtioPluginLoader.addModule(discoverModule.name);
+  hawtioPluginLoader.addModule(discoverModule);
 }

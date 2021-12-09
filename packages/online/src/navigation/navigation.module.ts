@@ -2,10 +2,11 @@
 
 namespace Online {
 
-  const module = angular
+  export const navigationModule = angular
     .module('hawtio-online-navigation', [
-      'hawtio-online-openshift',
+      openshiftModule
     ])
-    .run(addHeaderTools);
+    .run(addHeaderTools)
+    .name;
 
 }
