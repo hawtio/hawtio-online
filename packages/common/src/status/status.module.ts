@@ -1,11 +1,12 @@
 namespace Online {
 
-  const module = angular
+  export const statusModule = angular
     .module('hawtio-online-status', [])
     .directive('statusIcon', statusIconDirective)
     .filter('podStatus', podStatusFilter)
     .filter('humanizeReason', humanizeReasonFilter)
-    .filter('humanizePodStatus', humanizeReasonFilter => humanizeReasonFilter);
+    .filter('humanizePodStatus', humanizeReasonFilter => humanizeReasonFilter)
+    .name;
 
   export interface PodStatusFilter {
     (pod: object): string;
@@ -13,17 +14,17 @@ namespace Online {
 
   function statusIconDirective() {
     return {
-      restrict    : 'E',
-      templateUrl : 'src/status/statusIcon.html',
-      scope       : {
-        status           : '=',
-        disableAnimation : "@",
-        class            : '=',
+      restrict: 'E',
+      templateUrl: 'src/status/statusIcon.html',
+      scope: {
+        status: '=',
+        disableAnimation: "@",
+        class: '=',
       },
       link: function ($scope: any, $elem, $attrs) {
         $scope.spinning = !angular.isDefined($attrs.disableAnimation);
       }
-    }
+    };
   }
 
   function humanizeReasonFilter() {
@@ -82,8 +83,8 @@ namespace Online {
 
         _.each(pod.status.containerStatuses, function (containerStatus) {
           var containerReason = _.get(containerStatus, 'state.waiting.reason') || _.get(containerStatus, 'state.terminated.reason'),
-              signal,
-              exitCode;
+            signal,
+            exitCode;
 
           if (containerReason) {
             reason = containerReason;

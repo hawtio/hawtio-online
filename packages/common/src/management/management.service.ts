@@ -17,7 +17,7 @@ namespace Online {
 
   export class ManagementService extends EventEmitter {
 
-    private pods: { [key: string]: ManagedPod } = {};
+    private pods: { [key: string]: ManagedPod; } = {};
 
     constructor(
       openShiftService: OpenShiftService,

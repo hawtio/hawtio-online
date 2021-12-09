@@ -20,7 +20,7 @@ namespace Online {
     private projects: any[] = [];
     private pods: any[] = [];
     private projects_client: Client;
-    private pods_clients: { [key: string]: Client } = {};
+    private pods_clients: { [key: string]: Client; } = {};
 
     constructor(
       private $window: ng.IWindowService,
@@ -35,8 +35,8 @@ namespace Online {
       if (this.is(HawtioMode.Cluster)) {
         const projects_client = this.K8SClientFactory.create(
           {
-           kind: KubernetesAPI.WatchTypes.PROJECTS,
-           labelSelector: _.get(configManager.config, "online.projectSelector", null),
+            kind: KubernetesAPI.WatchTypes.PROJECTS,
+            labelSelector: _.get(configManager.config, "online.projectSelector", null),
           }
         );
         this._loading++;
@@ -106,6 +106,9 @@ namespace Online {
     }
 
     getClusterVersion(): ng.IPromise<string | undefined> {
+      if (!this.$window.OPENSHIFT_CONFIG || !this.$window.OPENSHIFT_CONFIG.openshift) {
+        return this.$q.resolve(undefined);
+      }
       const cluster_version = this.$window.OPENSHIFT_CONFIG.openshift.cluster_version;
       // We may want to get the ClusterVersion resource using the Config API available in OpenShift 4
       return this.$q.resolve(cluster_version);
@@ -121,7 +124,7 @@ namespace Online {
       }
       _.values(this.pods_clients).forEach(({ collection, watch }) => {
         this.K8SClientFactory.destroy(collection, watch);
-      })
+      });
     }
   }
 }

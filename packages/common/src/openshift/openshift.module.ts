@@ -3,11 +3,12 @@
 
 namespace Online {
 
-  angular
+  export const openshiftModule = angular
     .module('hawtio-online-openshift', [])
     .service('openShiftConsole', ConsoleService)
     .service('openShiftService', OpenShiftService)
-    .directive('openshiftLink', openshiftLinkDirective);
+    .directive('openshiftLink', openshiftLinkDirective)
+    .name;
 
   const OS4 = {
     'dc': 'deploymentconfigs',

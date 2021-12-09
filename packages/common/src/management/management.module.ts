@@ -1,13 +1,15 @@
 /// <reference path="management.service.ts"/>
+/// <reference path="../openshift/openshift.module.ts"/>
 
 namespace Online {
 
-  const module = angular
+  export const managementModule = angular
     .module('hawtio-online-management', [
-      'hawtio-online-openshift',
+      openshiftModule,
     ])
     .service('managementService', ManagementService)
-    .filter('management', managementFilter);
+    .filter('management', managementFilter)
+    .name;
 
   function managementFilter() {
     return (pod, attribute) => Core.pathGet(pod, 'management.' + attribute);

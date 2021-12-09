@@ -88,10 +88,10 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@^4.13.1", "@hawtio/oauth@~4.13.1":
-  version "4.13.1"
-  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.13.1.tgz#6556cc7cbbf5113e5d858739b6de0069e30d35ce"
-  integrity sha512-l5iosN3kylSOkxslHd28qZe49Z0OltuFo4zmKYfRjVJVUTm5GcMynEXDDGBB4wHPsgJhHiqwmV6tQI0ie0DocQ==
+"@hawtio/oauth@^4.13.1", "@hawtio/oauth@~4.13.3":
+  version "4.13.3"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.13.3.tgz#fcd2f7a94222c289794cda9df3d8cbd88c97767b"
+  integrity sha512-nWFdve0JvuUCnuylDOhY2tEr1syBtW5P2hSSwRFjrealo9K+yaphngj6BAhoY0ZrwlY6ZlG900w6N4IlIciw6g==
   dependencies:
     "@hawtio/core" "^4.15.0"
     "@types/angular-cookies" "^1.4.5"
@@ -5713,7 +5713,7 @@ typescript@^3.0.3, typescript@^3.3.0:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.3.tgz#d3ac8883a97c26139e42df5e93eeece33d610b8a"
   integrity sha512-D/wqnB2xzNFIcoBG9FG8cXRDjiqSTbG2wd8DMZeQyJlP1vfTkIxH4GKveWaEBYySKIg+USu+E+EDIR47SqnaMQ==
 
-uglify-js@^2.8.22, uglify-js@^3.0.5:
+uglify-js@3.14.4, uglify-js@^2.8.22, uglify-js@^3.0.5:
   version "3.14.4"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.14.4.tgz#68756f17d1b90b9d289341736cb9a567d6882f90"
   integrity sha512-AbiSR44J0GoCeV81+oxcy/jDOElO2Bx3d0MfQCUShq7JRXaM4KtQopZsq2vFv8bCq2yMaGrw1FgygUd03RyRDA==

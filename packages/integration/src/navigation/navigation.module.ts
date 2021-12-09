@@ -4,15 +4,16 @@
 
 namespace Online {
 
-  const module = angular
+  export const integrationNavigationModule = angular
     .module('hawtio-online-integration-navigation', [
-      'hawtio-online-status',
-      'hawtio-online-openshift',
+      statusModule,
+      openshiftModule
     ])
     .config(configureRoutes)
     .run(addContextSelector)
     .run(addHeaderTools)
     .service('navigationService', NavigationService)
-    .component('navigation', navigationComponent);
+    .component('navigation', navigationComponent)
+    .name;
 
 }
