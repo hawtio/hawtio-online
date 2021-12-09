@@ -1,18 +1,20 @@
+/// <reference path="navigation/navigation.module.ts"/>
 /// <reference path="discover/discover.module.ts"/>
 
 namespace Online {
 
-  const module = angular
+  export const onlineModule = angular
     .module('hawtio-online', [
-      'hawtio-online-navigation',
-      'hawtio-online-management',
-      'hawtio-about',
+      navigationModule,
+      managementModule,
+      About.aboutModule,
     ])
     .config(addRoutes)
     .run(addOnlineTab)
     .run(addLogoutToUserDropdown)
     .run(addProductInfo)
-    .run(destroyBeforeUnload);
+    .run(destroyBeforeUnload)
+    .name;
 
   function addRoutes($routeProvider: angular.route.IRouteProvider) {
     'ngInject';
@@ -34,12 +36,12 @@ namespace Online {
   function addLogoutToUserDropdown(
     HawtioExtension: Core.HawtioExtension,
     $compile: ng.ICompileService,
-    userDetails: Core.AuthService): void {
+    authService: Core.AuthService): void {
     'ngInject';
 
     HawtioExtension.add('hawtio-logout', ($scope) => {
-      $scope.userDetails = userDetails;
-      const template = '<li><a class="pf-c-dropdown__menu-item" href="#" ng-focus="userDetails.logout()">Logout ({{userDetails.username}})</a></li>';
+      $scope.authService = authService;
+      const template = '<li><a class="pf-c-dropdown__menu-item" href="#" ng-focus="authService.logout()">Logout ({{authService.username}})</a></li>';
       return $compile(template)($scope);
     });
   }
@@ -54,7 +56,7 @@ namespace Online {
     $window.onbeforeunload = () => $rootScope.$destroy();
   }
 
-  hawtioPluginLoader.addModule(module.name);
+  hawtioPluginLoader.addModule(onlineModule);
 
-  export const log = Logger.get(module.name);
+  export const log = Logger.get(onlineModule);
 }

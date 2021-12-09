@@ -3,7 +3,8 @@ namespace Online {
   export const labelsModule = angular
     .module('hawtio-online-labels', [])
     .directive('labels', labelsDirective)
-    .filter('hashSize', hashSizeFilter);
+    .filter('hashSize', hashSizeFilter)
+    .name;
 
   function labelsDirective($location: ng.ILocationService, $timeout: ng.ITimeoutService) {
     'ngInject';
@@ -11,6 +12,6 @@ namespace Online {
   }
 
   function hashSizeFilter() {
-    return hash => !hash ? 0 : Object.keys(hash).length;
+    return (hash: any) => !hash ? 0 : Object.keys(hash).length;
   }
 }

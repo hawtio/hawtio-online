@@ -1,12 +1,15 @@
+/// <reference path="navigation/navigation.module.ts"/>
+
 namespace Online {
 
-  const module = angular
+  const integrationModule = angular
     .module('hawtio-online-integration', [
-      'hawtio-online-integration-navigation',
+      integrationNavigationModule
     ])
     .decorator('mainNavService', disableConnectPlugin)
     .run(addLogoutToUserDropdown)
-    .run(destroyBeforeUnload);
+    .run(destroyBeforeUnload)
+    .name;
 
   function disableConnectPlugin($delegate: Nav.MainNavService) {
     'ngInject';
@@ -16,7 +19,7 @@ namespace Online {
         item.isValid = () => false;
       }
       addItem.call($delegate, item);
-    }
+    };
     return $delegate;
   }
 
@@ -38,7 +41,7 @@ namespace Online {
     $window.onbeforeunload = () => $rootScope.$destroy();
   }
 
-  hawtioPluginLoader.addModule(module.name);
+  hawtioPluginLoader.addModule(integrationModule);
 
-  export const log = Logger.get(module.name);
+  export const log = Logger.get(integrationModule);
 }
