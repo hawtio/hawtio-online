@@ -41,7 +41,7 @@ EOF
 
 form_config_cluster() {
   cat << EOF
-window.HAWTIO_OAUTH_CONFIG = {
+window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
   master_uri: new URI().query('').path('/master').toString(),
   hawtio: {
     mode: '${HAWTIO_ONLINE_MODE}'
@@ -55,7 +55,7 @@ EOF
 
 form_config_namespace() {
   cat << EOF
-window.HAWTIO_OAUTH_CONFIG = {
+window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
   master_uri: new URI().query('').path('/master').toString(),
   hawtio: {
     mode: '${HAWTIO_ONLINE_MODE}',

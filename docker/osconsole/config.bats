@@ -81,7 +81,7 @@ assert_openshift_config() {
 }
 
 assert_form_config() {
-  assert_line "window.HAWTIO_OAUTH_CONFIG = {"
+  assert_line "window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {"
   assert_output --partial "master_uri: new URI().query('').path('/master').toString(),"
   assert_output --partial "hawtio: {"
   assert_output --partial "form: {"
