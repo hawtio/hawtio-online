@@ -86,7 +86,7 @@ Prior to the deployment, run the following script to generate and set up a clien
 $ ./scripts/generate-certificate.sh
 ```
 
-Or if you have Yarn intalled, this will also do the same thing:
+Or if you have Yarn installed, this will also do the same thing:
 
 ```sh
 $ yarn generate-certificate
