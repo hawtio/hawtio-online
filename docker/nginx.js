@@ -3,8 +3,10 @@
 // https://github.com/xeioex/njs-examples
 
 import RBAC from 'rbac.js';
+import jwt_decode from 'jwt-decode.js';
 
 var isRbacEnabled = typeof process.env['HAWTIO_ONLINE_RBAC_ACL'] !== 'undefined';
+var useForm = process.env['HAWTIO_ONLINE_AUTH'] === 'form';
 
 export default { proxyJolokiaAgent };
 
@@ -24,6 +26,8 @@ function proxyJolokiaAgent(req) {
   var path = parts[5];
 
   function response(res) {
+    req.log(`response: status=${res.status}`);
+
     for (var header in res.headersOut) {
       req.headersOut[header] = res.headersOut[header];
     }
@@ -40,23 +44,65 @@ function proxyJolokiaAgent(req) {
     });
   }
 
+  function getSubjectFromJwt() {
+    var authz = req.headersIn['Authorization'];
+    if (!authz) {
+      req.error('Authorization header not found in request');
+      return '';
+    }
+    var token = authz.split(' ')[1];
+    var payload = jwt_decode(token);
+    return payload.sub;
+  }
+
   function selfLocalSubjectAccessReview(verb) {
-    // Work-around same-location sub-requests caching issue
-    return req.subrequest(`/authorization${verb === 'get' ? '2' : ''}/namespaces/${namespace}/localsubjectaccessreviews`, {
-      method: 'POST',
-      body: JSON.stringify({
+    var api;
+    var body;
+    // When form is used, don't rely on OpenShift-specific LocalSubjectAccessReview
+    if (useForm) {
+      api = "authorization.k8s.io";
+      body = {
+        kind: 'LocalSubjectAccessReview',
+        apiVersion: 'authorization.k8s.io/v1',
+        metadata: {
+          namespace: namespace,
+        },
+        spec: {
+          user: getSubjectFromJwt(),
+          resourceAttributes: {
+            verb: verb,
+            resource: 'pods',
+            name: pod,
+            namespace: namespace,
+          }
+        }
+      };
+    } else {
+      api = "authorization.openshift.io";
+      body = {
         kind: 'LocalSubjectAccessReview',
         apiVersion: 'authorization.openshift.io/v1',
         namespace: namespace,
         verb: verb,
         resource: 'pods',
         name: pod,
-      }),
+      };
+    }
+    var json = JSON.stringify(body);
+    req.log(`selfLocalSubjectAccessReview(${verb}): ${api} - ${json}`);
+
+    // Work-around same-location sub-requests caching issue
+    var suffix = verb === 'get' ? '2' : '';
+    return req.subrequest(`/authorization${suffix}/${api}/namespaces/${namespace}/localsubjectaccessreviews`, {
+      method: 'POST',
+      body: json,
     });
   }
 
   function getPodIP() {
     return req.subrequest(`/podIP/${namespace}/${pod}`, { method: 'GET' }).then(res => {
+      req.log(`getPodIP(${namespace}/${pod}): status=${res.status}`);
+
       if (res.status !== 200) {
         return Promise.reject(res);
       }
@@ -83,14 +129,18 @@ function proxyJolokiaAgent(req) {
     // hosting the Jolokia endpoint is authorized
     return selfLocalSubjectAccessReview('update')
       .then(res => {
+        req.log(`proxyJolokiaAgentWithoutRbac(update): status=${res.status}`);
+
         if (res.status !== 201) {
           return Promise.reject(res);
         }
         var sar = JSON.parse(res.responseBody);
-        if (!sar.allowed) {
+        var allowed = useForm ? sar.status.allowed : sar.allowed;
+        if (!allowed) {
           return reject(403, JSON.stringify(sar));
         }
         return getPodIP().then(podIP => {
+          req.log(`proxyJolokiaAgentWithoutRbac(podIP): podIP=${podIP}`);
           return callJolokiaAgent(podIP, req.requestBody);
         });
       });
@@ -98,34 +148,40 @@ function proxyJolokiaAgent(req) {
 
   function proxyJolokiaAgentWithRbac() {
     return selfLocalSubjectAccessReview('update')
-      .then(function (res) {
+      .then(res => {
+        req.log(`proxyJolokiaAgentWithRbac(update): status=${res.status}`);
+
         if (res.status !== 201) {
           return Promise.reject(res);
         }
         var sar = JSON.parse(res.responseBody);
-        if (sar.allowed) {
+        var allowed = useForm ? sar.status.allowed : sar.allowed;
+        if (allowed) {
           // map the `update` verb to the `admin` role
           return 'admin';
         }
         return selfLocalSubjectAccessReview('get')
-          .then(function (res) {
+          .then(res => {
+            req.log(`proxyJolokiaAgentWithRbac(get): status=${res.status}`);
+
             if (res.status !== 201) {
               return Promise.reject(res);
             }
             sar = JSON.parse(res.responseBody);
-            if (sar.allowed) {
+            allowed = useForm ? sar.status.allowed : sar.allowed;
+            if (allowed) {
               // map the `get` verb to the `viewer` role
               return 'viewer';
             }
             return reject(403, JSON.stringify(sar));
-          })
+          });
       })
-      .then(function (role) {
+      .then(role => {
         var request = JSON.parse(req.requestBody);
         var requireMBeanDefinition;
         if (Array.isArray(request)) {
           requireMBeanDefinition = request.find(r => RBAC.isCanInvokeRequest(r));
-          return getPodIP().then(function (podIP) {
+          return getPodIP().then(podIP => {
             return (requireMBeanDefinition ? listMBeans(podIP) : Promise.resolve()).then(beans => {
               var rbac = request.map(r => RBAC.check(r, role));
               var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r, role, beans));
@@ -163,7 +219,7 @@ function proxyJolokiaAgent(req) {
                 response.headersOut['Content-Length'] = response.responseBody.length;
                 return response;
               });
-            })
+            });
           });
         } else {
           requireMBeanDefinition = RBAC.isCanInvokeRequest(request);
@@ -178,7 +234,7 @@ function proxyJolokiaAgent(req) {
                 return Promise.resolve({ status: rbac.response.status, responseBody: JSON.stringify(rbac.response) });
               }
               return callJolokiaAgent(podIP, req.requestBody);
-            })
+            });
           });
         }
       });
