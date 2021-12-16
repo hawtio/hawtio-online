@@ -88,10 +88,10 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@^4.13.3", "@hawtio/oauth@~4.13.3":
-  version "4.13.3"
-  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.13.3.tgz#fcd2f7a94222c289794cda9df3d8cbd88c97767b"
-  integrity sha512-nWFdve0JvuUCnuylDOhY2tEr1syBtW5P2hSSwRFjrealo9K+yaphngj6BAhoY0ZrwlY6ZlG900w6N4IlIciw6g==
+"@hawtio/oauth@^4.13.3", "@hawtio/oauth@~4.13.4":
+  version "4.13.4"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.13.4.tgz#f963825d11fd5a484976aee080770d2e41003237"
+  integrity sha512-DuMqt/cOaEr1GdoBKv5b26Ved2b90rdlRvKq7LR/rN9uSPBOdbgyNFTo5RWLw9JRgCUBJVjmAO15CsFiBIT2IQ==
   dependencies:
     "@hawtio/core" "^4.15.0"
     "@types/angular-cookies" "^1.4.5"
