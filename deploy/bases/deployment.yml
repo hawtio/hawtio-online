@@ -49,6 +49,8 @@ spec:
               value: namespace
             - name: HAWTIO_ONLINE_AUTH
               value: form
+            - name: HAWTIO_ONLINE_RBAC_ACL
+              value: /etc/hawtio/rbac/ACL.yaml
             - name: HAWTIO_ONLINE_NAMESPACE
               valueFrom:
                 fieldRef:
