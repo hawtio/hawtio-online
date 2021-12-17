@@ -44,8 +44,9 @@
     "test": "yarn test:bats",
     "test:bats": "cd docker/osconsole/ && bats config.bats",
     "test:nginx": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js",
-    "deploy:k8s": "kubectl apply --kustomize deploy/",
-    "k8s:kustomize": "cd deploy/ && kustomize edit set image hawtio/online=docker.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
+    "deploy:k8s": "kubectl apply --kustomize deploy/base/",
+    "deploy:openshift": "kubectl apply --kustomize deploy/openshift/",
+    "k8s:kustomize": "cd deploy/base && kustomize edit set image hawtio/online=docker.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
   },
   "devDependencies": {
     "@hawtio/node-backend": "^4.1.0",

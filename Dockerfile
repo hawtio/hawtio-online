@@ -70,7 +70,7 @@ RUN touch config.js && \
     ln -sf /config.js /usr/share/nginx/html/integration/osconsole/config.js
 
 COPY docker/nginx.js docker/rbac.js docker/js-yaml.js docker/jwt-decode.js /etc/nginx/conf.d/
-COPY docker/nginx.conf docker/nginx-gateway.conf.template docker/osconsole/config.sh docker/nginx.sh docker/ACL.yaml /
+COPY docker/nginx.conf docker/nginx-gateway.conf.template docker/nginx-gateway-k8s.conf.template docker/osconsole/config.sh docker/nginx.sh docker/ACL.yaml /
 
 COPY --from=builder /hawtio-online/docker/site /usr/share/nginx/html/
 COPY --from=envsubst /usr/bin/envsubst /usr/local/bin/
