@@ -73,8 +73,6 @@ spec:
               mountPath: /etc/hawtio/rbac
             - name: hawtio-online-tls-serving
               mountPath: /etc/tls/private/serving
-            - name: hawtio-online-tls-proxying
-              mountPath: /etc/tls/private/proxying
       volumes:
         - name: hawtio-online
           configMap:
@@ -88,6 +86,3 @@ spec:
         - name: hawtio-online-tls-serving
           secret:
             secretName: hawtio-online-tls-serving
-        - name: hawtio-online-tls-proxying
-          secret:
-            secretName: hawtio-online-tls-proxying
