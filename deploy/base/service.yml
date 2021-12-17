@@ -4,8 +4,6 @@ metadata:
   name: hawtio-online
   labels:
     app: hawtio
-  annotations:
-    service.beta.openshift.io/serving-cert-secret-name: hawtio-online-tls-serving
 spec:
   type: NodePort
   ports:
