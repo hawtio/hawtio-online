@@ -33,9 +33,10 @@ namespace Online {
       super();
 
       if (this.is(HawtioMode.Cluster)) {
+        const kindToWatch = KubernetesAPI.isOpenShift ? KubernetesAPI.WatchTypes.PROJECTS : KubernetesAPI.WatchTypes.NAMESPACES;
         const projects_client = this.K8SClientFactory.create(
           {
-            kind: KubernetesAPI.WatchTypes.PROJECTS,
+            kind: kindToWatch,
             labelSelector: _.get(configManager.config, "online.projectSelector", null),
           }
         );
