@@ -19,7 +19,7 @@ namespace Online {
   }
 
   function getAnnotation(pod: Pod, name: string, defaultValue: string): string {
-    if (pod.metadata.annotations) {
+    if (pod.metadata.annotations && pod.metadata.annotations[name]) {
       return pod.metadata.annotations[name];
     }
     return defaultValue;
