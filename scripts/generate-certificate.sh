@@ -47,10 +47,10 @@ CN=${2:-hawtio-online.hawtio.svc}
 cd "$TEMP_DIR"
 
 # The CA certificate
-kubectl get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.crt']}" | base64 --decode > ca.crt
+oc get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.crt']}" | base64 --decode > ca.crt
 
 # The CA private key
-kubectl get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.key']}" | base64 --decode > ca.key
+oc get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.key']}" | base64 --decode > ca.key
 
 # Generate the private key
 openssl genrsa -out server.key 2048
@@ -79,4 +79,4 @@ openssl req -new -key server.key -out server.csr -config csr.conf
 openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 10000 -extensions v3_ext -extfile csr.conf
 
 # Create the secret for Hawtio Online
-kubectl create secret tls $SECRET_NAME --cert server.crt --key server.key
+oc create secret tls $SECRET_NAME --cert server.crt --key server.key
