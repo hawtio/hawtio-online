@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
-set -e
+set -e -o pipefail
 
 trap exithandler EXIT
 
-TEMP_DIR=$(mktemp --tmpdir -d generate-certificate.XXXXXX)
+TEMP_DIR=$(mktemp --tmpdir -d generate-proxying.XXXXXX)
 
 exithandler() {
   exitcode=$?
@@ -19,8 +19,8 @@ exithandler() {
 
 usage() {
   cat <<EOT
-This script generates a client certificate and create a secret with it
-on OpenShift 4.
+This script generates a client certificate and then creates a TLS secret with it
+for Hawtio proxing on OpenShift 4.
 
 Usage:
   $(basename $0) [-h] [SECRET_NAME] [CN]
@@ -46,11 +46,11 @@ CN=${2:-hawtio-online.hawtio.svc}
 
 cd "$TEMP_DIR"
 
-# The CA certificate
-oc get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.crt']}" | base64 --decode > ca.crt
-
 # The CA private key
 oc get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.key']}" | base64 --decode > ca.key
+
+# The CA certificate
+oc get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.crt']}" | base64 --decode > ca.crt
 
 # Generate the private key
 openssl genrsa -out server.key 2048
