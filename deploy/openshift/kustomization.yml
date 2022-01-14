@@ -4,6 +4,11 @@ kind: Kustomization
 bases:
 - ../base
 
+resources:
+- route.yml
+
 patchesStrategicMerge:
 - deployment.yml
 - service.yml
+- serviceaccount.yml
+- delete-ingress.yml
