@@ -7,6 +7,15 @@ spec:
     spec:
       containers:
         - name: hawtio-online
+          env:
+            - name: HAWTIO_ONLINE_AUTH
+              value: oauth
+            - name: HAWTIO_ONLINE_GATEWAY
+              value: 'true'
+            - name: OPENSHIFT_WEB_CONSOLE_URL
+              value: ${OPENSHIFT_WEB_CONSOLE_URL}
+            - name: OPENSHIFT_CLUSTER_VERSION
+              value: '4'
           volumeMounts:
             - name: hawtio-online-tls-serving
               mountPath: /etc/tls/private/serving
