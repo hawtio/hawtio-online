@@ -7,4 +7,5 @@ resources:
 - configmap-hawtio-rbac.yml
 - deployment.yml
 - service.yml
+- ingress.yml
 - serviceaccount.yml
