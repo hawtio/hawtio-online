@@ -45,16 +45,8 @@ spec:
             periodSeconds: 5
             timeoutSeconds: 1
           env:
-            - name: HAWTIO_ONLINE_MODE
-              value: namespace
-            - name: HAWTIO_ONLINE_AUTH
-              value: form
             - name: HAWTIO_ONLINE_RBAC_ACL
               value: /etc/hawtio/rbac/ACL.yaml
-            - name: HAWTIO_ONLINE_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
           resources:
             requests:
               cpu: "0.2"

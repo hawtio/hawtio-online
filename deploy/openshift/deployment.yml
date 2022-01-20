@@ -10,6 +10,8 @@ spec:
           env:
             - name: HAWTIO_ONLINE_AUTH
               value: oauth
+            - name: HAWTIO_ONLINE_MODE
+              value: namespace
             - name: HAWTIO_ONLINE_GATEWAY
               value: 'true'
             - name: OPENSHIFT_WEB_CONSOLE_URL
@@ -17,14 +19,9 @@ spec:
             - name: OPENSHIFT_CLUSTER_VERSION
               value: '4'
           volumeMounts:
-            - name: hawtio-online-tls-serving
-              mountPath: /etc/tls/private/serving
             - name: hawtio-online-tls-proxying
               mountPath: /etc/tls/private/proxying
       volumes:
-        - name: hawtio-online-tls-serving
-          secret:
-            secretName: hawtio-online-tls-serving
         - name: hawtio-online-tls-proxying
           secret:
             secretName: hawtio-online-tls-proxying
