@@ -45,7 +45,8 @@
     "test:nginx": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js",
     "deploy:k8s:namespace": "kubectl apply --kustomize deploy/k8s/namespace/",
     "deploy:k8s:cluster": "kubectl apply --kustomize deploy/k8s/cluster/",
-    "deploy:openshift": "kubectl apply --kustomize deploy/openshift/",
+    "deploy:openshift:namespace": "oc apply --kustomize deploy/openshift/namespace/",
+    "deploy:openshift:cluster": "oc apply --kustomize deploy/openshift/cluster/ && ./deploy/openshift/cluster/oauthclient.sh $ROUTE_HOSTNAME",
     "k8s:kustomize": "cd deploy/base && kustomize edit set image hawtio/online=docker.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
   },
   "devDependencies": {
