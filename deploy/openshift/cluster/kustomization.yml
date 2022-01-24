@@ -8,5 +8,5 @@ resources:
 - route.yml
 
 patchesStrategicMerge:
-- deployment.yml
-- service.yml
+- patch-deployment.yml
+- patch-service.yml

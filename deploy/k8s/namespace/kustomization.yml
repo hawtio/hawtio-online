@@ -9,4 +9,4 @@ resources:
 - serviceaccount.yml
 
 patchesStrategicMerge:
-- deployment.yml
+- patch-deployment.yml
