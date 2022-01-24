@@ -11,11 +11,11 @@ spec:
             - name: HAWTIO_ONLINE_AUTH
               value: oauth
             - name: HAWTIO_ONLINE_MODE
-              value: namespace
+              value: cluster
             - name: HAWTIO_ONLINE_GATEWAY
               value: 'true'
             - name: OPENSHIFT_WEB_CONSOLE_URL
-              value: ${OPENSHIFT_WEB_CONSOLE_URL}
+              value: ''
             - name: OPENSHIFT_CLUSTER_VERSION
               value: '4'
           volumeMounts:
