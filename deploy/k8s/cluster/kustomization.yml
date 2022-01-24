@@ -8,4 +8,4 @@ resources:
 - ingress.yml
 
 patchesStrategicMerge:
-- deployment.yml
+- patch-deployment.yml
