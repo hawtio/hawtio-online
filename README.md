@@ -168,6 +168,21 @@ otherwise:
 $ kubectl apply -k deploy/k8s/namespace/
 ```
 
+## Authentication
+
+Hawtio Online currently supports two authentication modes: `oauth` and `form`, which is configured through `HAWTIO_ONLINE_AUTH` environment variable on Deployment.
+
+| Mode | Description |
+| ---- | ----------- |
+| oauth | Authenticates requests through [OpenShift OAuth server](https://docs.openshift.com/container-platform/4.9/authentication/understanding-authentication.html). It is available only on OpenShift. |
+| form | Authenticates requests with [bearer tokens](https://kubernetes.io/docs/reference/access-authn-authz/authentication/) throught the Hawtio login form. |
+
+### Creating user for Form authentication
+
+With the Form authentication mode, any user with a bearer token can be authenticated. See [Authenticating](https://kubernetes.io/docs/reference/access-authn-authz/authentication/) for different ways to provide users with bearer tokens.
+
+Here we illustrate how to create a `ServiceAccount` as a user to log in to the Hawtio console as an example. See [Creating a Hawtio user for Form authentication](docs/create-user.md) for more details.
+
 ## RBAC
 
 See [RBAC](docs/rbac.md).
