@@ -1,5 +1,7 @@
 */
 
+!/deploy/
+!/deploy/**/*
 !/docker/
 !/docker/branding
 !/docs/

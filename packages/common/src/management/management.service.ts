@@ -17,7 +17,7 @@ namespace Online {
 
   export class ManagementService extends EventEmitter {
 
-    private pods: { [key: string]: ManagedPod } = {};
+    private pods: { [key: string]: ManagedPod; } = {};
 
     constructor(
       openShiftService: OpenShiftService,
@@ -30,7 +30,7 @@ namespace Online {
 
       openShiftService.on('changed', _ => {
         const pods = openShiftService.getPods();
-        openShiftService.getPods().forEach(pod => {
+        pods.forEach(pod => {
           const mPod = this.pods[pod.metadata.uid];
           if (!mPod) {
             this.pods[pod.metadata.uid] = new ManagedPod(pod, openShiftService);

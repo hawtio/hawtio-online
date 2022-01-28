@@ -13,12 +13,32 @@ export NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE=${NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE
 export NGINX_CLIENT_BODY_BUFFER_SIZE=${NGINX_CLIENT_BODY_BUFFER_SIZE:-256k}
 export NGINX_PROXY_BUFFERS=${NGINX_PROXY_BUFFERS:-16 128k}
 
+OPENSHIFT=true
+
+check_openshift_api() {
+  APISERVER=https://kubernetes.default.svc
+  SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount
+  TOKEN=$(cat ${SERVICEACCOUNT}/token)
+  CACERT=${SERVICEACCOUNT}/ca.crt
+  STATUS_CODE=$(curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET ${APISERVER}/apis/apps.openshift.io/v1 --write-out '%{http_code}' --silent --output /dev/null)
+  if [ "${STATUS_CODE}" != "200" ]; then
+    OPENSHIFT=false
+  fi
+  echo OpenShift API: ${OPENSHIFT} - ${STATUS_CODE} ${APISERVER}/apis/apps.openshift.io/v1
+}
+
+check_openshift_api
+
 generate_nginx_gateway_conf() {
+  TEMPLATE=/nginx-gateway.conf.template
+  if [ "${OPENSHIFT}" = "false" ]; then
+    TEMPLATE=/nginx-gateway-k8s.conf.template
+  fi
   envsubst '
     $NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE
     $NGINX_CLIENT_BODY_BUFFER_SIZE
     $NGINX_PROXY_BUFFERS
-    ' < /nginx-gateway.conf.template > /etc/nginx/conf.d/nginx.conf
+    ' < $TEMPLATE > /etc/nginx/conf.d/nginx.conf
 }
 
 if [ -v HAWTIO_ONLINE_RBAC_ACL ]; then

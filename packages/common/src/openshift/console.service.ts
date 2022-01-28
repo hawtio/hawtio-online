@@ -5,6 +5,7 @@ namespace Online {
   export class ConsoleService {
 
     private _url: ng.IPromise<string | undefined>;
+    private _enabled: boolean = true;
 
     constructor(
       $http: ng.IHttpService,
@@ -12,6 +13,12 @@ namespace Online {
       $q: ng.IQService,
     ) {
       'ngInject';
+
+      if (!$window.OPENSHIFT_CONFIG.openshift) {
+        this._enabled = false;
+        return;
+      }
+
       const url = $window.OPENSHIFT_CONFIG.openshift.web_console_url;
       if (url) {
         this._url = $q.resolve(url);
@@ -32,6 +39,10 @@ namespace Online {
 
     get url(): ng.IPromise<string | undefined> {
       return this._url;
+    }
+
+    get enabled(): boolean {
+      return this._enabled;
     }
   }
 }

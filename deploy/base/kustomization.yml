@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- configmap-hawtio-online.yml
+- configmap-hawtio-integration.yml
+- configmap-hawtio-rbac.yml
+- deployment.yml
+- service.yml

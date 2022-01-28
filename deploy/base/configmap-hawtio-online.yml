@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hawtio-online
+data:
+  hawtconfig.json: |
+    {
+      "about": {
+        "title": "Hawtio Online Console",
+        "productInfo": [],
+        "additionalInfo": "The Hawtio Online Console eases the discovery and management of 'hawtio-enabled' applications deployed on Kubernetes/OpenShift.",
+        "copyright": ""
+      },
+      "branding": {
+        "appName": "Hawtio Online Console",
+        "appLogoUrl": "img/hawtio-logo.svg"
+      },
+      "disabledRoutes": []
+    }

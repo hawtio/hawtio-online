@@ -38,11 +38,22 @@
     "start-namespace": "gulp --master=`oc whoami --show-server` --mode=namespace --namespace=`oc project -q`",
     "build": "gulp build",
     "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml -o=docker/licenses",
-    "generate-certificate": "./scripts/generate-certificate.sh",
-    "nginx-test": "cd docker/ && njs test.js"
+    "gen:proxying": "./scripts/generate-proxying.sh",
+    "gen:serving": "./scripts/generate-serving.sh",
+    "test": "yarn test:bats",
+    "test:bats": "cd docker/osconsole/ && bats config.bats",
+    "test:nginx": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js",
+    "deploy:k8s:namespace": "kubectl apply --kustomize deploy/k8s/namespace/",
+    "deploy:k8s:cluster": "kubectl apply --kustomize deploy/k8s/cluster/",
+    "deploy:openshift:namespace": "oc apply --kustomize deploy/openshift/namespace/",
+    "deploy:openshift:cluster": "oc apply --kustomize deploy/openshift/cluster/ && ./deploy/openshift/cluster/oauthclient.sh $ROUTE_HOSTNAME",
+    "kustomize:image": "cd deploy/base && kustomize edit set image hawtio/online=docker.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
   },
   "devDependencies": {
     "@hawtio/node-backend": "^4.1.0",
+    "bats": "^1.5.0",
+    "bats-assert": "bats-core/bats-assert#v2.0.0",
+    "bats-support": "bats-core/bats-support#v0.3.0",
     "del": "^2.0.0",
     "gulp": "^4.0.0",
     "gulp-connect": "^2.0.0",
@@ -52,6 +63,7 @@
     "js-logger": "^0.9.14",
     "license-reporter": "^1.2.1",
     "mime-types": "^2.1.18",
+    "stringify-object": "~2.4.0",
     "urijs": "^1.19.0",
     "yargs": "^9.0.0"
   },
@@ -274,11 +286,10 @@
     "p-locate": "3.0.0",
     "p-limit": "2.3.0",
     "p-try": "2.2.0",
-    "@hawtio/oauth": "4.12.5",
     "vinyl": "2.1.0",
     "process-nextick-args": "2.0.1",
     "readable-stream": "2.3.7",
     "@types/jquery": "2.0.53",
-    "@hawtio/core": "4.14.2"
+    "uglify-js": "3.14.4"
   }
 }

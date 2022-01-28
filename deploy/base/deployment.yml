@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hawtio-online
+  labels:
+    app: hawtio
+    deployment: hawtio-online
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hawtio
+      deployment: hawtio-online
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: hawtio
+        deployment: hawtio-online
+    spec:
+      containers:
+        - image: hawtio/online
+          imagePullPolicy: Always
+          name: hawtio-online
+          ports:
+            - name: nginx
+              containerPort: 8443
+          livenessProbe:
+            httpGet:
+              path: /online
+              port: nginx
+              scheme: HTTPS
+            periodSeconds: 10
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /online
+              port: nginx
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
+          env:
+            - name: HAWTIO_ONLINE_RBAC_ACL
+              value: /etc/hawtio/rbac/ACL.yaml
+          resources:
+            requests:
+              cpu: "0.2"
+              memory: 32Mi
+            limits:
+              cpu: "1.0"
+              memory: 100Mi
+          volumeMounts:
+            - name: hawtio-online
+              mountPath: /usr/share/nginx/html/online/hawtconfig.json
+              subPath: hawtconfig.json
+            - name: hawtio-integration
+              mountPath: /usr/share/nginx/html/integration/hawtconfig.json
+              subPath: hawtconfig.json
+            - name: hawtio-rbac
+              mountPath: /etc/hawtio/rbac
+            - name: hawtio-online-tls-serving
+              mountPath: /etc/tls/private/serving
+      volumes:
+        - name: hawtio-online
+          configMap:
+            name: hawtio-online
+        - name: hawtio-integration
+          configMap:
+            name: hawtio-integration
+        - name: hawtio-rbac
+          configMap:
+            name: hawtio-rbac
+        - name: hawtio-online-tls-serving
+          secret:
+            secretName: hawtio-online-tls-serving

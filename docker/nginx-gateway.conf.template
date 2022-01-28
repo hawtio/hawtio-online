@@ -28,6 +28,9 @@ server {
     client_body_buffer_size       ${NGINX_CLIENT_BODY_BUFFER_SIZE};
     proxy_buffers                 ${NGINX_PROXY_BUFFERS};
 
+    # For debugging location rewrite
+    #rewrite_log on;
+
     if ($new) {
         rewrite ^ $new redirect;
     }
@@ -62,11 +65,11 @@ server {
         js_content gateway.proxyJolokiaAgent;
     }
 
-    # Self-LocalSubjectSccessReview requests cache
+    # Self-LocalSubjectAccessReview requests cache
     location /authorization {
         internal;
         proxy_pass                    https://kubernetes.default/;
-        rewrite                       /authorization/(.*) /apis/authorization.openshift.io/v1/$1 break;
+        rewrite                       /authorization/([^/]+)/(.*) /apis/$1/v1/$2 break;
         proxy_set_header              Content-Type application/json;
         proxy_pass_request_headers    on;
         proxy_pass_request_body       on;
@@ -85,7 +88,7 @@ server {
     location /authorization2 {
         internal;
         proxy_pass                    https://kubernetes.default/;
-        rewrite                       /authorization2/(.*) /apis/authorization.openshift.io/v1/$1 break;
+        rewrite                       /authorization2/([^/]+)/(.*) /apis/$1/v1/$2 break;
         proxy_set_header              Content-Type application/json;
         proxy_pass_request_headers    on;
         proxy_pass_request_body       on;

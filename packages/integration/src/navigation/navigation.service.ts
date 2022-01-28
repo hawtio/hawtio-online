@@ -51,10 +51,13 @@ namespace Online {
 
     getAppLauncherItems(): Nav.AppLauncherItem[] {
       const appLauncherItems = <Nav.AppLauncherItem[]>[
-        { label: 'Home', url: new URI().query('').path('/online/').valueOf() },
-        { label: 'OpenShift' }
+        { label: 'Home', url: new URI().query('').path('/online/').valueOf() }
       ];
-      this.openShiftConsole.url.then(url => appLauncherItems[1].url = url);
+      if (this.openShiftConsole.enabled) {
+        this.openShiftConsole.url.then(url => appLauncherItems.push(
+          { label: 'OpenShift', url: url }
+        ));
+      }
       return appLauncherItems;
     }
   }

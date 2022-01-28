@@ -9,10 +9,10 @@
   dependencies:
     "@types/jquery" "2.0.53"
 
-"@hawtio/core@4.14.2", "@hawtio/core@^4.0.0", "@hawtio/core@^4.14.1", "@hawtio/core@^4.14.2", "@hawtio/core@~4.14.2":
-  version "4.14.2"
-  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.14.2.tgz#3c3185cfdf8694005bdb711366b85fea4dec25a1"
-  integrity sha512-lwTrS5jRmbnW6C9y/sk9BsBzVKb0skWzR7bNjWhPpLPY/u3g04vOA7Tb6CLvwsT3kXQxmzdnZTxsOTPhobEMHw==
+"@hawtio/core@^4.15.0", "@hawtio/core@~4.15.3":
+  version "4.15.3"
+  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.15.3.tgz#5880d5a4a019dfccce2b63f18136266d0820fba1"
+  integrity sha512-YlkqYoIELUZdG8ZNmNFXjlsL/SMrZw688/A6UqIuHV/P+XSJAWlitZsrnJ/zSf9SjE88opK84+IbwUA6OEChUw==
   dependencies:
     "@hawtio/core-dts" "~3.3.0"
     "@patternfly/patternfly" "^2.0.0"
@@ -33,12 +33,12 @@
     typescript "^3.0.3"
     urijs "1.19.0"
 
-"@hawtio/integration@~4.16.3":
-  version "4.16.3"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.16.3.tgz#6e99ffff1eb073fa1c0b3fa8a95ba08b10338ce8"
-  integrity sha512-P80oHx3DlVrNd/85NnuzJxvmf6O3vs9FKJVMIc4ujYSm+h9HzKXQ+HEnC1zuXS12MWkLZLkGCY8uqY3IAk6gzQ==
+"@hawtio/integration@~4.16.5":
+  version "4.16.5"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.16.5.tgz#2e021721d4968af6b5aa75a9a96923781313bbf2"
+  integrity sha512-ahye7BqnW2Cx1ARs2CTIEki2lgOiiDQXEk/aGhTnuhVMB/7j20kV3sF5iWOFWLp9DR6lF8lnRKeDZnt5kmIyIQ==
   dependencies:
-    "@hawtio/core" "^4.14.2"
+    "@hawtio/core" "^4.15.0"
     "@types/angular-cookies" "^1.4.5"
     "@types/angular-mocks" "~1.7.0"
     "@types/angular-ui-bootstrap" "~0.13.46"
@@ -60,13 +60,13 @@
     ng-infinite-scroll "1.3.0"
     patternfly-bootstrap-treeview "~2.1.0"
 
-"@hawtio/kubernetes-api@~4.12.1":
-  version "4.12.1"
-  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-4.12.1.tgz#72096cf8b24fd8d52a3afe86affc9b43c0361ab1"
-  integrity sha512-SF9YJM2NYkqfjAl/CK25LorcrQ4h3KQgxJh3846ABE3HouhHEFg5d75k6+uJi7eiH8sq48kDYWeQkjhoihnN1A==
+"@hawtio/kubernetes-api@~4.13.2":
+  version "4.13.2"
+  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-4.13.2.tgz#086bb0d59d7faa9bc6bb899ac75b481459df49ca"
+  integrity sha512-bbn7H6/xBTZCNdztlEnVZtcp+IKw+cv/8lFbn1y09uJQl3lJxG4CbgYCzvS+4NPeFpjJZNrbb4xiZNlFnMq+/Q==
   dependencies:
-    "@hawtio/core" "^4.0.0"
-    "@hawtio/oauth" "^4.0.0"
+    "@hawtio/core" "^4.15.0"
+    "@hawtio/oauth" "^4.13.3"
     eventemitter3 "~3.1.0"
 
 "@hawtio/node-backend@^4.1.0":
@@ -88,12 +88,12 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@4.12.5", "@hawtio/oauth@^4.0.0", "@hawtio/oauth@~4.12.6":
-  version "4.12.5"
-  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.12.5.tgz#299d222c6d1ba230a2e9740fccd928bf3faba282"
-  integrity sha512-bmVuAyH8Acm0YQ6VMd82VuUypO9hoaF3a66sWVRF9S67ezsoM7GRMZiKH1rhk8ixUWYhMaWewAEqiHtgv9oCEg==
+"@hawtio/oauth@^4.13.3", "@hawtio/oauth@~4.13.4":
+  version "4.13.4"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.13.4.tgz#f963825d11fd5a484976aee080770d2e41003237"
+  integrity sha512-DuMqt/cOaEr1GdoBKv5b26Ved2b90rdlRvKq7LR/rN9uSPBOdbgyNFTo5RWLw9JRgCUBJVjmAO15CsFiBIT2IQ==
   dependencies:
-    "@hawtio/core" "^4.14.1"
+    "@hawtio/core" "^4.15.0"
     "@types/angular-cookies" "^1.4.5"
     angular-cookies "^1.7.9"
     ng-idle "^1.3.2"
@@ -926,6 +926,19 @@ batch@0.5.3:
   resolved "https://registry.yarnpkg.com/batch/-/batch-0.5.3.tgz#3f3414f380321743bfc1042f9a83ff1d5824d464"
   integrity sha1-PzQU84AyF0O/wQQvmoP/HVgk1GQ=
 
+bats-assert@bats-core/bats-assert#v2.0.0:
+  version "2.0.0"
+  resolved "https://codeload.github.com/bats-core/bats-assert/tar.gz/d750c5a1b44bf6fc96726aea76f4621db5fd602f"
+
+bats-support@bats-core/bats-support#v0.3.0:
+  version "0.3.0"
+  resolved "https://codeload.github.com/bats-core/bats-support/tar.gz/24a72e14349690bcbf7c151b9d2d1cdd32d36eb1"
+
+bats@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/bats/-/bats-1.5.0.tgz#683f522e89df7d8fc99bf3631d35501f35445166"
+  integrity sha512-83YgQw24Yi2c1ctB0Vd7WCsACUMSWuEtOboxQZyFQYfiv9hDMW7nk7bdloqGLg3vK5pOODCBGBQjhvRmHKsJuA==
+
 bcrypt-pbkdf@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.2.tgz#a4301d389b6a43f9b67ff3ca11a3f6637e360e9e"
@@ -1635,7 +1648,7 @@ dateformat@2.2.0, dateformat@^1.0.11:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-2.2.0.tgz#4065e2013cf9fb916ddfd82efb506ad4c6769062"
   integrity sha1-QGXiATz5+5Ft39gu+1Bq1MZ2kGI=
 
-debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^3.0.0, debug@^3.1.0, debug@~2.2.0, debug@~2.6.7:
+debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^3.1.0, debug@~2.2.0, debug@~2.6.7:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
   integrity sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
@@ -2200,11 +2213,9 @@ flush-write-stream@^1.0.2:
     readable-stream "^2.3.6"
 
 follow-redirects@^1.0.0:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.11.0.tgz#afa14f08ba12a52963140fe43212658897bc0ecb"
-  integrity sha512-KZm0V+ll8PfBrKwMzdo5D13b1bur9Iq9Zd/RMmAoQQcl2PxxFml8cxXPaaPYVbV0RjNjq1CU7zIzAOqtUPudmA==
-  dependencies:
-    debug "^3.0.0"
+  version "1.14.7"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
+  integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
 
 font-awesome-sass@^4.7.0:
   version "4.7.0"
@@ -2729,18 +2740,20 @@ gulp-typescript@^4.0.0:
     vinyl "^2.1.0"
     vinyl-fs "^3.0.0"
 
-gulp-uglify@^2.0.0:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/gulp-uglify/-/gulp-uglify-2.1.2.tgz#6db85b1d0ee63d18058592b658649d65c2ec4541"
-  integrity sha1-bbhbHQ7mPRgFhZK2WGSdZcLsRUE=
+gulp-uglify@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/gulp-uglify/-/gulp-uglify-3.0.2.tgz#5f5b2e8337f879ca9dec971feb1b82a5a87850b0"
+  integrity sha512-gk1dhB74AkV2kzqPMQBLA3jPoIAPd/nlNzP2XMDSG8XZrqnlCiDGAqC+rZOumzFvB5zOphlFh6yr3lgcAb/OOg==
   dependencies:
+    array-each "^1.0.1"
+    extend-shallow "^3.0.2"
     gulplog "^1.0.0"
     has-gulplog "^0.1.0"
-    lodash "^4.13.1"
+    isobject "^3.0.1"
     make-error-cause "^1.1.1"
+    safe-buffer "^5.1.2"
     through2 "^2.0.0"
-    uglify-js "~2.8.10"
-    uglify-save-license "^0.4.1"
+    uglify-js "^3.0.5"
     vinyl-sourcemaps-apply "^0.2.0"
 
 gulp-usemin@~0.3.0:
@@ -3698,7 +3711,7 @@ lodash.uniq@^4.3.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@4.17.21, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@~1.0.1, lodash@~4.17.10, lodash@~4.17.21:
+lodash@4.17.21, lodash@^4.0.0, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@~1.0.1, lodash@~4.17.10, lodash@~4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -3882,7 +3895,7 @@ microplugin@0.0.3:
   resolved "https://registry.yarnpkg.com/microplugin/-/microplugin-0.0.3.tgz#1fc2e1bb7c9e19e82bd84bba9137bbe71250d8cd"
   integrity sha1-H8Lhu3yeGegr2Eu6kTe75xJQ2M0=
 
-mime-db@1.32.0, mime-db@1.49.0, "mime-db@>= 1.43.0 < 2", mime-db@~1.33.0:
+mime-db@1.32.0, mime-db@1.51.0, "mime-db@>= 1.43.0 < 2", mime-db@~1.33.0:
   version "1.32.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.32.0.tgz#485b3848b01a3cda5f968b4882c0771e58e09414"
   integrity sha512-+ZWo/xZN40Tt6S+HyakUxnSOgff+JEdaneLWIm0Z6LmpCn5DMcZntLyUY5c/rTDog28LhXLKOUZKoTxTCAdBVw==
@@ -5405,7 +5418,7 @@ string_decoder@0.10, string_decoder@1.0.3, string_decoder@~0.10.x, string_decode
   dependencies:
     safe-buffer "~5.1.0"
 
-stringify-object@3.2.1, stringify-object@^3.0.0:
+stringify-object@3.2.1, stringify-object@^3.0.0, stringify-object@~2.4.0:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/stringify-object/-/stringify-object-3.2.1.tgz#2720c2eff940854c819f6ee252aaeb581f30624d"
   integrity sha512-jPcQYw/52HUPP8uOE4kkjxl5bB9LfHkKCTptIk3qw7ozP5XMIMlHMLjt00GGSwW6DJAf/njY5EU6Vpwl4LlBKQ==
@@ -5698,20 +5711,10 @@ typescript@^3.0.3, typescript@^3.3.0:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.3.tgz#d3ac8883a97c26139e42df5e93eeece33d610b8a"
   integrity sha512-D/wqnB2xzNFIcoBG9FG8cXRDjiqSTbG2wd8DMZeQyJlP1vfTkIxH4GKveWaEBYySKIg+USu+E+EDIR47SqnaMQ==
 
-uglify-js@^2.8.22, uglify-js@~2.8.10:
-  version "2.8.29"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.29.tgz#29c5733148057bb4e1f75df35b7a9cb72e6a59dd"
-  integrity sha1-KcVzMUgFe7Th913zW3qcty5qWd0=
-  dependencies:
-    source-map "~0.5.1"
-    yargs "~3.10.0"
-  optionalDependencies:
-    uglify-to-browserify "~1.0.0"
-
-uglify-save-license@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/uglify-save-license/-/uglify-save-license-0.4.1.tgz#95726c17cc6fd171c3617e3bf4d8d82aa8c4cce1"
-  integrity sha1-lXJsF8xv0XHDYX479NjYKqjEzOE=
+uglify-js@3.14.4, uglify-js@^2.8.22, uglify-js@^3.0.5:
+  version "3.14.4"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.14.4.tgz#68756f17d1b90b9d289341736cb9a567d6882f90"
+  integrity sha512-AbiSR44J0GoCeV81+oxcy/jDOElO2Bx3d0MfQCUShq7JRXaM4KtQopZsq2vFv8bCq2yMaGrw1FgygUd03RyRDA==
 
 uglify-to-browserify@~1.0.0:
   version "1.0.2"
