@@ -84,7 +84,7 @@ There are two deployment modes you can choose from: **cluster** and **namespace*
 | Deployment Mode | Descripton |
 | --------------- | ---------- |
 | Cluster | The Hawtio Online console can discover and connect to _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed across multiple namespaces / projects. <br> **OpenShift:** Use an OAuth client that requires the `cluster-admin` role to be created. By default, this requires the generation of a client certificate, signed with the [service signing certificate][service-signing-certificate] authority, prior to the deployment. See the [Preparation - OpenShift](#openshift) section for more information. |
-| Namespace | This restricts the Hawtio Online console access to this single project, and as such acts as a single tenant deployment. <br> **OpenShift:** Use a service account as OAuth client, which only requires `admin` role in a project to be created. By default, this requires the generation of a client certificate, signed with the [service signing certificate][service-signing-certificate] authority, prior to the deployment. See the [Preparation - OpenShift](#openshift) section for more information. |
+| Namespace | This restricts the Hawtio Online console access to a single namespace / project, and as such acts as a single tenant deployment. <br> **OpenShift:** Use a service account as OAuth client, which only requires `admin` role in a project to be created. By default, this requires the generation of a client certificate, signed with the [service signing certificate][service-signing-certificate] authority, prior to the deployment. See the [Preparation - OpenShift](#openshift) section for more information. |
 
 ### OpenShift
 
