@@ -49,4 +49,17 @@ Note that `CN=hawtio-online.hawtio.svc` must be trusted by the Jolokia agents, f
 
 ## Serving
 
-For Kubernetes: TBD
+You can follow the steps below to create a secret named `hawtio-online-tls-serving` with the serving certificate:
+
+1. Prepare a TLS certificate and private key for Hawtio Online. For development purposes, you can generate a self-signed certificate with the following commmands:
+    ```sh
+    # Generate the private key
+    $ openssl genrsa -out tls.key 2048
+    # Generate the certificate (valid for 365 days)
+    $ openssl req -x509 -new -nodes -key tls.key -subj "/CN=hawtio-online.hawtio.svc" -days 365 -out tls.crt
+    ```
+
+2. Create the secret to be mounted in Hawtio Online from the certificate and private key in the first step:
+   ```sh
+   $ kubectl create secret tls hawtio-online-tls-serving --cert tls.crt --key tls.key
+   ```

@@ -56,18 +56,18 @@ For Kubernetes, proxing certificates are disabled by default and you don't need 
 For Kubernetes, a serving certificate must be generated manually. Run the following script to generate and set up a certificate for Hawtio Online:
 
 ```sh
-$ ./scripts/generate-serving.sh [-k ca.key] [-c ca.crt] <MASTER_CLUSTER_IP>
+$ ./scripts/generate-serving.sh [-k tls.key] [-c tls.crt] [SECRET_NAME] [CN]
 ```
 
 or:
 
 ```sh
-$ yarn gen:serving [-k ca.key] [-c ca.crt] <MASTER_CLUSTER_IP>
+$ yarn gen:serving [-k tls.key] [-c tls.crt] [SECRET_NAME] [CN]
 ```
 
-`MASTER_CLUSTER_IP` is the only mandatory parameter for the command. The `MASTER_CLUSTER_IP` is usually the first IP from the service CIDR that is specified as the `--service-cluster-ip-range` argument for both the Kubernetes API server and the controller manager component. See [Certificates][service-signing-certificate] for more details.
+You can provide an existing TLS key and certificate by passing parameters `-k tls.key` and `-c tls.crt` respectively. Otherwise, a self-signed `tls.key` and `tls.crt` will be generated automatically in the working directory and used for creating the serving certificate secret.
 
-You can provide existing CA key and CA certificate by passing parameters `-k ca.key` and `-c ca.crt` respectively. Otherwise, new `ca.key` and `ca.crt` will be generated automatically in the working directory and used for serving certificate signing.
+You can optionally pass `SECRET_NAME` and `CN` to customise the secret name and Common Name used in the TLS certificate. The default secret name is `hawtio-online-tls-serving` and CN is `hawtio-online.hawtio.svc`.
 
 ### Manual steps
 
