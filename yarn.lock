@@ -787,10 +787,10 @@ arrify@^1.0.0:
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
   integrity sha1-iYUI2iIm84DfkEcoRWhJwVAaSw0=
 
-artemis-plugin-npm@^1.2.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/artemis-plugin-npm/-/artemis-plugin-npm-1.2.1.tgz#c9e033847635b035565353850d8848c8ea092184"
-  integrity sha512-I7fU3PqZsu+TkH99ayswewzN0DCOXrdzjVIO93B9Atj7dKQ37mVqJsDn8t3YOTozsJinZdKtlhyyOgMYrJP+oQ==
+artemis-plugin-npm@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/artemis-plugin-npm/-/artemis-plugin-npm-1.4.0.tgz#0996e0593690708d6a57697f93b15a77c78eafb7"
+  integrity sha512-KDW4dK77ITOsJEfJcRdbc+XNkqoBtVee1fXKEArvtiDa6bn/Ue3TKentwJK6QAOz5KNbv4g5PsVCyeW7pvwr4A==
 
 asap@^2.0.0, asap@~2.0.3:
   version "2.0.6"
@@ -3900,7 +3900,7 @@ mime-db@1.32.0, mime-db@1.51.0, "mime-db@>= 1.43.0 < 2", mime-db@~1.33.0:
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.32.0.tgz#485b3848b01a3cda5f968b4882c0771e58e09414"
   integrity sha512-+ZWo/xZN40Tt6S+HyakUxnSOgff+JEdaneLWIm0Z6LmpCn5DMcZntLyUY5c/rTDog28LhXLKOUZKoTxTCAdBVw==
 
-mime-types@2.1.18, mime-types@^2.1.12, mime-types@^2.1.18, mime-types@~2.1.16, mime-types@~2.1.17, mime-types@~2.1.19, mime-types@~2.1.24, mime-types@~2.1.6, mime-types@~2.1.7, mime-types@~2.1.9:
+mime-types@2.1.18, mime-types@^2.1.12, mime-types@^2.1.18, mime-types@~2.1.16, mime-types@~2.1.17, mime-types@~2.1.19, mime-types@~2.1.24, mime-types@~2.1.34, mime-types@~2.1.6, mime-types@~2.1.7, mime-types@~2.1.9:
   version "2.1.18"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.18.tgz#6f323f60a83d11146f831ff11fd66e2fe5503bb8"
   integrity sha512-lc/aahn+t4/SWV/qcmumYjymLsWfN3ELhpmVuUFjgsORruuZPVSwAQryq+HHGvO/SI2KVX26bx+En+zhM8g8hQ==
@@ -4039,7 +4039,7 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-negotiator@0.5.3, negotiator@0.6.1, negotiator@0.6.2:
+negotiator@0.5.3, negotiator@0.6.1, negotiator@0.6.3:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
   integrity sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=
