@@ -4,17 +4,25 @@ var fs = require('fs');
 
 var ACL = jsyaml.safeLoad(fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || 'ACL.yaml'));
 var regex = /^\/.*\/$/;
-var rbacSearchKeyword = '*:type=security,area=jmx,*'
+var rbacSearchKeyword = '*:type=security,area=jmx,*';
 var rbacMBean = 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC';
 
 export default { check, intercept, isCanInvokeRequest };
+
+function isSearchRBACMBean(request) {
+  return request.type === 'search' && request.mbean === rbacSearchKeyword;
+}
 
 function isCanInvokeRequest(request) {
   return request.type === 'exec' && request.mbean === rbacMBean && request.operation === 'canInvoke(java.lang.String)';
 }
 
+function isBulkCanInvokeRequest(request) {
+  return request.type === 'exec' && request.mbean === rbacMBean && request.operation === 'canInvoke(java.util.Map)';
+}
+
 function intercept(request, role, mbeans) {
-  var response = value => ({
+  var intercepted = value => ({
     intercepted: true,
     request: request,
     response: {
@@ -26,8 +34,8 @@ function intercept(request, role, mbeans) {
   });
 
   // Intercept client-side RBAC discovery request
-  if (request.type === 'search' && request.mbean === rbacSearchKeyword) {
-    return response([rbacMBean]);
+  if (isSearchRBACMBean(request)) {
+    return intercepted([rbacMBean]);
   }
 
   // Intercept client-side RBAC canInvoke(java.lang.String) request
@@ -39,7 +47,7 @@ function intercept(request, role, mbeans) {
 
     var infos = (mbeans[domain] || {})[properties];
     if (!infos) {
-      return response(false);
+      return intercepted(false);
     }
 
     var res = Object.entries(infos.op || [])
@@ -51,7 +59,7 @@ function intercept(request, role, mbeans) {
       .find(op => check({ type: 'exec', mbean: mbean, operation: `${op[0]}(${op[1].args.map(arg => arg.type).toString()})` }, role).allowed);
 
     if (typeof res !== 'undefined') {
-      return response(true);
+      return intercepted(true);
     }
 
     res = Object.entries(infos.attr || [])
@@ -64,11 +72,11 @@ function intercept(request, role, mbeans) {
         return check({ type: 'exec', mbean: mbean, operation: `set${name}(${type})` }, role).allowed;
       });
 
-    return response(typeof res !== 'undefined');
+    return intercepted(typeof res !== 'undefined');
   }
 
   // Intercept client-side RBAC canInvoke(java.util.Map) request
-  if (request.type === 'exec' && request.mbean === rbacMBean && request.operation === 'canInvoke(java.util.Map)') {
+  if (isBulkCanInvokeRequest(request)) {
     var value = Object.entries(request.arguments[0]).reduce((res, e) => {
       var mbean = e[0];
       var operations = e[1];
@@ -83,7 +91,7 @@ function intercept(request, role, mbeans) {
       return res;
     }, {});
 
-    return response(value);
+    return intercepted(value);
   }
 
   return {
