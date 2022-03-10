@@ -4,7 +4,8 @@ var fs = require('fs');
 
 var ACL = jsyaml.safeLoad(fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || 'ACL.yaml'));
 var regex = /^\/.*\/$/;
-var rbacMBean = 'hawtio:area=jmx,type=security';
+var rbacSearchKeyword = '*:type=security,area=jmx,*'
+var rbacMBean = 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC';
 
 export default { check, intercept, isCanInvokeRequest };
 
@@ -25,7 +26,7 @@ function intercept(request, role, mbeans) {
   });
 
   // Intercept client-side RBAC discovery request
-  if (request.type === 'search' && request.mbean === '*:type=security,area=jmx,*') {
+  if (request.type === 'search' && request.mbean === rbacSearchKeyword) {
     return response([rbacMBean]);
   }
 
