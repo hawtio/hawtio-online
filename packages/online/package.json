@@ -1,6 +1,6 @@
 {
   "name": "@hawtio/online",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "main": "dist/hawtio-online.js",
   "types": "dist/hawtio-online.d.ts",
   "files": [
