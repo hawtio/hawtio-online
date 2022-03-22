@@ -1,0 +1,9 @@
+{
+  "name": "@hawtio/online-docker",
+  "private": true,
+  "version": "1.0.0",
+  "main": "nginx.js",
+  "type": "module",
+  "license": "Apache-2.0",
+  "flat": true
+}

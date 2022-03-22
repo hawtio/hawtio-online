@@ -4,7 +4,8 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/*"
+      "packages/*",
+      "docker"
     ],
     "nohoist": [
       "**/@hawtio/*",
@@ -42,8 +43,9 @@
     "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml -o=docker/licenses",
     "gen:proxying": "./scripts/generate-proxying.sh",
     "gen:serving": "./scripts/generate-serving.sh",
-    "test": "yarn test:bats",
+    "test": "yarn test:bats && yarn test:docker && yarn test:nginx",
     "test:bats": "cd docker/osconsole/ && bats config.bats",
+    "test:docker": "jasmine docker/*.spec.js",
     "test:nginx": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js",
     "deploy:k8s:namespace": "kubectl apply --kustomize deploy/k8s/namespace/",
     "deploy:k8s:cluster": "kubectl apply --kustomize deploy/k8s/cluster/",
@@ -62,6 +64,7 @@
     "gulp-debug": "^3.0.0",
     "gulp-hub": "^4.2.0",
     "gulp-notify": "^2.0.0",
+    "jasmine": "^4.0.2",
     "js-logger": "^0.9.14",
     "license-reporter": "^1.2.1",
     "mime-types": "^2.1.18",

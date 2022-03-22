@@ -1,3 +1,4 @@
+/*! js-yaml 3.14.1 https://github.com/nodeca/js-yaml */
 export default (function(f){ return f()})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 'use strict';
 
@@ -115,6 +116,7 @@ var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
 var CHAR_TAB                  = 0x09; /* Tab */
 var CHAR_LINE_FEED            = 0x0A; /* LF */
+var CHAR_CARRIAGE_RETURN      = 0x0D; /* CR */
 var CHAR_SPACE                = 0x20; /* Space */
 var CHAR_EXCLAMATION          = 0x21; /* ! */
 var CHAR_DOUBLE_QUOTE         = 0x22; /* " */
@@ -126,6 +128,7 @@ var CHAR_ASTERISK             = 0x2A; /* * */
 var CHAR_COMMA                = 0x2C; /* , */
 var CHAR_MINUS                = 0x2D; /* - */
 var CHAR_COLON                = 0x3A; /* : */
+var CHAR_EQUALS               = 0x3D; /* = */
 var CHAR_GREATER_THAN         = 0x3E; /* > */
 var CHAR_QUESTION             = 0x3F; /* ? */
 var CHAR_COMMERCIAL_AT        = 0x40; /* @ */
@@ -208,16 +211,17 @@ function encodeHex(character) {
 }
 
 function State(options) {
-  this.schema       = options['schema'] || DEFAULT_FULL_SCHEMA;
-  this.indent       = Math.max(1, (options['indent'] || 2));
-  this.skipInvalid  = options['skipInvalid'] || false;
-  this.flowLevel    = (common.isNothing(options['flowLevel']) ? -1 : options['flowLevel']);
-  this.styleMap     = compileStyleMap(this.schema, options['styles'] || null);
-  this.sortKeys     = options['sortKeys'] || false;
-  this.lineWidth    = options['lineWidth'] || 80;
-  this.noRefs       = options['noRefs'] || false;
-  this.noCompatMode = options['noCompatMode'] || false;
-  this.condenseFlow = options['condenseFlow'] || false;
+  this.schema        = options['schema'] || DEFAULT_FULL_SCHEMA;
+  this.indent        = Math.max(1, (options['indent'] || 2));
+  this.noArrayIndent = options['noArrayIndent'] || false;
+  this.skipInvalid   = options['skipInvalid'] || false;
+  this.flowLevel     = (common.isNothing(options['flowLevel']) ? -1 : options['flowLevel']);
+  this.styleMap      = compileStyleMap(this.schema, options['styles'] || null);
+  this.sortKeys      = options['sortKeys'] || false;
+  this.lineWidth     = options['lineWidth'] || 80;
+  this.noRefs        = options['noRefs'] || false;
+  this.noCompatMode  = options['noCompatMode'] || false;
+  this.condenseFlow  = options['condenseFlow'] || false;
 
   this.implicitTypes = this.schema.compiledImplicit;
   this.explicitTypes = this.schema.compiledExplicit;
@@ -290,8 +294,23 @@ function isPrintable(c) {
       ||  (0x10000 <= c && c <= 0x10FFFF);
 }
 
+// [34] ns-char ::= nb-char - s-white
+// [27] nb-char ::= c-printable - b-char - c-byte-order-mark
+// [26] b-char  ::= b-line-feed | b-carriage-return
+// [24] b-line-feed       ::=     #xA    /* LF */
+// [25] b-carriage-return ::=     #xD    /* CR */
+// [3]  c-byte-order-mark ::=     #xFEFF
+function isNsChar(c) {
+  return isPrintable(c) && !isWhitespace(c)
+    // byte-order-mark
+    && c !== 0xFEFF
+    // b-char
+    && c !== CHAR_CARRIAGE_RETURN
+    && c !== CHAR_LINE_FEED;
+}
+
 // Simplified test for values allowed after the first character in plain style.
-function isPlainSafe(c) {
+function isPlainSafe(c, prev) {
   // Uses a subset of nb-char - c-flow-indicator - ":" - "#"
   // where nb-char ::= c-printable - b-char - c-byte-order-mark.
   return isPrintable(c) && c !== 0xFEFF
@@ -302,8 +321,9 @@ function isPlainSafe(c) {
     && c !== CHAR_LEFT_CURLY_BRACKET
     && c !== CHAR_RIGHT_CURLY_BRACKET
     // - ":" - "#"
+    // /* An ns-char preceding */ "#"
     && c !== CHAR_COLON
-    && c !== CHAR_SHARP;
+    && ((c !== CHAR_SHARP) || (prev && isNsChar(prev)));
 }
 
 // Simplified test for values allowed as the first character in plain style.
@@ -322,12 +342,13 @@ function isPlainSafeFirst(c) {
     && c !== CHAR_RIGHT_SQUARE_BRACKET
     && c !== CHAR_LEFT_CURLY_BRACKET
     && c !== CHAR_RIGHT_CURLY_BRACKET
-    // | “#” | “&” | “*” | “!” | “|” | “>” | “'” | “"”
+    // | “#” | “&” | “*” | “!” | “|” | “=” | “>” | “'” | “"”
     && c !== CHAR_SHARP
     && c !== CHAR_AMPERSAND
     && c !== CHAR_ASTERISK
     && c !== CHAR_EXCLAMATION
     && c !== CHAR_VERTICAL_LINE
+    && c !== CHAR_EQUALS
     && c !== CHAR_GREATER_THAN
     && c !== CHAR_SINGLE_QUOTE
     && c !== CHAR_DOUBLE_QUOTE
@@ -335,6 +356,12 @@ function isPlainSafeFirst(c) {
     && c !== CHAR_PERCENT
     && c !== CHAR_COMMERCIAL_AT
     && c !== CHAR_GRAVE_ACCENT;
+}
+
+// Determines whether block indentation indicator is required.
+function needIndentIndicator(string) {
+  var leadingSpaceRe = /^\n* /;
+  return leadingSpaceRe.test(string);
 }
 
 var STYLE_PLAIN   = 1,
@@ -352,7 +379,7 @@ var STYLE_PLAIN   = 1,
 //    STYLE_FOLDED => a line > lineWidth and can be folded (and lineWidth != -1).
 function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth, testAmbiguousType) {
   var i;
-  var char;
+  var char, prev_char;
   var hasLineBreak = false;
   var hasFoldableLine = false; // only checked if shouldTrackWidth
   var shouldTrackWidth = lineWidth !== -1;
@@ -368,7 +395,8 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth, te
       if (!isPrintable(char)) {
         return STYLE_DOUBLE;
       }
-      plain = plain && isPlainSafe(char);
+      prev_char = i > 0 ? string.charCodeAt(i - 1) : null;
+      plain = plain && isPlainSafe(char, prev_char);
     }
   } else {
     // Case: block styles permitted.
@@ -387,7 +415,8 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth, te
       } else if (!isPrintable(char)) {
         return STYLE_DOUBLE;
       }
-      plain = plain && isPlainSafe(char);
+      prev_char = i > 0 ? string.charCodeAt(i - 1) : null;
+      plain = plain && isPlainSafe(char, prev_char);
     }
     // in case the end is missing a \n
     hasFoldableLine = hasFoldableLine || (shouldTrackWidth &&
@@ -404,7 +433,7 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth, te
       ? STYLE_PLAIN : STYLE_SINGLE;
   }
   // Edge case: block indentation indicator can only have one digit.
-  if (string[0] === ' ' && indentPerLevel > 9) {
+  if (indentPerLevel > 9 && needIndentIndicator(string)) {
     return STYLE_DOUBLE;
   }
   // At this point we know block styles are valid.
@@ -468,7 +497,7 @@ function writeScalar(state, string, level, iskey) {
 
 // Pre-conditions: string is valid for a block scalar, 1 <= indentPerLevel <= 9.
 function blockHeader(string, indentPerLevel) {
-  var indentIndicator = (string[0] === ' ') ? String(indentPerLevel) : '';
+  var indentIndicator = needIndentIndicator(string) ? String(indentPerLevel) : '';
 
   // note the special case: the string '\n' counts as a "trailing" empty line.
   var clip =          string[string.length - 1] === '\n';
@@ -644,9 +673,11 @@ function writeFlowMapping(state, level, object) {
       pairBuffer;
 
   for (index = 0, length = objectKeyList.length; index < length; index += 1) {
-    pairBuffer = state.condenseFlow ? '"' : '';
 
+    pairBuffer = '';
     if (index !== 0) pairBuffer += ', ';
+
+    if (state.condenseFlow) pairBuffer += '"';
 
     objectKey = objectKeyList[index];
     objectValue = object[objectKey];
@@ -831,13 +862,14 @@ function writeNode(state, level, object, block, compact, iskey) {
         }
       }
     } else if (type === '[object Array]') {
+      var arrayLevel = (state.noArrayIndent && (level > 0)) ? level - 1 : level;
       if (block && (state.dump.length !== 0)) {
-        writeBlockSequence(state, level, state.dump, compact);
+        writeBlockSequence(state, arrayLevel, state.dump, compact);
         if (duplicate) {
           state.dump = '&ref_' + duplicateIndex + state.dump;
         }
       } else {
-        writeFlowSequence(state, level, state.dump);
+        writeFlowSequence(state, arrayLevel, state.dump);
         if (duplicate) {
           state.dump = '&ref_' + duplicateIndex + ' ' + state.dump;
         }
@@ -998,6 +1030,8 @@ var PATTERN_FLOW_INDICATORS       = /[,\[\]\{\}]/;
 var PATTERN_TAG_HANDLE            = /^(?:!|!!|![a-z\-]+!)$/i;
 var PATTERN_TAG_URI               = /^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i;
 
+
+function _class(obj) { return Object.prototype.toString.call(obj); }
 
 function is_EOL(c) {
   return (c === 0x0A/* LF */) || (c === 0x0D/* CR */);
@@ -1254,7 +1288,32 @@ function mergeMappings(state, destination, source, overridableKeys) {
 function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, startLine, startPos) {
   var index, quantity;
 
-  // keyNode = String(keyNode);
+  // The output is a plain object here, so keys can only be strings.
+  // We need to convert keyNode to a string, but doing so can hang the process
+  // (deeply nested arrays that explode exponentially using aliases).
+  if (Array.isArray(keyNode)) {
+    keyNode = Array.prototype.slice.call(keyNode);
+
+    for (index = 0, quantity = keyNode.length; index < quantity; index += 1) {
+      if (Array.isArray(keyNode[index])) {
+        throwError(state, 'nested arrays are not supported inside keys');
+      }
+
+      if (typeof keyNode === 'object' && _class(keyNode[index]) === '[object Object]') {
+        keyNode[index] = '[object Object]';
+      }
+    }
+  }
+
+  // Avoid code execution in load() via toString property
+  // (still use its own toString for arrays, timestamps,
+  // and whatever user schema extensions happen to have @@toStringTag)
+  if (typeof keyNode === 'object' && _class(keyNode) === '[object Object]') {
+    keyNode = '[object Object]';
+  }
+
+
+  keyNode = String(keyNode);
 
   if (_result === null) {
     _result = {};
@@ -2214,7 +2273,7 @@ function readAlias(state) {
 
   alias = state.input.slice(_position, state.position);
 
-  if (!state.anchorMap.hasOwnProperty(alias)) {
+  if (!_hasOwnProperty.call(state.anchorMap, alias)) {
     throwError(state, 'unidentified alias "' + alias + '"');
   }
 
@@ -2335,12 +2394,18 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
 
   if (state.tag !== null && state.tag !== '!') {
     if (state.tag === '?') {
+      // Implicit resolving is not allowed for non-scalar types, and '?'
+      // non-specific tag is only automatically assigned to plain scalars.
+      //
+      // We only need to check kind conformity in case user explicitly assigns '?'
+      // tag, for example like this: "!<?> [0]"
+      //
+      if (state.result !== null && state.kind !== 'scalar') {
+        throwError(state, 'unacceptable node kind for !<?> tag; it should be "scalar", not "' + state.kind + '"');
+      }
+
       for (typeIndex = 0, typeQuantity = state.implicitTypes.length; typeIndex < typeQuantity; typeIndex += 1) {
         type = state.implicitTypes[typeIndex];
-
-        // Implicit resolving is not allowed for non-scalar types, and '?'
-        // non-specific tag is only assigned to plain scalars. So, it isn't
-        // needed to check for 'kind' conformity.
 
         if (type.resolve(state.result)) { // `state.result` updated in resolver if matched
           state.result = type.construct(state.result);
@@ -2486,7 +2551,7 @@ function readDocument(state) {
 
 
 function loadDocuments(input, options) {
-  // input = String(input);
+  input = String(input);
   options = options || {};
 
   if (input.length !== 0) {
@@ -2505,7 +2570,12 @@ function loadDocuments(input, options) {
 
   var state = new State(input, options);
 
-  // console.log('STATE:', state)
+  var nullpos = input.indexOf('\0');
+
+  if (nullpos !== -1) {
+    state.position = nullpos;
+    throwError(state, 'null byte is not allowed in input');
+  }
 
   // Use 0 as string terminator. That significantly simplifies bounds check.
   state.input += '\0';
@@ -2524,13 +2594,18 @@ function loadDocuments(input, options) {
 
 
 function loadAll(input, iterator, options) {
-  var documents = loadDocuments(input, options), index, length;
+  if (iterator !== null && typeof iterator === 'object' && typeof options === 'undefined') {
+    options = iterator;
+    iterator = null;
+  }
+
+  var documents = loadDocuments(input, options);
 
   if (typeof iterator !== 'function') {
     return documents;
   }
 
-  for (index = 0, length = documents.length; index < length; index += 1) {
+  for (var index = 0, length = documents.length; index < length; index += 1) {
     iterator(documents[index]);
   }
 }
@@ -2549,12 +2624,13 @@ function load(input, options) {
 }
 
 
-function safeLoadAll(input, output, options) {
-  if (typeof output === 'function') {
-    loadAll(input, output, common.extend({ schema: DEFAULT_SAFE_SCHEMA }, options));
-  } else {
-    return loadAll(input, common.extend({ schema: DEFAULT_SAFE_SCHEMA }, options));
+function safeLoadAll(input, iterator, options) {
+  if (typeof iterator === 'object' && iterator !== null && typeof options === 'undefined') {
+    options = iterator;
+    iterator = null;
   }
+
+  return loadAll(input, iterator, common.extend({ schema: DEFAULT_SAFE_SCHEMA }, options));
 }
 
 
@@ -3429,7 +3505,8 @@ try {
   var _require = require;
   esprima = _require('esprima');
 } catch (_) {
-  /*global window */
+  /* eslint-disable no-redeclare */
+  /* global window */
   if (typeof window !== 'undefined') esprima = window.esprima;
 }
 
@@ -3480,8 +3557,14 @@ function constructJavascriptFunction(data) {
 
   // Esprima's ranges include the first '{' and the last '}' characters on
   // function expressions. So cut them out.
+  if (ast.body[0].expression.body.type === 'BlockStatement') {
+    /*eslint-disable no-new-func*/
+    return new Function(params, source.slice(body[0] + 1, body[1] - 1));
+  }
+  // ES6 arrow functions can omit the BlockStatement. In that case, just return
+  // the body.
   /*eslint-disable no-new-func*/
-  return new Function(params, source.slice(body[0] + 1, body[1] - 1));
+  return new Function(params, 'return ' + source.slice(body[0], body[1]));
 }
 
 function representJavascriptFunction(object /*, style*/) {

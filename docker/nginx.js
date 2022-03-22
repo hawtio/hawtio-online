@@ -3,7 +3,12 @@
 // https://github.com/xeioex/njs-examples
 
 import RBAC from 'rbac.js';
+import jsyaml from 'js-yaml.js';
 import jwt_decode from 'jwt-decode.js';
+
+var fs = require('fs');
+
+RBAC.initACL(jsyaml.safeLoad(fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || 'ACL.yaml')));
 
 var isRbacEnabled = typeof process.env['HAWTIO_ONLINE_RBAC_ACL'] !== 'undefined';
 var useForm = process.env['HAWTIO_ONLINE_AUTH'] === 'form';

@@ -2419,7 +2419,7 @@ glob-watcher@^5.0.3:
     just-debounce "^1.0.0"
     object.defaults "^1.1.0"
 
-glob@7.1.2, glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.1, glob@^7.1.2, glob@~3.1.21, glob@~7.1.1:
+glob@7.1.2, glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.1, glob@^7.1.2, glob@^7.1.6, glob@~3.1.21, glob@~7.1.1:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.2.tgz#c19c9df9a028702d678612384a6552404c636d15"
   integrity sha512-MJTUg1kjuLeQCJ+ccE4Vpa6kKVXkPYJ2mOCQyUuKLcLQsdrMCpBPUi8qVE6+YuaJkozeA9NusTAw3hLr8Xe5EQ==
@@ -3220,6 +3220,19 @@ istextorbinary@1.0.2:
     binaryextensions "~1.0.0"
     textextensions "~1.0.0"
 
+jasmine-core@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-4.0.1.tgz#ea4b0495d82155023bd56c25181d9f9b623f61b8"
+  integrity sha512-w+JDABxQCkxbGGxg+a2hUVZyqUS2JKngvIyLGu/xiw2ZwgsoSB0iiecLQsQORSeaKQ6iGrCyWG86RfNDuoA7Lg==
+
+jasmine@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/jasmine/-/jasmine-4.0.2.tgz#6f5ff7fbf6b67f56600235fdb7d299ac52876c4b"
+  integrity sha512-YsrgxJQEggxzByYe4j68eQLOiQeSrPDYGv4sHhGBp3c6HHdq+uPXeAQ73kOAQpdLZ3/0zN7x/TZTloqeE1/qIA==
+  dependencies:
+    glob "^7.1.6"
+    jasmine-core "^4.0.0"
+
 jolokia.js@^1.6.0-1:
   version "1.6.0-1"
   resolved "https://registry.yarnpkg.com/jolokia.js/-/jolokia.js-1.6.0-1.tgz#b0b527135e16940c2cfbc6b5b50be608177cc50e"
@@ -3895,7 +3908,7 @@ microplugin@0.0.3:
   resolved "https://registry.yarnpkg.com/microplugin/-/microplugin-0.0.3.tgz#1fc2e1bb7c9e19e82bd84bba9137bbe71250d8cd"
   integrity sha1-H8Lhu3yeGegr2Eu6kTe75xJQ2M0=
 
-mime-db@1.32.0, mime-db@1.51.0, "mime-db@>= 1.43.0 < 2", mime-db@~1.33.0:
+mime-db@1.32.0, mime-db@1.52.0, "mime-db@>= 1.43.0 < 2", mime-db@~1.33.0:
   version "1.32.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.32.0.tgz#485b3848b01a3cda5f968b4882c0771e58e09414"
   integrity sha512-+ZWo/xZN40Tt6S+HyakUxnSOgff+JEdaneLWIm0Z6LmpCn5DMcZntLyUY5c/rTDog28LhXLKOUZKoTxTCAdBVw==

@@ -1,13 +1,16 @@
-import jsyaml from 'js-yaml.js';
-
-var fs = require('fs');
-
-var ACL = jsyaml.safeLoad(fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || 'ACL.yaml'));
+var ACL = ''; // Load ACL from nginx.js first
 var regex = /^\/.*\/$/;
 var rbacSearchKeyword = '*:type=security,area=jmx,*';
 var rbacMBean = 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC';
 
-export default { check, intercept, isCanInvokeRequest };
+// Expose private functions for testing
+var testing = { isSearchRBACMBean, isBulkCanInvokeRequest };
+
+export default { initACL, check, intercept, isCanInvokeRequest, testing };
+
+function initACL(acl) {
+  ACL = acl;
+}
 
 function isSearchRBACMBean(request) {
   return request.type === 'search' && request.mbean === rbacSearchKeyword;
@@ -50,6 +53,7 @@ function intercept(request, role, mbeans) {
       return intercepted(false);
     }
 
+    // Check operations
     var res = Object.entries(infos.op || [])
       // handle overloaded methods
       .map(op => Array.isArray(op[1]) ? op[1].map(o => [op[0], o]) : [op])
@@ -62,6 +66,7 @@ function intercept(request, role, mbeans) {
       return intercepted(true);
     }
 
+    // Check attributes
     res = Object.entries(infos.attr || [])
       .find(attr => {
         var name = attr[0];

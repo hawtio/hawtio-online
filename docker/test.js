@@ -36,7 +36,7 @@ function bulkRequestWithViewerRoleTest() {
       },
       {
         type: 'exec',
-        mbean: 'java.lang.Memory',
+        mbean: 'java.lang:type=Memory',
         operation: 'gc()',
       },
     ]),
@@ -127,7 +127,7 @@ function bulkRequestWithInterceptionTest() {
       },
       {
         type: 'exec',
-        mbean: 'java.lang.Memory',
+        mbean: 'java.lang:type=Memory',
         operation: 'gc()',
       },
       {
@@ -148,7 +148,7 @@ function canInvokeSingleOperationTest() {
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       'type': 'exec',
-      'mbean': 'hawtio:area=jmx,type=security',
+      'mbean': 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC',
       'operation': 'canInvoke(java.lang.String)',
       'arguments': [
         // 'java.lang:name=Compressed Class Space,type=MemoryPool',
@@ -168,7 +168,7 @@ function canInvokeSingleAttributeTest() {
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       'type': 'exec',
-      'mbean': 'hawtio:area=jmx,type=security',
+      'mbean': 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC',
       'operation': 'canInvoke(java.lang.String)',
       'arguments': [
         // 'java.lang:name=PS Scavenge,type=GarbageCollector',
@@ -188,7 +188,7 @@ function canInvokeMapTest() {
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
       'type': 'exec',
-      'mbean': 'hawtio:area=jmx,type=security',
+      'mbean': 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC',
       'operation': 'canInvoke(java.util.Map)',
       'arguments': [
         {
