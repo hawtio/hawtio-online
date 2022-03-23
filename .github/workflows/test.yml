@@ -29,7 +29,7 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
           echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx
           sudo apt-get update -y
-          sudo apt-get install -y nginx=1.18.0-1~focal nginx-module-njs=1.18.0.0.4.4-2~focal
+          sudo apt-get install -y nginx=1.18.0-2~focal nginx-module-njs=1.18.0.0.4.4-2~focal
       - name: Show NJS versions for debugging
         run: sudo apt-cache showpkg nginx-module-njs
       - name: Set up node/yarn
