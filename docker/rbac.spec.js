@@ -118,6 +118,29 @@ describe('intercept', function () {
     // canInvoke should be ???
   });
 
+  it('should intercept RBACRegistry list requests', function () {
+    const result = rbac.intercept(
+      {
+        type: 'list',
+        path: 'hawtio/type=security,name=RBACRegistry',
+      },
+      admin, listMBeans);
+    expect(result.intercepted).toBe(true);
+    expect(result.response.value.op).toBeDefined();
+  });
+
+  it('should intercept optimised list MBeans requests', function () {
+    const result = rbac.intercept(
+      {
+        type: 'exec',
+        mbean: 'hawtio:type=security,name=RBACRegistry',
+        operation: 'list()',
+      },
+      admin, listMBeans);
+    expect(result.intercepted).toBe(true);
+    expect(result.response.value).toBeDefined();
+  });
+
   it('should not intercept other requests', function () {
     const result = rbac.intercept(
       {
@@ -128,5 +151,23 @@ describe('intercept', function () {
       admin, listMBeans);
     expect(result.intercepted).toBe(false);
     expect(result.response).toBeUndefined();
+  });
+});
+
+describe('optimisedMBeans', function () {
+  it('should optimise MBean list', function () {
+    const result = rbac.testing.optimisedMBeans(listMBeans);
+    expect(result.cache).toBeDefined();
+    expect(result.cache).not.toEqual({});
+    expect(result.domains).toBeDefined();
+    expect(result.domains).not.toEqual({});
+  });
+});
+
+describe('getProperty', function () {
+  it('should return property values', function () {
+    expect(rbac.testing.getProperty('context=MyCamel,name=\"simple-route\",type=routes', 'type')).toBe('routes');
+    expect(rbac.testing.getProperty('name=PS Old Gen,type=MemoryPool', 'name')).toBe('PS Old Gen');
+    expect(rbac.testing.getProperty('type=Memory', 'destinationType')).toBeNull();
   });
 });

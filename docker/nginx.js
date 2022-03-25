@@ -183,13 +183,13 @@ function proxyJolokiaAgent(req) {
       })
       .then(role => {
         var request = JSON.parse(req.requestBody);
-        var requireMBeanDefinition;
+        var mbeanListRequired;
         if (Array.isArray(request)) {
-          requireMBeanDefinition = request.find(r => RBAC.isCanInvokeRequest(r));
+          mbeanListRequired = request.find(r => RBAC.isMBeanListRequired(r));
           return getPodIP().then(podIP => {
-            return (requireMBeanDefinition ? listMBeans(podIP) : Promise.resolve()).then(beans => {
+            return (mbeanListRequired ? listMBeans(podIP) : Promise.resolve()).then(mbeans => {
               var rbac = request.map(r => RBAC.check(r, role));
-              var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r, role, beans));
+              var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r, role, mbeans));
               return callJolokiaAgent(podIP, JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request))).then(jolokia => {
                 var body = JSON.parse(jolokia.responseBody);
                 // Unroll intercepted requests
@@ -227,14 +227,14 @@ function proxyJolokiaAgent(req) {
             });
           });
         } else {
-          requireMBeanDefinition = RBAC.isCanInvokeRequest(request);
+          mbeanListRequired = RBAC.isMBeanListRequired(request);
           return getPodIP().then(podIP => {
-            return (requireMBeanDefinition ? listMBeans(podIP) : Promise.resolve()).then(beans => {
+            return (mbeanListRequired ? listMBeans(podIP) : Promise.resolve()).then(mbeans => {
               var rbac = RBAC.check(request, role);
               if (!rbac.allowed) {
                 return reject(403, rbac.reason);
               }
-              rbac = RBAC.intercept(request, role, beans);
+              rbac = RBAC.intercept(request, role, mbeans);
               if (rbac.intercepted) {
                 return Promise.resolve({ status: rbac.response.status, responseBody: JSON.stringify(rbac.response) });
               }
