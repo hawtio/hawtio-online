@@ -53,7 +53,7 @@ spec:
               memory: 32Mi
             limits:
               cpu: "1.0"
-              memory: 100Mi
+              memory: 500Mi
           volumeMounts:
             - name: hawtio-online
               mountPath: /usr/share/nginx/html/online/hawtconfig.json
