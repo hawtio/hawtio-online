@@ -6,7 +6,7 @@ var rbacRegistryPath = 'hawtio/type=security,name=RBACRegistry';
 var rbacRegistryMBean = 'hawtio:type=security,name=RBACRegistry';
 
 // Expose private functions for testing
-var testing = { optimisedMBeans, identifySpecialMBean, getProperty };
+var testing = { optimisedMBeans, identifySpecialMBean, parseProperties, decorateRBAC };
 
 export default { initACL, check, intercept, isMBeanListRequired, testing };
 
@@ -78,7 +78,7 @@ function intercept(request, role, mbeans) {
       // flatMap shim
       .reduce((a, v) => a.concat(v), [])
       // check operation signature
-      .find(op => check({ type: 'exec', mbean: mbean, operation: `${op[0]}(${op[1].args.map(arg => arg.type).toString()})` }, role).allowed);
+      .find(op => canInvoke(mbean, operationSignature(op[0], op[1].args), role));
 
     if (typeof res !== 'undefined') {
       return intercepted(true);
@@ -86,14 +86,7 @@ function intercept(request, role, mbeans) {
 
     // Check attributes
     res = Object.entries(info.attr || [])
-      .find(attr => {
-        var name = attr[0];
-        var type = attr[1].type;
-        // check getter
-        if (check({ type: 'exec', mbean: mbean, operation: `${type === 'boolean' ? 'is' : 'get'}${name}()` }, role).allowed) return true;
-        // check setter
-        return check({ type: 'exec', mbean: mbean, operation: `set${name}(${type})` }, role).allowed;
-      });
+      .find(attr => canInvokeGetter(mbean, attr[0], attr[1].type, role) || canInvokeSetter(mbean, attr[0], attr[1].type, role));
 
     return intercepted(typeof res !== 'undefined');
   }
@@ -105,7 +98,7 @@ function intercept(request, role, mbeans) {
       var operations = e[1];
       res[mbean] = operations.reduce((r, op) => {
         r[op] = {
-          CanInvoke: check({ type: 'exec', mbean: mbean, operation: op }, role).allowed,
+          CanInvoke: canInvoke(mbean, op, role),
           Method: op,
           ObjectName: mbean,
         };
@@ -134,7 +127,7 @@ function intercept(request, role, mbeans) {
 
   // Intercept client-side optimised list MBeans request
   if (isExecRBACRegistryList(request)) {
-    return intercepted(optimisedMBeans(mbeans));
+    return intercepted(optimisedMBeans(mbeans, role));
   }
 
   return {
@@ -143,7 +136,23 @@ function intercept(request, role, mbeans) {
   };
 }
 
-function optimisedMBeans(mbeans) {
+function operationSignature(name, args) {
+  return `${name}(${args.map(arg => arg.type).toString()})`;
+}
+
+function canInvoke(mbean, operation, role) {
+  return check({ type: 'exec', mbean: mbean, operation: operation }, role).allowed;
+}
+
+function canInvokeGetter(mbean, name, type, role) {
+  return canInvoke(mbean, `${type === 'boolean' ? 'is' : 'get'}${name}()`, role);
+}
+
+function canInvokeSetter(mbean, name, type, role) {
+  return canInvoke(mbean, `set${name}(${type})`, role);
+}
+
+function optimisedMBeans(mbeans, role) {
   // domain -> [mbean, mbean, ...], where mbean is either inline jsonified MBeanInfo
   // or a key to shared jsonified MBeanInfo
   var domains = {};
@@ -153,20 +162,19 @@ function optimisedMBeans(mbeans) {
   var cache = {};
 
   var visited = {};
-  Object.entries(mbeans)
-    // convert MBean tree to an array of [domain, properties, MBeanInfo]
-    .map(infos => Object.entries(infos[1]).map(info => [infos[0], info[0], info[1]]))
-    .reduce((acc, infos) => { infos.forEach(i => acc.push(i)); return acc; }, [])
-    // process each MBeanInfo
-    .forEach(info => addMBeanInfo(cache, domains, visited, info[0], info[1], info[2]));
 
-  // TODO: try adding RBAC info
-  // tryAddRBACInfo(domains, cache);
+  // we don't use functional map & reduce to save memory
+  Object.entries(mbeans).forEach(infos => {
+    var domain = infos[0];
+    Object.entries(infos[1]).forEach(i => {
+      var props = i[0];
+      var info = i[1];
+      addMBeanInfo(cache, domains, visited, domain, props, info);
+    });
+  });
 
-  return {
-    cache: cache,
-    domains: domains,
-  };
+  // add RBAC info in advance so that client doesn't need to send another bulky request
+  return decorateRBAC(domains, cache, role);
 }
 
 function addMBeanInfo(cache, domains, visited, domain, props, mbeanInfo) {
@@ -202,7 +210,8 @@ function addMBeanInfo(cache, domains, visited, domain, props, mbeanInfo) {
 function identifySpecialMBean(domain, props, mbeanInfo) {
   switch (domain) {
     case 'org.apache.activemq':
-      var destType = getProperty(props, 'destinationType');
+      var properties = parseProperties(props);
+      var destType = properties['destinationType'];
       // see: org.apache.activemq.command.ActiveMQDestination.getDestinationTypeAsString()
       switch (destType) {
         case 'Queue':
@@ -216,10 +225,11 @@ function identifySpecialMBean(domain, props, mbeanInfo) {
       }
       break;
     case 'org.apache.activemq.artemis':
-      var comp = getProperty(props, 'component');
+      var properties = parseProperties(props);
+      var comp = properties['component'];
       if (comp === 'addresses') {
-        var subcomp = getProperty(props, 'subcomponent');
-        if (subcomp === null) {
+        var subcomp = properties['subcomponent'];
+        if (!subcomp) {
           return 'activemq.artemis:address';
         } else if (subcomp === 'queues') {
           return 'activemq.artemis:queue';
@@ -234,27 +244,99 @@ function identifySpecialMBean(domain, props, mbeanInfo) {
   return null;
 }
 
-function getProperty(props, name) {
-  var prop = props.split(',')
-    .map(prop => prop.split('='))
-    .find(prop => prop[0] === name);
-  return prop ? prop[1] : null;
+function parseProperties(properties) {
+  var result = {};
+  var regexp = /([^,]+)=([^,]+)+/g;
+  var match;
+  while ((match = regexp.exec(properties)) !== null) {
+    result[match[1]] = match[2];
+  }
+  return result;
+}
+
+/*
+ * 1. each pair of MBean/operation has to be marked with RBAC flag (can/can't invoke)
+ * 2. the information is provided by JMXSecurityMBean#canInvoke(java.util.Map)
+ * 3. we'll peek into the ACL, to see which MBeans/operations have to be examined and
+ *    which will produce same results
+ * 4. only then we'll prepare Map as parameter for canInvoke()
+ */
+function decorateRBAC(domains, cache, role) {
+  // the fact that some MBeans share JSON MBeanInfo doesn't mean that they can share RBAC info
+  // - each MBean's name may have RBAC information configured in different ACLs.
+
+  // when iterating through all repeating MBeans that share MBeanInfo (that doesn't have RBAC info
+  // yet), we have to decide if it'll use shared info after RBAC check or will switch to dedicated
+  // info. we have to be careful not to end with most MBeans *not* sharing MBeanInfo (in case if
+  // somehow the shared info will be "special case" from RBAC point of view)
+
+  // we don't use functional map & reduce to save memory
+  Object.entries(domains).forEach(d => {
+    var domain = d[0];
+    var infos = d[1];
+    Object.entries(infos).forEach(i => {
+      var props = i[0];
+      var mbean = `${domain}:${props}`;
+      var info = i[1];
+      if (typeof info === 'string') {
+        info = cache[info];
+      }
+      // skip already resolved ones
+      if (typeof info.canInvoke !== 'undefined') {
+        return;
+      }
+
+      decorateMBeanInfo(mbean, info, role);
+    });
+  });
+
+  return {
+    cache: cache,
+    domains: domains,
+  };
+}
+
+function decorateMBeanInfo(mbean, info, role) {
+  var rootCanInvoke = true;
+  if (info.op) {
+    rootCanInvoke = decorateOperations(mbean, info, role);
+  }
+  info['canInvoke'] = rootCanInvoke;
+}
+
+function decorateOperations(mbean, info, role) {
+  // MBeanInfo root canInvoke is true if at least one op's canInvoke is true
+  var rootCanInvoke = false;
+  var opByString = {};
+  Object.entries(info.op).forEach(op => {
+    var name = op[0];
+    // handle overloaded methods
+    var sigs = Array.isArray(op[1]) ? op[1] : [op[1]];
+    sigs.forEach(sig => {
+      var operation = operationSignature(name, sig.args);
+      var ci = canInvoke(mbean, operation, role);
+      sig['canInvoke'] = ci;
+      if (ci) {
+        rootCanInvoke = true;
+      }
+      opByString[operation] = { canInvoke: ci };
+    });
+  });
+  info['opByString'] = opByString;
+  return rootCanInvoke;
 }
 
 // ===== check =============================================
 
 function check(request, role) {
+  var domain;
+  var objectName;
   var mbean = request.mbean;
-  var domain, objectName = {};
   if (mbean) {
     var i = mbean.indexOf(':');
     domain = i === -1 ? mbean : mbean.substring(0, i);
     var properties = mbean.substring(i + 1);
-    var regexp = /([^,]+)=([^,]+)+/g;
-    var match;
-    while ((match = regexp.exec(properties)) !== null) {
-      objectName[match[1]] = match[2];
-    }
+    objectName = parseProperties(properties);
   }
   return checkACLs(role, {
     type: request.type,

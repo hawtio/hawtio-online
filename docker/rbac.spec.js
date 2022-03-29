@@ -156,18 +156,64 @@ describe('intercept', function () {
 
 describe('optimisedMBeans', function () {
   it('should optimise MBean list', function () {
-    const result = rbac.testing.optimisedMBeans(listMBeans);
+    const result = rbac.testing.optimisedMBeans(listMBeans, admin);
+
+    // cache
     expect(result.cache).toBeDefined();
     expect(result.cache).not.toEqual({});
+    Object.entries(result.cache).forEach(info => {
+      expect(info[1].canInvoke).toBe(true);
+      if (info[1].op) {
+        Object.entries(info[1].op).forEach(op => {
+          var sigs = Array.isArray(op[1]) ? op[1] : [op[1]];
+          sigs.forEach(sig => {
+            expect(sig.canInvoke).toBe(true);
+          });
+        });
+        expect(info[1].opByString).toBeDefined();
+        expect(info[1].opByString).not.toEqual({});
+      }
+    });
+
+    // domains
     expect(result.domains).toBeDefined();
     expect(result.domains).not.toEqual({});
+    Object.entries(result.domains).forEach(domain => {
+      Object.entries(domain[1]).forEach(info => {
+        if (typeof info[1] === 'string') {
+          expect(result.cache[info[1]]).toBeDefined();
+        } else {
+          expect(info[1].canInvoke).toBe(true);
+        }
+        if (info[1].op) {
+          Object.entries(info[1].op).forEach(op => {
+            var sigs = Array.isArray(op[1]) ? op[1] : [op[1]];
+            sigs.forEach(sig => {
+              expect(sig.canInvoke).toBe(true);
+            });
+          });
+          expect(info[1].opByString).toBeDefined();
+          expect(info[1].opByString).not.toEqual({});
+        }
+      });
+    });
+
   });
 });
 
-describe('getProperty', function () {
-  it('should return property values', function () {
-    expect(rbac.testing.getProperty('context=MyCamel,name=\"simple-route\",type=routes', 'type')).toBe('routes');
-    expect(rbac.testing.getProperty('name=PS Old Gen,type=MemoryPool', 'name')).toBe('PS Old Gen');
-    expect(rbac.testing.getProperty('type=Memory', 'destinationType')).toBeNull();
+describe('parseProperties', function () {
+  it('should parse properties as object', function () {
+    expect(rbac.testing.parseProperties('context=MyCamel,name=\"simple-route\",type=routes')).toEqual({
+      context: 'MyCamel',
+      name: '\"simple-route\"',
+      type: 'routes',
+    });
+    expect(rbac.testing.parseProperties('name=PS Old Gen,type=MemoryPool')).toEqual({
+      name: 'PS Old Gen',
+      type: 'MemoryPool',
+    });
+    expect(rbac.testing.parseProperties('type=Memory')).toEqual({
+      type: 'Memory'
+    });
   });
 });
