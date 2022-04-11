@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@hawtio/core": "~4.16.0",
-    "@hawtio/kubernetes-api": "~4.13.3",
-    "@hawtio/oauth": "~4.13.6",
+    "@hawtio/kubernetes-api": "~4.13.4",
+    "@hawtio/oauth": "~4.13.7",
     "eventemitter3": "^3.1.0",
     "jolokia.js": "^1.6.0-1",
     "jsonpath": "^1.0.0"
