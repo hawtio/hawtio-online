@@ -5,6 +5,8 @@ var rbacMBean = 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC';
 var rbacRegistryPath = 'hawtio/type=security,name=RBACRegistry';
 var rbacRegistryMBean = 'hawtio:type=security,name=RBACRegistry';
 
+var rbacRegistryEnabled = process.env['HAWTIO_ONLINE_DISABLE_RBAC_REGISTRY'] !== 'true';
+
 // Expose private functions for testing
 var testing = { optimisedMBeans, identifySpecialMBean, parseProperties, decorateRBAC };
 
@@ -110,24 +112,26 @@ function intercept(request, role, mbeans) {
     return intercepted(value);
   }
 
-  // Intercept client-side RBACRegistry discovery request
-  if (isListRBACRegistry(request)) {
-    return intercepted({
-      class: 'io.hawt.jmx.RBACRegistry',
-      desc: 'Hawtio Online RBACRegistry',
-      op: {
-        list: {
-          desc: 'Hawtio Online RBACRegistry - list',
-          args: [],
-          ret: 'java.util.Map',
-        }
-      },
-    });
-  }
+  if (rbacRegistryEnabled) {
+    // Intercept client-side RBACRegistry discovery request
+    if (isListRBACRegistry(request)) {
+      return intercepted({
+        class: 'io.hawt.jmx.RBACRegistry',
+        desc: 'Hawtio Online RBACRegistry',
+        op: {
+          list: {
+            desc: 'Hawtio Online RBACRegistry - list',
+            args: [],
+            ret: 'java.util.Map',
+          }
+        },
+      });
+    }
 
-  // Intercept client-side optimised list MBeans request
-  if (isExecRBACRegistryList(request)) {
-    return intercepted(optimisedMBeans(mbeans, role));
+    // Intercept client-side optimised list MBeans request
+    if (isExecRBACRegistryList(request)) {
+      return intercepted(optimisedMBeans(mbeans, role));
+    }
   }
 
   return {
