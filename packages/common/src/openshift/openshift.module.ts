@@ -12,6 +12,7 @@ namespace Online {
 
   const OS4 = {
     'dc': 'deploymentconfigs',
+    'rc': 'replicationcontrollers',
     'rs': 'replicasets',
   };
 
