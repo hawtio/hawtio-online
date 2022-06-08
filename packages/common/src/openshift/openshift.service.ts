@@ -110,9 +110,9 @@ namespace Online {
       if (!this.$window.OPENSHIFT_CONFIG || !this.$window.OPENSHIFT_CONFIG.openshift) {
         return this.$q.resolve(undefined);
       }
-      const cluster_version = this.$window.OPENSHIFT_CONFIG.openshift.cluster_version;
+      const clusterVersion = this.$window.OPENSHIFT_CONFIG.openshift.cluster_version;
       // We may want to get the ClusterVersion resource using the Config API available in OpenShift 4
-      return this.$q.resolve(cluster_version);
+      return this.$q.resolve(clusterVersion);
     }
 
     is(mode: HawtioMode): boolean {
@@ -127,5 +127,10 @@ namespace Online {
         this.K8SClientFactory.destroy(collection, watch);
       });
     }
+  }
+
+  export function isOpenShift4(clusterVersion: string): boolean {
+    const major = parseInt((clusterVersion || '4').split('.')[0], 10);
+    return major >= 4;
   }
 }
