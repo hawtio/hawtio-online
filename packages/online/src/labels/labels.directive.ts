@@ -34,6 +34,7 @@ namespace Online {
     constructor(
       $location: ng.ILocationService,
       $timeout: ng.ITimeoutService,
+      openShiftService: OpenShiftService,
     ) {
       'ngInject';
     }
@@ -42,7 +43,13 @@ namespace Online {
       scope.filterAndNavigate = function (key, value) {
         if (scope.kind && scope.projectName) {
           if (!scope.filterCurrentPage) {
-            this.$location.url(scope.navigateUrl || `/project/${scope.projectName}/browse/${scope.kind}`);
+            this.openShiftService.getClusterVersion().then((clusterVersion: string) => {
+              if (isOpenShift4(clusterVersion)) {
+                this.$location.url(scope.navigateUrl || `/k8s/ns/${scope.projectName}/${scope.kind}`);
+              } else {
+                this.$location.url(scope.navigateUrl || `/project/${scope.projectName}/browse/${scope.kind}`);
+              }
+            })
           }
           this.$timeout(function () {
             const selector = {};
