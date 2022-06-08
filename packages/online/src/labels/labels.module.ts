@@ -6,9 +6,9 @@ namespace Online {
     .filter('hashSize', hashSizeFilter)
     .name;
 
-  function labelsDirective($location: ng.ILocationService, $timeout: ng.ITimeoutService) {
+  function labelsDirective($location: ng.ILocationService, $timeout: ng.ITimeoutService, openShiftService: OpenShiftService) {
     'ngInject';
-    return new LabelsDirective($location, $timeout);
+    return new LabelsDirective($location, $timeout, openShiftService);
   }
 
   function hashSizeFilter() {

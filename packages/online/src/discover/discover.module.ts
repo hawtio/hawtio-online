@@ -75,7 +75,7 @@ namespace Online {
   }
 
   function connectUrlFilter() {
-    return (pod, port = 8778) => {
+    return (pod: Pod, port = 8778) => {
       const jolokiaPath = getManagementJolokiaPath(pod, port);
       return new URI().path('/integration/')
         .query({
@@ -86,8 +86,19 @@ namespace Online {
     };
   }
 
-  function podDetailsUrlFilter() {
-    return (pod, openShiftConsoleUrl: string) => UrlHelpers.join(openShiftConsoleUrl, 'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name);
+  function podDetailsUrlFilter(openShiftService: OpenShiftService) {
+    'ngInject';
+    let os4 = false;
+    openShiftService.getClusterVersion().then((clusterVersion => {
+      os4 = isOpenShift4(clusterVersion);
+    }));
+    return (pod: Pod, openShiftConsoleUrl: string) => {
+      if (os4) {
+        return UrlHelpers.join(openShiftConsoleUrl, 'k8s/ns', pod.metadata.namespace, 'pods', pod.metadata.name);
+      } else {
+        return UrlHelpers.join(openShiftConsoleUrl, 'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name);
+      }
+    };
   }
 
   hawtioPluginLoader.addModule(discoverModule);
