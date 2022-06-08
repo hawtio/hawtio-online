@@ -12,7 +12,7 @@ namespace Online {
 
   const OS4 = {
     'dc': 'deploymentconfigs',
-    'rc': 'replicationcontrollers',
+    'rs': 'replicasets',
   };
 
   function openshiftLinkDirective(
@@ -33,10 +33,9 @@ namespace Online {
       link: function ($scope: ng.IScope | any) {
         $q.all([openShiftService.getClusterVersion(), openShiftConsole.url])
           .then(([clusterVersion, consoleUrl]) => {
-            const major = parseInt((clusterVersion || '3').split('.')[0], 10);
             if (consoleUrl) {
-              if (major >= 4) {
-                $scope.url = UrlHelpers.join(consoleUrl, 'k8s', 'ns', $scope.namespace, OS4[$scope.resources] || $scope.resources, $scope.name);
+              if (isOpenShift4(clusterVersion)) {
+                $scope.url = UrlHelpers.join(consoleUrl, 'k8s/ns', $scope.namespace, (OS4[$scope.resources] || $scope.resources), $scope.name);
               } else {
                 $scope.url = UrlHelpers.join(consoleUrl, 'project', $scope.namespace, 'browse', $scope.resources, $scope.name);
               }
