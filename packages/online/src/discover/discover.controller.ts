@@ -99,6 +99,7 @@ namespace Online {
               owner      : owner,
               config     : _.get(pod, ['metadata', 'annotations', 'openshift.io/deployment-config.name'], null),
               version    : _.get(pod, ['metadata', 'annotations', 'openshift.io/deployment-config.latest-version'], null),
+              statefulset: _.get(pod, ['metadata', 'labels', 'statefulset.kubernetes.io/pod-name']) !== undefined,
               deployment : pod.metadata.ownerReferences[0].name,
               namespace  : pod.metadata.namespace,
               replicas   : pods.slice(i, i + j + 1),
@@ -123,6 +124,7 @@ namespace Online {
         sortPods(sortedPods);
         groupedPods = groupPodsByDeployment(sortedPods, groupedPods);
         applyFilters();
+        log.debug('Filtered pods:', this.filteredPods)
       };
 
       const resultCount = () => this.filteredPods
