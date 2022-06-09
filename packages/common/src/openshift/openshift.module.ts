@@ -14,6 +14,7 @@ namespace Online {
     'dc': 'deploymentconfigs',
     'rc': 'replicationcontrollers',
     'rs': 'replicasets',
+    'sts': "statefulsets",
   };
 
   function openshiftLinkDirective(

@@ -49,10 +49,18 @@
                 </openshift-link>
               </div>
               <div ng-if="!pod.config" class="list-group-item-heading">
-                <div class="component-label">Deployment</div>
-                <openshift-link namespace="pod.namespace" resources="'rs'" name="pod.deployment">
-                  {{pod.deployment}}
-                </openshift-link>
+                <div ng-if="!pod.statefulset">
+                  <div class="component-label">Deployment</div>
+                  <openshift-link namespace="pod.namespace" resources="'rs'" name="pod.deployment">
+                    {{pod.deployment}}
+                  </openshift-link>
+                </div>
+                <div ng-if="pod.statefulset">
+                  <div class="component-label">Stateful Set</div>
+                  <openshift-link namespace="pod.namespace" resources="'sts'" name="pod.deployment">
+                    {{pod.deployment}}
+                  </openshift-link>
+                </div>
               </div>
             </div>
           </div>
