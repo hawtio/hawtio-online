@@ -171,7 +171,7 @@ function optimisedMBeans(mbeans, role) {
   Object.entries(mbeans).forEach(infos => {
     var domain = infos[0];
     Object.entries(infos[1]).forEach(i => {
-      var props = i[0];
+      var props = reorderProperties(domain, i[0]);
       var info = i[1];
       addMBeanInfo(cache, domains, visited, domain, props, info);
     });
@@ -179,6 +179,64 @@ function optimisedMBeans(mbeans, role) {
 
   // add RBAC info in advance so that client doesn't need to send another bulky request
   return decorateRBAC(domains, cache, role);
+}
+
+function reorderProperties(domain, props) {
+  if (domain !== 'org.apache.activemq.artemis') {
+    return props;
+  }
+
+  // Artemis plugin requires a specific order of property keys:
+  //   broker > component > name | address > subcomponent > routing-type > queue
+  var properties = parseProperties(props);
+
+  var newProps = '';
+
+  // recurring reorder process
+  var reorder = (key) => {
+    var delimiter = newProps === '' ? '' : ',';
+    if (!properties[key]) {
+      // unknown properties - done
+      newProps += delimiter + toString(properties);
+      return true;
+    }
+    newProps += `${delimiter}${key}=${properties[key]}`;
+    delete properties[key];
+    if (Object.keys(properties).length === 0) {
+      // done
+      return true;
+    }
+    // not yet done
+    return false;
+  };
+
+  // broker > component
+  if (reorder('broker') || reorder('component')) {
+    return newProps;
+  }
+
+  // name
+  if (properties['name']) {
+    if (reorder('name')) {
+      return newProps;
+    } else {
+      // properties with name stop here
+      return newProps + ',' + toString(properties);
+    }
+  }
+
+  // address > subcomponent > routing-type > queue
+  if (reorder('address') || reorder('subcomponent') || reorder('routing-type') || reorder('queue')) {
+    return newProps;
+  }
+
+  return newProps + ',' + toString(properties);
+}
+
+function toString(properties) {
+  return Object.entries(properties)
+    .reduce((str, prop) => str + `${prop[0]}=${prop[1]},`, '')
+    .slice(0, -1);
 }
 
 function addMBeanInfo(cache, domains, visited, domain, props, mbeanInfo) {
