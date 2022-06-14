@@ -174,6 +174,8 @@ describe('optimisedMBeans', function () {
         expect(info[1].opByString).not.toEqual({});
       }
     });
+    expect(Object.keys(result.cache)).toContain('activemq.artemis:address');
+    expect(Object.keys(result.cache)).toContain('activemq.artemis:queue');
 
     // domains
     expect(result.domains).toBeDefined();
@@ -194,6 +196,31 @@ describe('optimisedMBeans', function () {
           });
           expect(info[1].opByString).toBeDefined();
           expect(info[1].opByString).not.toEqual({});
+        }
+
+        // Artemis-specific checks
+        if (domain[0] === 'org.apache.activemq.artemis') {
+          // key order:
+          //   broker > component > name | address > subcomponent > routing-type > queue
+          const order = {
+            'broker': 1,
+            'component': 2,
+            'name': 3,
+            'address': 3,
+            'subcomponent': 4,
+            'routing-type': 5,
+            'queue': 6
+          };
+          const regexp = /([^,]+)=([^,]+)+/g;
+          let match;
+          let previous = 0;
+          while ((match = regexp.exec(info[0])) !== null) {
+            const current = match[1];
+            if ((order[previous] || 0) > order[current]) {
+              fail(`${previous} < ${current} in ${info[0]}`);
+            }
+            previous = current;
+          }
         }
       });
     });
