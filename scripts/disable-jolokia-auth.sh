@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # target dc labeled 'provider=fabric8'
 if [ -z $1 ]; then
@@ -13,7 +13,7 @@ if [ -z $names ]; then
 fi
 
 echo $names | tr " " "\n"
-read -p "Disable Jolokia authentication & SSL for these deployment configs? [y/N]: " yn
+read -p "Disable Jolokia authentication & SSL for these deployment configs? [y/N]: " -r yn
 if [ "$yn" != "y" ]; then
   exit 0
 fi

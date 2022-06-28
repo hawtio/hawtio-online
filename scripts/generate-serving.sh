@@ -25,6 +25,8 @@ while getopts c:k:h OPT; do
       TLS_KEY=$OPTARG;;
     c)
       TLS_CRT=$OPTARG;;
+    *)
+      ;;
   esac
 done
 shift $((OPTIND - 1))
