@@ -11,11 +11,11 @@ RUN yarn install
 RUN gulp --series build site
 
 # Build stage to extract envsubst
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5 as envsubst
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6 as envsubst
 
 RUN microdnf -y install gettext
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6
 
 # njs >= 0.5.x fails to run nginx.js
 ENV NGINX_VERSION 1.18.0-2.el8
