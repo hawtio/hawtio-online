@@ -9,10 +9,10 @@
   dependencies:
     "@types/jquery" "2.0.53"
 
-"@hawtio/core@^4.16.1", "@hawtio/core@~4.16.1":
-  version "4.16.1"
-  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.16.1.tgz#f92675e9aebd1a38135d97b64a09beef311ada76"
-  integrity sha512-B3dfGHiPQKyBdXQLigoDV6GVsaNJsC2SGU1bieOplefQzt/FhXq4zPZ5TY3seXDFa6p1cIlmEvwUmdiDVsA6wA==
+"@hawtio/core@^4.16.3", "@hawtio/core@~4.16.3":
+  version "4.16.3"
+  resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.16.3.tgz#11b2fc8b88577854eca1c14fe00c9848b89b431e"
+  integrity sha512-NpnhoJkeNgly/cGr47HrYTNvpAT769Au5Sxjs2TQDLjWMAkL+MWiNAzpQDDTChkPMafkvxQgw7yz9xxC2w5YuA==
   dependencies:
     "@hawtio/core-dts" "~3.3.0"
     "@patternfly/patternfly" "^2.0.0"
@@ -33,12 +33,12 @@
     typescript "^3.0.3"
     urijs "1.19.0"
 
-"@hawtio/integration@~4.16.9":
-  version "4.16.9"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.16.9.tgz#6575432dc3bf1a99093927935fb521f75eaadbe9"
-  integrity sha512-0gRNkHH0jeV3QvPJarEZnmtCDhryvWc/jcq/c7rNJWlNtxzBDsV62zEEuN5jgJRWU4VsdIgQE1Y9pnd/uoTiAw==
+"@hawtio/integration@~4.16.10":
+  version "4.16.10"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-4.16.10.tgz#8224b436c05f7bdfc4bb4a598d2e732e30a16fec"
+  integrity sha512-fWBLyZNZdbI4B1ZFV+S63q0uHXm0QSxR7xCeHVaKEmN5qEQOcC15kMlmO4b5S/rEKfByCnOweMjyYSSvItutqw==
   dependencies:
-    "@hawtio/core" "^4.16.1"
+    "@hawtio/core" "^4.16.3"
     "@types/angular-cookies" "^1.4.5"
     "@types/angular-mocks" "~1.7.0"
     "@types/angular-ui-bootstrap" "~0.13.46"
@@ -60,13 +60,13 @@
     ng-infinite-scroll "1.3.0"
     patternfly-bootstrap-treeview "~2.1.0"
 
-"@hawtio/kubernetes-api@~4.13.5":
-  version "4.13.5"
-  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-4.13.5.tgz#22ffbd0a9f2e727d0f1ea30744955b6aaae25039"
-  integrity sha512-WgJkTF9sj+8aDr5q2ObQbfDdHZ+YW2CBTCNDLPYqITIPMsTBSdpaaQC07yoTEDi54JkdIJzXuS+DrVRkozgVbg==
+"@hawtio/kubernetes-api@~4.13.6":
+  version "4.13.6"
+  resolved "https://registry.yarnpkg.com/@hawtio/kubernetes-api/-/kubernetes-api-4.13.6.tgz#7867abbb05facb48be5e9e5853e732afdb26210c"
+  integrity sha512-eMPp5cv9Xr7t56cFDzJDa3lsNlVTx1nFARXSUQBE7wB7v5O64vYaBvC5yFE5Y+YP/19zZgofRr0XewVhpWvJVw==
   dependencies:
-    "@hawtio/core" "^4.16.1"
-    "@hawtio/oauth" "^4.13.8"
+    "@hawtio/core" "^4.16.3"
+    "@hawtio/oauth" "^4.13.10"
     eventemitter3 "~3.1.0"
 
 "@hawtio/node-backend@^4.1.0":
@@ -88,12 +88,12 @@
     underscore.string "^3.3.4"
     urijs "^1.18.10"
 
-"@hawtio/oauth@^4.13.8", "@hawtio/oauth@~4.13.8":
-  version "4.13.8"
-  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.13.8.tgz#051a74d271826f05f072e96d5f5028128536d3bc"
-  integrity sha512-QTL4XpPBBPowGwd2CFTLe3B2jldquKYJEfBUbv0xGZ8fKqhoz2bV5KxkFZ9YmlC/mod+OdOHMZFqwAJyDTer1Q==
+"@hawtio/oauth@^4.13.10", "@hawtio/oauth@~4.13.10":
+  version "4.13.10"
+  resolved "https://registry.yarnpkg.com/@hawtio/oauth/-/oauth-4.13.10.tgz#5b9df02995f45b2b1e03ef01373e3a312ea511ef"
+  integrity sha512-XEcoR3H459ux7VNmFjxdg9U+xOI8gBTkc48IbhZiHFNjVQiBjnbECTJBWtfCX4fHA8wCDWsGnwXDqGs6s19lOQ==
   dependencies:
-    "@hawtio/core" "^4.16.1"
+    "@hawtio/core" "^4.16.3"
     "@types/angular-cookies" "^1.4.5"
     angular-cookies "^1.7.9"
     ng-idle "^1.3.2"
@@ -3711,7 +3711,7 @@ lodash.uniq@^4.3.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@4.17.21, lodash@^4.0.0, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@~1.0.1, lodash@~4.17.10, lodash@~4.17.21:
+lodash@4.17.21, lodash@^4.0.0, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.21, lodash@^4.17.4, lodash@~1.0.1, lodash@~4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -3971,10 +3971,10 @@ moment-timezone@^0.4.0, moment-timezone@^0.4.1:
   dependencies:
     moment ">= 2.6.0"
 
-moment@2.20.1, "moment@>= 2.6.0", "moment@>=2.8.0 <3.0.0", moment@^2.10, moment@^2.19.1, moment@^2.20.1, moment@~2.19.3:
-  version "2.20.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
-  integrity sha512-Yh9y73JRljxW5QxN08Fner68eFLxM5ynNOAw2LbIB1YAGeQzZT8QFSUvkAz609Zf+IHhhaUxqZK8dG3W/+HEvg==
+moment@2.29.4, "moment@>= 2.6.0", "moment@>=2.8.0 <3.0.0", moment@^2.10, moment@^2.19.1, moment@^2.29.4, moment@~2.19.3:
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
 
 morgan@~1.6.1:
   version "1.6.1"
