@@ -176,7 +176,7 @@
     "urijs": "1.19.0",
     "minimist": "1.2.0",
     "semver": "5.4.1",
-    "moment": "2.20.1",
+    "moment": "2.29.4",
     "bootstrap-datepicker": "1.7.1",
     "datatables.net-colreorder": "1.4.1",
     "jquery": "2.2.4",
