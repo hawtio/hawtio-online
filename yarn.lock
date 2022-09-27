@@ -787,10 +787,10 @@ arrify@^1.0.0:
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
   integrity sha1-iYUI2iIm84DfkEcoRWhJwVAaSw0=
 
-artemis-plugin-npm@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/artemis-plugin-npm/-/artemis-plugin-npm-1.5.0.tgz#9133ac3f1246dc5b501a19aed8220bd0ccfcaf3c"
-  integrity sha512-2B+ENMY0YPJMMlLdEhlCBEg/c2KzaIR8rGDuA+Eni+pVAHWqNu47NoFJjij2HUhgd68Ccmn30SjsJdpngSaVYQ==
+artemis-plugin-npm@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/artemis-plugin-npm/-/artemis-plugin-npm-1.6.0.tgz#d7c501086bafd2528c65d8b655e807a5b41aef8f"
+  integrity sha512-LeNdl8PwtFi/Ej8tdH288zhSvKPLocwsYHyAR+9x/YG/gl9hINjS5PJJ34KPeMBWwlTsmYyb3N/0RiB2fctmUw==
 
 asap@^2.0.0, asap@~2.0.3:
   version "2.0.6"
