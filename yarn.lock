@@ -9,7 +9,7 @@
   dependencies:
     "@types/jquery" "2.0.53"
 
-"@hawtio/core@^4.16.3", "@hawtio/core@^4.16.4":
+"@hawtio/core@^4.16.4":
   version "4.16.4"
   resolved "https://registry.yarnpkg.com/@hawtio/core/-/core-4.16.4.tgz#f13ebfa72c30ebe9a08e45a49491b9ad0b93e111"
   integrity sha512-Qz2+nP41+1W4MzrRsy+SEADVNvFcLZ2Nek7dmAdGq2B6X8wR1Jp83NPbWkjx9RX29KsoLhuHAld8PumtW4G46g==
@@ -33,12 +33,12 @@
     typescript "^3.0.3"
     urijs "^1.19.9"
 
-"@hawtio/integration@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-5.1.0.tgz#f6900a53831627e4e0713d4d52f336ef6d497d20"
-  integrity sha512-TVoF7OUw4XJUJ++X3m3YLKDZy/cpVjiEck2779+XqZ5gDwlYt+6Q9B7U8P+GhFwTAcNfASrKfkV34sn6B2L0zw==
+"@hawtio/integration@^5.1.3":
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/@hawtio/integration/-/integration-5.1.3.tgz#cdf61128e77307c948a20d2da5e2e081eac8e7f6"
+  integrity sha512-2fkZGtf35n20glUDGki8dfNluRCOO8bX03m+JGGHLUBD57XUCkV7XXz1D5ka94l+6xSqJgYzYH0ttUpPA3AUUw==
   dependencies:
-    "@hawtio/core" "^4.16.3"
+    "@hawtio/core" "^4.16.4"
     "@types/angular-cookies" "^1.4.5"
     "@types/angular-mocks" "~1.7.0"
     "@types/angular-ui-bootstrap" "~0.13.46"
