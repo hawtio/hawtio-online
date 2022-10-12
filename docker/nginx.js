@@ -181,68 +181,70 @@ function proxyJolokiaAgent(req) {
             return reject(403, JSON.stringify(sar));
           });
       })
-      .then(role => {
-        var request = JSON.parse(req.requestBody);
-        var mbeanListRequired;
-        if (Array.isArray(request)) {
-          mbeanListRequired = request.find(r => RBAC.isMBeanListRequired(r));
-          return getPodIP().then(podIP => {
-            return (mbeanListRequired ? listMBeans(podIP) : Promise.resolve()).then(mbeans => {
-              var rbac = request.map(r => RBAC.check(r, role));
-              var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r, role, mbeans));
-              return callJolokiaAgent(podIP, JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request))).then(jolokia => {
-                var body = JSON.parse(jolokia.responseBody);
-                // Unroll intercepted requests
-                var bulk = intercept.reduce((res, rbac, i) => {
-                  if (rbac.intercepted) {
-                    res.push(rbac.response);
-                  } else {
-                    res.push(body.splice(0, 1)[0]);
-                  }
-                  return res;
-                }, []);
-                // Unroll denied requests
-                bulk = rbac.reduce((res, rbac, i) => {
-                  if (rbac.allowed) {
-                    res.push(bulk.splice(0, 1)[0]);
-                  } else {
-                    res.push({
-                      request: request[i],
-                      status: 403,
-                      reason: rbac.reason,
-                    });
-                  }
-                  return res;
-                }, []);
-                // Re-assembled bulk response
-                var response = {
-                  status: jolokia.status,
-                  responseBody: JSON.stringify(bulk),
-                  headersOut: jolokia.headersOut,
-                };
-                // Override the content length that changed while re-assembling the bulk response
-                response.headersOut['Content-Length'] = response.responseBody.length;
-                return response;
-              });
-            });
-          });
-        } else {
-          mbeanListRequired = RBAC.isMBeanListRequired(request);
-          return getPodIP().then(podIP => {
-            return (mbeanListRequired ? listMBeans(podIP) : Promise.resolve()).then(mbeans => {
-              var rbac = RBAC.check(request, role);
-              if (!rbac.allowed) {
-                return reject(403, rbac.reason);
-              }
-              rbac = RBAC.intercept(request, role, mbeans);
+      .then(handleRequestWithRole);
+  }
+
+  function handleRequestWithRole(role) {
+    var request = JSON.parse(req.requestBody);
+    var mbeanListRequired;
+    if (Array.isArray(request)) {
+      mbeanListRequired = request.find(r => RBAC.isMBeanListRequired(r));
+      return getPodIP().then(podIP => {
+        return (mbeanListRequired ? listMBeans(podIP) : Promise.resolve()).then(mbeans => {
+          var rbac = request.map(r => RBAC.check(r, role));
+          var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r, role, mbeans));
+          return callJolokiaAgent(podIP, JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request))).then(jolokia => {
+            var body = JSON.parse(jolokia.responseBody);
+            // Unroll intercepted requests
+            var bulk = intercept.reduce((res, rbac, i) => {
               if (rbac.intercepted) {
-                return Promise.resolve({ status: rbac.response.status, responseBody: JSON.stringify(rbac.response) });
+                res.push(rbac.response);
+              } else {
+                res.push(body.splice(0, 1)[0]);
               }
-              return callJolokiaAgent(podIP, req.requestBody);
-            });
+              return res;
+            }, []);
+            // Unroll denied requests
+            bulk = rbac.reduce((res, rbac, i) => {
+              if (rbac.allowed) {
+                res.push(bulk.splice(0, 1)[0]);
+              } else {
+                res.push({
+                  request: request[i],
+                  status: 403,
+                  reason: rbac.reason,
+                });
+              }
+              return res;
+            }, []);
+            // Re-assembled bulk response
+            var response = {
+              status: jolokia.status,
+              responseBody: JSON.stringify(bulk),
+              headersOut: jolokia.headersOut,
+            };
+            // Override the content length that changed while re-assembling the bulk response
+            response.headersOut['Content-Length'] = response.responseBody.length;
+            return response;
           });
-        }
+        });
       });
+    } else {
+      mbeanListRequired = RBAC.isMBeanListRequired(request);
+      return getPodIP().then(podIP => {
+        return (mbeanListRequired ? listMBeans(podIP) : Promise.resolve()).then(mbeans => {
+          var rbac = RBAC.check(request, role);
+          if (!rbac.allowed) {
+            return reject(403, rbac.reason);
+          }
+          rbac = RBAC.intercept(request, role, mbeans);
+          if (rbac.intercepted) {
+            return Promise.resolve({ status: rbac.response.status, responseBody: JSON.stringify(rbac.response) });
+          }
+          return callJolokiaAgent(podIP, req.requestBody);
+        });
+      });
+    }
   }
 
   return (isRbacEnabled ? proxyJolokiaAgentWithRbac() : proxyJolokiaAgentWithoutRbac())
