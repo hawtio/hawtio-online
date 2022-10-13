@@ -15,9 +15,6 @@ var useForm = process.env['HAWTIO_ONLINE_AUTH'] === 'form';
 
 export default { proxyJolokiaAgent };
 
-// Only Jolokia requests using the POST method are currently supported,
-// as this is more comprehensive and it's what the front-end uses.
-// Still, we may want to support GET requests as well, by adapting the inputs.
 function proxyJolokiaAgent(req) {
   var parts = req.uri.match(/\/management\/namespaces\/(.+)\/pods\/(http|https):(.+):(\d+)\/(.*)/);
   if (!parts) {
@@ -126,7 +123,13 @@ function proxyJolokiaAgent(req) {
   }
 
   function callJolokiaAgent(podIP, request) {
-    return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${path}`, { method: req.method, body: request });
+    var encodedPath = encodeURI(path);
+    req.log(`callJolokiaAgent: ${req.method} /proxy/${protocol}:${podIP}:${port}/${encodedPath}`);
+    if (req.method === 'GET') {
+      return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${encodedPath}`);
+    } else {
+      return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${encodedPath}`, { method: req.method, body: request });
+    }
   }
 
   function proxyJolokiaAgentWithoutRbac() {
@@ -184,8 +187,64 @@ function proxyJolokiaAgent(req) {
       .then(handleRequestWithRole);
   }
 
+  function parseRequest() {
+    if (req.method === 'POST') {
+      return JSON.parse(req.requestBody);
+    }
+
+    // GET method
+    // path: ...jolokia/<type>/<arg1>/<arg2>/...
+    // https://jolokia.org/reference/html/protocol.html#get-request
+    req.log(`parseRequest: ${req.method} path=${path}`);
+    // path is already decoded; no need for decodeURIComponent()
+    var match = path.split('?')[0].match(/.*jolokia\/(read|write|exec|search|list|version)\/?(.*)/);
+    var type = match[1];
+    // Jolokia-specific escaping rules (!*) are not taken care of right now
+    switch (type) {
+      case 'read':
+        // /read/<mbean name>/<attribute name>/<inner path>
+        var args = match[2].split('/');
+        var mbean = args[0];
+        var attribute = args[1];
+        // inner-path not supported
+        return { type, mbean, attribute };
+      case 'write':
+        // /write/<mbean name>/<attribute name>/<value>/<inner path>
+        var args = match[2].split('/');
+        var mbean = args[0];
+        var attribute = args[1];
+        var value = args[2];
+        // inner-path not supported
+        return { type, mbean, attribute, value };
+      case 'exec':
+        // /exec/<mbean name>/<operation name>/<arg1>/<arg2>/....
+        var args = match[2].split('/');
+        var mbean = args[0];
+        var operation = args[1];
+        var value = args[2];
+        var opArgs = args.slice(2);
+        return { type, mbean, operation, arguments: opArgs };
+      case 'search':
+        // /search/<pattern>
+        var mbean = match[2];
+        return { type, mbean };
+      case 'list':
+        // /list/<inner path>
+        var innerPath = match[2];
+        return { type, path: innerPath };
+      case 'version':
+        // /version
+        return { type };
+      default:
+        throw `Unexpected Jolokia GET request: ${path}`;
+    }
+  }
+
   function handleRequestWithRole(role) {
-    var request = JSON.parse(req.requestBody);
+    var request = parseRequest();
+    if (req.method === 'GET') {
+      req.log(`handleRequestWithRole: ${req.method} request=${JSON.stringify(request)}`);
+    }
     var mbeanListRequired;
     if (Array.isArray(request)) {
       mbeanListRequired = request.find(r => RBAC.isMBeanListRequired(r));
@@ -193,40 +252,42 @@ function proxyJolokiaAgent(req) {
         return (mbeanListRequired ? listMBeans(podIP) : Promise.resolve()).then(mbeans => {
           var rbac = request.map(r => RBAC.check(r, role));
           var intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r, role, mbeans));
-          return callJolokiaAgent(podIP, JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request))).then(jolokia => {
-            var body = JSON.parse(jolokia.responseBody);
-            // Unroll intercepted requests
-            var bulk = intercept.reduce((res, rbac, i) => {
-              if (rbac.intercepted) {
-                res.push(rbac.response);
-              } else {
-                res.push(body.splice(0, 1)[0]);
-              }
-              return res;
-            }, []);
-            // Unroll denied requests
-            bulk = rbac.reduce((res, rbac, i) => {
-              if (rbac.allowed) {
-                res.push(bulk.splice(0, 1)[0]);
-              } else {
-                res.push({
-                  request: request[i],
-                  status: 403,
-                  reason: rbac.reason,
-                });
-              }
-              return res;
-            }, []);
-            // Re-assembled bulk response
-            var response = {
-              status: jolokia.status,
-              responseBody: JSON.stringify(bulk),
-              headersOut: jolokia.headersOut,
-            };
-            // Override the content length that changed while re-assembling the bulk response
-            response.headersOut['Content-Length'] = response.responseBody.length;
-            return response;
-          });
+          var requestBody = JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request));
+          return callJolokiaAgent(podIP, requestBody)
+            .then(jolokia => {
+              var body = JSON.parse(jolokia.responseBody);
+              // Unroll intercepted requests
+              var bulk = intercept.reduce((res, rbac, i) => {
+                if (rbac.intercepted) {
+                  res.push(rbac.response);
+                } else {
+                  res.push(body.splice(0, 1)[0]);
+                }
+                return res;
+              }, []);
+              // Unroll denied requests
+              bulk = rbac.reduce((res, rbac, i) => {
+                if (rbac.allowed) {
+                  res.push(bulk.splice(0, 1)[0]);
+                } else {
+                  res.push({
+                    request: request[i],
+                    status: 403,
+                    reason: rbac.reason,
+                  });
+                }
+                return res;
+              }, []);
+              // Re-assembled bulk response
+              var response = {
+                status: jolokia.status,
+                responseBody: JSON.stringify(bulk),
+                headersOut: jolokia.headersOut,
+              };
+              // Override the content length that changed while re-assembling the bulk response
+              response.headersOut['Content-Length'] = response.responseBody.length;
+              return response;
+            });
         });
       });
     } else {
