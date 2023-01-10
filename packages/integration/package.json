@@ -10,7 +10,7 @@
   "dependencies": {
     "@hawtio/integration": "^5.1.3",
     "@hawtio/online-common": "*",
-    "artemis-plugin-npm": "^1.7.0",
+    "artemis-plugin-npm": "^1.8.0",
     "openshift-logos-icon": "^1.6.0"
   },
   "devDependencies": {
