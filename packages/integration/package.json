@@ -8,9 +8,9 @@
     "license": "license-reporter save --xml licenses.xml"
   },
   "dependencies": {
-    "@hawtio/integration": "~4.16.10",
+    "@hawtio/integration": "~4.16.12",
     "@hawtio/online-common": "*",
-    "artemis-plugin-npm": "~1.2.2",
+    "artemis-plugin-npm": "~1.2.4",
     "openshift-logos-icon": "^1.6.0"
   },
   "devDependencies": {
