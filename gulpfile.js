@@ -83,7 +83,7 @@ function backend(root, liveReload) {
     staticAssets: [
       {
         path: '/online',
-        dir: path.join(root, 'online'),
+        dir: path.join(root, 'online-shell'),
       },
       {
         path: '/integration',
@@ -100,7 +100,7 @@ function backend(root, liveReload) {
       }
     ],
     fallback: {
-      '^/online.*': path.join(root, 'online/index.html'),
+      '^/online.*': path.join(root, 'online-shell/index.html'),
       '^/integration.*': path.join(root, 'integration/index.html'),
     },
     liveReload: {
@@ -135,7 +135,7 @@ function backend(root, liveReload) {
 
 const hub = new Hub([
   './packages/common/gulpfile.js',
-  './packages/online/gulpfile.js',
+  './packages/online-shell/gulpfile.js',
   './packages/integration/gulpfile.js',
 ]);
 gulp.registry(hub);

@@ -296,5 +296,10 @@
     "@types/jquery": "2.0.53",
     "uglify-js": "3.14.4",
     "urijs": "1.19.11"
+  },
+  "packageManager": "yarn@3.4.1",
+  "engines": {
+    "yarn": ">=3.4.1",
+    "node": ">=16"
   }
 }
