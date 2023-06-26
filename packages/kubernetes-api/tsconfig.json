@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "es2015",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": false,
+    "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -16,13 +17,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "typeRoots": [
-      "node_modules/@types",
-      "node_modules/@hawtio"
-    ]
+    "jsx": "react"
   },
-  "include": [
-    "src/**/*.ts",
-  ]
+  "include": ["plugins"],
+  "exclude": ["dist", "jest.config.ts"],
 }

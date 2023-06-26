@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>hawtio-kubernetes-api</title>
+  <base href='/' />
+  <meta charset="UTF8" />
+
+  <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly.css" />
+  <link rel="stylesheet" href="node_modules/patternfly/dist/css/patternfly-additions.css" />
+  <link rel="stylesheet" href="node_modules/angular-patternfly/dist/styles/angular-patternfly.css" />
+  <link rel="stylesheet" href="node_modules/angular-resizable/src/angular-resizable.css" />
+  <!-- @hawtio/core -->
+  <link rel="stylesheet" href="node_modules/@hawtio/core/dist/css/patternfly.css" />
+  <link rel="stylesheet" href="node_modules/@hawtio/core/dist/hawtio-core.css" />
+
+  <!-- jquery -->
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <!-- jquery-match-height -->
+  <script src="node_modules/jquery-match-height/dist/jquery.matchHeight-min.js"></script>
+  <!-- datatables -->
+  <script src="node_modules/datatables.net/js/jquery.dataTables.js"></script>
+  <script src="node_modules/datatables.net-select/js/dataTables.select.js"></script>
+  <!-- bootstrap -->
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="node_modules/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
+  <!-- patternfly -->
+  <script src="node_modules/patternfly/dist/js/patternfly.min.js"></script>
+  <!-- angular -->
+  <script src="node_modules/angular/angular.js"></script>
+  <!-- angular-animate -->
+  <script src="node_modules/angular-animate/angular-animate.min.js"></script>
+  <!-- angular-sanitize -->
+  <script src="node_modules/angular-sanitize/angular-sanitize.js"></script>
+  <!-- angular-route -->
+  <script src="node_modules/angular-route/angular-route.min.js"></script>
+  <!-- angular-ui-bootstrap -->
+  <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+  <!-- angular-drag-and-drop-lists -->
+  <script src="node_modules/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
+  <!-- angular-datatables -->
+  <script src="node_modules/angularjs-datatables/dist/angular-datatables.min.js"></script>
+  <script src="node_modules/angularjs-datatables/dist/plugins/select/angular-datatables.select.min.js"></script>
+  <!-- angular-cookies -->
+  <script src="node_modules/angular-cookies/angular-cookies.min.js"></script>
+  <!-- angular-patternfly -->
+  <script src="node_modules/angular-patternfly/dist/angular-patternfly.js"></script>
+  <!-- angular-idle -->
+  <script src="node_modules/ng-idle/angular-idle.js"></script>
+  <!-- lodash -->
+  <script src="node_modules/lodash/lodash.min.js"></script>
+  <!-- urijs -->
+  <script src="node_modules/urijs/src/URI.min.js"></script>
+  <!-- js-logger -->
+  <script src="node_modules/js-logger/src/logger.min.js"></script>
+  <!-- @hawtio/core -->
+  <script src="node_modules/@hawtio/core/dist/hawtio-core.js"></script>
+  <!-- @hawtio-oauth -->
+  <script src="node_modules/@hawtio/oauth/dist/hawtio-oauth.js"></script>
+  <!-- eventemitter3 -->
+  <script src="node_modules/eventemitter3/index.js"></script>
+
+</head>
+
+<body>
+  <script type="text/ng-template" id="data">
+    <div>
+      <h3>
+        {{kind}}
+        <span ng-show="namespace"> in namespace "{{namespace}}"</span>
+        <span ng-show="labelSelector"> with labels: {{labelSelector}}</span>
+      </h3>
+      <span class="pull-right"><a title="Delete block" href="" ng-click="deleteScope()">X</a></span>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Delete</th>
+            <th>Kind</th>
+            <th>Name</th>
+            <th>Labels</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="obj in objects track by $index">
+            <td><a href="" ng-click="delete(obj)">X</a>
+            <td>{{obj.kind}}</td>
+            <td>{{obj.metadata.name}}</td>
+            <th>
+              <dl ng-repeat="(key, value) in obj.metadata.labels">
+                <dt>{{key}}</dt>
+                <dd>{{value}}</dd>
+              </dl>
+            </th>
+          </tr>
+        </tbody>
+      </table>
+      <div>
+        <a href="" class="btn btn-default" ng-click="create()">Create</a>
+      </div>
+    </div>
+  </script>
+  <div class="container-fluid">
+    <div ng-controller="TestStaticController" ng-init="init('pods', 'test');">
+      <div class="pull-right">
+        <a class="btn btn-default" ng-click="logout()">Logout</a>
+      </div>
+      <div ng-include="'data'"></div>
+    </div>
+    <hr />
+    <div ng-controller="TestWatcherController" ng-init="init('pods', 'test');">
+      <div ng-include="'data'"></div>
+    </div>
+    <!--
+      <div ng-controller="TestWatcherController" ng-init="init('services');">
+        <div ng-include="'data'"></div>
+      </div>
+      <div ng-controller="TestWatcherController" ng-init="init('projects');">
+        <div ng-include="'data'"></div>
+      </div>
+      <div ng-controller="TestWatcherController" ng-init="init('namespaces');">
+        <div ng-include="'data'"></div>
+      </div>
+      <div ng-controller="TestWatcherController" ng-init="init('events', 'default');">
+        <div ng-include="'data'"></div>
+      </div>
+      <div ng-controller="TestWatcherController" ng-init="init('pods', 'default');">
+        <div ng-include="'data'"></div>
+      </div>
+    -->
+  </div>
+  <script src="test-plugins/example.js"></script>
+
+  <!-- add any scripts under dist/ here -->
+  <script src="dist/hawtio-kubernetes-api.js"></script>
+</body>
+
+</html>

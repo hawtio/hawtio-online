@@ -15,9 +15,7 @@
     "app"
   ],
   "scripts": {
-    "start": "gulp",
     "start:app": "yarn workspace app start",
-    "build": "gulp build",
     "build:all": "yarn workspaces foreach -v -i -pt --exclude @hawtio/next-root run build",
     "build:app": "yarn workspace app build",
     "build:camel-model": "yarn workspace @hawtio/camel-model build",

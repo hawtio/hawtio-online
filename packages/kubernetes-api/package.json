@@ -1,10 +1,10 @@
 {
-  "name": "@hawtio/online-integration",
+  "name": "@hawtio/online-kubernetes-api",
   "private": true,
   "version": "0.0.0",
-  "description": "Integration into the openshift console",
-  "main": "dist/hawtio-online-integration.js",
-  "types": "dist/hawtio-online-integration.d.ts",
+  "description": "An API for interacting with kubernetes clusters",
+  "main": "dist/hawtio-kubernetes-api.js",
+  "types": "dist/hawtio-kubernetes-api.d.ts",
   "author": "Hawtio developer team",
   "license": "Apache-2.0",
   "files": [
@@ -31,14 +31,16 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/online-common": "*",
     "@hawtio/react": "^0.3.0-dev.6",
-    "artemis-plugin-npm": "^1.8.0",
-    "openshift-logos-icon": "^1.6.0",
+    "@types/urijs": "^1.19.19",
+    "babel-jest": "^29.5.0",
+    "eventemitter3": "~3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
-    "typescript": "^4.9.5"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
+    "urijs": "^1.19.11"
   },
   "devDependencies": {
     "eslint-config-react-app": "^7.0.1",
@@ -47,6 +49,7 @@
     "jest-environment-jsdom": "^29.5.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^2.2.2",
+    "js-logger": "^1.6.1",
     "replace": "^1.2.2",
     "ts-jest": "^29.1.0",
     "tsup": "^7.0.0"
