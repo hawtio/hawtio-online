@@ -26,6 +26,8 @@ export interface KubernetesConfig {
 export interface OpenShiftOAuthConfig {
   oauth_authorize_uri: string
   oauth_client_id: string
+  oauth_metadata_uri?: string
+  issuer?: string
 }
 
 export interface GoogleOAuthConfig {

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+token=$(oc whoami -t)
+
+curl -k \
+  -H "Authorization: Bearer ${token}" \
+  https://api.crc.testing:6443/apis/apps.openshift.io/v1
+

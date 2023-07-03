@@ -31,10 +31,11 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/react": "^0.3.0-dev.6",
-    "@types/urijs": "^1.19.19",
+    "@hawtio/react": "^0.4.0-dev.1",
     "babel-jest": "^29.5.0",
     "eventemitter3": "~3.1.0",
+    "jest-extended": "^4.0.0",
+    "jquery": "^3.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
@@ -43,9 +44,12 @@
     "urijs": "^1.19.11"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.2",
+    "@types/jquery": "^3.5.16",
+    "@types/urijs": "^1.19.19",
     "eslint-config-react-app": "^7.0.1",
     "hawtio-node-backend": "^2.0.5",
-    "jest": "^29.5.0",
+    "jest": "^29.6.0",
     "jest-environment-jsdom": "^29.5.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^2.2.2",

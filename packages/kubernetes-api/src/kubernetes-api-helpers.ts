@@ -1,10 +1,11 @@
 import { WatchTypes, NamespacedTypes, ExtensionTypes, KindTypes } from './kubernetes-api-model'
-import { K8S_PREFIX, K8S_API_VERSION, K8S_EXT_PREFIX, K8S_EXT_VERSION, OS_PREFIX, OS_API_VERSION, masterUrl } from './kubernetes-api-globals'
-import { HawtioUtilUrls, HawtioUtilObjects } from '@hawtio/react'
+import { K8S_PREFIX, K8S_API_VERSION, K8S_EXT_PREFIX, K8S_EXT_VERSION, OS_PREFIX, OS_API_VERSION, kubernetesAPI } from './kubernetes-api-globals'
 import URI from 'urijs'
+import { joinPaths } from './utils/urls'
+import { isObject, pathGetString, pathGetObject } from './utils/objects'
 
 export function masterApiUrl(): string {
-  return masterUrl || ""
+  return kubernetesAPI.getMasterUrl()
 }
 
 export function namespaced(kind: string): boolean {
@@ -22,15 +23,15 @@ export function namespaced(kind: string): boolean {
 }
 
 export function kubernetesApiPrefix(): string {
-  return HawtioUtilUrls.joinPaths(K8S_PREFIX, K8S_API_VERSION)
+  return joinPaths(K8S_PREFIX, K8S_API_VERSION)
 }
 
   export function kubernetesApiExtensionPrefix(): string {
-    return HawtioUtilUrls.joinPaths(K8S_EXT_PREFIX, K8S_EXT_VERSION)
+    return joinPaths(K8S_EXT_PREFIX, K8S_EXT_VERSION)
   }
 
   export function openshiftApiPrefix(kind: string) {
-    return HawtioUtilUrls.joinPaths(OS_PREFIX, apiGroupForKind(kind), OS_API_VERSION)
+    return joinPaths(OS_PREFIX, apiGroupForKind(kind), OS_API_VERSION)
   }
 
   function apiForKind(kind: string): string {
@@ -122,7 +123,7 @@ export function kubernetesApiPrefix(): string {
    * Returns the single 'kind' of an object from the collection kind
    */
   export function toKindName(kind: Record<string, unknown> | string): string | null {
-    if (HawtioUtilObjects.isObject(kind)) {
+    if (isObject(kind)) {
       return getKind(kind)
     }
     switch (kind) {
@@ -166,7 +167,7 @@ export function kubernetesApiPrefix(): string {
    * Returns the collection kind of an object from the singular kind
    */
   export function toCollectionName(kind: Record<string, unknown> | string): string | null {
-    if (HawtioUtilObjects.isObject(kind)) {
+    if (isObject(kind)) {
       const k = getKind(kind)
       if (!k) return null
 
@@ -246,7 +247,7 @@ export function kubernetesApiPrefix(): string {
   //     objects: []
   //   }
   //   objects.forEach((object) => {
-  //     if (HawtioUtilObjects.isArray(object)) {
+  //     if (isArray(object)) {
   //       object.forEach((o) => {
   //         answer.objects.push(o)
   //       })
@@ -278,17 +279,7 @@ export function kubernetesApiPrefix(): string {
     const namespace = getNamespace(entity)
     const kind = getKind(entity) || ''
     const name = getName(entity) || ''
-    return HawtioUtilUrls.joinPaths((namespace ? namespace : ""), kind, name)
-  }
-
-  function pathGetString(entity: Record<string, unknown>, path: string[]|string): string | null {
-    const v = HawtioUtilObjects.pathGet(entity, path)
-    return HawtioUtilObjects.isString(v) ? v as string : null
-  }
-
-  function pathGetObject(entity: Record<string, unknown>, path: string[]|string): Record<string, unknown> | null {
-    const v = HawtioUtilObjects.pathGet(entity, path)
-    return HawtioUtilObjects.isObject(v) ? v as Record<string, unknown> : null
+    return joinPaths((namespace ? namespace : ""), kind, name)
   }
 
   export function getUID(entity: Record<string, unknown>): string | null {
@@ -308,7 +299,9 @@ export function kubernetesApiPrefix(): string {
     return pathGetObject(entity, ["metadata", "labels"])
   }
 
-  export function getName(entity: Record<string, unknown>): string | null {
+  export function getName(entity: Record<string, unknown> | null): string | null {
+    if (!entity) return null
+
     return pathGetString(entity, ["metadata", "name"]) ||
       pathGetString(entity, "name") || pathGetString(entity, "id")
   }

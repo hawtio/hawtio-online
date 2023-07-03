@@ -19,6 +19,6 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": ["plugins"],
+  "include": ["src"],
   "exclude": ["dist", "jest.config.ts"],
 }

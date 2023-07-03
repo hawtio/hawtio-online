@@ -1,6 +1,12 @@
-import { Logger } from '@hawtio/react'
+import { ILogger, Logger } from '@hawtio/react'
 import EventEmitter from 'eventemitter3'
-import { WatchActions, WatchTypes } from './kubernetes-api-model'
+import URI from 'urijs'
+import { K8S_EXT_PREFIX, kubernetesAPI } from './kubernetes-api-globals'
+import { equals, fullName, getApiVersion, getErrorObject, getKind, getName, getNamespace, masterApiUrl, namespaced, prefixForKind, toCollectionName, toKindName, wsUrl } from './kubernetes-api-helpers'
+import { Collection, K8SOptions, WatchActions, WatchTypes } from './kubernetes-api-model'
+import { cloneObject, isObject } from './utils/objects'
+import { isString } from './utils/strings'
+import { debounce } from './utils/timer'
 
 const log = Logger.get('hawtio-k8s-objects')
 
@@ -8,7 +14,7 @@ function getKey(kind: string, namespace?: string) {
   return namespace ? namespace + '-' + kind : kind
 }
 
-function beforeSend(request) {
+function beforeSend(request: any) {
   const token = HawtioOAuth.getOAuthToken()
   if (token) {
     request.setRequestHeader('Authorization', 'Bearer ' + token)
@@ -23,9 +29,9 @@ export const pollingOnly = [WatchTypes.IMAGE_STREAM_TAGS]
  **/
 class ObjectList extends EventEmitter {
 
-  public triggerChangedEvent = _.debounce(() => {
+  public triggerChangedEvent = debounce(() => {
     this.emit(WatchActions.ANY, this._objects)
-  }, 75, { trailing: true })
+  }, 75)
 
   private _initialized = false
   private _objects: Array<any> = []
@@ -77,7 +83,7 @@ class ObjectList extends EventEmitter {
 
   public set objects(objs: any[]) {
     this._objects.length = 0
-    _.forEach(objs, (obj) => {
+    objs.forEach((obj) => {
       if (!obj.kind) {
         obj.kind = toKindName(this.kind)
       }
@@ -88,13 +94,13 @@ class ObjectList extends EventEmitter {
   }
 
   public hasNamedItem(item: any) {
-    return _.some(this._objects, (obj: any) => {
+    return this.objects.some((obj: any) => {
     return getName(obj) === getName(item)
     })
   }
 
   public getNamedItem(name: string) {
-    return _.find(this._objects, (obj: any) => {
+    return this.objects.find((obj: any) => {
       return getName(obj) === name
     })
   }
@@ -107,14 +113,14 @@ class ObjectList extends EventEmitter {
     return true
   }
 
-  public added(object) {
+  public added(object: any) {
     if (!this.belongs(object)) {
       return
     }
     if (!object.kind) {
       object.kind = toKindName(this.kind)
     }
-    if (_.some(this._objects, (obj) => {
+    if (this.objects.some((obj) => {
       return equals(obj, object)
     })) {
       this.modified(object)
@@ -125,38 +131,39 @@ class ObjectList extends EventEmitter {
     this.triggerChangedEvent()
   }
 
-  public modified(object) {
+  public modified(object: any) {
     if (!this.belongs(object)) {
       return
     }
     if (!object.kind) {
       object.kind = toKindName(this.kind)
     }
-    if (!_.some(this._objects, (obj) => {
+    if (! this.objects.some((obj) => {
       return equals(obj, object)
     })) {
       this.added(object)
       return
     }
-    _.forEach(this._objects, (obj) => {
+    this.objects.forEach((obj) => {
       if (equals(obj, object)) {
-        angular.copy(object, obj)
+        obj = cloneObject(object)
         this.emit(WatchActions.MODIFIED, object)
         this.triggerChangedEvent()
       }
     })
   }
 
-  public deleted(object) {
+  public deleted(object: any) {
     if (!this.belongs(object)) {
       return
     }
-    const deleted = _.remove(this._objects, (obj) => {
-      return equals(obj, object)
-    })
-    if (deleted) {
-      this.emit(WatchActions.DELETED, deleted[0])
-      this.triggerChangedEvent()
+    const index = this._objects.indexOf(object)
+    if (index > -1) {
+      const deleted = this._objects.splice(index, 1)
+      if (deleted) {
+        this.emit(WatchActions.DELETED, deleted[0])
+        this.triggerChangedEvent()
+      }
     }
   }
 }
@@ -173,18 +180,18 @@ function compare(old: Array<any>, _new: Array<any>): CompareResult {
     modified: [],
     deleted: []
   }
-  _.forEach(_new, (newObj) => {
-    const oldObj = _.find(old, (o) => equals(o, newObj))
+  _new.forEach((newObj) => {
+    const oldObj = old.find((o) => equals(o, newObj))
     if (!oldObj) {
       answer.added.push(newObj)
       return
     }
-    if (angular.toJson(oldObj) !== angular.toJson(newObj)) {
+    if (JSON.stringify(oldObj) !== JSON.stringify(newObj)) {
       answer.modified.push(newObj)
     }
   })
-  _.forEach(old, (oldObj) => {
-    const newObj = _.find(_new, (o) => equals(o, oldObj))
+  old.forEach((oldObj) => {
+    const newObj = _new.find((o) => equals(o, oldObj))
     if (!newObj) {
       answer.deleted.push(oldObj)
     }
@@ -198,7 +205,7 @@ function compare(old: Array<any>, _new: Array<any>): CompareResult {
 class ObjectPoller {
 
   private _lastFetch = <Array<any>>[]
-  private log: Logging.Logger = undefined
+  private log: ILogger
   private _connected = false
   private _interval = 5000
   private retries: number = 0
@@ -219,7 +226,7 @@ class ObjectPoller {
     }
     $.ajax(this.restURL, <any>{
       method: 'GET',
-      success: (data) => {
+      success: (data: any) => {
         if (!this._connected) {
           return
         }
@@ -227,17 +234,24 @@ class ObjectPoller {
         const items = (data && data.items) ? data.items : []
         const result = compare(this._lastFetch, items)
         this._lastFetch = items
-        _.forIn(result, (items: any[], action: string) => {
-          _.forEach(items, (item: any) => {
-            const event = {
-              data: angular.toJson({
-                type: action.toUpperCase(),
-                object: _.clone(item)
-              }, true)
-            }
-            this.handler.onmessage(event)
-          })
-        })
+
+        // TODO
+        //
+        // Needs fixing but not sure what with yet
+        //
+        throw new Error("To be Implemented")
+
+        // _.forIn(result, (items: any[], action: string) => {
+        //   items.forEach((item: any) => {
+        //     const event = {
+        //       data: JSON.stringify({
+        //         type: action.toUpperCase(),
+        //         object: cloneObject(item)
+        //       })
+        //     }
+        //     this.handler.onmessage(event)
+        //   })
+        // })
         this.handler.list.initialize()
         //log.debug("Result:", result)
         if (this._connected) {
@@ -305,14 +319,14 @@ class ObjectPoller {
  * Manages the websocket connection to the backend and passes events to the ObjectList
  */
 class WSHandler {
+  private self: CollectionImpl
+  private log: ILogger
+  private messageLog: ILogger
   private retries: number = 0
   private connectTime: number = 0
-  private socket: WebSocket
-  private poller: ObjectPoller
-  private self: CollectionImpl = undefined
-  private _list: ObjectList
-  private log: Logging.Logger = undefined
-  private messageLog: Logging.Logger = undefined
+  private socket: WebSocket | undefined = undefined
+  private poller: ObjectPoller | undefined = undefined
+  private _list: ObjectList | undefined = undefined
   private destroyed = false
 
   constructor(private _self: CollectionImpl) {
@@ -325,8 +339,8 @@ class WSHandler {
     this._list = _list
   }
 
-  get list() {
-    return this._list || <ObjectList>{ objects: [] }
+  get list(): ObjectList {
+    return this._list || new ObjectList()
   }
 
   get collection() {
@@ -355,8 +369,8 @@ class WSHandler {
   }
 
   public send(data: any) {
-    if (!_.isString(data)) {
-      data = angular.toJson(data)
+    if (!isString(data)) {
+      data = JSON.stringify(data)
     }
     this.socket.send(data)
   }
@@ -672,7 +686,7 @@ export class CollectionImpl implements Collection {
         const namespace = getNamespace(item) || this._namespace
         let prefix = this.getPrefix()
         const kind = this._kind
-        if (!KubernetesAPI.isOpenShift && (kind === "buildconfigs" || kind === "BuildConfig")) {
+        if (!kubernetesAPI.isOpenShift() && (kind === "buildconfigs" || kind === "BuildConfig")) {
           prefix = UrlHelpers.join("/api/v1/proxy/namespaces", namespace, "/services/jenkinshift:80/", prefix)
           log.debug("Using buildconfigs URL override")
         }
@@ -717,9 +731,12 @@ export class CollectionImpl implements Collection {
       // updating an existing object
       let resourceVersion = item.metadata.resourceVersion
       if (!resourceVersion) {
-        const current = this.list.getNamedItem(getName(item))
-        resourceVersion = current.metadata.resourceVersion
-        item.metadata.resourceVersion = resourceVersion
+        const name = getName(item)
+        if (name) {
+          const current = this.list.getNamedItem(name)
+          resourceVersion = current.metadata.resourceVersion
+          item.metadata.resourceVersion = resourceVersion
+        }
       }
     }
     if (!url) {
@@ -739,7 +756,7 @@ export class CollectionImpl implements Collection {
       $.ajax(url, <any>{
         method: method,
         contentType: 'application/json',
-        data: angular.toJson(item),
+        data: JSON.stringify(item),
         processData: false,
         success: (data) => {
           try {
@@ -840,18 +857,18 @@ interface ClientMap {
 }
 
 /*
- * Factory implementation that's available as an angular service
+ * Factory implementation of client
  */
 class K8SClientFactoryImpl {
-  private log: Logging.Logger = Logger.get('hawtio-k8s-client-factory')
+  private log: ILogger = Logger.get('hawtio-k8s-client-factory')
   private _clients = <ClientMap>{}
 
   public create(options: any, namespace?: any): Collection {
     let kind = options
     let _options = options
-    if (angular.isObject(options)) {
-      kind = options.kind
-      namespace = options.namespace || namespace
+    if (isObject(options)) {
+      kind = (options as any).kind
+      namespace = (options as any).namespace || namespace
     } else {
       _options = {
         kind: kind,
@@ -891,7 +908,7 @@ class K8SClientFactoryImpl {
   }
 }
 
-export const K8SClientFactory: K8SClientFactory = new K8SClientFactoryImpl()
+export const k8SClientFactory = new K8SClientFactoryImpl()
 
 const NO_KIND = "No kind in supplied options"
 const NO_OBJECT = "No object in supplied options"
@@ -908,7 +925,7 @@ export function get(options: K8SOptions): void {
   if (!options.kind) {
     throw NO_KIND
   }
-  const client = K8SClientFactory.create(options)
+  const client = k8SClientFactory.create(options)
   const success = (data: any[]) => {
     if (options.success) {
       try {
@@ -917,7 +934,7 @@ export function get(options: K8SOptions): void {
         log.debug("Supplied success callback threw error:", err)
       }
     }
-    K8SClientFactory.destroy(client)
+    k8SClientFactory.destroy(client)
   }
   client.get(success)
   client.connect()
@@ -1000,7 +1017,7 @@ export function del(options: any): void {
   options.kind = options.kind || toCollectionName(options.object)
   options.namespace = namespaced(options.kind) ? options.namespace || getNamespace(options.object) : null
   options.apiVersion = options.apiVersion || getApiVersion(options.object)
-  const client = K8SClientFactory.create(options)
+  const client = k8SClientFactory.create(options)
   const success = (data) => {
     if (options.success) {
       try {
@@ -1009,7 +1026,7 @@ export function del(options: any): void {
         log.debug("Supplied success callback threw error:", err)
       }
     }
-    K8SClientFactory.destroy(client)
+    k8SClientFactory.destroy(client)
   }
   const error = (err) => {
     if (options.error) {
@@ -1019,7 +1036,7 @@ export function del(options: any): void {
         log.debug("Supplied error callback threw error:", err)
       }
     }
-    K8SClientFactory.destroy(client)
+    k8SClientFactory.destroy(client)
   }
   client.delete(options.object, success, error)
 }
@@ -1043,7 +1060,7 @@ export function put(options: any): void {
   options.kind = options.kind || toCollectionName(options.object)
   options.namespace = namespaced(options.kind) ? options.namespace || getNamespace(options.object) : null
   options.apiVersion = options.apiVersion || getApiVersion(options.object)
-  const client = K8SClientFactory.create(options)
+  const client = k8SClientFactory.create(options)
   client.get((objects) => {
     const success = (data) => {
       if (options.success) {
@@ -1053,7 +1070,7 @@ export function put(options: any): void {
           log.debug("Supplied success callback threw error:", err)
         }
       }
-      K8SClientFactory.destroy(client)
+      k8SClientFactory.destroy(client)
     }
     const error = (err) => {
       if (options.error) {
@@ -1063,7 +1080,7 @@ export function put(options: any): void {
           log.debug("Supplied error callback threw error:", err)
         }
       }
-      K8SClientFactory.destroy(client)
+      k8SClientFactory.destroy(client)
     }
     client.put(options.object, success, error)
   })
@@ -1074,15 +1091,16 @@ export function watch(options: K8SOptions) {
   if (!options.kind) {
     throw NO_KIND
   }
-  const client = <Collection>K8SClientFactory.create(options)
-  const handle = client.watch(options.success)
-  const self = {
-    client: client,
-    handle: handle,
-    disconnect: () => {
-      K8SClientFactory.destroy(self.client, self.handle)
+  const client = <Collection>k8SClientFactory.create(options)
+  if (options.success) {
+    const handle = client.watch(options.success)
+    const self = {
+      client: client,
+      handle: handle,
+      disconnect: () => {
+        k8SClientFactory.destroy(self.client, self.handle)
+      }
     }
+    client.connect()
   }
-  client.connect()
-  return self
 }
