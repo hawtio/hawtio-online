@@ -1,6 +1,6 @@
 {
-  "name": "@hawtio/online",
-  "version": "2.0.0",
+  "name": "@hawtio/online-root",
+  "version": "0.0.0",
   "private": true,
   "description": "Containerized version of hawtio for kubernetes",
   "author": "Hawtio developer team",
@@ -11,8 +11,7 @@
   },
   "workspaces": [
     "packages/*",
-    "docker",
-    "app"
+    "docker"
   ],
   "scripts": {
     "start:app": "yarn workspace app start",

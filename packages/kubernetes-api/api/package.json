@@ -1,10 +1,9 @@
 {
-  "name": "@hawtio/online-common",
-  "private": true,
+  "name": "@hawtio/online-kubernetes-api",
   "version": "0.0.0",
-  "description": "Common functions and utilities",
-  "main": "dist/hawtio-online-common.js",
-  "types": "dist/hawtio-online-common.d.ts",
+  "description": "An API for interacting with kubernetes clusters",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "Hawtio developer team",
   "license": "Apache-2.0",
   "files": [
@@ -17,9 +16,7 @@
   "keywords": [
     "hawtio",
     "camel",
-    "console",
-    "jmx",
-    "react"
+    "kubernetes"
   ],
   "scripts": {
     "build": "tsup --clean",
@@ -31,19 +28,25 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "eventemitter3": "^3.1.0",
-    "jolokia.js": "^1.6.0-1",
-    "jsonpath": "^1.0.0",
+    "@hawtio/react": "^0.4.0-dev.1",
+    "eventemitter3": "~3.1.0",
+    "jquery": "^3.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
-    "typescript": "^4.9.5"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
+    "urijs": "^1.19.11"
   },
   "devDependencies": {
-    "@types/jsonpath": "^0.2.0",
+    "@types/jest": "^29.5.2",
+    "@types/jquery": "^3.5.16",
+    "@types/urijs": "^1.19.19",
+    "babel-jest": "^29.5.0",
     "eslint-config-react-app": "^7.0.1",
-    "jest": "^29.5.0",
+    "jest": "^29.6.0",
     "jest-environment-jsdom": "^29.5.0",
+    "jest-extended": "^4.0.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^2.2.2",
     "replace": "^1.2.2",
@@ -58,5 +61,8 @@
   "engines": {
     "yarn": ">=3.6.0",
     "node": ">=16"
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }

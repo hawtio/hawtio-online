@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@hawtio/online-common": "*",
-    "@hawtio/react": "^0.3.0-dev.6",
+    "@hawtio/react": "^0.4.0-dev.1",
     "artemis-plugin-npm": "^1.8.0",
     "openshift-logos-icon": "^1.6.0",
     "react": "^18.2.0",

@@ -1,70 +1,54 @@
 {
-  "name": "@hawtio/online-kubernetes-api",
+  "name": "@hawtio/kubernetes-api-root",
   "private": true,
   "version": "0.0.0",
-  "description": "An API for interacting with kubernetes clusters",
-  "main": "dist/hawtio-kubernetes-api.js",
-  "types": "dist/hawtio-kubernetes-api.d.ts",
   "author": "Hawtio developer team",
   "license": "Apache-2.0",
-  "files": [
-    "dist"
-  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/hawtio/hawtio-online.git"
+    "url": "https://github.com/api/api-next.git"
   },
-  "keywords": [
-    "hawtio",
-    "camel",
-    "console",
-    "jmx",
-    "react"
+  "workspaces": [
+    "api",
+    "app"
   ],
   "scripts": {
-    "build": "tsup --clean",
-    "build:watch": "tsup --watch",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "replace-version": "replace __PACKAGE_VERSION_PLACEHOLDER__ $npm_package_version ./dist/index.js",
-    "prepack": "yarn build && yarn replace-version"
-  },
-  "dependencies": {
-    "@hawtio/react": "^0.4.0-dev.1",
-    "babel-jest": "^29.5.0",
-    "eventemitter3": "~3.1.0",
-    "jest-extended": "^4.0.0",
-    "jquery": "^3.7.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-markdown": "^8.0.7",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.5",
-    "urijs": "^1.19.11"
+    "start": "concurrently -n api,app \"yarn build:api:watch\" \"yarn start:app\"",
+    "start:app": "yarn workspace app start",
+    "build": "yarn build:api",
+    "build:all": "yarn workspaces foreach -v -i -pt --exclude @hawtio/kubernetes-api-root run build",
+    "build:app": "yarn workspace @hawtio/kubernetes-api-app build",
+    "build:api": "yarn workspace @hawtio/kubernetes-api build",
+    "build:api:watch": "yarn workspace @hawtio/online-kubernetes-api build:watch",
+    "test": "yarn test:api",
+    "test:all": "yarn workspaces foreach -v -i -pt --exclude @hawtio/kubernetes-api-root run test",
+    "test:api": "yarn workspace @hawtio/online-kubernetes-api test",
+    "test:api:watch": "yarn workspace @hawtio/online-kubernetes-api test:watch",
+    "lint": "yarn eslint api/src/ app/src/",
+    "lint:fix": "yarn lint --fix",
+    "format:check": "yarn prettier --check .",
+    "format:fix": "yarn prettier --write .",
+    "release:api": "yarn workspace @hawtio/online-kubernetes-api npm publish --tolerate-republish"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.2",
-    "@types/jquery": "^3.5.16",
-    "@types/urijs": "^1.19.19",
+    "@typescript-eslint/eslint-plugin": "^5.50.0",
+    "@typescript-eslint/parser": "^5.50.0",
+    "concurrently": "^8.2.0",
+    "cz-conventional-changelog": "3.3.0",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-config-react-app": "^7.0.1",
-    "hawtio-node-backend": "^2.0.5",
-    "jest": "^29.6.0",
-    "jest-environment-jsdom": "^29.5.0",
-    "jest-fetch-mock": "^3.0.3",
-    "jest-watch-typeahead": "^2.2.2",
-    "js-logger": "^1.6.1",
-    "replace": "^1.2.2",
-    "ts-jest": "^29.1.0",
-    "tsup": "^7.0.0"
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "3.0.0"
   },
-  "peerDependencies": {
-    "react": "^16.8 || ^17 || ^18",
-    "react-dom": "^16.8 || ^17 || ^18"
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "packageManager": "yarn@3.6.0",
   "engines": {
-    "yarn": ">=3.6.0",
-    "node": ">=16"
+    "yarn": ">=3.6.0"
   }
 }

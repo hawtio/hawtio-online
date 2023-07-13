@@ -1,0 +1,46 @@
+{
+  "name": "@hawtio/online-kubernetes-api-app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test --watchAll=false --passWithNoTests",
+    "test:coverage": "yarn test --coverage",
+    "deploy": "yarn build && cp build/index.html build/200.html && surge build/ hawtio-next.surge.sh"
+  },
+  "dependencies": {
+    "@craco/craco": "^7.1.0",
+    "@hawtio/online-kubernetes-api": "workspace:*",
+    "@hawtio/react": "^0.4.0-dev.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^3.3.2"
+  },
+  "devDependencies": {
+    "craco-esbuild": "^0.5.2",
+    "dotenv-webpack": "^8.0.1",
+    "hawtio-node-backend": "^2.0.5",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "urijs": "^1.19.11"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "packageManager": "yarn@3.6.0",
+  "engines": {
+    "yarn": ">=3.6.0",
+    "node": ">=16"
+  }
+}

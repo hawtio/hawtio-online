@@ -1,7 +1,0 @@
-{
-  "branding": {
-    "appName": "hawtio-kubernetes-api",
-    "appLogoUrl": "node_modules/@hawtio/core/dist/img/hawtio-logo.svg"
-  },
-  "disabledRoutes": []
-}
