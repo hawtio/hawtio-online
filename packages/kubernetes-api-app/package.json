@@ -16,12 +16,12 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^3.3.2"
+    "web-vitals": "^3.4.0"
   },
   "devDependencies": {
     "craco-esbuild": "^0.5.2",
     "dotenv-webpack": "^8.0.1",
-    "hawtio-node-backend": "^2.0.5",
+    "hawtio-node-backend": "^2.1.3",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "urijs": "^1.19.11"
