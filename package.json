@@ -69,7 +69,7 @@
       "path": "cz-conventional-changelog"
     }
   },
-  "packageManager": "yarn@3.6.0",
+  "packageManager": "yarn@3.6.1",
   "engines": {
     "yarn": ">=3.4.1",
     "node": ">=16"
