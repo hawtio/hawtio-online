@@ -72,7 +72,7 @@ module.exports = () => {
         webpackConfig['resolve'] = {
           modules: [
             path.resolve(__dirname, 'node_modules'),
-            path.resolve(__dirname, '../../../node_modules'),
+            path.resolve(__dirname, '../../node_modules'),
           ],
           extensions: extensions,
           alias: alias,
