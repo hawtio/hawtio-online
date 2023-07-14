@@ -84,10 +84,12 @@ module.exports = () => {
         }
 
         // ***** Debugging *****
+        /*
         const fs = require('fs')
         const util = require('node:util')
         const out = `output = ${util.inspect(webpackConfig.output)}\n\nplugins = ${util.inspect(webpackConfig.plugins)}\n\nresolve = ${util.inspect(webpackConfig.resolve)}`
         fs.writeFile('__webpackConfig__.txt', out, err => err && console.error(err))
+        */
         // ***** Debugging *****
 
         return webpackConfig
