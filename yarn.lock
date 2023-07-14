@@ -2601,7 +2601,6 @@ __metadata:
   dependencies:
     "@types/jsonpath": ^0.2.0
     eslint-config-react-app: ^7.0.1
-    eventemitter3: ^3.1.0
     jest: ^29.5.0
     jest-environment-jsdom: ^29.5.0
     jest-fetch-mock: ^3.0.3
@@ -2684,7 +2683,6 @@ __metadata:
     "@types/urijs": ^1.19.19
     babel-jest: ^29.5.0
     eslint-config-react-app: ^7.0.1
-    eventemitter3: ~3.1.0
     jest: ^29.6.0
     jest-environment-jsdom: ^29.5.0
     jest-extended: ^4.0.0
@@ -2714,7 +2712,6 @@ __metadata:
     "@types/jquery": ^3.5.16
     "@types/urijs": ^1.19.19
     babel-jest: ^29.5.0
-    eventemitter3: ~3.1.0
     hawtio-node-backend: ^2.0.5
     jest: ^29.6.0
     jest-environment-jsdom: ^29.5.0
@@ -9750,13 +9747,6 @@ __metadata:
     stream-combiner: ^0.2.2
     through: ^2.3.8
   checksum: 0650df28f3facbe811dfdcea28783b22a8efebd16e762e40aea6b1fcddf237d4c2f3fb32eef7764ffa74776881517107eb3d23e9d4dc2ddd2fa881e3a117e841
-  languageName: node
-  linkType: hard
-
-"eventemitter3@npm:^3.1.0, eventemitter3@npm:~3.1.0":
-  version: 3.1.2
-  resolution: "eventemitter3@npm:3.1.2"
-  checksum: 81e4e82b8418f5cfd986d2b4a2fa5397ac4eb8134e09bcb47005545e22fdf8e9e61d5c053d34651112245aae411bdfe6d0ad5511da0400743fef5fc38bfcfbe3
   languageName: node
   linkType: hard
 
