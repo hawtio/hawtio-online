@@ -1,8 +1,8 @@
-import * as initFn from './kubernetes-api-init'
+import * as initFn from './init'
 import path from 'path'
 import { pathGet } from './utils/objects'
-import { KubernetesConfig, OpenShiftOAuthConfig } from './kubernetes-api-model'
-import { kubernetesAPI } from './kubernetes-api-globals'
+import { KubernetesConfig, OpenShiftOAuthConfig } from './model'
+import { kubernetesAPI } from './globals'
 import { hawtio } from '@hawtio/react'
 
 function defaultMockFetch() {

@@ -1,5 +1,5 @@
 import { Logger } from '@hawtio/react'
-import { KubernetesConfig, OpenShiftOAuthConfig } from './kubernetes-api-model'
+import { KubernetesConfig, OpenShiftOAuthConfig } from './model'
 
 export const pluginName = 'KubernetesAPI'
 export const log = Logger.get('hawtio-k8s-api')

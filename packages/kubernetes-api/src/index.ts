@@ -1,5 +1,5 @@
 import { HawtioPlugin, configManager } from '@hawtio/react'
-import { kubernetesAPIInit } from './kubernetes-api-init'
+import { kubernetesAPIInit } from './init'
 
 export const registerKubernetesAPI: HawtioPlugin = () => {
 
@@ -9,4 +9,4 @@ export const registerKubernetesAPI: HawtioPlugin = () => {
   kubernetesAPIInit()
 }
 
-export * from './kubernetes-api-globals'
+export * from './globals'

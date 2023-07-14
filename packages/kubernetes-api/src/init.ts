@@ -1,8 +1,8 @@
 import { HawtioPlugin, hawtio, configManager, jolokiaService } from '@hawtio/react'
 import URI from 'urijs'
 import { pollingOnly } from './client'
-import { kubernetesAPI, log } from './kubernetes-api-globals'
-import { KeyCloakAuthConfig, KubernetesConfig, WatchTypes } from './kubernetes-api-model'
+import { kubernetesAPI, log } from './globals'
+import { KeyCloakAuthConfig, KubernetesConfig, WatchTypes } from './model'
 import { isBlank, isString } from './utils/strings'
 
 declare global {
