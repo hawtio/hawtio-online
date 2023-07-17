@@ -1,7 +1,6 @@
 import * as initFn from './init'
 import path from 'path'
-import { pathGet } from './utils/objects'
-import { KubernetesConfig, OpenShiftOAuthConfig } from './model'
+import fs from 'fs'
 import { kubernetesAPI } from './globals'
 import { hawtio } from '@hawtio/react'
 
@@ -19,15 +18,14 @@ function defaultMockFetch() {
   })
 }
 
+const configFilePath = path.resolve(__dirname, 'testdata', 'osconsole', 'config.json')
+const configJson = fs.readFileSync(configFilePath, { encoding: 'utf8', flag: 'r' })
+let expConfig = JSON.parse(configJson)
 
 describe('init-functions', () => {
 
-  beforeAll(async () => {
-    const configFile = path.resolve(__dirname, 'testdata', 'osconsole', 'config.js')
-    await import(configFile)
-  })
-
   beforeEach(() => {
+    expConfig = JSON.parse(configJson)
     fetchMock.resetMocks()
     defaultMockFetch()
   })
@@ -38,9 +36,9 @@ describe('init-functions', () => {
     defaultMockFetch()
   })
 
-  test('process-config', (done) => {
-    const oSOAuthConfig = pathGet(window, ['window', 'OPENSHIFT_CONFIG', 'openshift']) as OpenShiftOAuthConfig
-    expect(oSOAuthConfig).not.toBeNull()
+  test('process-config', async () => {
+    expect(expConfig).toBeDefined()
+    expect(expConfig.openshift).toBeDefined()
 
     const response = {
       authorization_endpoint: 'http://localhost/auth',
@@ -52,44 +50,40 @@ describe('init-functions', () => {
      * for the oauth_metadata_uri
      */
     fetchMock.mockResponse(req => {
-      if (req.url === oSOAuthConfig.oauth_metadata_uri) {
-
+      if (req.url === 'osconsole/config.json') {
+        return Promise.resolve(JSON.stringify(expConfig))
+      }
+      else if (req.url === expConfig.openshift.oauth_metadata_uri) {
         return Promise.resolve(JSON.stringify(response))
       }
 
       return Promise.resolve({})
     })
 
-    // Ensure that done() is called to complete the test
-    const doneCb = (success: boolean) => {
-      expect(success).toBeTruthy()
+    const result = await initFn.fetchConfig()
+    expect(result).toBeTruthy()
 
-      const kubeConfig = kubernetesAPI.getKubeConfig()
-      expect(kubeConfig).toBeDefined()
+    const kubeConfig = kubernetesAPI.getKubeConfig()
+    expect(kubeConfig).toBeDefined()
 
-      const oSOAuthConfig = kubernetesAPI.getOSOAuthConfig()
-      expect(oSOAuthConfig).toBeDefined()
+    const oSOAuthConfig = kubernetesAPI.getOSOAuthConfig()
+    expect(oSOAuthConfig).toBeDefined()
 
-      expect(oSOAuthConfig?.oauth_authorize_uri).toEqual(response.authorization_endpoint)
-      expect(oSOAuthConfig?.issuer).toEqual(response.issuer)
-      done()
-    }
-
-    initFn.processConfig(doneCb)
+    expect(oSOAuthConfig?.oauth_authorize_uri).toEqual(response.authorization_endpoint)
+    expect(oSOAuthConfig?.issuer).toEqual(response.issuer)
   })
 
   test('extract-master', () => {
+    expect(expConfig).toBeDefined()
+    expect(expConfig.openshift).toBeDefined()
+
     hawtio.setBasePath('http://localhost:3000')
 
-    const kubeConfig: KubernetesConfig = window['OPENSHIFT_CONFIG']
-    expect(kubernetesAPI.getKubeConfig()).toBeDefined()
+    expConfig.openshift.oauth_client_id = 'gjdjf'
+    expConfig.openshift.oauth_authorize_uri = 'http://localhost/auth'
+    expConfig.openshift.issuer = 'test'
 
-    const oSOAuthConfig = kubernetesAPI.getKubeConfig().openshift as OpenShiftOAuthConfig
-    expect(oSOAuthConfig).toBeDefined()
-    oSOAuthConfig.oauth_client_id = 'gjdjf'
-    oSOAuthConfig.oauth_authorize_uri = 'http://localhost/auth'
-    oSOAuthConfig.issuer = 'test'
-    kubernetesAPI.setKubeConfig(kubeConfig)
+    kubernetesAPI.setKubeConfig(expConfig)
     expect(kubernetesAPI.getOSOAuthConfig()?.issuer).toBeDefined()
 
     initFn.extractMaster()

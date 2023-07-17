@@ -14,7 +14,7 @@
     "docker"
   ],
   "scripts": {
-    "start:k8": "concurrently -n kubernetes-api,kubernetes-api-app \"yarn build:k8api:watch\" \"yarn start:k8app\"",
+    "start:k8": "yarn build:k8api && yarn start:k8app",
     "start:k8app": "yarn workspace @hawtio/online-kubernetes-api-app start",
     "build:k8": "yarn build:k8api && yarn build:k8app",
     "build:k8app": "yarn workspace @hawtio/online-kubernetes-api-app build",
