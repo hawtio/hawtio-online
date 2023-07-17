@@ -1,9 +1,8 @@
-import { HawtioPlugin, hawtio, configManager, jolokiaService } from '@hawtio/react'
+import { hawtio } from '@hawtio/react'
 import URI from 'urijs'
-import $ from 'jquery'
 import { pollingOnly } from './client'
 import { kubernetesAPI, log } from './globals'
-import { KeyCloakAuthConfig, KubernetesConfig, WatchTypes } from './model'
+import { KubernetesConfig, WatchTypes } from './model'
 import { isBlank, isString } from './utils/strings'
 
 async function processConfig(config: KubernetesConfig): Promise<boolean> {
@@ -17,11 +16,22 @@ async function processConfig(config: KubernetesConfig): Promise<boolean> {
     log.debug('Fetching OAuth server metadata from:', config.openshift.oauth_metadata_uri)
 
     const response = await fetch(config.openshift.oauth_metadata_uri)
-    if (response.ok) {
-      const metadata = await response.json()
-      if (metadata) {
-        config.openshift.oauth_authorize_uri = metadata.authorization_endpoint
-        config.openshift.issuer = metadata.issuer
+    if (response?.ok) {
+      try {
+        const metadata = await response.json()
+        if (metadata) {
+          config.openshift.oauth_authorize_uri = metadata.authorization_endpoint
+          config.openshift.issuer = metadata.issuer
+        }
+      } catch (error) {
+        const e: Error = new Error("Cannot parse the oauth metadata uri")
+
+        if (error instanceof Error) {
+          e.message = e.message + ': ' + error.message
+        }
+
+        kubernetesAPI.setError(e)
+        console.error(e)
       }
     }
   }
@@ -34,11 +44,24 @@ async function processConfig(config: KubernetesConfig): Promise<boolean> {
 
 export async function fetchConfig(): Promise<boolean> {
   const configResponse = await fetch('osconsole/config.json')
-  if (configResponse.ok) {
-    const config = await configResponse.json()
-    return processConfig(config)
+  if (configResponse?.ok) {
+    try {
+      const config = await configResponse.json()
+      return processConfig(config)
+    } catch (error) {
+      const e: Error = new Error("Cannot parse the kubernetes config.json")
+
+      if (error instanceof Error) {
+        e.message = e.message + ': ' + error.message
+      }
+
+      kubernetesAPI.setError(e)
+      console.error(e)
+    }
   } else {
-    log.error("Failed to obtain config.json: ", configResponse.statusText)
+    const message = "Failed to obtain config.json: " +  configResponse.statusText
+    kubernetesAPI.setError(new Error(message))
+    log.error(message)
   }
 
   return false

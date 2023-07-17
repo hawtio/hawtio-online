@@ -3,6 +3,7 @@ import { registerKubernetesAPI } from '@hawtio/online-kubernetes-api'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
+import { Kubernetes } from './kubernetes'
 
 // Configure the console
 const configure = () => {
@@ -17,7 +18,7 @@ hawtio.bootstrap()
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <h1>Kubernetes API</h1>
+    <Kubernetes />
   </React.StrictMode>,
 )
 

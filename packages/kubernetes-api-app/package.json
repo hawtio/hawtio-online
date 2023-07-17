@@ -13,6 +13,7 @@
     "@craco/craco": "^7.1.0",
     "@hawtio/online-kubernetes-api": "workspace:*",
     "@hawtio/react": "^0.4.0-dev.1",
+    "@patternfly/react-core": "^4.276.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",

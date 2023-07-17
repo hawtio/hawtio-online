@@ -2636,6 +2636,7 @@ __metadata:
     "@craco/craco": ^7.1.0
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": ^0.4.0-dev.1
+    "@patternfly/react-core": ^4.276.8
     craco-esbuild: ^0.5.2
     dotenv-webpack: ^8.0.1
     hawtio-node-backend: ^2.1.3
