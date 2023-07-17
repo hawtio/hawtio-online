@@ -1,51 +1,70 @@
-import { HawtioPlugin, hawtio, configManager, jolokiaService } from '@hawtio/react'
+import { hawtio } from '@hawtio/react'
 import URI from 'urijs'
 import { pollingOnly } from './client'
-import { kubernetesAPI, log } from './kubernetes-api-globals'
-import { KeyCloakAuthConfig, KubernetesConfig, WatchTypes } from './kubernetes-api-model'
+import { kubernetesAPI, log } from './globals'
+import { KubernetesConfig, WatchTypes } from './model'
 import { isBlank, isString } from './utils/strings'
 
-declare global {
-  interface Window {
-    OPENSHIFT_CONFIG: KubernetesConfig
-    KeycloakConfig: KeyCloakAuthConfig
-  }
-}
+async function processConfig(config: KubernetesConfig): Promise<boolean> {
+  log.debug('Fetched kubernetes config:', config)
 
-export async function processConfig(fetchedCb: (success: boolean) => void) {
-  log.debug('Fetched openshift config:', window['OPENSHIFT_CONFIG'])
-  log.debug('Fetched keycloak config:', window['KeycloakConfig'])
-
-  kubernetesAPI.setKubeConfig(window.OPENSHIFT_CONFIG)
-  const oSOAuthConfig = window.OPENSHIFT_CONFIG.openshift
-  if (!oSOAuthConfig) {
-    fetchedCb(false)
-    return
+  if (!config || !config.openshift) {
+    return false
   }
 
-  if (!oSOAuthConfig.oauth_authorize_uri && oSOAuthConfig.oauth_metadata_uri) {
-    log.debug('Fetching OAuth server metadata from:', oSOAuthConfig.oauth_metadata_uri)
+  if (!config.openshift.oauth_authorize_uri && config.openshift.oauth_metadata_uri) {
+    log.debug('Fetching OAuth server metadata from:', config.openshift.oauth_metadata_uri)
 
-    const response = await fetch(oSOAuthConfig.oauth_metadata_uri) as Response
-    if (response.ok) {
-      const metadata = await response.json()
-      if (metadata) {
-        oSOAuthConfig.oauth_authorize_uri = metadata.authorization_endpoint
-        oSOAuthConfig.issuer = metadata.issuer
+    const response = await fetch(config.openshift.oauth_metadata_uri)
+    if (response?.ok) {
+      try {
+        const metadata = await response.json()
+        if (metadata) {
+          config.openshift.oauth_authorize_uri = metadata.authorization_endpoint
+          config.openshift.issuer = metadata.issuer
+        }
+      } catch (error) {
+        const e: Error = new Error("Cannot parse the oauth metadata uri")
+
+        if (error instanceof Error) {
+          e.message = e.message + ': ' + error.message
+        }
+
+        kubernetesAPI.setError(e)
+        console.error(e)
       }
     }
   }
 
   // Update kube config with any changes
-  kubernetesAPI.setKubeConfig(window.OPENSHIFT_CONFIG)
-  fetchedCb(isString(oSOAuthConfig.oauth_authorize_uri) && ! isBlank(oSOAuthConfig.oauth_authorize_uri))
+  kubernetesAPI.setKubeConfig(config)
+  return isString(kubernetesAPI.getOSOAuthConfig()?.oauth_authorize_uri) &&
+    ! isBlank(kubernetesAPI.getOSOAuthConfig()?.oauth_authorize_uri)
 }
 
-export function fetchConfig(fetchedCb: (success: boolean) => void) {
-  $.getScript('osconsole/config.js')
-    .always(() => {
-      processConfig(fetchedCb)
-  })
+export async function fetchConfig(): Promise<boolean> {
+  const configResponse = await fetch('osconsole/config.json')
+  if (configResponse?.ok) {
+    try {
+      const config = await configResponse.json()
+      return processConfig(config)
+    } catch (error) {
+      const e: Error = new Error("Cannot parse the kubernetes config.json")
+
+      if (error instanceof Error) {
+        e.message = e.message + ': ' + error.message
+      }
+
+      kubernetesAPI.setError(e)
+      console.error(e)
+    }
+  } else {
+    const message = "Failed to obtain config.json: " +  configResponse.statusText
+    kubernetesAPI.setError(new Error(message))
+    log.error(message)
+  }
+
+  return false
 }
 
 export function extractMaster() {
@@ -125,22 +144,20 @@ export function isTargetOpenshift() {
 
 export function kubernetesAPIInit() {
 
-  const fetchConfigDep = (success: boolean) => {
-    if (!success)
-      log.warn("Failed to fetch kubernetes config")
+  fetchConfig()
+    .then((result: boolean) => {
+      if (result && ! kubernetesAPI.getKubeConfig()) {
+        extractMaster()
 
-    extractMaster()
+        isTargetOpenshift()
 
-    isTargetOpenshift()
+        // TODO
+        // determine if following line is required
+        // K8S_PREFIX = Core.trimLeading(Core.pathGet(osConfig, ['api', 'k8s', 'prefix']) || K8S_PREFIX, '/');
 
-    // TODO
-    // determine if following line is required
-    // K8S_PREFIX = Core.trimLeading(Core.pathGet(osConfig, ['api', 'k8s', 'prefix']) || K8S_PREFIX, '/');
-
-    if (!kubernetesAPI.isOpenShift()) {
-      pollingOnly.push(WatchTypes.BUILD_CONFIGS)
-    }
-  }
-
-  fetchConfig(fetchConfigDep)
+        if (!kubernetesAPI.isOpenShift()) {
+          pollingOnly.push(WatchTypes.BUILD_CONFIGS)
+        }
+      }
+    })
 }

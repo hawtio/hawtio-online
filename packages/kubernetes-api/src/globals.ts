@@ -1,5 +1,5 @@
 import { Logger } from '@hawtio/react'
-import { KubernetesConfig, OpenShiftOAuthConfig } from './kubernetes-api-model'
+import { KubernetesConfig, OpenShiftOAuthConfig } from './model'
 
 export const pluginName = 'KubernetesAPI'
 export const log = Logger.get('hawtio-k8s-api')
@@ -16,6 +16,7 @@ class KubernetesAPI {
   private kubeConfig: KubernetesConfig|null = null
   private masterUrl = ""
   private openShift = false
+  private error: Error|null = null
 
   getKubeConfig(): KubernetesConfig {
     return this.kubeConfig as KubernetesConfig
@@ -43,6 +44,18 @@ class KubernetesAPI {
 
   setOpenshift(openshift: boolean) {
     this.openShift = openshift
+  }
+
+  hasError() {
+    return this.error !== null
+  }
+
+  getError() {
+    return this.error
+  }
+
+  setError(error: Error) {
+    this.error = error
   }
 }
 

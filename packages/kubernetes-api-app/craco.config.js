@@ -41,6 +41,10 @@ module.exports = () => {
                 singleton: true,
                 requiredVersion: dependencies['react-router-dom'],
               },
+              '@hawtio/react': {
+                singleton: true,
+                requiredVersion: dependencies['@hawtio/react'],
+              },
               '@hawtio/online-kubernetes-api': {
                 singleton: true,
                 // Hardcoding needed because it cannot handle yarn 'workspace:*' version
@@ -72,7 +76,7 @@ module.exports = () => {
         webpackConfig['resolve'] = {
           modules: [
             path.resolve(__dirname, 'node_modules'),
-            path.resolve(__dirname, '../../../node_modules'),
+            path.resolve(__dirname, '../../node_modules'),
           ],
           extensions: extensions,
           alias: alias,
@@ -84,10 +88,12 @@ module.exports = () => {
         }
 
         // ***** Debugging *****
+        /*
         const fs = require('fs')
         const util = require('node:util')
         const out = `output = ${util.inspect(webpackConfig.output)}\n\nplugins = ${util.inspect(webpackConfig.plugins)}\n\nresolve = ${util.inspect(webpackConfig.resolve)}`
         fs.writeFile('__webpackConfig__.txt', out, err => err && console.error(err))
+        */
         // ***** Debugging *****
 
         return webpackConfig

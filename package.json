@@ -7,38 +7,29 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hawtio/hawtio-next.git"
+    "url": "https://github.com/hawtio/hawtio-online.git"
   },
   "workspaces": [
     "packages/*",
     "docker"
   ],
   "scripts": {
-    "start:app": "yarn workspace app start",
-    "build:all": "yarn workspaces foreach -v -i -pt --exclude @hawtio/next-root run build",
-    "build:app": "yarn workspace app build",
-    "build:camel-model": "yarn workspace @hawtio/camel-model build",
-    "build:hawtio": "yarn workspace @hawtio/react build",
-    "build:hawtio:watch": "yarn workspace @hawtio/react build:watch",
-    "test": "yarn test:bats && yarn test:docker && yarn test:nginx",
-    "test:all": "yarn workspaces foreach -v -i -pt --exclude @hawtio/next-root run test",
-    "test:hawtio": "yarn workspace @hawtio/react test",
-    "test:hawtio:watch": "yarn workspace @hawtio/react test:watch",
-    "lint": "yarn eslint packages/hawtio/src/ packages/camel-model/src packages/hawtio/scripts/ app/src/",
-    "lint:fix": "yarn lint --fix",
-    "format:check": "yarn prettier --check .",
-    "format:fix": "yarn prettier --write .",
-    "generate:camel-model": "yarn workspace @hawtio/camel-model generate",
-    "release:camel-model": "yarn workspace @hawtio/camel-model npm publish --tolerate-republish",
-    "release:hawtio": "yarn workspace @hawtio/react npm publish --tolerate-republish",
-    "start-cluster": "gulp --master=`oc whoami --show-server` --mode=cluster",
-    "start-namespace": "gulp --master=`oc whoami --show-server` --mode=namespace --namespace=`oc project -q`",
-    "site": "gulp site",
+    "start:k8": "yarn build:k8api && yarn start:k8app",
+    "start:k8app": "yarn workspace @hawtio/online-kubernetes-api-app start",
+    "build:k8": "yarn build:k8api && yarn build:k8app",
+    "build:k8app": "yarn workspace @hawtio/online-kubernetes-api-app build",
+    "build:k8api": "yarn workspace @hawtio/online-kubernetes-api build",
+    "build:k8api:watch": "yarn workspace @hawtio/online-kubernetes-api build:watch",
+    "test:k8api": "yarn workspace @hawtio/online-kubernetes-api test",
+    "test:k8api:watch": "yarn workspace @hawtio/online-kubernetes-api test:watch",
+    "lint": "yarn workspaces foreach -v -i -pt --exclude @hawtio/online-root eslint src/",
+    "lint:fix": "yarn workspaces foreach -v -i -pt --exclude @hawtio/online-root eslint --fix src/",
+    "format:check": "yarn workspaces foreach -v -i -pt --exclude @hawtio/online-root yarn prettier --check .",
+    "format:fix": "yarn workspaces foreach -v -i -pt --exclude @hawtio/online-root yarn prettier --write .",
     "image": "docker build -t docker.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest} .",
     "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml -o=docker/licenses",
     "gen:proxying": "./scripts/generate-proxying.sh",
     "gen:serving": "./scripts/generate-serving.sh",
-    "test:bats": "cd docker/osconsole/ && bats config.bats",
     "test:docker": "jasmine docker/*.spec.js",
     "test:nginx": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js",
     "deploy:k8s:namespace": "kubectl apply --kustomize deploy/k8s/namespace/",
@@ -48,21 +39,16 @@
     "kustomize:image": "cd deploy/base && kustomize edit set image hawtio/online=docker.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
   },
   "devDependencies": {
-    "@hawtio/node-backend": "^4.1.4",
-    "@typescript-eslint/eslint-plugin": "^5.50.0",
-    "@typescript-eslint/parser": "^5.50.0",
-    "bats": "^1.5.0",
-    "bats-assert": "bats-core/bats-assert#v2.0.0",
-    "bats-support": "bats-core/bats-support#v0.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
     "concurrently": "^8.2.0",
     "cz-conventional-changelog": "3.3.0",
-    "eslint": "^8.33.0",
+    "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "js-logger": "^0.9.14",
-    "prettier": "2.8.8"
+    "prettier": "3.0.0"
   },
   "config": {
     "commitizen": {
@@ -71,7 +57,7 @@
   },
   "packageManager": "yarn@3.6.1",
   "engines": {
-    "yarn": ">=3.4.1",
+    "yarn": ">=3.6.0",
     "node": ">=16"
   }
 }
