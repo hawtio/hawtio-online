@@ -127,26 +127,87 @@ module.exports = () => {
       },
     },
     devServer: (devServerConfig, { env, paths, proxy, allowedHost }) => {
-      const kubeBase = process.env.KUBERNETES_MASTER || 'https://localhost:8443'
+
+      const master_uri = process.env.CLUSTER_MASTER
+      if (! master_uri) {
+        console.error('The CLUSTER_MASTER environment variable must be set!')
+        process.exit(1)
+      }
+
+      const namespace = process.env.CLUSTER_NAMESPACE || 'hawtio-dev'
+      const mode = process.env.HAWTIO_MODE || 'cluster'
+      console.log('Using Cluster URL:', master_uri)
+      console.log('Using Cluster Namespace:', namespace)
+      console.log('Using Hawtio Cluster Mode:', mode)
+
+      const kubeBase = master_uri
       const kube = uri(kubeBase)
-      console.log("Connecting to Kubernetes on: " + kube)
 
       devServerConfig.compress = true
       devServerConfig.liveReload = true
-      devServerConfig.port = 2772
+      devServerConfig.port = process.env.PORT || 2772
+
+      /*
+       * Proxy to bring the cluster into the app as a redirect.
+       * Avoids issues with CORS
+       */
       devServerConfig.proxy = {
-        '/kubernetes': {
-          target: kube.protocol() + '://' + kube.hostname() + ':' + kube.port + '/'
+        '/master': {
+          target: master_uri,
+          pathRewrite: { '^/master': '' },
+          secure: false
         },
-        '/jolokia': {
-          target: kube.protocol() + '://' + kube.hostname() + ':' + kube.port + '/hawtio/jolokia'
-        }
       }
+
+      const proxiedMaster = `http://localhost:${devServerConfig.port}/master`
+
       devServerConfig.static = {
         directory: path.join(__dirname, 'public'),
       }
 
       devServerConfig.onBeforeSetupMiddleware = (devServer) => {
+
+        /*
+         * Function to construct the config.json file
+         * and make it available for authentication
+         */
+        const osconsole = (_, res) => {
+          const oscConfig = {
+            master_uri: proxiedMaster,
+            hawtio: {
+              mode: mode
+            },
+          }
+
+          switch (mode) {
+            case 'namespace':
+              oscConfig.hawtio.namespace = namespace
+              oscConfig.openshift = {
+                oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
+                oauth_client_id: `system:serviceaccount:${namespace}:hawtio-online-dev`,
+                scope: `user:info user:check-access role:edit:${namespace}`,
+              }
+              break
+            case 'cluster':
+              oscConfig.openshift = {
+                oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
+                oauth_client_id: `hawtio-online-dev`,
+                scope: `user:info user:check-access user:list-projects role:edit:*`,
+              }
+              break
+            default:
+              console.error('Invalid value for the Hawtio Online mode, must be one of [cluster, namespace]');
+              process.exit(1);
+          }
+
+          res.set('Content-Type', 'application/javascript')
+          res.send(JSON.stringify(oscConfig))
+        }
+
+        devServer.app.get('/osconsole/config.json', osconsole)
+        devServer.app.get('/online/osconsole/config.json', osconsole)
+        devServer.app.get('/integration/osconsole/config.json', osconsole)
+
         const username = 'developer'
         const login = false
         const proxyEnabled = false

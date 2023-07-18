@@ -15,24 +15,25 @@ async function processConfig(config: KubernetesConfig): Promise<boolean> {
   if (!config.openshift.oauth_authorize_uri && config.openshift.oauth_metadata_uri) {
     log.debug('Fetching OAuth server metadata from:', config.openshift.oauth_metadata_uri)
 
-    const response = await fetch(config.openshift.oauth_metadata_uri)
-    if (response?.ok) {
-      try {
+    try {
+      const response = await fetch(config.openshift.oauth_metadata_uri)
+      if (response?.ok) {
         const metadata = await response.json()
         if (metadata) {
           config.openshift.oauth_authorize_uri = metadata.authorization_endpoint
           config.openshift.issuer = metadata.issuer
         }
-      } catch (error) {
-        const e: Error = new Error("Cannot parse the oauth metadata uri")
-
-        if (error instanceof Error) {
-          e.message = e.message + ': ' + error.message
-        }
-
-        kubernetesAPI.setError(e)
-        console.error(e)
       }
+    } catch (error) {
+      const e: Error = new Error("Cannot parse the oauth metadata uri")
+
+      if (error instanceof Error) {
+        e.message = e.message + ': ' + error.message
+      }
+
+      kubernetesAPI.setError(e)
+      console.error(e)
+      return false
     }
   }
 
@@ -43,25 +44,25 @@ async function processConfig(config: KubernetesConfig): Promise<boolean> {
 }
 
 export async function fetchConfig(): Promise<boolean> {
-  const configResponse = await fetch('osconsole/config.json')
-  if (configResponse?.ok) {
-    try {
+  try {
+    const configResponse = await fetch('osconsole/config.json')
+    if (configResponse?.ok) {
       const config = await configResponse.json()
       return processConfig(config)
-    } catch (error) {
-      const e: Error = new Error("Cannot parse the kubernetes config.json")
-
-      if (error instanceof Error) {
-        e.message = e.message + ': ' + error.message
-      }
-
-      kubernetesAPI.setError(e)
-      console.error(e)
+    } else {
+      const message = "Failed to obtain config.json: " +  configResponse.statusText
+      kubernetesAPI.setError(new Error(message))
+      log.error(message)
     }
-  } else {
-    const message = "Failed to obtain config.json: " +  configResponse.statusText
-    kubernetesAPI.setError(new Error(message))
-    log.error(message)
+  } catch (error) {
+    const e: Error = new Error("Cannot parse the kubernetes config.json")
+
+    if (error instanceof Error) {
+      e.message = e.message + ': ' + error.message
+    }
+
+    kubernetesAPI.setError(e)
+    console.error(e)
   }
 
   return false
@@ -119,34 +120,36 @@ export function extractMaster() {
   }
 }
 
-export function isTargetOpenshift() {
-  let isOpenShift = false
+async function isTargetOpenshift() {
 
   const testURL = new URI(kubernetesAPI.getMasterUrl()).segment('apis/apps.openshift.io/v1').toString()
+  try {
+    const response = await fetch(testURL)
+    if (response?.ok) {
+      const result = await response.json()
+      if (result) {
+        console.log(result)
+        log.info("Backend is an openshift instance")
+        kubernetesAPI.setOpenshift(true)
+      }
+    }
+  } catch (error) {
+    const e: Error = new Error("Error probing " + testURL + " assuming backend is not an openshift instance.")
 
-  // TODO need to work out exactly what it required to access the cluster in terms of authorization
-  // think we need to add a bearer token from the authorization url
+    if (error instanceof Error) {
+      e.message = e.message + ': ' + error.message
+    }
 
-    // $.ajax(<any>{
-    //   url: testURL,
-    //   method: 'GET',
-    //   success: (data) => {
-    //     log.info("Backend is an openshift instance")
-    //     isOpenShift = true
-    //   },
-    //   error: (jqXHR, textStatus, errorThrown) => {
-    //     log.info("Error probing " + testURL + " assuming backend is not an openshift instance.  Error details: status:", textStatus, "errorThrown: ", errorThrown, "jqXHR instance:", jqXHR)
-    //   }
-    // })
-
-    kubernetesAPI.setOpenshift(true)
+    log.error(e)
+    console.error(e)
+  }    
 }
 
 export function kubernetesAPIInit() {
 
   fetchConfig()
     .then((result: boolean) => {
-      if (result && ! kubernetesAPI.getKubeConfig()) {
+      if (result && kubernetesAPI.getKubeConfig()) {
         extractMaster()
 
         isTargetOpenshift()
