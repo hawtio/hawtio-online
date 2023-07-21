@@ -6,3 +6,21 @@ curl -k \
   -H "Authorization: Bearer ${token}" \
   https://api.crc.testing:6443/apis/apps.openshift.io/v1
 
+echo
+echo "==="
+echo
+
+curl -k \
+  https://api.crc.testing:6443/.well-known/oauth-authorization-server
+
+echo
+echo "==="
+echo
+
+curl -k \
+  -H "Authorization: Bearer ${token}" \
+  http://localhost:2772/master/apis/apps.openshift.io/v1
+
+echo
+echo "==="
+echo

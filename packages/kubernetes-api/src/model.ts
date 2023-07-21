@@ -28,6 +28,7 @@ export interface OpenShiftOAuthConfig {
   oauth_client_id: string
   oauth_metadata_uri?: string
   issuer?: string
+  scope?: string
 }
 
 export interface GoogleOAuthConfig {

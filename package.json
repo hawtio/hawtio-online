@@ -14,7 +14,7 @@
     "docker"
   ],
   "scripts": {
-    "start:k8": "yarn build:k8api && yarn start:k8app",
+    "start:k8": "yarn build:oAuthapi && yarn build:k8api && yarn start:k8app",
     "start:k8app": "yarn workspace @hawtio/online-kubernetes-api-app start",
     "build:k8": "yarn build:k8api && yarn build:k8app",
     "build:k8app": "yarn workspace @hawtio/online-kubernetes-api-app build",
@@ -22,6 +22,14 @@
     "build:k8api:watch": "yarn workspace @hawtio/online-kubernetes-api build:watch",
     "test:k8api": "yarn workspace @hawtio/online-kubernetes-api test",
     "test:k8api:watch": "yarn workspace @hawtio/online-kubernetes-api test:watch",
+    "start:oAuth": "yarn build:oAuthapi && yarn start:oAuthapp",
+    "start:oAuthapp": "yarn workspace @hawtio/online-oauth-app start",
+    "build:oAuth": "yarn build:oAuthapi && yarn build:oAuthapp",
+    "build:oAuthapp": "yarn workspace @hawtio/online-oauth-app build",
+    "build:oAuthapi": "yarn workspace @hawtio/online-oauth build",
+    "build:oAuthapi:watch": "yarn workspace @hawtio/online-oauth build:watch",
+    "test:oAuthapi": "yarn workspace @hawtio/online-oauth test",
+    "test:oAuthapi:watch": "yarn workspace @hawtio/online-oauth test:watch",
     "lint": "yarn workspaces foreach -v -i -pt --exclude @hawtio/online-root eslint src/",
     "lint:fix": "yarn workspaces foreach -v -i -pt --exclude @hawtio/online-root eslint --fix src/",
     "format:check": "yarn workspaces foreach -v -i -pt --exclude @hawtio/online-root yarn prettier --check .",

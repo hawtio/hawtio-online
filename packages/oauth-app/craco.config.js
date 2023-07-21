@@ -1,7 +1,6 @@
 const { ModuleFederationPlugin } = require('webpack').container
 const { dependencies } = require('./package.json')
 const CracoEsbuildPlugin = require('craco-esbuild')
-const uri = require('urijs')
 const path = require('path')
 const Dotenv = require('dotenv-webpack')
 
@@ -45,7 +44,7 @@ module.exports = () => {
                 singleton: true,
                 requiredVersion: dependencies['@hawtio/react'],
               },
-              '@hawtio/online-kubernetes-api': {
+              '@hawtio/online-oauth': {
                 singleton: true,
                 // Hardcoding needed because it cannot handle yarn 'workspace:*' version
                 requiredVersion: '^0.0.0',
@@ -82,8 +81,10 @@ module.exports = () => {
           alias: alias,
           plugins: plugins,
           fallback: {
-            path: require.resolve('path-browserify'),
             os: require.resolve('os-browserify'),
+            path: require.resolve('path-browserify'),
+            process: require.resolve("process/browser"),
+            url: require.resolve("url/"),
           },
         }
 
@@ -141,7 +142,7 @@ module.exports = () => {
       console.log('Using Hawtio Cluster Mode:', mode)
 
       const kubeBase = master_uri
-      const kube = uri(kubeBase)
+      const kube = new URL(kubeBase)
 
       devServerConfig.compress = true
       devServerConfig.liveReload = true

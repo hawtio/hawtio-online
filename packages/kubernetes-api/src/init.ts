@@ -68,6 +68,47 @@ export async function fetchConfig(): Promise<boolean> {
   return false
 }
 
+export async function checkAuthentication() {
+  const oSOAuthConfig = kubernetesAPI.getOSOAuthConfig()
+
+  if (! oSOAuthConfig || ! oSOAuthConfig.oauth_authorize_uri) {
+    log.warn("Warning: Cannot check authentication due to no authorize uri defined")
+    return false
+  }
+
+  // const clientId = config.oauth_client_id;
+  // const targetURI = config.oauth_authorize_uri;
+  // const uri = new URI(targetURI);
+  // uri.query({
+  //   client_id: clientId,
+  //   response_type: 'token',
+  //   state: options.uri,
+  //   redirect_uri: options.uri,
+  //   scope: config.scope
+  // });
+
+  // TODO need to stop this from firing over and over again
+
+  const authUrl = new URL(oSOAuthConfig.oauth_authorize_uri)
+  authUrl.searchParams.append('client_id', oSOAuthConfig.oauth_client_id)
+  authUrl.searchParams.append('response_type', 'token')
+  authUrl.searchParams.append('state', THIS CANNOT BE window.location.href)
+  authUrl.searchParams.append('redirect_uri', THIS CANNOT BE window.location.href)
+  if (oSOAuthConfig.scope)
+    authUrl.searchParams.append('scope', oSOAuthConfig.scope)
+
+  const options: RequestInit = {
+    method: 'GET',
+    mode: 'no-cors',
+  }
+
+  window.location.href = authUrl.toString()
+  // const configResponse = await fetch(authUrl, options)
+  // console.log(configResponse)
+
+  return true
+}
+
 export function extractMaster() {
   const config: KubernetesConfig = kubernetesAPI.getKubeConfig()
 
@@ -142,25 +183,33 @@ async function isTargetOpenshift() {
 
     log.error(e)
     console.error(e)
-  }    
+  }
 }
 
 export function kubernetesAPIInit() {
 
   fetchConfig()
     .then((result: boolean) => {
-      if (result && kubernetesAPI.getKubeConfig()) {
-        extractMaster()
+      if (!result || !kubernetesAPI.getKubeConfig())
+        return
 
-        isTargetOpenshift()
+      // Check authentication
+      checkAuthentication()
+        .then((result: boolean) => {
+          if (!result)
+            return
 
-        // TODO
-        // determine if following line is required
-        // K8S_PREFIX = Core.trimLeading(Core.pathGet(osConfig, ['api', 'k8s', 'prefix']) || K8S_PREFIX, '/');
+          extractMaster()
 
-        if (!kubernetesAPI.isOpenShift()) {
-          pollingOnly.push(WatchTypes.BUILD_CONFIGS)
-        }
-      }
+          isTargetOpenshift()
+
+          // TODO
+          // determine if following line is required
+          // K8S_PREFIX = Core.trimLeading(Core.pathGet(osConfig, ['api', 'k8s', 'prefix']) || K8S_PREFIX, '/');
+
+          if (!kubernetesAPI.isOpenShift()) {
+            pollingOnly.push(WatchTypes.BUILD_CONFIGS)
+          }
+        })
     })
 }
