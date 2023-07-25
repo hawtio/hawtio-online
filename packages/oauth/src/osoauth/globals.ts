@@ -1,14 +1,6 @@
-import { Logger } from '@hawtio/react'
-import { UserProfile } from '../globals'
-
 export const moduleName = 'hawtio-oauth-openshift'
-export const log = Logger.get(moduleName)
 
-export interface OpenShiftConfig {
-  master_uri?: string
-  openshift?: OpenShiftOAuthConfig
-  token?: string
-}
+export const PATH_OSCONSOLE_CLIENT_CONFIG = 'osconsole/config.json'
 
 export interface OpenShiftOAuthConfig {
   oauth_metadata_uri?: string
@@ -18,29 +10,22 @@ export interface OpenShiftOAuthConfig {
   scope: string
 }
 
-class OpenShiftAuth implements OpenShiftConfig {
+export interface OpenShiftConfig {
   master_uri?: string
-  openShiftAuthConfig?: OpenShiftOAuthConfig
   token?: string
-
-  getOpenShiftAuthConfig(): OpenShiftOAuthConfig {
-    return this.openShiftAuthConfig as OpenShiftOAuthConfig
-  }
-
-  setOpenShiftAuthConfig(osConfig: OpenShiftOAuthConfig) {
-    this.openShiftAuthConfig = osConfig
-  }
+  openshift?: OpenShiftOAuthConfig
 }
-
-export const openShiftAuth: OpenShiftAuth = new OpenShiftAuth()
 
 export interface TokenMetadata {
   access_token?: string,
   token_type?: string,
-  expires_in?: string,
+  expires_in?: number,
   obtainedAt?: number
 }
 
-export type OSUserProfile = UserProfile & TokenMetadata
+export type User = {
+  username: string;
+  isLogin: boolean;
+}
 
-export const userProfile: OSUserProfile = new UserProfile(moduleName)
+export type ResolveUser = (user: User) => void;

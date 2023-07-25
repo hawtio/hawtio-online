@@ -1,6 +1,6 @@
 import { log } from '../globals'
-import { oAuthFetch } from '../api'
-import { openShiftAuth, TokenMetadata, userProfile } from './globals'
+import { OpenShiftConfig, TokenMetadata } from './globals'
+import { OSOAuthUserProfile } from './osoauth-service'
 
 const OS_TOKEN_STORAGE_KEY = 'osAuthCreds'
 
@@ -8,28 +8,43 @@ export function currentTimeSeconds(): number {
   return Math.floor(new Date().getTime() / 1000)
 }
 
-export function doLogout(): void {
+export function buildKeepaliveUri(config: OpenShiftConfig): string {
+  let uri: URL
+  if (config.master_uri) {
+    uri = new URL(`${config.master_uri}/apis/user.openshift.io/v1/users/~`)
+  } else {
+    uri = new URL(`${config.openshift?.oauth_authorize_uri}/apis/user.openshift.io/v1/users/~`)
+  }
+
+  return uri.toString()
+}
+
+export function doLogout(config: OpenShiftConfig, profile: OSOAuthUserProfile): void {
   const currentURI = new URL(window.location.href)
-  const uri = new URL(`${openShiftAuth.master_uri}/apis/oauth.openshift.io/v1/oauthaccesstokens/${userProfile.getToken()}`)
+  const uri = new URL(`${config.master_uri}/apis/oauth.openshift.io/v1/oauthaccesstokens/${profile.getToken()}`)
 
   // The following request returns 403 when delegated authentication with an
   // OAuthClient is used, as possible scopes do not grant permissions to access the OAuth API:
   // See https://github.com/openshift/origin/issues/7011
 
-  oAuthFetch(uri.toString(), { method: 'DELETE' })
+  fetch(uri.toString(), { method: 'DELETE' })
     .then((response) => {
       if (response?.ok) {
         clearTokenStorage()
-        doLogin({ uri: currentURI.toString() })
+        doLogin(config, { uri: currentURI.toString() })
       }
     })
 }
 
-export function doLogin(options: { uri: string }): void {
-  const osAuth = openShiftAuth.getOpenShiftAuthConfig()
-  const clientId = osAuth.oauth_client_id
-  const targetURI = osAuth.oauth_authorize_uri
-  const scope = osAuth.scope
+export function doLogin(config: OpenShiftConfig, options: { uri: string }): void {
+  if (!config || !config.openshift) {
+    log.debug("Cannot login due to config now being properly defined")
+    return
+  }
+
+  const clientId = config.openshift.oauth_client_id
+  const targetURI = config.openshift.oauth_authorize_uri
+  const scope = config.openshift.scope
 
   const uri = new URL(targetURI as string)
 
@@ -51,7 +66,7 @@ export function doLogin(options: { uri: string }): void {
   window.location.href = target
 }
 
-export function extractToken(uri: URL): TokenMetadata|null {
+function extractToken(uri: URL): TokenMetadata|null {
   log.debug("Extract token from URI - query:", uri.search)
 
   const fragmentParams = new URLSearchParams(uri.hash.substring(1))
@@ -67,7 +82,7 @@ export function extractToken(uri: URL): TokenMetadata|null {
   const credentials: TokenMetadata = {
     token_type: fragmentParams.get('token_type') || '',
     access_token: fragmentParams.get('access_token') || '',
-    expires_in: fragmentParams.get('expires_in') || '',
+    expires_in: parseInt(fragmentParams.get('expires_in') || '') || 0,
     obtainedAt: currentTimeSeconds()
   }
   localStorage.setItem(OS_TOKEN_STORAGE_KEY, JSON.stringify(credentials))
@@ -93,6 +108,20 @@ export function clearTokenStorage(): void {
   localStorage.removeItem(OS_TOKEN_STORAGE_KEY)
 }
 
+export function tokenExpired(profile: OSOAuthUserProfile) {
+  // if no token metadata then remaining will end up as (-1 - now())
+  let remaining = -1
+  if (profile) {
+    const obtainedAt = profile.obtainedAt || 0
+    const expiry = profile.expires_in || 0
+    if (obtainedAt) {
+      remaining = obtainedAt + expiry - currentTimeSeconds()
+    }
+  }
+
+  return remaining <= 0
+}
+
 export function checkToken(uri: URL): TokenMetadata {
   let answer: any
 
@@ -103,7 +132,7 @@ export function checkToken(uri: URL): TokenMetadata {
       answer = JSON.parse(tokenJson)
     } catch (e) {
       clearTokenStorage()
-      userProfile.setError(new Error("Error extracting osAuthCreds value:", {cause: e}))
+      throw new Error("Error extracting osAuthCreds value:", {cause: e})
     }
   }
   if (!answer) {

@@ -1,4 +1,3 @@
-import { initialised, getProfileErrors, getActiveProfile, getOAuthToken } from '@hawtio/online-oauth'
 import React, { useRef, useEffect, useState } from 'react'
 import {
   Alert,
@@ -16,18 +15,48 @@ import {
   PanelMainBody,
   Skeleton,
   Title } from '@patternfly/react-core'
+import { oAuthInitialised, getActiveProfile, UserProfile } from '@hawtio/online-oauth'
+
+class DefaultProfile extends UserProfile {
+
+  constructor() {
+    super('default-profile')
+  }
+
+  hasError() {
+    return true
+  }
+
+  getError() {
+    return new Error('No profile has been found')
+  }
+}
+
+const defaultProfile = new DefaultProfile()
 
 export const OAuthStatus: React.FunctionComponent = () => {
+
+
   const [isLoading, setIsLoading] = useState(true)
+  const [profile, setProfile] = useState<UserProfile>(defaultProfile)
   const timeout = useRef<number>()
+
+  const unwrap = (error: Error): string => {
+    if (!error)
+      return 'unknown error'
+
+    if (error.cause instanceof Error)
+      return unwrap(error.cause)
+
+    return error.message
+  }
 
   useEffect(() => {
     setIsLoading(true)
 
     const checkLoading = async () => {
-      if (! initialised)
-        return
-
+      const userProfile = await getActiveProfile() as UserProfile
+      setProfile(userProfile)
       setIsLoading(false)
     }
 
@@ -39,7 +68,7 @@ export const OAuthStatus: React.FunctionComponent = () => {
       window.clearTimeout(timeout.current)
     }
 
-  }, [initialised])
+  }, [oAuthInitialised])
 
   if (isLoading) {
     return (
@@ -52,23 +81,14 @@ export const OAuthStatus: React.FunctionComponent = () => {
     )
   }
 
-  const unwrap = (error: Error): string => {
-    if (error.cause instanceof Error)
-      return unwrap(error.cause)
-
-    return error.message
-  }
-
-  if (getProfileErrors().length > 0) {
+  if (profile.hasError()) {
     return (
       <Card>
         <CardTitle>OAuth</CardTitle>
         <CardBody>
-          {getProfileErrors().map((error: Error) => (
-            <Alert variant="danger" title={error.message} key={error.message}>
-              {unwrap(error)}
-            </Alert>
-          ))}
+          <Alert variant="danger" title={profile.getError()?.message} key={profile.getOAuthType()}>
+            {unwrap(profile.getError() as Error)}
+          </Alert>
         </CardBody>
       </Card>
     )
@@ -85,12 +105,16 @@ export const OAuthStatus: React.FunctionComponent = () => {
             <PanelMainBody>
               <DescriptionList isHorizontal>
                 <DescriptionListGroup>
-                  <DescriptionListTerm>Mechanism Type</DescriptionListTerm>
-                  <DescriptionListDescription>{getActiveProfile()?.getId()}</DescriptionListDescription>
+                  <DescriptionListTerm>OAuth Type</DescriptionListTerm>
+                  <DescriptionListDescription>{profile?.getOAuthType()}</DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Token</DescriptionListTerm>
-                  <DescriptionListDescription>{getOAuthToken()}</DescriptionListDescription>
+                  <DescriptionListDescription>{profile.getToken()}</DescriptionListDescription>
+                </DescriptionListGroup>
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Master URI</DescriptionListTerm>
+                  <DescriptionListDescription>{profile.getMasterUri()}</DescriptionListDescription>
                 </DescriptionListGroup>
               </DescriptionList>
             </PanelMainBody>

@@ -1,5 +1,5 @@
 import { configManager, hawtio, Hawtio } from '@hawtio/react'
-import { registerOAuth } from '@hawtio/online-oauth'
+import { oAuthInit } from '@hawtio/online-oauth'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
@@ -8,9 +8,10 @@ import { OAuthStatus } from './oauth-status'
 // Configure the test app
 const configure = () => {
   configManager.addProductInfo('OAuth Test App', '1.0.0')
-  registerOAuth()
 }
 configure()
+
+oAuthInit()
 
 // Bootstrap Hawtio
 hawtio.bootstrap()

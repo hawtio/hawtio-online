@@ -4,17 +4,17 @@ export const moduleName = 'hawtio-oauth'
 export const log = Logger.get(moduleName)
 
 export class UserProfile {
-  private id: string // which type of oauth is the profile, eg. google, openshift, github
+  private oauthType: string // which type of oauth is the profile, eg. google, openshift, github
   private masterUri?: string
   private token?: string
   private error: Error|null = null
 
-  constructor(id: string) {
-    this.id = id
+  constructor(oauthType: string) {
+    this.oauthType = oauthType
   }
 
-  getId() {
-    return this.id
+  getOAuthType() {
+    return this.oauthType
   }
 
   isActive(): boolean {

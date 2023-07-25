@@ -1,24 +1,30 @@
 import { HawtioPlugin, configManager } from '@hawtio/react'
-import { oAuthOSInit } from "./osoauth/init"
-import { log } from "./globals"
+import { log } from './globals'
 import { getActiveProfile } from "./api"
+import { osOAuthService } from './osoauth'
 
-export let initialised = false
+let initialised = false
 
-export const registerOAuth: HawtioPlugin = () => {
+export const oAuthRegister = async (): Promise<void> => {
+  log.info("Initialising the active profile")
+  await getActiveProfile()
+
+  osOAuthService.registerUserHooks()
+
+  log.info("All OAuth plugins have been executed.")
+  initialised = true
+}
+
+export function oAuthInitialised(): boolean {
+  return initialised
+}
+
+export const oAuthInit: HawtioPlugin = async () => {
 
   // Add Product Info
   configManager.addProductInfo('Hawtio OAuth', 'PACKAGE_VERSION_PLACEHOLDER')
 
-  log.info("Initialising openshift oauth")
-  oAuthOSInit()
-    .then(() => {
-      log.info("Initialising the active profile")
-      getActiveProfile()
-
-      log.info("All OAuth plugins have been executed.")
-      initialised = true
-    })
+  await oAuthRegister()
 }
 
 export * from './globals'
