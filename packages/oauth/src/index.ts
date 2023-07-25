@@ -6,6 +6,9 @@ import { osOAuthService } from './osoauth'
 let initialised = false
 
 export const oAuthRegister = async (): Promise<void> => {
+  if (initialised)
+    return
+
   log.info("Initialising the active profile")
   await getActiveProfile()
 

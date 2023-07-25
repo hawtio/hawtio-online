@@ -1,7 +1,7 @@
 import { ILogger, Logger } from '@hawtio/react'
 import EventEmitter from 'eventemitter3'
 import URI from 'urijs'
-import { K8S_EXT_PREFIX, kubernetesAPI } from './globals'
+import { K8S_EXT_PREFIX, k8Api } from './globals'
 import { equals, fullName, getApiVersion, getErrorObject, getKind, getName, getNamespace, masterApiUrl, namespaced, prefixForKind, toCollectionName, toKindName, wsUrl } from './helpers'
 import { Collection, K8SOptions, WatchActions, WatchTypes } from './model'
 import { cloneObject, isObject } from './utils/objects'

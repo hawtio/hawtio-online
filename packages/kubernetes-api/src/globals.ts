@@ -1,5 +1,5 @@
+import { UserProfile } from '@hawtio/online-oauth'
 import { Logger } from '@hawtio/react'
-import { KubernetesConfig, OpenShiftOAuthConfig } from './model'
 
 export const pluginName = 'KubernetesAPI'
 export const log = Logger.get('hawtio-k8s-api')
@@ -13,37 +13,28 @@ export const OS_API_VERSION = 'v1'
 export const K8S_EXT_VERSION = 'v1beta1'
 
 class KubernetesAPI {
-  private kubeConfig: KubernetesConfig|null = null
-  private masterUrl = ""
-  private openShift = false
+  private oAuthProfile?: UserProfile
+  private isOS = false
   private error: Error|null = null
 
-  getKubeConfig(): KubernetesConfig {
-    return this.kubeConfig as KubernetesConfig
+  getOAuthProfile() {
+    return this.oAuthProfile
   }
 
-  setKubeConfig(kubeConfig: KubernetesConfig) {
-    this.kubeConfig = kubeConfig
+  setOAuthProfile(oAuthProfile: UserProfile) {
+    this.oAuthProfile = oAuthProfile
   }
 
-  getOSOAuthConfig(): OpenShiftOAuthConfig | null {
-    return (this.kubeConfig && this.kubeConfig.openshift) ? this.kubeConfig.openshift : null
+  getMasterUri(): string {
+    return this.oAuthProfile?.getMasterUri() || ''
   }
 
-  getMasterUrl(): string {
-    return this.masterUrl
+  isOpenshift(): boolean {
+    return this.isOS
   }
 
-  setMasterUrl(masterUrl: string) {
-    this.masterUrl = masterUrl
-  }
-
-  isOpenShift(): boolean {
-    return this.openShift
-  }
-
-  setOpenshift(openshift: boolean) {
-    this.openShift = openshift
+  setIsOpenshift(isOpenshift: boolean) {
+    this.isOS = isOpenshift
   }
 
   hasError() {
@@ -59,4 +50,4 @@ class KubernetesAPI {
   }
 }
 
-export const kubernetesAPI = new KubernetesAPI()
+export const k8Api = new KubernetesAPI()

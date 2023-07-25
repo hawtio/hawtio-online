@@ -1,4 +1,4 @@
-import { kubernetesAPI } from '@hawtio/online-kubernetes-api'
+import { k8ApiInitialised, k8Api } from '@hawtio/online-kubernetes-api'
 import React, { useRef, useEffect, useState } from 'react'
 import {
   Alert,
@@ -25,7 +25,7 @@ export const Kubernetes: React.FunctionComponent = () => {
     setIsLoading(true)
 
     const checkLoading = async () => {
-      if (! kubernetesAPI.getKubeConfig() && ! kubernetesAPI.hasError())
+      if (! k8ApiInitialised())
         return
 
       setIsLoading(false)
@@ -39,13 +39,13 @@ export const Kubernetes: React.FunctionComponent = () => {
       window.clearTimeout(timeout.current)
     }
 
-  }, [kubernetesAPI.getError(), kubernetesAPI.getKubeConfig()])
+  }, [k8ApiInitialised])
 
   const kApiError = (): string => {
-    if (!kubernetesAPI.hasError())
+    if (!k8Api.hasError())
       return ''
 
-    const error = kubernetesAPI.getError() as Error
+    const error = k8Api.getError() as Error
     return error.message
   }
 
@@ -60,7 +60,7 @@ export const Kubernetes: React.FunctionComponent = () => {
     )
   }
 
-  if (kubernetesAPI.hasError()) {
+  if (k8Api.hasError()) {
     return (
       <Card>
         <CardTitle>Kubernetes API</CardTitle>
@@ -83,15 +83,15 @@ export const Kubernetes: React.FunctionComponent = () => {
               <DescriptionList isHorizontal>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Kubernetes Master</DescriptionListTerm>
-                  <DescriptionListDescription>{kubernetesAPI.getMasterUrl()}</DescriptionListDescription>
+                  <DescriptionListDescription>{k8Api.getMasterUri()}</DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Is Openshift?</DescriptionListTerm>
-                  <DescriptionListDescription>{kubernetesAPI.isOpenShift() ? 'true' : 'false'}</DescriptionListDescription>
+                  <DescriptionListDescription>{k8Api.isOpenshift() ? 'true' : 'false'}</DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Kubernetes Config</DescriptionListTerm>
-                  <DescriptionListDescription><pre>{JSON.stringify(kubernetesAPI.getKubeConfig(), null, 2)}</pre></DescriptionListDescription>
+                  <DescriptionListDescription><pre>{JSON.stringify(k8Api.getOAuthProfile(), null, 2)}</pre></DescriptionListDescription>
                 </DescriptionListGroup>
               </DescriptionList>
             </PanelMainBody>

@@ -1,11 +1,11 @@
 import { WatchTypes, NamespacedTypes, ExtensionTypes, KindTypes } from './model'
-import { K8S_PREFIX, K8S_API_VERSION, K8S_EXT_PREFIX, K8S_EXT_VERSION, OS_PREFIX, OS_API_VERSION, kubernetesAPI } from './globals'
+import { K8S_PREFIX, K8S_API_VERSION, K8S_EXT_PREFIX, K8S_EXT_VERSION, OS_PREFIX, OS_API_VERSION, k8Api } from './globals'
 import URI from 'urijs'
 import { joinPaths } from './utils/urls'
 import { isObject, pathGetString, pathGetObject } from './utils/objects'
 
 export function masterApiUrl(): string {
-  return kubernetesAPI.getMasterUrl()
+  return k8Api.getMasterUri()
 }
 
 export function namespaced(kind: string): boolean {

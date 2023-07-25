@@ -56,7 +56,10 @@ export const OAuthStatus: React.FunctionComponent = () => {
 
     const checkLoading = async () => {
       const userProfile = await getActiveProfile() as UserProfile
-      setProfile(userProfile)
+      if (userProfile) {
+        setProfile(userProfile)
+      }
+
       setIsLoading(false)
     }
 
@@ -116,6 +119,17 @@ export const OAuthStatus: React.FunctionComponent = () => {
                   <DescriptionListTerm>Master URI</DescriptionListTerm>
                   <DescriptionListDescription>{profile.getMasterUri()}</DescriptionListDescription>
                 </DescriptionListGroup>
+                {
+                  Object.entries(profile.getMetadata())
+                      .map(([key, value]) => {
+                        return (
+                          <DescriptionListGroup key={key}>
+                            <DescriptionListTerm>{key}</DescriptionListTerm>
+                            <DescriptionListDescription>{value}</DescriptionListDescription>
+                          </DescriptionListGroup>
+                        )
+                      })
+                }
               </DescriptionList>
             </PanelMainBody>
           </PanelMain>
