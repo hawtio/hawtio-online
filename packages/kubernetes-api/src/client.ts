@@ -1,6 +1,5 @@
 import { ILogger, Logger } from '@hawtio/react'
 import EventEmitter from 'eventemitter3'
-import URI from 'urijs'
 import { K8S_EXT_PREFIX, k8Api } from './globals'
 import { equals, fullName, getApiVersion, getErrorObject, getKind, getName, getNamespace, masterApiUrl, namespaced, prefixForKind, toCollectionName, toKindName, wsUrl } from './helpers'
 import { Collection, K8SOptions, WatchActions, WatchTypes } from './model'
@@ -559,16 +558,16 @@ function getKey(kind: string, namespace?: string) {
 //   }
 //
 //   private get _restUrl() {
-//     let url = new URI()
+//     let url = new URL()
 //
 //     if (this.options.urlFunction && angular.isFunction(this.options.urlFunction)) {
 //       let answer = this.options.urlFunction(this.options)
 //       if (answer === null || !answer) {
 //         return null
 //       }
-//       url = new URI(answer)
+//       url = new URL(answer)
 //     } else {
-//       url = new URI(UrlHelpers.join(masterApiUrl(), this._path))
+//       url = new URL(UrlHelpers.join(masterApiUrl(), this._path))
 //     }
 //
 //     if (this.options.labelSelector !== null) {
@@ -579,7 +578,7 @@ function getKey(kind: string, namespace?: string) {
 //   }
 //
 //   private get _wsUrl() {
-//     let url = new URI()
+//     let url = new URL()
 //
 //     if (this.options.urlFunction && angular.isFunction(this.options.urlFunction)) {
 //       let answer = this.options.urlFunction(this.options)

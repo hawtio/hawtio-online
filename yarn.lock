@@ -2645,7 +2645,6 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-scripts: 5.0.1
-    urijs: ^1.19.11
     web-vitals: ^3.4.0
   languageName: unknown
   linkType: soft
@@ -2658,7 +2657,6 @@ __metadata:
     "@hawtio/react": ^0.4.0-dev.2
     "@types/jest": ^29.5.3
     "@types/jquery": ^3.5.16
-    "@types/urijs": ^1.19.19
     babel-jest: ^29.6.1
     eslint-config-react-app: ^7.0.1
     jest: ^29.6.1
@@ -2676,7 +2674,6 @@ __metadata:
     ts-node: ^10.9.1
     tsup: ^7.1.0
     typescript: ^4.9.5
-    urijs: ^1.19.11
   peerDependencies:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
@@ -5079,13 +5076,6 @@ __metadata:
   version: 2.0.6
   resolution: "@types/unist@npm:2.0.6"
   checksum: 25cb860ff10dde48b54622d58b23e66214211a61c84c0f15f88d38b61aa1b53d4d46e42b557924a93178c501c166aa37e28d7f6d994aba13d24685326272d5db
-  languageName: node
-  linkType: hard
-
-"@types/urijs@npm:^1.19.19":
-  version: 1.19.19
-  resolution: "@types/urijs@npm:1.19.19"
-  checksum: 2c08d41782149a243b374b28be009ca461f541c440d8d47c9d75b1d3255ff7169b34bb721cf2dd6266c2c44be6b70fc6d67a1abad50c4dae369774042b1facd8
   languageName: node
   linkType: hard
 
@@ -19503,7 +19493,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"urijs@npm:^1.17.0, urijs@npm:^1.19.11":
+"urijs@npm:^1.17.0":
   version: 1.19.11
   resolution: "urijs@npm:1.19.11"
   checksum: f9b95004560754d30fd7dbee44b47414d662dc9863f1cf5632a7c7983648df11d23c0be73b9b4f9554463b61d5b0a520b70df9e1ee963ebb4af02e6da2cc80f3

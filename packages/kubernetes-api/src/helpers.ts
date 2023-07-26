@@ -1,6 +1,5 @@
 import { WatchTypes, NamespacedTypes, ExtensionTypes, KindTypes } from './model'
 import { K8S_PREFIX, K8S_API_VERSION, K8S_EXT_PREFIX, K8S_EXT_VERSION, OS_PREFIX, OS_API_VERSION, k8Api } from './globals'
-import URI from 'urijs'
 import { joinPaths } from './utils/urls'
 import { isObject, pathGetString, pathGetObject } from './utils/objects'
 
@@ -111,7 +110,7 @@ export function kubernetesApiPrefix(): string {
    * Returns either secure/insecure websocket protocol based on the master URI protocol
    */
   export function wsScheme(url: string): string {
-    const protocol = new URI(url).protocol() || 'http'
+    const protocol = new URL(url).protocol || 'http'
     if (protocol.startsWith('https')) {
       return 'wss'
     } else {
@@ -214,9 +213,11 @@ export function kubernetesApiPrefix(): string {
   /*
    * Returns the websocket URL for the supplied URL
    */
-  export function wsUrl(url: string): URI {
+  export function wsUrl(url: string): URL {
     const protocol = wsScheme(url)
-    return new URI(url).scheme(protocol)
+    const newUrl = new URL(url)
+    newUrl.protocol = protocol
+    return newUrl
   }
 
   /*

@@ -1,7 +1,6 @@
 const { ModuleFederationPlugin } = require('webpack').container
 const { dependencies } = require('./package.json')
 const CracoEsbuildPlugin = require('craco-esbuild')
-const uri = require('urijs')
 const path = require('path')
 const Dotenv = require('dotenv-webpack')
 
@@ -139,9 +138,6 @@ module.exports = () => {
       console.log('Using Cluster URL:', master_uri)
       console.log('Using Cluster Namespace:', namespace)
       console.log('Using Hawtio Cluster Mode:', mode)
-
-      const kubeBase = master_uri
-      const kube = uri(kubeBase)
 
       devServerConfig.compress = true
       devServerConfig.liveReload = true
