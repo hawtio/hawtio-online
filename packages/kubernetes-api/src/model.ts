@@ -4,48 +4,6 @@ export class consts {
 
 export const Constants = new consts()
 
-export interface ApiLocation {
-  proto?: string
-  hostPort: string
-  prefix: string
-}
-
-export interface ApiLocations {
-  openshift?: ApiLocation
-  k8s?: ApiLocation
-}
-
-export interface KubernetesConfig {
-  master_uri?: string
-  api?: ApiLocations
-  openshift?: OpenShiftOAuthConfig
-  google?: GoogleOAuthConfig
-  keycloak?: KeyCloakAuthConfig
-}
-
-export interface OpenShiftOAuthConfig {
-  oauth_authorize_uri: string
-  oauth_client_id: string
-  oauth_metadata_uri?: string
-  issuer?: string
-  scope?: string
-}
-
-export interface GoogleOAuthConfig {
-  authenticationURI: string
-  authorizationURI: string
-  clientId: string
-  clientSecret: string
-  redirectURI: string
-  scope: string
-  tokenURI?: string
-}
-
-export interface KeyCloakAuthConfig {
-  oauth_authorize_uri: string
-  oauth_client_id: string
-}
-
 export interface KubernetesState {
   namespaces: Array<string>
   selectedNamespace: string
@@ -171,45 +129,10 @@ export class NamespacedTypes {
   }
 }
 
-export interface K8SOptions {
-  kind?: string
-  namespace?: string
-  apiVersion?: string
-  labelSelector?: string
-  object?: any
-  success?: (objs: any[]) => void
-  error?: (err: any) => void
-  urlFunction?: (options: K8SOptions) => string
-}
-
 export class WatchActions {
   public static get INIT(): string { return "INIT" }
   public static get ANY(): string { return "*" }
   public static get ADDED(): string { return "ADDED" }
   public static get MODIFIED(): string { return "MODIFIED" }
   public static get DELETED(): string { return "DELETED" }
-}
-
-export interface ObjectMap {
-  [uid: string]: any
-}
-
-export interface Collection {
-  wsURL: string
-  restURL: string
-  namespace: string
-  kind: string
-  connected: boolean
-  connect(): any
-  get(cb: (data: any[]) => void): void
-  watch(cb: (data: any[]) => void): (data: any[]) => void
-  unwatch(cb: (data: any[]) => void): void
-  put(item: any, cb: (data: any) => void, error?: (err: any) => void): void
-  delete(item: any, cb: (data: any) => void, error?: (err: any) => void): void
-  getKey(): string
-}
-
-export interface K8SClientFactory {
-  create(kind: any, namespace?: string): Collection
-  destroy(client: Collection, ...handles: Array<(data: any[]) => void>): void
 }

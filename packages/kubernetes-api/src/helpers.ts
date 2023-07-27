@@ -94,19 +94,6 @@ export function kubernetesApiPrefix(): string {
   }
 
   /*
-   * Extracts the k8s/openshift error response if present
-   */
-  export function getErrorObject(jqXHR: JQueryXHR): string {
-    let answer = jqXHR.responseText
-    try {
-      answer = JSON.parse(answer)
-    } catch (err) {
-      // nothing to do...
-    }
-    return answer
-  }
-
-  /*
    * Returns either secure/insecure websocket protocol based on the master URI protocol
    */
   export function wsScheme(url: string): string {
@@ -348,4 +335,9 @@ export function kubernetesApiPrefix(): string {
 
   export function podStatus(pod: Record<string, unknown>): string | null {
     return getStatus(pod)
+  }
+
+  export function isOpenShift4(clusterVersion: string): boolean {
+    const major = parseInt((clusterVersion || '4').split('.')[0], 10)
+    return major >= 4
   }
