@@ -1,9 +1,12 @@
-import { configManager, hawtio, Hawtio } from '@hawtio/react'
+import { Logger, configManager, hawtio, Hawtio } from '@hawtio/react'
 import { registerK8Api } from '@hawtio/online-kubernetes-api'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
 import { Kubernetes } from './kubernetes'
+
+Logger.setLevel(Logger.DEBUG)
+console.log("Logging Level set to ", Logger.getLevel())
 
 // Configure the console
 const configure = () => {
