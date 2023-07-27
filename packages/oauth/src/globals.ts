@@ -8,6 +8,7 @@ export class UserProfile {
   private masterUri?: string
   private token?: string
   private error: Error|null = null
+  private metadata: Record<string, string> = {}
 
   constructor(oauthType: string) {
     this.oauthType = oauthType
@@ -48,5 +49,17 @@ export class UserProfile {
   setError(error: Error) {
     this.error = new Error("Openshift OAuth Error", { cause: error})
     log.error(error)
+  }
+
+  addMetadata(key: string, value: string) {
+    this.metadata[key] = value
+  }
+
+  getMetadata(): Record<string, string> {
+    return this.metadata
+  }
+
+  metadataValue(key: string) {
+    return this.metadata[key]
   }
 }

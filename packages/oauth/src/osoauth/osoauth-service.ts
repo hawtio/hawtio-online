@@ -2,8 +2,30 @@ import $ from 'jquery'
 import { userService } from '@hawtio/react'
 import { log, UserProfile } from '../globals'
 import { fetchPath, isBlank, getCookie } from '../utils'
-import { moduleName, OpenShiftConfig, PATH_OSCONSOLE_CLIENT_CONFIG, ResolveUser, TokenMetadata } from './globals'
-import { buildKeepaliveUri, checkToken, clearTokenStorage, currentTimeSeconds, doLogin, doLogout, tokenExpired } from './support'
+import {
+  CLUSTER_VERSION_KEY,
+  DEFAULT_CLUSTER_VERSION,
+  DEFAULT_HAWTIO_MODE,
+  DEFAULT_HAWTIO_NAMESPACE,
+  HAWTIO_MODE_KEY,
+  HAWTIO_NAMESPACE_KEY
+} from '../metadata'
+import {
+  moduleName,
+  PATH_OSCONSOLE_CLIENT_CONFIG,
+  OpenShiftConfig,
+  ResolveUser,
+  TokenMetadata
+} from './globals'
+import {
+  buildKeepaliveUri,
+  checkToken,
+  clearTokenStorage,
+  currentTimeSeconds,
+  doLogin,
+  doLogout,
+  tokenExpired
+} from './support'
 
 export class OSOAuthUserProfile extends UserProfile implements TokenMetadata {
   access_token?: string
@@ -208,6 +230,14 @@ class OSOAuthService implements IOSOAuthService {
       this.userProfile.obtainedAt = tokenParams.obtainedAt || 0
       this.userProfile.setToken(tokenParams.access_token || '')
       this.userProfile.setMasterUri(config.master_uri || '')
+
+      /* Promote the hawtio mode to expose to third-parties */
+      const hawtioMode = config.hawtio?.mode || DEFAULT_HAWTIO_MODE
+      this.userProfile.addMetadata(CLUSTER_VERSION_KEY, config.openshift?.cluster_version || DEFAULT_CLUSTER_VERSION)
+      this.userProfile.addMetadata(HAWTIO_MODE_KEY, hawtioMode)
+      if (hawtioMode !== DEFAULT_HAWTIO_MODE)
+        this.userProfile.addMetadata(HAWTIO_NAMESPACE_KEY, config.hawtio?.namespace || DEFAULT_HAWTIO_NAMESPACE)
+
     } catch (error) {
       this.userProfile.setError(error instanceof Error ? error : new Error('Error from checking token'))
       return false

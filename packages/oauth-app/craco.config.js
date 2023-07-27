@@ -190,6 +190,7 @@ module.exports = () => {
                 oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
                 oauth_client_id: `system:serviceaccount:${namespace}:hawtio-online-dev`,
                 scope: `user:info user:check-access`,
+                cluster_version: '4.11.0'
               }
               break
             case 'cluster':
@@ -197,6 +198,7 @@ module.exports = () => {
                 oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
                 oauth_client_id: `hawtio-online-dev`,
                 scope: `user:info user:check-access`,
+                cluster_version: '4.11.0'
               }
               break
             default:

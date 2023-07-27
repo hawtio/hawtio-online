@@ -30,5 +30,6 @@ export const oAuthInit: HawtioPlugin = async () => {
   await oAuthRegister()
 }
 
+export * from './metadata'
 export * from './globals'
 export * from './api'
