@@ -10,12 +10,14 @@ export const oAuthRegister = async (): Promise<void> => {
     return
 
   log.info("Initialising the active profile")
-  await getActiveProfile()
-
-  osOAuthService.registerUserHooks()
-
-  log.info("All OAuth plugins have been executed.")
-  initialised = true
+  try {
+    await getActiveProfile()
+    osOAuthService.registerUserHooks()
+    log.info("All OAuth plugins have been executed.")
+    initialised = true
+  } catch (error) {
+    log.error('Failed to initialise the oauth plugin: ', error)
+  }
 }
 
 export function oAuthInitialised(): boolean {

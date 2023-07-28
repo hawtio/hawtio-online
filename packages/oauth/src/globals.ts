@@ -19,7 +19,11 @@ export class UserProfile {
   }
 
   isActive(): boolean {
-    return this.getToken().length > 0 || this.hasError()
+    return this.hasToken() || this.hasError()
+  }
+
+  hasToken(): boolean {
+    return this.getToken().length > 0
   }
 
   getToken(): string {

@@ -14,8 +14,17 @@ import {
   PanelMain,
   PanelMainBody,
   Skeleton,
-  Title } from '@patternfly/react-core'
+  Title,
+  Button,
+  Masthead,
+  MastheadContent,
+  ToolbarContent,
+  Toolbar,
+  ToolbarItem,
+  Label} from '@patternfly/react-core'
+import { InfoCircleIcon } from '@patternfly/react-icons'
 import { oAuthInitialised, getActiveProfile, UserProfile } from '@hawtio/online-oauth'
+import { userService } from '@hawtio/react'
 
 class DefaultProfile extends UserProfile {
 
@@ -35,11 +44,13 @@ class DefaultProfile extends UserProfile {
 const defaultProfile = new DefaultProfile()
 
 export const OAuthStatus: React.FunctionComponent = () => {
-
-
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<Error|null>()
   const [profile, setProfile] = useState<UserProfile>(defaultProfile)
   const timeout = useRef<number>()
+
+  const [username, setUsername] = useState('')
+  const [isLogin, setIsLogin] = useState(false)
 
   const unwrap = (error: Error): string => {
     if (!error)
@@ -55,9 +66,25 @@ export const OAuthStatus: React.FunctionComponent = () => {
     setIsLoading(true)
 
     const checkLoading = async () => {
-      const userProfile = await getActiveProfile() as UserProfile
-      if (userProfile) {
-        setProfile(userProfile)
+      try {
+        const userProfile = await getActiveProfile()
+
+        if (userProfile.hasError())
+          setError(userProfile.getError())
+        else
+          setProfile(userProfile)
+
+        await userService.fetchUser()
+        const username = await userService.getUsername()
+        const isLogin = await userService.isLogin()
+        setUsername(username)
+        setIsLogin(isLogin)
+
+      } catch (error) {
+        if (error instanceof Error)
+          setError(error)
+        else
+          setError(new Error(error as string))
       }
 
       setIsLoading(false)
@@ -76,7 +103,7 @@ export const OAuthStatus: React.FunctionComponent = () => {
   if (isLoading) {
     return (
       <Card>
-        <CardTitle>OAuth</CardTitle>
+        <CardTitle>OAuth Loading ...</CardTitle>
         <CardBody>
           <Skeleton screenreaderText='Loading...' />
         </CardBody>
@@ -84,13 +111,13 @@ export const OAuthStatus: React.FunctionComponent = () => {
     )
   }
 
-  if (profile.hasError()) {
+  if (error) {
     return (
       <Card>
         <CardTitle>OAuth</CardTitle>
         <CardBody>
-          <Alert variant="danger" title={profile.getError()?.message} key={profile.getOAuthType()}>
-            {unwrap(profile.getError() as Error)}
+          <Alert variant="danger" title={error?.message}>
+            {unwrap(error)}
           </Alert>
         </CardBody>
       </Card>
@@ -101,6 +128,20 @@ export const OAuthStatus: React.FunctionComponent = () => {
     <Card>
       <CardTitle><Title headingLevel="h1">OAuth</Title></CardTitle>
       <CardBody>
+
+        <Masthead id="login-credentials">
+          <MastheadContent>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignContent: 'stretch', width: '100%'}}>
+              <Label color="green" icon={<InfoCircleIcon />}>
+                {username}
+              </Label>
+              <Button variant="danger" ouiaId="Logout" onClick={() => {console.log("Logout"); userService.logout()}}>
+                Logout
+              </Button>
+            </div>
+          </MastheadContent>
+        </Masthead>
+
         <Panel>
           <PanelHeader>Properties</PanelHeader>
           <Divider />
@@ -125,7 +166,7 @@ export const OAuthStatus: React.FunctionComponent = () => {
                         return (
                           <DescriptionListGroup key={key}>
                             <DescriptionListTerm>{key}</DescriptionListTerm>
-                            <DescriptionListDescription>{value}</DescriptionListDescription>
+                            <DescriptionListDescription>{value as string}</DescriptionListDescription>
                           </DescriptionListGroup>
                         )
                       })

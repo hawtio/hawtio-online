@@ -20,11 +20,9 @@ import {
 import {
   buildKeepaliveUri,
   checkToken,
-  clearTokenStorage,
   currentTimeSeconds,
-  doLogin,
   doLogout,
-  tokenExpired
+  tokenHasExpired
 } from './support'
 
 export class OSOAuthUserProfile extends UserProfile implements TokenMetadata {
@@ -43,6 +41,7 @@ class OSOAuthService implements IOSOAuthService {
   private userProfile: OSOAuthUserProfile = new OSOAuthUserProfile(moduleName)
   private keepaliveUri: string = ''
   private keepaliveInterval: number = 10
+  private keepAliveHandler: NodeJS.Timeout | null = null
 
   private readonly rawConfig: Promise<OpenShiftConfig | null>
   private readonly adaptedConfig: Promise<OpenShiftConfig | null>
@@ -74,6 +73,7 @@ class OSOAuthService implements IOSOAuthService {
       this.userProfile.setError(new Error("Cannot find the openshift auth configuration"))
       return null
     }
+    log.debug('OS OAuth config to be processed: ', config)
 
     const openshiftAuth = config.openshift
     if (openshiftAuth.oauth_authorize_uri)
@@ -98,6 +98,8 @@ class OSOAuthService implements IOSOAuthService {
           return null
         }
 
+        this.keepaliveUri = buildKeepaliveUri(config)
+
         return config
       },
       error: (err) => {
@@ -108,8 +110,7 @@ class OSOAuthService implements IOSOAuthService {
     })
   }
 
-  private async setupFetch() {
-    const config = await this.adaptedConfig
+  private setupFetch(config: OpenShiftConfig) {
     if (!config || this.userProfile.hasError()) {
       return
     }
@@ -117,26 +118,15 @@ class OSOAuthService implements IOSOAuthService {
     log.debug('Intercept Fetch API to attach Openshift auth token to authorization header')
     const { fetch: originalFetch } = window
     window.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-      const logPrefix = 'Fetch -'
-      log.debug(logPrefix, 'Fetch intercepted for Keycloak authentication')
+      log.debug('Fetch intercepted for oAuth authentication')
 
-      if (tokenExpired(this.userProfile)) {
+      if (tokenHasExpired(this.userProfile)) {
         return new Promise((resolve, reject) => {
-          log.debug(logPrefix, 'Try to update token for request:', input)
-          this.login
-            .then(status => {
-              if(status) {
-                log.debug(logPrefix, 'Keycloak token refreshed. Set new value to userService')
-                userService.setToken(this.userProfile.getToken())
-                log.debug(logPrefix, 'Re-sending request after successfully updating token:', input)
-                resolve(fetch(input, init))
-              } else {
-                log.debug(logPrefix, 'Logging out due to token update failed')
-                userService.logout()
-                reject()
-              }
-            })
-          })
+          const reason = `Cannot navigate to ${input} as token expired so need to logout`
+          log.debug(reason)
+          doLogout(config)
+          resolve(Response.error())
+        })
       }
 
       init = { ...init }
@@ -148,7 +138,7 @@ class OSOAuthService implements IOSOAuthService {
       // For CSRF protection with Spring Security
       const token = getCookie('XSRF-TOKEN')
       if (token) {
-        log.debug(logPrefix, 'Set XSRF token header from cookies')
+        log.debug('Set XSRF token header from cookies')
         init.headers = {
           ...init.headers,
           'X-XSRF-TOKEN': token,
@@ -159,33 +149,17 @@ class OSOAuthService implements IOSOAuthService {
     }
   }
 
-  private async setupJQueryAjax() {
-    const config = await this.adaptedConfig
+  private setupJQueryAjax(config: OpenShiftConfig) {
     if (!config || this.userProfile.hasError()) {
       return
     }
 
     log.debug('Set authorization header to Openshift auth token for AJAX requests')
     const beforeSend = (xhr: JQueryXHR, settings: JQueryAjaxSettings) => {
-      const logPrefix = 'jQuery -'
-
-      if (tokenExpired(this.userProfile)) {
-        log.debug(logPrefix, 'Try to update token for request:', settings.url)
-
-        this.login
-          .then(status => {
-            if(status) {
-              log.debug(logPrefix, 'Openshift token refreshed. Set new value to userService')
-              userService.setToken(this.userProfile.getToken())
-              log.debug(logPrefix, 'Re-sending request after successfully updating Keycloak token:', settings.url)
-              $.ajax(settings)
-            } else {
-              log.debug(logPrefix, 'Logging out due to token update failed')
-              userService.logout()
-            }
-          })
-
-        return false
+      if (tokenHasExpired(this.userProfile)) {
+        log.debug(`Cannot navigate to ${settings.url} as token expired so need to logout`)
+        doLogout(config)
+        return
       }
 
       // Set bearer token is used
@@ -194,68 +168,22 @@ class OSOAuthService implements IOSOAuthService {
       // For CSRF protection with Spring Security
       const token = getCookie('XSRF-TOKEN')
       if (token) {
-        log.debug(logPrefix, 'Set XSRF token header from cookies')
+        log.debug('Set XSRF token header from cookies')
         xhr.setRequestHeader('X-XSRF-TOKEN', token)
       }
-
       return // To suppress ts(7030)
     }
+
     $.ajaxSetup({ beforeSend })
   }
 
-  private async createLogin(): Promise<boolean> {
-    const config = await this.adaptedConfig
-    if (!config)
-      return false
-
-    if (this.userProfile.hasError())
-      return false
-
-    if (this.userProfile.access_token && ! tokenExpired(this.userProfile))
-      return true
-
-    const currentURI = new URL(window.location.href)
-    try {
-      const tokenParams = checkToken(currentURI)
-      if (!tokenParams) {
-        log.debug("No Token so initiating new login")
-        clearTokenStorage()
-        doLogin(config, { uri: currentURI.toString()})
-        return true
-      }
-
-      /* Populate the profile with the new token */
-      this.userProfile.expires_in = tokenParams.expires_in
-      this.userProfile.token_type = tokenParams.token_type
-      this.userProfile.obtainedAt = tokenParams.obtainedAt || 0
-      this.userProfile.setToken(tokenParams.access_token || '')
-      this.userProfile.setMasterUri(config.master_uri || '')
-
-      /* Promote the hawtio mode to expose to third-parties */
-      const hawtioMode = config.hawtio?.mode || DEFAULT_HAWTIO_MODE
-      this.userProfile.addMetadata(CLUSTER_VERSION_KEY, config.openshift?.cluster_version || DEFAULT_CLUSTER_VERSION)
-      this.userProfile.addMetadata(HAWTIO_MODE_KEY, hawtioMode)
-      if (hawtioMode !== DEFAULT_HAWTIO_MODE)
-        this.userProfile.addMetadata(HAWTIO_NAMESPACE_KEY, config.hawtio?.namespace || DEFAULT_HAWTIO_NAMESPACE)
-
-    } catch (error) {
-      this.userProfile.setError(error instanceof Error ? error : new Error('Error from checking token'))
-      return false
-    }
-
-    // Need fetch for keepalive
-    await this.setupFetch()
-    await this.setupJQueryAjax()
-
-    this.keepaliveUri = buildKeepaliveUri(config)
-
+  private setupKeepAlive(url: URL, config: OpenShiftConfig) {
     const keepAlive = async () => {
-      console.log("Running keepAlive function")
+      log.debug("Running oAuth keepAlive function")
       const response = await fetch(this.keepaliveUri, {method: 'GET'})
       if (response.ok) {
         const keepaliveJson = await response.json()
         if (!keepaliveJson) {
-          console.log("keepAlive json failed")
           this.userProfile.setError(new Error("Cannot parse the keepalive json response"))
           return
         }
@@ -266,7 +194,7 @@ class OSOAuthService implements IOSOAuthService {
           const remainingTime = obtainedAt + expiry - currentTimeSeconds()
           if (remainingTime > 0) {
             this.keepaliveInterval = Math.min(Math.round(remainingTime / 4), 24 * 60 * 60)
-            console.log("Resetting keepAlive interval to " + this.keepaliveInterval)
+            log.debug("Resetting keepAlive interval to " + this.keepaliveInterval)
           }
         }
         if (!this.keepaliveInterval) {
@@ -274,20 +202,96 @@ class OSOAuthService implements IOSOAuthService {
         }
         log.debug("userProfile:", this.userProfile)
       } else {
-        console.log("keepAlive response was NOT ok!")
+        log.debug("keepAlive response failure so re-login")
         // The request may have been cancelled as the browser refresh request in
         // extractToken may be triggered before getting the AJAX response.
         // In that case, let's just skip the error and go through another refresh cycle.
         // See http://stackoverflow.com/questions/2000609/jquery-ajax-status-code-0 for more details.
         log.error('Failed to fetch user info, status: ', response.statusText)
-        clearTokenStorage()
-        doLogin(config, { uri: currentURI.toString() })
+        doLogout(url, config)
       }
     }
 
-    setTimeout(keepAlive, this.keepaliveInterval)
+    this.keepAliveHandler = setTimeout(keepAlive, this.keepaliveInterval)
+  }
 
-    return true
+  private clearKeepAlive() {
+    if (!this.keepAliveHandler)
+      return
+
+    clearTimeout(this.keepAliveHandler)
+    this.keepAliveHandler = null
+  }
+
+  private checkTokenExpired(config: OpenShiftConfig) {
+    if (!this.userProfile.hasToken())
+      return true // no token so must be expired
+
+    if (tokenHasExpired(this.userProfile)) {
+      log.debug("Token has expired so logging out")
+      doLogout(config)
+      return true
+    }
+
+    log.debug("User Profile has good token so nothing to do")
+    return false
+  }
+
+  private async createLogin(): Promise<boolean> {
+    const config = await this.adaptedConfig
+    if (!config) {
+      return false
+    }
+
+    if (this.userProfile.hasError()) {
+      log.debug("Cannot login as user profile has error: ", this.userProfile.getError())
+      return false
+    }
+
+    const currentURI = new URL(window.location.href)
+    try {
+
+      this.clearKeepAlive()
+
+      log.debug("Checking token for validity")
+      const tokenParams = checkToken(currentURI)
+      if (!tokenParams) {
+        log.debug("No Token so initiating new login")
+        doLogout(config)
+        return false
+      }
+
+      log.debug("Populating user profile with token metadata")
+      /* Populate the profile with the new token */
+      this.userProfile.expires_in = tokenParams.expires_in
+      this.userProfile.token_type = tokenParams.token_type
+      this.userProfile.obtainedAt = tokenParams.obtainedAt || 0
+      this.userProfile.setToken(tokenParams.access_token || '')
+      this.userProfile.setMasterUri(config.master_uri || '')
+
+      if (this.checkTokenExpired(config)) return false
+
+      /* Promote the hawtio mode to expose to third-parties */
+      log.debug("Adding cluster version to profile metadata")
+      this.userProfile.addMetadata(CLUSTER_VERSION_KEY, config.openshift?.cluster_version || DEFAULT_CLUSTER_VERSION)
+
+      log.debug("Adding hawtio-mode to profile metadata")
+      const hawtioMode = config.hawtio?.mode || DEFAULT_HAWTIO_MODE
+      this.userProfile.addMetadata(HAWTIO_MODE_KEY, hawtioMode)
+      if (hawtioMode !== DEFAULT_HAWTIO_MODE)
+      this.userProfile.addMetadata(HAWTIO_NAMESPACE_KEY, config.hawtio?.namespace || DEFAULT_HAWTIO_NAMESPACE)
+
+      // Need fetch for keepalive
+      this.setupFetch(config)
+      this.setupJQueryAjax(config)
+
+      this.setupKeepAlive(currentURI, config)
+      return true
+
+    } catch (error) {
+      this.userProfile.setError(error instanceof Error ? error : new Error('Error from checking token'))
+      return false
+    }
   }
 
   async isActive(): Promise<boolean> {
@@ -300,9 +304,11 @@ class OSOAuthService implements IOSOAuthService {
   }
 
   registerUserHooks() {
+    log.debug('Registering oAuth user hooks')
     const fetchUser = async (resolve: ResolveUser) => {
+      const config = await this.adaptedConfig
       const login = await this.login
-      if (!login || this.userProfile.hasError()) {
+      if (!config || !login || this.userProfile.hasError()) {
         return false
       }
 
@@ -311,14 +317,12 @@ class OSOAuthService implements IOSOAuthService {
         userService.setToken(this.userProfile.getToken())
       }
 
-      this.setupJQueryAjax()
-      this.setupFetch()
-
       return true
     }
     userService.addFetchUserHook(moduleName, fetchUser)
 
     const logout = async () => {
+      log.debug('Running oAuth logout hook')
       const config = await this.adaptedConfig
       const login = await this.login
       if (!config || !login || this.userProfile.hasError()) {
@@ -327,7 +331,7 @@ class OSOAuthService implements IOSOAuthService {
 
       log.info('Log out Openshift')
       try {
-        doLogout(config, this.userProfile)
+        doLogout(config)
       } catch (error) {
         log.error('Error logging out Openshift:', error)
       }

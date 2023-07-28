@@ -19,21 +19,20 @@ export function buildKeepaliveUri(config: OpenShiftConfig): string {
   return uri.toString()
 }
 
-export function doLogout(config: OpenShiftConfig, profile: OSOAuthUserProfile): void {
-  const currentURI = new URL(window.location.href)
-  const uri = new URL(`${config.master_uri}/apis/oauth.openshift.io/v1/oauthaccesstokens/${profile.getToken()}`)
+function forceRelogin(url: URL, config: OpenShiftConfig) {
+  clearTokenStorage()
+  doLogin(config, {uri: url.toString()})
+}
 
+export function doLogout(config: OpenShiftConfig): void {
+  const currentURI = new URL(window.location.href)
   // The following request returns 403 when delegated authentication with an
   // OAuthClient is used, as possible scopes do not grant permissions to access the OAuth API:
   // See https://github.com/openshift/origin/issues/7011
-
-  fetch(uri.toString(), { method: 'DELETE' })
-    .then((response) => {
-      if (response?.ok) {
-        clearTokenStorage()
-        doLogin(config, { uri: currentURI.toString() })
-      }
-    })
+  //
+  // So little point in trying to delete the token. Lets do in client-side only
+  //
+  forceRelogin(currentURI, config)
 }
 
 export function doLogin(config: OpenShiftConfig, options: { uri: string }): void {
@@ -108,15 +107,19 @@ export function clearTokenStorage(): void {
   localStorage.removeItem(OS_TOKEN_STORAGE_KEY)
 }
 
-export function tokenExpired(profile: OSOAuthUserProfile) {
+export function tokenHasExpired(profile: OSOAuthUserProfile): boolean {
   // if no token metadata then remaining will end up as (-1 - now())
   let remaining = -1
-  if (profile) {
-    const obtainedAt = profile.obtainedAt || 0
-    const expiry = profile.expires_in || 0
-    if (obtainedAt) {
-      remaining = obtainedAt + expiry - currentTimeSeconds()
-    }
+  if (! profile)
+    return true // no profile so no oken
+
+  if (! profile.getToken())
+    return true // no token then must have expired!
+
+  const obtainedAt = profile.obtainedAt || 0
+  const expiry = profile.expires_in || 0
+  if (obtainedAt) {
+    remaining = obtainedAt + expiry - currentTimeSeconds()
   }
 
   return remaining <= 0

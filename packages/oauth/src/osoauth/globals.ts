@@ -13,9 +13,14 @@ export interface OpenShiftOAuthConfig {
   cluster_version?: string
 }
 
+export interface Hawtio {
+  mode: string
+  namespace?: string
+}
+
 export interface OpenShiftConfig {
   master_uri?: string
-  hawtio?: Metadata.Hawtio
+  hawtio?: Hawtio
   token?: string
   openshift?: OpenShiftOAuthConfig
 }
