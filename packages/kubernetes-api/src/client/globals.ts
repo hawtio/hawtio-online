@@ -21,7 +21,7 @@ export interface ObjectMap {
   [uid: string]: any
 }
 
-export interface KOptions {
+export interface KOptions extends Record<string, unknown> {
   kind: string
   namespace?: string
   apiVersion?: string
@@ -37,8 +37,9 @@ export interface Collection {
   kind: string
   wsURL: string
   restURL: string
-  namespace: string
+  namespace?: string
   connected: boolean
+  oAuthToken: string,
   connect(): any
   get(cb: (data: any[]) => void): void
   watch(cb: (data: any[]) => void): (data: any[]) => void
@@ -79,6 +80,6 @@ export interface WSHandler {
 }
 
 export interface ClientFactory {
-  create(kind: any, namespace?: string): Collection
+  create(options: KOptions, namespace?: string): Collection
   destroy(client: Collection, ...handles: Array<(data: any[]) => void>): void
 }

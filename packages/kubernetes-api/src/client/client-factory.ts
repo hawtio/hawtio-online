@@ -1,4 +1,3 @@
-import { isObject } from '../utils'
 import { ClientInstance, ClientMap } from './client-instance'
 import { CollectionImpl } from './collection'
 import { log, Collection, KOptions, ClientFactory } from './globals'
@@ -10,30 +9,18 @@ import { getKey } from './support'
 export class ClientFactoryImpl implements ClientFactory {
   private _clients = <ClientMap>{}
 
-  public create(options: KOptions|string, namespace?: any): Collection {
-    let _options
-    let kind: string
+  public create(options: KOptions, namespace?: string): Collection {
 
-    if (isObject(options)) {
-      _options = options
-      kind = options.kind
-      namespace = options.namespace || namespace
-    } else {
-      _options = {
-        kind: options,
-        namespace: namespace
-      }
-      kind = _options.kind
-    }
+    namespace = options.namespace || namespace
 
-    const key = getKey(kind as string, namespace)
+    const key = getKey(options.kind, namespace)
     if (this._clients[key]) {
       const client = this._clients[key]
       client.addRef()
       log.debug("Returning existing client for key:", key, "refcount is:", client.refCount)
       return client.collection
     } else {
-      const client = new ClientInstance(new CollectionImpl(_options))
+      const client = new ClientInstance(new CollectionImpl(options))
       client.addRef()
       log.debug("Creating new client for key:", key, "refcount is:", client.refCount)
       this._clients[key] = client

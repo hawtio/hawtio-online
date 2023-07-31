@@ -1,26 +1,31 @@
-import { k8Api, K8S_EXT_PREFIX } from '../globals'
+import { K8S_EXT_PREFIX } from '../globals'
 import { fetchPath, FetchPathCallback, isFunction, joinPaths } from '../utils'
 import { log, UNKNOWN_VALUE, Collection, KOptions, ObjectList, WSHandler } from './globals'
-import { getName, getNamespace, masterApiUrl, namespaced, prefixForKind, toCollectionName, wsUrl } from '../helpers'
+import { getName, getNamespace, namespaced, prefixForKind, toCollectionName, wsUrl } from '../helpers'
 import { WatchActions, WatchTypes } from '../model'
 import { ObjectListImpl } from './object-list'
 import { WSHandlerImpl } from './ws-handler'
 import { getKey } from './support'
+import { k8Api } from 'src/init'
 
 /*
  * Implements the external API for working with k8s collections of objects
  */
 export class CollectionImpl implements Collection {
 
-  private _namespace: string
+  private _namespace?: string
   private _path: string
   private _apiVersion: string
   private list: ObjectList
   private handler: WSHandler
+  private _isOpenshift: boolean
+  private _oAuthToken: string
 
   constructor(private _options: KOptions) {
+    this._isOpenshift = k8Api.isOpenshift
+    this._oAuthToken = k8Api.oAuthProfile.getToken()
     this._apiVersion = _options.apiVersion || UNKNOWN_VALUE
-    this._namespace = _options.namespace || UNKNOWN_VALUE
+    this._namespace = _options.namespace
 
     const pref = this.getPrefix()
 
@@ -33,6 +38,10 @@ export class CollectionImpl implements Collection {
     const list = this.list = new ObjectListImpl(_options.kind, _options.namespace)
     this.handler.list = list
     log.debug("creating new collection for", this.kind, "namespace:", this.namespace)
+  }
+
+  public get oAuthToken(): string {
+    return this._oAuthToken
   }
 
   public get options(): KOptions {
@@ -49,7 +58,7 @@ export class CollectionImpl implements Collection {
       }
       url = new URL(answer)
     } else {
-      url = new URL(joinPaths(masterApiUrl(), this._path))
+      url = new URL(joinPaths(k8Api.getMasterUri(), this._path))
     }
 
     if (this.options.labelSelector) {
@@ -69,7 +78,7 @@ export class CollectionImpl implements Collection {
       }
       url = wsUrl(answer)
     } else {
-      let urlStr = joinPaths(masterApiUrl(), this._path)
+      let urlStr = joinPaths(k8Api.getMasterUri(), this._path)
       let location = window.location
       if (location && urlStr.indexOf("://") < 0) {
         let hostname = location.hostname
@@ -78,7 +87,7 @@ export class CollectionImpl implements Collection {
           if (port) {
             hostname += ":" + port
           }
-          urlStr = joinPaths(hostname, masterApiUrl(), this._path)
+          urlStr = joinPaths(hostname, k8Api.getMasterUri(), this._path)
         }
       }
       url = wsUrl(urlStr)
@@ -180,11 +189,11 @@ export class CollectionImpl implements Collection {
         const namespace = getNamespace(item) || this._namespace
         let prefix = this.getPrefix()
         const kind = this.kind
-        if (!k8Api.isOpenshift() && (kind === "buildconfigs" || kind === "BuildConfig")) {
+        if (!this._isOpenshift && (kind === "buildconfigs" || kind === "BuildConfig")) {
           prefix = joinPaths("/api/v1/proxy/namespaces", namespace, "/services/jenkinshift:80/", prefix)
           log.debug("Using buildconfigs URL override")
         }
-        url = joinPaths(masterApiUrl(), prefix, 'namespaces', namespace, kind)
+        url = joinPaths(k8Api.getMasterUri(), prefix, 'namespaces', namespace, kind)
       }
     }
     if (useName) {

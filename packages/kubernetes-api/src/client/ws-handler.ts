@@ -1,6 +1,4 @@
-import { k8Api } from 'src/globals'
 import { fetchPath, isFunction, isString, SimpleResponse } from '../utils'
-import { CollectionImpl } from "./collection"
 import { Collection, log, ObjectList, pollingOnly, WSHandler } from "./globals"
 import { ObjectListImpl } from "./object-list"
 import { ObjectPoller } from "./object-poller"
@@ -166,7 +164,7 @@ export class WSHandlerImpl implements WSHandler {
   }
 
   private base64TokenProtocol(): string {
-    const token = k8Api.getOAuthProfile().getToken()
+    const token = this.collection.oAuthToken
     return `base64url.bearer.authorization.k8s.io.${btoa(token).replace(/=/g, '')}`
   }
 

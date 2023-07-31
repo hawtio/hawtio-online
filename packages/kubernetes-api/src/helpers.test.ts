@@ -5,12 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import { isObject } from './utils/objects'
 
-describe('arrays', () => {
-  test('masterApiUrl', () => {
-    const result = helpers.masterApiUrl()
-    expect(result).toEqual("")
-  })
-
+describe('helpers', () => {
   test('namespaced', () => {
     expect(helpers.namespaced(WatchTypes.LIST)).toBeTruthy()
     expect(helpers.namespaced(WatchTypes.ENDPOINTS)).toBeTruthy()

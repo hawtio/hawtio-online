@@ -1,9 +1,7 @@
 import { HawtioPlugin, configManager } from '@hawtio/react'
-import { getActiveProfile, oAuthRegister } from '@hawtio/online-oauth'
+import { oAuthRegister } from '@hawtio/online-oauth'
 import { k8Init } from './init'
 import { log } from './globals'
-
-let initialised = false
 
 export const registerK8Api: HawtioPlugin = async () => {
 
@@ -14,15 +12,8 @@ export const registerK8Api: HawtioPlugin = async () => {
   await oAuthRegister()
 
   log.debug("OAuth registered -  getting active profile")
-  const userProfile = await getActiveProfile()
-  if (userProfile) {
-    k8Init(userProfile)
-    initialised = true
-  }
-}
-
-export function k8ApiInitialised(): boolean {
-  return initialised
+  k8Init()
 }
 
 export * from './globals'
+export * from './init'
