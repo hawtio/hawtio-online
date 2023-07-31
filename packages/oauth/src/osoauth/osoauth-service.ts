@@ -18,7 +18,7 @@ import {
   TokenMetadata
 } from './globals'
 import {
-  buildKeepaliveUri,
+  buildUserInfoUri,
   checkToken,
   currentTimeSeconds,
   doLogout,
@@ -32,6 +32,17 @@ export class OSOAuthUserProfile extends UserProfile implements TokenMetadata {
   obtainedAt?: number
 }
 
+interface UserObject {
+  kind: string,
+  apiVersion: string,
+  metadata: {
+    name: string,
+    selfLink: string,
+    creationTimestamp: string|null,
+  },
+  groups: string[]
+}
+
 export interface IOSOAuthService {
   isActive(): Promise<boolean>
   registerUserHooks(): void
@@ -39,7 +50,7 @@ export interface IOSOAuthService {
 
 class OSOAuthService implements IOSOAuthService {
   private userProfile: OSOAuthUserProfile = new OSOAuthUserProfile(moduleName)
-  private keepaliveUri: string = ''
+  private userInfoUri: string = ''
   private keepaliveInterval: number = 10
   private keepAliveHandler: NodeJS.Timeout | null = null
 
@@ -98,7 +109,7 @@ class OSOAuthService implements IOSOAuthService {
           return null
         }
 
-        this.keepaliveUri = buildKeepaliveUri(config)
+        this.userInfoUri = buildUserInfoUri(config)
 
         return config
       },
@@ -177,10 +188,10 @@ class OSOAuthService implements IOSOAuthService {
     $.ajaxSetup({ beforeSend })
   }
 
-  private setupKeepAlive(url: URL, config: OpenShiftConfig) {
+  private setupKeepAlive(config: OpenShiftConfig) {
     const keepAlive = async () => {
       log.debug("Running oAuth keepAlive function")
-      const response = await fetch(this.keepaliveUri, {method: 'GET'})
+      const response = await fetch(this.userInfoUri, {method: 'GET'})
       if (response.ok) {
         const keepaliveJson = await response.json()
         if (!keepaliveJson) {
@@ -208,7 +219,7 @@ class OSOAuthService implements IOSOAuthService {
         // In that case, let's just skip the error and go through another refresh cycle.
         // See http://stackoverflow.com/questions/2000609/jquery-ajax-status-code-0 for more details.
         log.error('Failed to fetch user info, status: ', response.statusText)
-        doLogout(url, config)
+        doLogout(config)
       }
     }
 
@@ -285,7 +296,7 @@ class OSOAuthService implements IOSOAuthService {
       this.setupFetch(config)
       this.setupJQueryAjax(config)
 
-      this.setupKeepAlive(currentURI, config)
+      this.setupKeepAlive(config)
       return true
 
     } catch (error) {
@@ -313,7 +324,20 @@ class OSOAuthService implements IOSOAuthService {
       }
 
       if (this.userProfile.getToken()) {
-        resolve({ username: this.userProfile.getToken(), isLogin: true })
+        const userInfo = await fetchPath<UserObject | null>(this.userInfoUri, {
+          success: (data: string) => {
+            log.debug('Retrieved user info from cluster server', data)
+            return JSON.parse(data)
+          },
+          error: () => null
+        })
+
+        let username = this.userProfile.getToken() // default
+        if (userInfo && userInfo.metadata?.name) {
+          username = userInfo.metadata?.name
+        }
+
+        resolve({ username: username, isLogin: true })
         userService.setToken(this.userProfile.getToken())
       }
 
