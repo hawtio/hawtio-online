@@ -1,26 +1,24 @@
 #!/bin/bash
 
+if [ -z "${1}" ]; then
+  echo "Error: ${0} <url>"
+  exit 1
+fi
+
+url="${1}"
+
 token=$(oc whoami -t)
+if [ -z "${token}" ]; then
+  echo "Error: Cannot get token. Try logging in to cluster first?"
+  exit 1
+fi
+
+# https://api.crc.testing:6443/apis/apps.openshift.io/v1
+# https://api.crc.testing:6443/.well-known/oauth-authorization-server
+# http://localhost:2772/master/apis/apps.openshift.io/v1
 
 curl -k \
   -H "Authorization: Bearer ${token}" \
-  https://api.crc.testing:6443/apis/apps.openshift.io/v1
+  "${url}"
 
-echo
-echo "==="
-echo
-
-curl -k \
-  https://api.crc.testing:6443/.well-known/oauth-authorization-server
-
-echo
-echo "==="
-echo
-
-curl -k \
-  -H "Authorization: Bearer ${token}" \
-  http://localhost:2772/master/apis/apps.openshift.io/v1
-
-echo
-echo "==="
-echo
+echo "Token used: ${token}"

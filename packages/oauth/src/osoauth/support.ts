@@ -8,7 +8,7 @@ export function currentTimeSeconds(): number {
   return Math.floor(new Date().getTime() / 1000)
 }
 
-export function buildKeepaliveUri(config: OpenShiftConfig): string {
+export function buildUserInfoUri(config: OpenShiftConfig): string {
   let uri: URL
   if (config.master_uri) {
     uri = new URL(`${config.master_uri}/apis/user.openshift.io/v1/users/~`)
