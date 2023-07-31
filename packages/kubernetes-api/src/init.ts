@@ -1,34 +1,20 @@
-import { UserProfile } from '@hawtio/online-oauth'
-import { log, k8Api } from './globals'
-import { pollingOnly } from './client'
-import { WatchTypes } from './model'
+import { log } from './globals'
+import { KubernetesAPI } from './kubernetes-api'
+import { KubernetesService } from './kubernetes-service'
 
-async function queryIsOpenshift() {
-  const testUrl = new URL(`${k8Api.getMasterUri()}/apis/apps.openshift.io/v1`)
+export let k8Loaded: boolean = false
+export let k8Api: KubernetesAPI
+export let k8Service: KubernetesService
 
-  try {
-    const response = await fetch(testUrl)
-    if (response?.ok) {
-      const result = await response.json()
-      if (result) {
-        console.log(result)
-        log.debug("Backend is an openshift instance")
-        k8Api.setIsOpenshift(true)
-      }
-    }
-  } catch (error) {
-    const err: Error = new Error("Error probing " + testUrl + " assuming backend is not an openshift instance.", { cause: error })
-    k8Api.setError(err)
-  }
-}
-
-export function k8Init(oAuthProfile: UserProfile) {
+export async function k8Init() {
   log.info("Initialising kubernetes api")
-  k8Api.setOAuthProfile(oAuthProfile)
+  k8Api = new KubernetesAPI()
+  await k8Api.initialize() // Will wait until initialized or in error
 
-  queryIsOpenshift()
-    .then(() => {
-      if (k8Api.isOpenshift())
-        pollingOnly.push(WatchTypes.BUILD_CONFIGS)
-    })
+  if (k8Api.initialized) {
+    k8Service = new KubernetesService()
+    await k8Service.initialize()
+  }
+
+  k8Loaded = true
 }

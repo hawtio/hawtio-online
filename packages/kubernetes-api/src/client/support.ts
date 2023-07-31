@@ -1,6 +1,6 @@
 import { cloneObject } from '../utils'
 import { WatchTypes } from '../model'
-import { Collection, CompareResult, KOptions, log, NO_KIND, NO_OBJECT, NO_OBJECTS } from './globals'
+import { CompareResult, KOptions, log, NO_KIND, NO_OBJECT, NO_OBJECTS } from './globals'
 import { equals, fullName, getApiVersion, getKind, getName, getNamespace, namespaced, toCollectionName, toKindName } from '../helpers'
 import { clientFactory } from './client-factory'
 
@@ -63,7 +63,7 @@ export function get(options: KOptions): void {
   client.connect()
 }
 
-function handleListAction(options: any, action: (object: any, success: (data: any) => void, error: (err: any) => void) => void) {
+function handleListAction(options: KOptions, action: (object: any, success: (data: any) => void, error: (err: any) => void) => void) {
   if (!options.object.objects) {
     throw NO_OBJECTS
   }
@@ -78,7 +78,7 @@ function handleListAction(options: any, action: (object: any, success: (data: an
       log.debug("processed all objects, returning status")
       try {
         if (options.success) {
-          options.success(answer)
+          options.success([answer])
         }
       } catch (err) {
         log.debug("Supplied success callback threw error:", err)
@@ -98,16 +98,14 @@ function handleListAction(options: any, action: (object: any, success: (data: an
   next()
 }
 
-function normalizeOptions(options: any) {
+function normalizeOptions(options: KOptions) {
   log.debug("Normalizing supplied options:", options)
   // let's try and support also just supplying k8s objects directly
   if (options.metadata || getKind(options) === toKindName(WatchTypes.LIST)) {
-    const object = options
+    const object = options.object
     options = {
+      kind: (object.objects) ? toKindName(WatchTypes.LIST) || NO_KIND : object.kind,
       object: object
-    }
-    if (object.objects) {
-      options.kind = toKindName(WatchTypes.LIST)
     }
   }
   if (!options.object) {
@@ -124,12 +122,13 @@ function normalizeOptions(options: any) {
   return options
 }
 
-export function del(options: any): void {
+export function del(options: KOptions): void {
   options = normalizeOptions(options)
   // support deleting a list of objects
   if (options.object.kind === toKindName(WatchTypes.LIST)) {
-    handleListAction(options, (object: any, success, error) => {
+    handleListAction(options, (object: KOptions, success, error) => {
       del({
+        kind: object.kind,
         object: object,
         success: success,
         error: error
@@ -137,9 +136,9 @@ export function del(options: any): void {
     })
     return
   }
-  options.kind = options.kind || toCollectionName(options.object)
-  options.namespace = namespaced(options.kind) ? options.namespace || getNamespace(options.object) : null
-  options.apiVersion = options.apiVersion || getApiVersion(options.object)
+  options.kind = options.kind || toCollectionName(options.object) || NO_KIND
+  options.namespace = namespaced(options.kind) ? options.namespace || getNamespace(options.object) || undefined : undefined
+  options.apiVersion = options.apiVersion || getApiVersion(options.object) || undefined
   const client = clientFactory.create(options)
   const success = (data: any) => {
     if (options.success) {
@@ -167,12 +166,13 @@ export function del(options: any): void {
 /*
  * Add/replace an object, or a list of objects
  */
-export function put(options: any): void {
+export function put(options: KOptions): void {
   options = normalizeOptions(options)
   // support putting a list of objects
   if (options.object.kind === toKindName(WatchTypes.LIST)) {
     handleListAction(options, (object: any, success, error) => {
       put({
+        kind: object.kind,
         object: object,
         success: success,
         error: error
@@ -180,9 +180,9 @@ export function put(options: any): void {
     })
     return
   }
-  options.kind = options.kind || toCollectionName(options.object)
-  options.namespace = namespaced(options.kind) ? options.namespace || getNamespace(options.object) : null
-  options.apiVersion = options.apiVersion || getApiVersion(options.object)
+  options.kind = options.kind || toCollectionName(options.object) || NO_KIND
+  options.namespace = namespaced(options.kind) ? options.namespace || getNamespace(options.object) || undefined : undefined
+  options.apiVersion = options.apiVersion || getApiVersion(options.object) || undefined
   const client = clientFactory.create(options)
   client.get((objects) => {
     const success = (data: any) => {
@@ -214,7 +214,7 @@ export function watch(options: KOptions) {
   if (!options.kind) {
     throw NO_KIND
   }
-  const client = <Collection>clientFactory.create(options)
+  const client = clientFactory.create(options)
   if (options.success) {
     const handle = client.watch(options.success)
     const self = {

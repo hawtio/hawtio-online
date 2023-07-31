@@ -103,7 +103,7 @@ class OSOAuthService implements IOSOAuthService {
         return config
       },
       error: (err) => {
-        const e: Error = new Error("Cannot parse the oauth metadata uri", {cause: err})
+        const e: Error = new Error("Failed to contact the oauth metadata uri", {cause: err})
         this.userProfile.setError(e)
         return null
       }

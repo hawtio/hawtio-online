@@ -21,6 +21,10 @@ export function isFunction(value: unknown): value is Function {
   return typeof value === 'function'
 }
 
+export function isBoolean(value: unknown): value is boolean {
+  return typeof value === 'boolean'
+}
+
 export function isNumber(value: unknown): value is number {
   return typeof value === 'number' && !Number.isNaN(value)
 }
