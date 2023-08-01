@@ -1,3 +1,4 @@
+import { KubeObject } from './globals'
 import { WatchTypes, NamespacedTypes, ExtensionTypes, KindTypes } from './model'
 import { K8S_PREFIX, K8S_API_VERSION, K8S_EXT_PREFIX, K8S_EXT_VERSION, OS_PREFIX, OS_API_VERSION } from './globals'
 import { joinPaths } from './utils/urls'
@@ -104,7 +105,7 @@ export function kubernetesApiPrefix(): string {
   /*
    * Returns the single 'kind' of an object from the collection kind
    */
-  export function toKindName(kind: Record<string, unknown> | string): string | null {
+  export function toKindName(kind: KubeObject | string): string | null {
     if (isObject(kind)) {
       return getKind(kind)
     }
@@ -148,7 +149,7 @@ export function kubernetesApiPrefix(): string {
   /*
    * Returns the collection kind of an object from the singular kind
    */
-  export function toCollectionName(kind: Record<string, unknown> | string): string | null {
+  export function toCollectionName(kind: KubeObject | string): string | null {
     if (isObject(kind)) {
       const k = getKind(kind)
       if (!k) return null
@@ -206,7 +207,7 @@ export function kubernetesApiPrefix(): string {
   /*
    * Compare two k8s objects based on their UID
    */
-  export function equals(left: any, right: any): boolean {
+  export function equals(left: KubeObject, right: KubeObject): boolean {
     const leftUID = getUID(left)
     const rightUID = getUID(right)
     if (!leftUID && !rightUID) {
@@ -259,60 +260,60 @@ export function kubernetesApiPrefix(): string {
   /**
    * Returns a fully scoped name with the namespace/kind, suitable to use as a key in maps
    **/
-  export function fullName(entity: Record<string, unknown>): string {
+  export function fullName(entity: KubeObject): string {
     const namespace = getNamespace(entity)
     const kind = getKind(entity) || ''
     const name = getName(entity) || ''
     return joinPaths((namespace ? namespace : ""), kind, name)
   }
 
-  export function getUID(entity: Record<string, unknown>): string | null {
+  export function getUID(entity: KubeObject): string | null {
     return pathGetString(entity, ['metadata', 'uid'])
   }
 
-  export function getNamespace(entity: Record<string, unknown>): string | null {
+  export function getNamespace(entity: KubeObject): string | null {
     // some objects aren't namespaced, so this can return null
     return pathGetString(entity, ["metadata", "namespace"])
   }
 
-  export function getApiVersion(entity: Record<string, unknown>): string | null {
+  export function getApiVersion(entity: KubeObject): string | null {
     return pathGetString(entity, ['apiVersion'])
   }
 
-  export function getLabels(entity: Record<string, unknown>): Record<string, unknown> | null {
+  export function getLabels(entity: KubeObject): Record<string, unknown> | null {
     return pathGetObject(entity, ["metadata", "labels"])
   }
 
-  export function getName(entity: Record<string, unknown> | null): string | null {
+  export function getName(entity: KubeObject | null): string | null {
     if (!entity) return null
 
     return pathGetString(entity, ["metadata", "name"]) ||
       pathGetString(entity, "name") || pathGetString(entity, "id")
   }
 
-  export function getKind(entity: Record<string, unknown>): string | null {
+  export function getKind(entity: KubeObject): string | null {
     return pathGetString(entity, ["metadata", "kind"]) || pathGetString(entity, "kind")
   }
 
-  export function getSelector(entity: Record<string, unknown>): string | null {
+  export function getSelector(entity: KubeObject): string | null {
     return pathGetString(entity, ["spec", "selector"])
   }
 
-  export function getHost(pod: Record<string, unknown>): string | null {
+  export function getHost(pod: KubeObject): string | null {
     return pathGetString(pod, ["spec", "host"]) ||
       pathGetString(pod, ["spec", "nodeName"]) ||
       pathGetString(pod, ["status", "hostIP"])
   }
 
-  export function getStatus(pod: Record<string, unknown>): string | null {
+  export function getStatus(pod: KubeObject): string | null {
     return pathGetString(pod, ["status", "phase"])
   }
 
-  export function getPorts(service: Record<string, unknown>): string | null {
+  export function getPorts(service: KubeObject): string | null {
     return pathGetString(service, ["spec", "ports"])
   }
 
-  export function getCreationTimestamp(entity: Record<string, unknown>): string | null {
+  export function getCreationTimestamp(entity: KubeObject): string | null {
     return pathGetString(entity, ["metadata", "creationTimestamp"])
   }
 
@@ -329,7 +330,7 @@ export function kubernetesApiPrefix(): string {
     }
   }
 
-  export function podStatus(pod: Record<string, unknown>): string | null {
+  export function podStatus(pod: KubeObject): string | null {
     return getStatus(pod)
   }
 

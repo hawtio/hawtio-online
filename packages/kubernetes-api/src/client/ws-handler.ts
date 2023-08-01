@@ -1,3 +1,4 @@
+import { KubeObjectList } from '../globals'
 import { fetchPath, isFunction, isString, SimpleResponse } from '../utils'
 import { Collection, log, ObjectList, pollingOnly, WSHandler } from "./globals"
 import { ObjectListImpl } from "./object-list"
@@ -38,6 +39,26 @@ export class WSHandlerImpl implements WSHandler {
 
   get kind() {
     return this._collection.kind
+  }
+
+  private createWebSocket(url: string): WebSocket {
+
+    /*
+     * Pass the bearer token via WebSocket sub-protocol
+     * An extra sub-protocol is required along with the authentication one, that gets removed
+     * See https://github.com/kubernetes/kubernetes/commit/714f97d7baf4975ad3aa47735a868a81a984d1f0
+     * (Update 2023: this commit is from 2017 but still holds good)
+     */
+    const token = this.collection.oAuthToken
+    const bearerProtocol = `base64url.bearer.authorization.k8s.io.${btoa(token).replace(/=/g, '')}`
+
+    /*
+     * The binary protocol is required for correct authentication.
+     * Otherwise, connection fails with a 400 or 401 authentication error
+     */
+    const protocols = ["base64.binary.k8s.io", bearerProtocol]
+
+    return new WebSocket(url, protocols)
   }
 
   private setHandlers(self: WSHandler, ws: WebSocket) {
@@ -85,6 +106,7 @@ export class WSHandlerImpl implements WSHandler {
   }
 
   onmessage(event: any) {
+    log.debug("Receiving message from web socket: ", event)
     if (this.shouldClose(event)) {
       log.debug("Should be closed!")
       return
@@ -126,13 +148,7 @@ export class WSHandlerImpl implements WSHandler {
         log.debug("Retrying after connection closed:", event)
         this.retries = this.retries + 1
         log.debug("watch ", this.collection.kind, "disconnected, retry #", this.retries)
-        // Pass the bearer token via WebSocket sub-protocol
-        // An extra sub-protocol is required along with the authentication one, that gets removed
-        // See https://github.com/kubernetes/kubernetes/commit/714f97d7baf4975ad3aa47735a868a81a984d1f0
-        const ws = this.socket = new WebSocket(
-          this.collection.wsURL,
-          [this.base64TokenProtocol()]
-        )
+        const ws = this.createWebSocket(this.collection.wsURL)
         this.setHandlers(self, ws)
       }, 5000)
     } else {
@@ -163,15 +179,13 @@ export class WSHandlerImpl implements WSHandler {
     return false
   }
 
-  private base64TokenProtocol(): string {
-    const token = this.collection.oAuthToken
-    return `base64url.bearer.authorization.k8s.io.${btoa(token).replace(/=/g, '')}`
-  }
-
   connect() {
+    log.debug("Connecting web socket handler")
+
     if (this.destroyed) {
       return
     }
+
     // in case a custom URL is going to be used
     if (this.collection.restURL === '' && this.collection.wsURL === '') {
       setTimeout(() => {
@@ -189,22 +203,22 @@ export class WSHandlerImpl implements WSHandler {
           const wsURL = this.collection.wsURL
           if (wsURL) {
             log.debug("Connecting websocket for kind:", this.collection.kind)
-            // Pass the bearer token via WebSocket sub-protocol
-            // An extra sub-protocol is required along with the authentication one, that gets removed
-            // See https://github.com/kubernetes/kubernetes/commit/714f97d7baf4975ad3aa47735a868a81a984d1f0
-            this.socket = new WebSocket(
-              wsURL,
-              [this.base64TokenProtocol()])
+            this.socket = this.createWebSocket(wsURL)
             this.setHandlers(this, this.socket)
           } else {
             log.info("No wsURL for kind: " + this.collection.kind)
           }
         }
 
+        log.debug("Fetching intial collection of object from web socket: " + this.collection.restURL)
         fetchPath(this.collection.restURL, {
-          success: (data: any) => {
-            this.list.objects = data.items || []
-            setTimeout(() => { doConnect() }, 10)
+          success: (data: string) => {
+            const objectList: KubeObjectList = JSON.parse(data)
+            this.list.objects = objectList.items || []
+
+            setTimeout(() => {
+              doConnect() }, 10
+            )
           },
           error: (err: Error, response?: SimpleResponse) => {
             if (response?.status === 403) {
@@ -218,6 +232,7 @@ export class WSHandlerImpl implements WSHandler {
             }
           }
         })
+
       }
     }
   }

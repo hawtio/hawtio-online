@@ -1,4 +1,6 @@
+import EventEmitter from 'eventemitter3'
 import { Logger } from '@hawtio/react'
+import { KubeObject } from '../globals'
 import { equals, getName, getNamespace, toKindName } from '../helpers'
 import { WatchActions } from '../model'
 import { debounce } from '../utils'
@@ -7,45 +9,37 @@ import { log, ObjectList } from './globals'
 /**
  *  Manages the array of k8s objects for a client instance
  **/
-export class ObjectListImpl implements ObjectList {
+export class ObjectListImpl extends EventEmitter implements ObjectList {
 
-  public triggerChangedEvent = debounce(() => {
-    // TODO
-    //
-    // Need to broadcast change events from this object list
-    //
-    // this.emit(WatchActions.ANY, this._objects)
-    console.log("TODO ObjectListImpl:triggerChangedEvent")
+  triggerChangedEvent = debounce(() => {
+    this.emit(WatchActions.ANY, this._objects)
   }, 75)
 
   private _initialized = false
-  private _objects: Array<any> = []
+  private _objects: Array<KubeObject> = []
 
   constructor(private _kind?: string, private namespace?: string) {
-    // TODO
-    // Work out how to watch changes on these objects
-    //
-    // if (log.enabledFor(Logger.DEBUG)) {
-    //   this.on(WatchActions.ADDED, (object) => {
-    //     log.debug("added", this.kind, ":", object)
-    //   })
-    //   this.on(WatchActions.MODIFIED, (object) => {
-    //     log.debug("modified", this.kind, ":", object)
-    //   })
-    //   this.on(WatchActions.DELETED, (object) => {
-    //     log.debug("deleted", this.kind, ":", object)
-    //   })
-    //   this.on(WatchActions.ANY, (objects) => {
-    //     log.debug(this.kind, "changed:", objects)
-    //   })
-    //   this.on(WatchActions.INIT, (objects) => {
-    //     log.debug(this.kind, "initialized")
-    //   })
-    // }
-    // this.on(WatchActions.ANY, (objects) => {
-    //   this.initialize()
-    // })
-    console.log("TODO ObjectListImpl:constructor")
+    super()
+    if (log.enabledFor(Logger.DEBUG)) {
+      this.on(WatchActions.ADDED, (object) => {
+        log.debug("added", this.kind, ":", object)
+      })
+      this.on(WatchActions.MODIFIED, (object) => {
+        log.debug("modified", this.kind, ":", object)
+      })
+      this.on(WatchActions.DELETED, (object) => {
+        log.debug("deleted", this.kind, ":", object)
+      })
+      this.on(WatchActions.ANY, (objects) => {
+        log.debug(this.kind, "changed:", objects)
+      })
+      this.on(WatchActions.INIT, (objects) => {
+        log.debug(this.kind, "initialized")
+      })
+    }
+    this.on(WatchActions.ANY, (objects) => {
+      this.initialize()
+    })
   }
 
   public get kind() {
@@ -58,9 +52,7 @@ export class ObjectListImpl implements ObjectList {
     }
     this._initialized = true
 
-    // TODO
-    console.log("TODO ObjectListImpl:initialize")
-    // this.emit(WatchActions.INIT, this._objects)
+    this.emit(WatchActions.INIT, this._objects)
     this.triggerChangedEvent()
   }
 
@@ -76,7 +68,7 @@ export class ObjectListImpl implements ObjectList {
     this._objects.length = 0
     objs.forEach((obj) => {
       if (!obj.kind) {
-        obj.kind = toKindName(this.kind)
+        obj.kind = toKindName(this.kind) || undefined
       }
       this._objects.push(obj)
     })
@@ -85,7 +77,7 @@ export class ObjectListImpl implements ObjectList {
   }
 
   public hasNamedItem(item: any): boolean {
-    return this._objects.some((obj: any) => {
+    return this._objects.some((obj: KubeObject) => {
       return getName(obj) === getName(item)
     })
   }
@@ -104,7 +96,19 @@ export class ObjectListImpl implements ObjectList {
     return true
   }
 
-  public added(object: any): boolean {
+  doOnce(action: WatchActions, cb: (data: any[]) => void) {
+    this.once(action, cb)
+  }
+
+  doOn(action: WatchActions, cb: (data: any[]) => void) {
+    this.once(action, cb)
+  }
+
+  doOff(action: WatchActions, cb: (data: any[]) => void) {
+    this.off(action, cb)
+  }
+
+  added(object: any): boolean {
     if (!this.belongs(object)) {
       return false
     }
@@ -115,10 +119,7 @@ export class ObjectListImpl implements ObjectList {
       return this.modified(object)
     }
     this._objects.push(object)
-    //
-    // TODO
-    console.log("TODO ObjectListImpl:added")
-    // this.emit(WatchActions.ADDED, object)
+    this.emit(WatchActions.ADDED, object)
     this.triggerChangedEvent()
     return true
   }
@@ -135,10 +136,7 @@ export class ObjectListImpl implements ObjectList {
     }
     this._objects.forEach((obj) => {
       if (equals(obj, object)) {
-        // TODO
-        console.log("TODO ObjectListImpl:modified")
-        // angular.copy(object, obj)
-        // this.emit(WatchActions.MODIFIED, object)
+        this.emit(WatchActions.MODIFIED, object)
         this.triggerChangedEvent()
       }
     })
@@ -153,9 +151,7 @@ export class ObjectListImpl implements ObjectList {
     const idx = this._objects.indexOf(object)
     const deleted = this._objects.splice(idx, 1)
     if (deleted) {
-      // TODO
-      console.log("TODO ObjectListImpl:deleted")
-      // this.emit(WatchActions.DELETED, deleted)
+      this.emit(WatchActions.DELETED, deleted)
       this.triggerChangedEvent()
     }
     return deleted.length > 0

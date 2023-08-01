@@ -2,19 +2,23 @@ import { log } from './globals'
 import { KubernetesAPI } from './kubernetes-api'
 import { KubernetesService } from './kubernetes-service'
 
-export let k8Loaded: boolean = false
-export let k8Api: KubernetesAPI
-export let k8Service: KubernetesService
+export const k8Api = new KubernetesAPI()
+export const k8Service = new KubernetesService()
 
-export async function k8Init() {
-  log.info("Initialising kubernetes api")
-  k8Api = new KubernetesAPI()
-  await k8Api.initialize() // Will wait until initialized or in error
+export const k8Init = async (): Promise<boolean> => {
+  if (k8Api.initialized && k8Service.initialized)
+    return true
 
-  if (k8Api.initialized) {
-    k8Service = new KubernetesService()
-    await k8Service.initialize()
-  }
+  log.debug("Initialising kubernetes api")
+  let inited = await k8Api.initialize() // Will wait until initialized or in error
+  if (!inited)
+    return false
 
-  k8Loaded = true
+  log.debug("Initialising kubernetes service")
+  inited = await k8Service.initialize()
+  if (!inited)
+    return false
+
+  log.debug("Completed initialising kubernetes-api")
+  return true
 }

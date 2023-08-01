@@ -1,4 +1,4 @@
-import { k8Loaded, k8Api, k8Service } from '@hawtio/online-kubernetes-api'
+import { k8Service, K8Actions } from '@hawtio/online-kubernetes-api'
 import React, { useRef, useEffect, useState } from 'react'
 import {
   Alert,
@@ -12,74 +12,28 @@ import {
   PanelMain,
   PanelMainBody,
   Skeleton,
+  Tab,
+  Tabs,
+  TabTitleText,
   Title } from '@patternfly/react-core'
+import { KubernetesProjects } from './kubernetes-projects'
+import { KubeObject } from '@hawtio/online-kubernetes-api'
+import { KubernetesPods } from './kubernetes-pods'
 
 export const KubernetesClient: React.FunctionComponent = () => {
-  const [isLoading, setIsLoading] = useState(true)
-  const timeout = useRef<number>()
-  const [error, setError] = useState<Error|null>()
+  const [projects, setProjects] = useState<KubeObject[]>([])
+  const [pods, setPods] = useState<KubeObject[]>([])
+  const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0);
 
   useEffect(() => {
-    setIsLoading(true)
+    k8Service.on(K8Actions.CHANGED, () => {
+      setProjects(k8Service.getProjects())
+      setPods(k8Service.getPods())
+    })
+  }, [])
 
-    const checkLoading = async () => {
-      if (! k8Loaded)
-        return
-
-      setIsLoading(false)
-
-      if (k8Api.hasError()) {
-        setError(k8Api.error)
-        return
-      }
-
-      if (k8Service.hasError()) {
-        setError(k8Service.error)
-      }
-    }
-
-    checkLoading()
-
-    timeout.current = window.setTimeout(checkLoading, 1000)
-
-    return () => {
-      window.clearTimeout(timeout.current)
-    }
-
-  }, [k8Loaded])
-
-  if (isLoading) {
-    return (
-      <Panel>
-        <PanelMain>
-          <PanelMainBody>
-            <Skeleton screenreaderText='Loading...' />
-          </PanelMainBody>
-        </PanelMain>
-      </Panel>
-    )
-  }
-
-  const unwrap = (error: Error): string => {
-    if (!error)
-      return 'unknown error'
-
-    if (error.cause instanceof Error)
-      return unwrap(error.cause)
-
-    return error.message
-  }
-
-  if (error) {
-    return (
-      <Panel>
-        <PanelMain>
-          <Alert variant="danger" title={error?.message}>
-            {unwrap(error)}
-          </Alert>
-        </PanelMain>
-      </Panel>
-    )
+  const handleTabClick = (event: React.MouseEvent<any> | React.KeyboardEvent|MouseEvent, tabIndex: string|number) => {
+    setActiveTabKey(tabIndex)
   }
 
   return (
@@ -87,7 +41,14 @@ export const KubernetesClient: React.FunctionComponent = () => {
       <PanelHeader><Title headingLevel="h1">Kubernetes Client</Title></PanelHeader>
       <PanelMain>
         <PanelMainBody>
-          {k8Service.getPods()}
+          <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox>
+            <Tab eventKey={0} title={<TabTitleText>Projects</TabTitleText>}>
+              <KubernetesProjects projects={projects}/>
+            </Tab>
+            <Tab eventKey={1} title={<TabTitleText>Pods</TabTitleText>}>
+              <KubernetesPods pods={pods}/>
+            </Tab>
+          </Tabs>
         </PanelMainBody>
       </PanelMain>
     </Panel>

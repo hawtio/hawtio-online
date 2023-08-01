@@ -22,7 +22,7 @@ export class ClientFactoryImpl implements ClientFactory {
     } else {
       const client = new ClientInstance(new CollectionImpl(options))
       client.addRef()
-      log.debug("Creating new client for key:", key, "refcount is:", client.refCount)
+      log.debug("Creating new client for key: '", key, "' refcount is: ", client.refCount)
       this._clients[key] = client
       return client.collection
     }

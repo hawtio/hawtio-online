@@ -21,7 +21,7 @@ export class KubernetesAPI {
       this.isOS = await this.queryOpenshift(this._oAuthProfile)
 
     } catch (error) {
-      log.error('k8 Api cannot complete initialisation due to: ', error)
+      log.error('k8 Api produced an error: ', error)
       if (error instanceof Error)
         this._error = error
       else
@@ -53,7 +53,6 @@ export class KubernetesAPI {
       if (response?.ok) {
         const result = await response.json()
         if (result) {
-          console.log(result)
           log.debug("Backend is an openshift instance")
           this.isOS = true
         }
