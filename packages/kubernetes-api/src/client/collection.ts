@@ -1,12 +1,12 @@
 import { K8S_EXT_PREFIX } from '../globals'
 import { fetchPath, FetchPathCallback, isFunction, joinPaths } from '../utils'
-import { log, UNKNOWN_VALUE, Collection, KOptions, ObjectList, WSHandler } from './globals'
 import { getName, getNamespace, namespaced, prefixForKind, toCollectionName, wsUrl } from '../helpers'
 import { WatchActions, WatchTypes } from '../model'
+import { k8Api } from '../init'
+import { log, UNKNOWN_VALUE, Collection, KOptions, ObjectList, WSHandler } from './globals'
 import { ObjectListImpl } from './object-list'
 import { WSHandlerImpl } from './ws-handler'
 import { getKey } from './support'
-import { k8Api } from 'src/init'
 
 /*
  * Implements the external API for working with k8s collections of objects
@@ -34,10 +34,11 @@ export class CollectionImpl implements Collection {
     } else {
       this._path = joinPaths(pref, this.kind)
     }
+    log.debug("Creating new collection for kind: '", this.kind, "' path: '", this._path, "'")
+
     this.handler = new WSHandlerImpl(this)
     const list = this.list = new ObjectListImpl(_options.kind, _options.namespace)
     this.handler.list = list
-    log.debug("creating new collection for", this.kind, "namespace:", this.namespace)
   }
 
   public get oAuthToken(): string {
@@ -142,9 +143,7 @@ export class CollectionImpl implements Collection {
   // one time fetch of the data...
   public get(cb: (data: any[]) => void) {
     if (!this.list.initialized) {
-      // TODO
-      console.log("TODO: CollectionImpl:get")
-      // this.list.once(WatchActions.INIT, cb)
+      this.list.listenOnce(WatchActions.INIT, cb)
     } else {
       setTimeout(() => {
         cb(this.list.objects)
@@ -186,7 +185,7 @@ export class CollectionImpl implements Collection {
 
       const collectionName = toCollectionName(item.kind)
       if (collectionName && namespaced(collectionName)) {
-        const namespace = getNamespace(item) || this._namespace
+        const namespace = getNamespace(item) || this._namespace || UNKNOWN_VALUE
         let prefix = this.getPrefix()
         const kind = this.kind
         if (!this._isOpenshift && (kind === "buildconfigs" || kind === "BuildConfig")) {
@@ -212,20 +211,16 @@ export class CollectionImpl implements Collection {
     }
     log.debug(this.kind, "adding watch callback:", cb)
 
-    // TODO
-    console.log("TODO CollectionImpl:watch")
-    // this.list.on(WatchActions.ANY, (data) => {
-    //   log.debug(this.kind, "got data:", data)
-    //   cb(data)
-    // })
+    this.list.doOn(WatchActions.ANY, (data) => {
+      log.debug(this.kind, "got data:", data)
+      cb(data)
+    })
     return cb
   }
 
   public unwatch(cb: (data: any[]) => void) {
     log.debug(this.kind, "removing watch callback:", cb)
-    // TODO
-    console.log("TODO CollectionImpl:unwatch")
-    // this.list.off(WatchActions.ANY, cb)
+    this.list.doOff(WatchActions.ANY, cb)
   }
 
   public put(item: any, cb: (data: any) => void, error?: (err: any) => void) {

@@ -1,4 +1,5 @@
 import { configManager, Hawtconfig } from '@hawtio/react'
+import EventEmitter from 'eventemitter3'
 import {
   HawtioMode,
   HAWTIO_MODE_KEY,
@@ -11,6 +12,7 @@ import jsonpath from 'jsonpath'
 import { WatchTypes } from "./model"
 import { pathGet } from './utils'
 import { clientFactory, Collection, log } from "./client"
+import { K8Actions, KubeObject } from './globals'
 import { k8Api } from './init'
 
 export interface Client {
@@ -18,7 +20,7 @@ export interface Client {
   watch: (data: any[]) => void
 }
 
-export class KubernetesService {
+export class KubernetesService extends EventEmitter {
 
   private readonly jolokiaPortQuery = '$.spec.containers[*].ports[?(@.name=="jolokia")]'
 
@@ -26,8 +28,8 @@ export class KubernetesService {
   private _initialized: boolean = false
   private _error: Error|null = null
   private _oAuthProfile: UserProfile | null = null
-  private projects: any[] = []
-  private pods: any[] = []
+  private projects: KubeObject[] = []
+  private pods: KubeObject[] = []
   private projects_client: Client | null = null
   private pods_clients: { [key: string]: Client } = {}
 
@@ -65,6 +67,7 @@ export class KubernetesService {
   }
 
   private initNamespaceConfig(profile: UserProfile) {
+    log.debug("Initialising Namespace Config")
     this._loading++
     let namespace = profile.metadataValue(HAWTIO_NAMESPACE_KEY)
     if (!namespace) {
@@ -74,12 +77,10 @@ export class KubernetesService {
     const pods_client = clientFactory.create({ kind: WatchTypes.PODS }, namespace)
     const pods_watch = pods_client.watch(pods => {
       this._loading--
-      this.pods.length = 0
+      this.pods.splice(0, this.pods.length) // clear the array
       const jolokiaPods = pods.filter(pod => jsonpath.query(pod, this.jolokiaPortQuery).length > 0)
       this.pods.push(...jolokiaPods)
-      // TODO
-      console.log("TODO kubernetes-service:initNamespaceConfig")
-      // this.emit('changed')
+      this.emit(K8Actions.CHANGED)
     })
 
     this.pods_clients[namespace] = { collection: pods_client, watch: pods_watch }
@@ -87,6 +88,7 @@ export class KubernetesService {
   }
 
   private initClusterConfig(hawtConfig: Hawtconfig) {
+    log.debug("Initialising Cluster Config")
     const kindToWatch = k8Api.isOpenshift ? WatchTypes.PROJECTS : WatchTypes.NAMESPACES
     const labelSelector = pathGet(hawtConfig, ['online', 'projectSelector']) as string
     const projects_client = clientFactory.create(
@@ -106,13 +108,26 @@ export class KubernetesService {
         const pods_watch = pods_client.watch(pods => {
           this._loading--
           const others = this.pods.filter(pod => pod.metadata.namespace !== project.metadata.name)
-          this.pods.length = 0
-          const jolokiaPods = pods.filter(pod => jsonpath.query(pod, this.jolokiaPortQuery).length > 0)
-          this.pods.push(...others, ...jolokiaPods)
 
-          // TODO
-          console.log("TODO kubernetes-service:initProjects")
-          // this.emit('changed')
+          // clear pods
+          this.pods.splice(0, this.pods.length)
+
+          // add others back to pods
+          this.pods.push(...others)
+
+          const jolokiaPods = pods.filter(pod => jsonpath.query(pod, this.jolokiaPortQuery).length > 0)
+
+          for (const jpod of jolokiaPods) {
+            const pos = this.pods.findIndex(pod => pod.metadata.uid === jpod.metadata.uid)
+            if (pos > -1) {
+              // replace the pod - not sure we need to ...?
+              this.pods.splice(pos, 1)
+            }
+
+            this.pods.push(jpod)
+          }
+
+          this.emit(K8Actions.CHANGED)
         })
         this.pods_clients[project.metadata.name] = {
           collection: pods_client,
@@ -129,7 +144,7 @@ export class KubernetesService {
         delete this.pods_clients[project.metadata.name]
       }
 
-      this.projects.length = 0
+      this.projects.splice(0, this.projects.length) // clear the array
       this.projects.push(...projects)
       this._loading--
     })
@@ -176,12 +191,12 @@ export class KubernetesService {
     return mode === this._oAuthProfile?.metadataValue(HAWTIO_MODE_KEY)
   }
 
-  getPods(): any[] {
+  getPods(): KubeObject[] {
     this.checkInitOrError()
     return this.pods
   }
 
-  getProjects(): any[] {
+  getProjects(): KubeObject[] {
     this.checkInitOrError()
     return this.projects
   }

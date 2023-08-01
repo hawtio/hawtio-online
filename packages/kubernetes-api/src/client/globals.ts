@@ -1,5 +1,6 @@
 import { Logger } from '@hawtio/react'
-import { WatchTypes } from '../model'
+import { KubeObject } from '../globals'
+import { WatchActions, WatchTypes } from '../model'
 
 export const log = Logger.get('hawtio-k8s-objects')
 
@@ -53,7 +54,7 @@ export interface Collection {
 export interface ObjectList {
   kind: string
   initialized: boolean
-  objects: any[]
+  objects: KubeObject[]
   initialize(): void
   hasNamedItem(item: any): boolean
   getNamedItem(name: string): any
@@ -61,6 +62,9 @@ export interface ObjectList {
   modified(object: any): boolean
   deleted(object: any): boolean
   triggerChangedEvent(...args: any[]): void
+  doOnce(action: WatchActions, cb: (data: any[]) => void): void
+  doOn(action: WatchActions, cb: (data: any[]) => void): void
+  doOff(action: WatchActions, cb: (data: any[]) => void): void
 }
 
 export interface WSHandler {

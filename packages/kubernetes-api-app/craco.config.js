@@ -154,7 +154,8 @@ module.exports = () => {
         '/master': {
           target: master_uri,
           pathRewrite: { '^/master': '' },
-          secure: false
+          secure: false,
+          ws: true
         },
       }
 

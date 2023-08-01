@@ -21,4 +21,5 @@ curl -k \
   -H "Authorization: Bearer ${token}" \
   "${url}"
 
+echo
 echo "Token used: ${token}"
