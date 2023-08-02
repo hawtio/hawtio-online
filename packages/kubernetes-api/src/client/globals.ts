@@ -8,9 +8,9 @@ export const log = Logger.get('hawtio-k8s-objects')
 export const pollingOnly = [WatchTypes.IMAGE_STREAM_TAGS]
 
 export const UNKNOWN_VALUE = '<unknown>'
-export const NO_KIND = "No kind in supplied options"
-export const NO_OBJECT = "No object in supplied options"
-export const NO_OBJECTS = "No objects in list object"
+export const NO_KIND = 'No kind in supplied options'
+export const NO_OBJECT = 'No object in supplied options'
+export const NO_OBJECTS = 'No objects in list object'
 
 export interface CompareResult {
   added: Array<any>;

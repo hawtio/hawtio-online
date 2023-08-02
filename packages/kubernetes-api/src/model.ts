@@ -10,77 +10,77 @@ export interface KubernetesState {
 }
 
 export class KindTypes {
-  public static get LIST(): string { return 'List' }
-  public static get ENDPOINTS(): string { return 'Endpoint' }
-  public static get EVENTS(): string { return 'Event' }
-  public static get NAMESPACES(): string { return 'Namespace' }
-  public static get NODES(): string { return 'Node' }
-  public static get PERSISTENT_VOLUMES(): string { return 'PersistentVolume' }
-  public static get PERSISTENT_VOLUME_CLAIMS(): string { return 'PersistentVolumeClaim' }
-  public static get PODS(): string { return 'Pod' }
-  public static get REPLICATION_CONTROLLERS(): string { return 'ReplicationController' }
-  public static get REPLICA_SETS(): string { return 'ReplicaSet' }
-  public static get RESOURCE_QUOTAS(): string { return 'ResourceQuota' }
-  public static get OAUTH_CLIENTS(): string { return 'OAuthClient' }
-  public static get SECRETS(): string { return 'Secret' }
-  public static get SERVICES(): string { return 'Service' }
-  public static get SERVICE_ACCOUNTS(): string { return 'ServiceAccount' }
-  public static get CONFIG_MAPS(): string { return 'ConfigMap' }
-  public static get INGRESSES(): string { return 'Ingress' }
-  public static get TEMPLATES(): string { return 'Template' }
-  public static get ROUTES(): string { return 'Route' }
-  public static get BUILD_CONFIGS(): string { return 'BuildConfig' }
-  public static get BUILDS(): string { return 'Build' }
-  public static get DEPLOYMENT_CONFIGS(): string { return 'DeploymentConfig' }
-  public static get DEPLOYMENTS(): string { return 'Deployment' }
-  public static get IMAGES(): string { return 'Image' }
-  public static get IMAGE_STREAMS(): string { return 'ImageStream' }
-  public static get IMAGE_STREAM_TAGS(): string { return 'ImageStreamTag' }
-  public static get POLICIES(): string { return 'Policy' }
-  public static get POLICY_BINDINGS(): string { return 'PolicyBinding' }
-  public static get PROJECTS(): string { return 'Project' }
-  public static get ROLE_BINDINGS(): string { return 'RoleBinding' }
-  public static get ROLES(): string { return 'Role' }
-  public static get DAEMONSETS(): string { return 'DaemonSet' }
+  static get LIST(): string { return 'List' }
+  static get ENDPOINTS(): string { return 'Endpoint' }
+  static get EVENTS(): string { return 'Event' }
+  static get NAMESPACES(): string { return 'Namespace' }
+  static get NODES(): string { return 'Node' }
+  static get PERSISTENT_VOLUMES(): string { return 'PersistentVolume' }
+  static get PERSISTENT_VOLUME_CLAIMS(): string { return 'PersistentVolumeClaim' }
+  static get PODS(): string { return 'Pod' }
+  static get REPLICATION_CONTROLLERS(): string { return 'ReplicationController' }
+  static get REPLICA_SETS(): string { return 'ReplicaSet' }
+  static get RESOURCE_QUOTAS(): string { return 'ResourceQuota' }
+  static get OAUTH_CLIENTS(): string { return 'OAuthClient' }
+  static get SECRETS(): string { return 'Secret' }
+  static get SERVICES(): string { return 'Service' }
+  static get SERVICE_ACCOUNTS(): string { return 'ServiceAccount' }
+  static get CONFIG_MAPS(): string { return 'ConfigMap' }
+  static get INGRESSES(): string { return 'Ingress' }
+  static get TEMPLATES(): string { return 'Template' }
+  static get ROUTES(): string { return 'Route' }
+  static get BUILD_CONFIGS(): string { return 'BuildConfig' }
+  static get BUILDS(): string { return 'Build' }
+  static get DEPLOYMENT_CONFIGS(): string { return 'DeploymentConfig' }
+  static get DEPLOYMENTS(): string { return 'Deployment' }
+  static get IMAGES(): string { return 'Image' }
+  static get IMAGE_STREAMS(): string { return 'ImageStream' }
+  static get IMAGE_STREAM_TAGS(): string { return 'ImageStreamTag' }
+  static get POLICIES(): string { return 'Policy' }
+  static get POLICY_BINDINGS(): string { return 'PolicyBinding' }
+  static get PROJECTS(): string { return 'Project' }
+  static get ROLE_BINDINGS(): string { return 'RoleBinding' }
+  static get ROLES(): string { return 'Role' }
+  static get DAEMONSETS(): string { return 'DaemonSet' }
 }
 
 export class WatchTypes {
-  public static get LIST(): string { return 'list' }
-  public static get ENDPOINTS(): string { return 'endpoints' }
-  public static get EVENTS(): string { return 'events' }
-  public static get NAMESPACES(): string { return 'namespaces' }
-  public static get NODES(): string { return 'nodes' }
-  public static get PERSISTENT_VOLUMES(): string { return 'persistentvolumes' }
-  public static get PERSISTENT_VOLUME_CLAIMS(): string { return 'persistentvolumeclaims' }
-  public static get PODS(): string { return 'pods' }
-  public static get REPLICATION_CONTROLLERS(): string { return 'replicationcontrollers' }
-  public static get REPLICA_SETS(): string { return 'replicasets' }
-  public static get RESOURCE_QUOTAS(): string { return 'resourcequotas' }
-  public static get OAUTH_CLIENTS(): string { return 'oauthclients' }
-  public static get SECRETS(): string { return 'secrets' }
-  public static get SERVICES(): string { return 'services' }
-  public static get SERVICE_ACCOUNTS(): string { return 'serviceaccounts' }
-  public static get CONFIG_MAPS(): string { return 'configmaps' }
-  public static get INGRESSES(): string { return 'ingresses' }
-  public static get TEMPLATES(): string { return 'templates' }
-  public static get ROUTES(): string { return 'routes' }
-  public static get BUILD_CONFIGS(): string { return 'buildconfigs' }
-  public static get BUILDS(): string { return 'builds' }
-  public static get DEPLOYMENT_CONFIGS(): string { return 'deploymentconfigs' }
-  public static get DEPLOYMENTS(): string { return 'deployments' }
-  public static get IMAGES(): string { return 'images' }
-  public static get IMAGE_STREAMS(): string { return 'imagestreams' }
-  public static get IMAGE_STREAM_TAGS(): string { return 'imagestreamtags' }
-  public static get POLICIES(): string { return 'policies' }
-  public static get POLICY_BINDINGS(): string { return 'policybindings' }
-  public static get PROJECTS(): string { return 'projects' }
-  public static get ROLE_BINDINGS(): string { return 'rolebindings' }
-  public static get ROLES(): string { return 'roles' }
-  public static get DAEMONSETS(): string { return 'daemonsets' }
+  static get LIST(): string { return 'list' }
+  static get ENDPOINTS(): string { return 'endpoints' }
+  static get EVENTS(): string { return 'events' }
+  static get NAMESPACES(): string { return 'namespaces' }
+  static get NODES(): string { return 'nodes' }
+  static get PERSISTENT_VOLUMES(): string { return 'persistentvolumes' }
+  static get PERSISTENT_VOLUME_CLAIMS(): string { return 'persistentvolumeclaims' }
+  static get PODS(): string { return 'pods' }
+  static get REPLICATION_CONTROLLERS(): string { return 'replicationcontrollers' }
+  static get REPLICA_SETS(): string { return 'replicasets' }
+  static get RESOURCE_QUOTAS(): string { return 'resourcequotas' }
+  static get OAUTH_CLIENTS(): string { return 'oauthclients' }
+  static get SECRETS(): string { return 'secrets' }
+  static get SERVICES(): string { return 'services' }
+  static get SERVICE_ACCOUNTS(): string { return 'serviceaccounts' }
+  static get CONFIG_MAPS(): string { return 'configmaps' }
+  static get INGRESSES(): string { return 'ingresses' }
+  static get TEMPLATES(): string { return 'templates' }
+  static get ROUTES(): string { return 'routes' }
+  static get BUILD_CONFIGS(): string { return 'buildconfigs' }
+  static get BUILDS(): string { return 'builds' }
+  static get DEPLOYMENT_CONFIGS(): string { return 'deploymentconfigs' }
+  static get DEPLOYMENTS(): string { return 'deployments' }
+  static get IMAGES(): string { return 'images' }
+  static get IMAGE_STREAMS(): string { return 'imagestreams' }
+  static get IMAGE_STREAM_TAGS(): string { return 'imagestreamtags' }
+  static get POLICIES(): string { return 'policies' }
+  static get POLICY_BINDINGS(): string { return 'policybindings' }
+  static get PROJECTS(): string { return 'projects' }
+  static get ROLE_BINDINGS(): string { return 'rolebindings' }
+  static get ROLES(): string { return 'roles' }
+  static get DAEMONSETS(): string { return 'daemonsets' }
 }
 
 export class ExtensionTypes {
-  public static get extensions(): Array<string> {
+  static get extensions(): Array<string> {
     return [
       WatchTypes.DAEMONSETS,
       WatchTypes.DEPLOYMENTS,
@@ -91,7 +91,7 @@ export class ExtensionTypes {
 }
 
 export class NamespacedTypes {
-  public static get k8sTypes(): Array<string> {
+  static get k8sTypes(): Array<string> {
     return [
       WatchTypes.CONFIG_MAPS,
       WatchTypes.DEPLOYMENTS,
@@ -110,7 +110,7 @@ export class NamespacedTypes {
     ]
   }
 
-  public static get osTypes(): Array<string> {
+  static get osTypes(): Array<string> {
     return [
       WatchTypes.BUILDS,
       WatchTypes.BUILD_CONFIGS,

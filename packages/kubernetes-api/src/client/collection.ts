@@ -41,11 +41,11 @@ export class CollectionImpl implements Collection {
     this.handler.list = list
   }
 
-  public get oAuthToken(): string {
+  get oAuthToken(): string {
     return this._oAuthToken
   }
 
-  public get options(): KOptions {
+  get options(): KOptions {
     return this._options
   }
 
@@ -102,15 +102,15 @@ export class CollectionImpl implements Collection {
     return url
   }
 
-  public getKey() {
+  getKey() {
     return getKey(this.kind, this._namespace)
   }
 
-  public get wsURL() {
+  get wsURL() {
     return (this._wsUrl || "").toString()
   }
 
-  public get restURL() {
+  get restURL() {
     return (this._restUrl || "").toString()
   }
 
@@ -126,13 +126,13 @@ export class CollectionImpl implements Collection {
     return this.handler.connected
   }
 
-  public connect() {
+  connect() {
     if (!this.handler.connected) {
       this.handler.connect()
     }
   }
 
-  public destroy() {
+  destroy() {
     this.handler.destroy()
     /*
     delete this.handler
@@ -141,7 +141,7 @@ export class CollectionImpl implements Collection {
   }
 
   // one time fetch of the data...
-  public get(cb: (data: any[]) => void) {
+  get(cb: (data: any[]) => void) {
     if (!this.list.initialized) {
       this.list.listenOnce(WatchActions.INIT, cb)
     } else {
@@ -202,7 +202,7 @@ export class CollectionImpl implements Collection {
   }
 
   // continually get updates
-  public watch(cb: (data: any[]) => void): (data: any[]) => void {
+  watch(cb: (data: any[]) => void): (data: any[]) => void {
     if (this.list.initialized) {
       setTimeout(() => {
         log.debug(this.kind, "passing existing objects:", this.list.objects)
@@ -218,12 +218,12 @@ export class CollectionImpl implements Collection {
     return cb
   }
 
-  public unwatch(cb: (data: any[]) => void) {
+  unwatch(cb: (data: any[]) => void) {
     log.debug(this.kind, "removing watch callback:", cb)
     this.list.doOff(WatchActions.ANY, cb)
   }
 
-  public put(item: any, cb: (data: any) => void, error?: (err: any) => void) {
+  put(item: any, cb: (data: any) => void, error?: (err: any) => void) {
     let method = 'PUT'
     let url = this.restUrlFor(item)
     if (!this.list.hasNamedItem(item)) {
@@ -288,7 +288,7 @@ export class CollectionImpl implements Collection {
     }
   }
 
-  public delete(item: any, cb: (data: any) => void, error?: (err: any) => void) {
+  delete(item: any, cb: (data: any) => void, error?: (err: any) => void) {
     const url = this.restUrlFor(item)
     if (!url) {
       return

@@ -17,7 +17,7 @@ export class ObjectPoller {
     this._lastFetch = this.handler.list.objects
   }
 
-  public get connected() {
+  get connected() {
     return this._connected
   }
 
@@ -83,7 +83,7 @@ export class ObjectPoller {
     })
   }
 
-  public start() {
+  start() {
     if (this._connected) {
       return
     }
@@ -93,7 +93,7 @@ export class ObjectPoller {
     }, 1)
   }
 
-  public stop() {
+  stop() {
     this._connected = false
     log.debug(this.handler.kind, "- disconnecting")
     if (this.tCancel) {
@@ -103,7 +103,7 @@ export class ObjectPoller {
     }
   }
 
-  public destroy() {
+  destroy() {
     this.stop()
     log.debug(this.handler.kind, "- destroyed")
   }

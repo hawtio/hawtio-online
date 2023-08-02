@@ -9,7 +9,7 @@ import { getKey } from './support'
 export class ClientFactoryImpl implements ClientFactory {
   private _clients = <ClientMap>{}
 
-  public create(options: KOptions, namespace?: string): Collection {
+  create(options: KOptions, namespace?: string): Collection {
 
     namespace = options.namespace || namespace
 
@@ -28,7 +28,7 @@ export class ClientFactoryImpl implements ClientFactory {
     }
   }
 
-  public destroy(client: Collection, ...handles: Array<(data: any[]) => void>) {
+  destroy(client: Collection, ...handles: Array<(data: any[]) => void>) {
     handles.forEach((handle) => {
       client.unwatch(handle)
     })

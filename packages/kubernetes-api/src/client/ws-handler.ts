@@ -119,6 +119,9 @@ export class WSHandlerImpl implements WSHandler {
 
     let eventType: keyof ObjectList
     eventType = data.type.toLowerCase()
+    if (eventType !== 'added' && eventType !== 'modified' && eventType !== 'deleted')
+      return
+
     const property = this.list[eventType]
     if (isFunction(property))
       property(data.object)

@@ -15,27 +15,27 @@ export class ClientInstance {
     this._collection = _collection
   }
 
-  public get refCount() {
+  get refCount() {
     return this._refCount
   }
 
-  public addRef() {
+  addRef() {
     this._refCount = this._refCount + 1
   }
 
-  public removeRef() {
+  removeRef() {
     this._refCount = this._refCount - 1
   }
 
-  public get collection() {
+  get collection() {
     return this._collection
   }
 
-  public disposable() {
+  disposable() {
     return this._refCount <= 0
   }
 
-  public destroy() {
+  destroy() {
     this._collection.destroy()
     // delete this._collection
   }

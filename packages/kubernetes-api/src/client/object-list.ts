@@ -42,11 +42,11 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     })
   }
 
-  public get kind() {
+  get kind() {
     return this._kind || '<unknown>'
   }
 
-  public initialize() {
+  initialize() {
     if (this._initialized) {
       return
     }
@@ -56,15 +56,15 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     this.triggerChangedEvent()
   }
 
-  public get initialized() {
+  get initialized() {
     return this._initialized
   }
 
-  public get objects() {
+  get objects() {
     return this._objects
   }
 
-  public set objects(objs: any[]) {
+  set objects(objs: KubeObject[]) {
     this._objects.length = 0
     objs.forEach((obj) => {
       if (!obj.kind) {
@@ -76,13 +76,13 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     this.triggerChangedEvent()
   }
 
-  public hasNamedItem(item: any): boolean {
+  hasNamedItem(item: any): boolean {
     return this._objects.some((obj: KubeObject) => {
       return getName(obj) === getName(item)
     })
   }
 
-  public getNamedItem(name: string): any {
+  getNamedItem(name: string): any {
     return this.objects.find((obj: any) => {
       return getName(obj) === name
     })
@@ -124,7 +124,7 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     return true
   }
 
-  public modified(object: any): boolean {
+  modified(object: any): boolean {
     if (!this.belongs(object)) {
       return false
     }
@@ -143,7 +143,7 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     return true
   }
 
-  public deleted(object: any): boolean {
+  deleted(object: any): boolean {
     if (!this.belongs(object)) {
       return false
     }
