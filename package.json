@@ -30,8 +30,8 @@
     "build:oAuthApi:watch": "yarn workspace @hawtio/online-oauth build:watch",
     "test:oAuthApi": "yarn workspace @hawtio/online-oauth test",
     "test:oAuthApi:watch": "yarn workspace @hawtio/online-oauth test:watch",
-    "lint": "yarn workspaces foreach -v -i -pt --exclude @hawtio/online-root eslint src/",
-    "lint:fix": "yarn workspaces foreach -v -i -pt --exclude @hawtio/online-root eslint --fix src/",
+    "lint": "yarn eslint packages/",
+    "lint:fix": "yarn eslint packages/ --fix",
     "format:check": "yarn workspaces foreach -v -i -pt --exclude @hawtio/online-root yarn prettier --check .",
     "format:fix": "yarn workspaces foreach -v -i -pt --exclude @hawtio/online-root yarn prettier --write .",
     "image": "docker build -t docker.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest} .",
@@ -47,14 +47,11 @@
     "kustomize:image": "cd deploy/base && kustomize edit set image hawtio/online=docker.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
     "concurrently": "^8.2.0",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "3.0.0"
   },

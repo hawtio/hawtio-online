@@ -1,0 +1,16 @@
+/*.js
+!/packages/hawtio/scripts/*.js
+/*.cjs
+/*.mjs
+
+/**/gulpfile.js
+
+/app/*.js
+/app/*.cjs
+/**/ignore/**
+
+jest.config.ts
+tsup.config.ts
+
+dist/
+build/
