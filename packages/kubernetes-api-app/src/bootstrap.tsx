@@ -1,4 +1,4 @@
-import { Logger, configManager, hawtio, Hawtio } from '@hawtio/react'
+import { Logger, configManager, hawtio } from '@hawtio/react'
 import { registerK8Api } from '@hawtio/online-kubernetes-api'
 import React from 'react'
 import ReactDOM from 'react-dom/client'

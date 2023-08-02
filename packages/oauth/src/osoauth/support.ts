@@ -126,7 +126,7 @@ export function tokenHasExpired(profile: OSOAuthUserProfile): boolean {
 }
 
 export function checkToken(uri: URL): TokenMetadata {
-  let answer: any
+  let answer: TokenMetadata | null = null
 
   const tokenJson = localStorage.getItem(OS_TOKEN_STORAGE_KEY)
 
@@ -138,10 +138,14 @@ export function checkToken(uri: URL): TokenMetadata {
       throw new Error("Error extracting osAuthCreds value:", {cause: e})
     }
   }
+
   if (!answer) {
     log.debug("Extracting token from uri", answer)
     answer = extractToken(uri)
   }
+
+  if (!answer)
+    throw new Error("Failed to get token from either storage or uri")
 
   log.debug("Using extracted credentials:", answer)
   return answer

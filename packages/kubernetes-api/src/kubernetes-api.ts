@@ -1,10 +1,10 @@
 import { log, UserProfile, getActiveProfile } from '@hawtio/online-oauth'
 
 export class KubernetesAPI {
-  private _initialized: boolean = false
+  private _initialized = false
   private _oAuthProfile: UserProfile | null = null
   private _error: Error|null = null
-  private isOS: boolean = false
+  private isOS = false
 
   async initialize(): Promise<boolean> {
     if (this._initialized)

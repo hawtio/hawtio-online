@@ -8,32 +8,32 @@ namespace Online {
 
     scope = {
       httpSrc: '@',
-    };
+    }
 
     constructor(private $http: ng.IHttpService) {
-      'ngInject';
+      'ngInject'
     }
 
     link(scope: HttpSrcDirectiveScope, elem: JQuery, attrs: ng.IAttributes) {
       function revokeObjectURL() {
         if (scope.objectURL) {
-          URL.revokeObjectURL(scope.objectURL);
+          URL.revokeObjectURL(scope.objectURL)
         }
       }
 
       scope.$watch('objectURL', function (objectURL: string) {
-        elem.attr('src', objectURL);
-      });
+        elem.attr('src', objectURL)
+      })
 
       scope.$on('$destroy', function () {
-        revokeObjectURL();
-      });
+        revokeObjectURL()
+      })
 
       attrs.$observe('httpSrc', (url: string) => {
-        revokeObjectURL();
+        revokeObjectURL()
 
         if (url && url.indexOf('data:') === 0) {
-          scope.objectURL = url;
+          scope.objectURL = url
         } else if (url) {
           this.$http
             .get<ArrayBuffer>(url, {
@@ -44,20 +44,20 @@ namespace Online {
               }
             })
             .then(function (response) {
-              const contentType = response.headers('Content-Type');
+              const contentType = response.headers('Content-Type')
               if (!contentType || !_.startsWith(contentType, 'image/')) {
-                throw Error(`Invalid content type '${contentType}' for URL '${url}'`);
+                throw Error(`Invalid content type '${contentType}' for URL '${url}'`)
               }
               const blob = new Blob([response.data], {
                 type : response.headers('Content-Type'),
-              });
-              scope.objectURL = URL.createObjectURL(blob);
+              })
+              scope.objectURL = URL.createObjectURL(blob)
             })
             .catch(_ => {
-              scope.objectURL = 'img/java.svg';
-            });
+              scope.objectURL = 'img/java.svg'
+            })
         }
-      });
+      })
     }
   }
 }

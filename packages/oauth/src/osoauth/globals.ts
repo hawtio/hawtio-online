@@ -1,5 +1,3 @@
-import * as Metadata from '../metadata'
-
 export const moduleName = 'hawtio-oauth-openshift'
 
 export const PATH_OSCONSOLE_CLIENT_CONFIG = 'osconsole/config.json'

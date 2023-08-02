@@ -1,3 +1,4 @@
+import { KubeObject, KubeObjectList } from "../globals"
 import { fetchPath, SimpleResponse } from "../utils"
 import { log, WSHandler } from "./globals"
 import { compare } from "./support"
@@ -7,11 +8,11 @@ import { compare } from "./support"
  */
 export class ObjectPoller {
 
-  private _lastFetch = <Array<any>>[]
+  private _lastFetch: KubeObject[]
   private _connected = false
   private _interval = 5000
-  private retries: number = 0
-  private tCancel: any = undefined
+  private retries = 0
+  private tCancel?: NodeJS.Timeout
 
   constructor(private restURL: string, private handler: WSHandler) {
     this._lastFetch = this.handler.list.objects
@@ -27,17 +28,20 @@ export class ObjectPoller {
     }
 
     fetchPath(this.restURL, {
-      success: (data: any) => {
+      success: (data) => {
         if (!this._connected) {
           return
         }
+
+        const kObjList: KubeObjectList = JSON.parse(data)
+
         log.debug(this.handler.kind, "fetched data:", data)
-        const items = (data && data.items) ? data.items : []
+        const items = (kObjList && kObjList.items) ? kObjList.items : []
         const result = compare(this._lastFetch, items)
         this._lastFetch = items
 
         for (const [action, items] of Object.entries(result)) {
-          items.forEach((item: any) => {
+          items.forEach((item: KubeObject) => {
             const event = {
               data: JSON.stringify({
                 type: action.toUpperCase(),
@@ -63,7 +67,7 @@ export class ObjectPoller {
         }
 
         if (response?.status === 403) {
-          log.info(this.handler.kind, "- Failed to poll objects, user is not authorized");
+          log.info(this.handler.kind, "- Failed to poll objects, user is not authorized")
           return
         }
         if (this.retries >= 3) {

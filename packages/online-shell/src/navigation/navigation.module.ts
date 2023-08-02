@@ -7,6 +7,6 @@ namespace Online {
       openshiftModule
     ])
     .run(addHeaderTools)
-    .name;
+    .name
 
 }

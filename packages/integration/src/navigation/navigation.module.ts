@@ -14,6 +14,6 @@ namespace Online {
     .run(addHeaderTools)
     .service('navigationService', NavigationService)
     .component('navigation', navigationComponent)
-    .name;
+    .name
 
 }

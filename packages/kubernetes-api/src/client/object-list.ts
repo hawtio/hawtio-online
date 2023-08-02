@@ -1,6 +1,7 @@
 import EventEmitter from 'eventemitter3'
 import { Logger } from '@hawtio/react'
 import { KubeObject } from '../globals'
+import { ProcessDataCallback } from '../kubernetes-service'
 import { equals, getName, getNamespace, toKindName } from '../helpers'
 import { WatchActions } from '../model'
 import { debounce } from '../utils'
@@ -76,44 +77,44 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     this.triggerChangedEvent()
   }
 
-  hasNamedItem(item: any): boolean {
+  hasNamedItem(item: KubeObject): boolean {
     return this._objects.some((obj: KubeObject) => {
       return getName(obj) === getName(item)
     })
   }
 
-  getNamedItem(name: string): any {
-    return this.objects.find((obj: any) => {
+  getNamedItem(name: string): KubeObject | null {
+    return this.objects.find((obj: KubeObject) => {
       return getName(obj) === name
-    })
+    }) || null
   }
 
   // filter out objects from other namespaces that could be returned
-  private belongs(object: any): boolean {
+  private belongs(object: KubeObject): boolean {
     if (this.namespace && getNamespace(object) !== this.namespace) {
       return false
     }
     return true
   }
 
-  doOnce(action: WatchActions, cb: (data: any[]) => void) {
+  doOnce(action: WatchActions, cb: ProcessDataCallback) {
     this.once(action, cb)
   }
 
-  doOn(action: WatchActions, cb: (data: any[]) => void) {
+  doOn(action: WatchActions, cb: ProcessDataCallback) {
     this.once(action, cb)
   }
 
-  doOff(action: WatchActions, cb: (data: any[]) => void) {
+  doOff(action: WatchActions, cb: ProcessDataCallback) {
     this.off(action, cb)
   }
 
-  added(object: any): boolean {
+  added(object: KubeObject): boolean {
     if (!this.belongs(object)) {
       return false
     }
     if (!object.kind) {
-      object.kind = toKindName(this.kind)
+      object.kind = toKindName(this.kind) || undefined
     }
     if (this._objects.some((obj) => { return equals(obj, object)})) {
       return this.modified(object)
@@ -124,12 +125,12 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     return true
   }
 
-  modified(object: any): boolean {
+  modified(object: KubeObject): boolean {
     if (!this.belongs(object)) {
       return false
     }
     if (!object.kind) {
-      object.kind = toKindName(this.kind)
+      object.kind = toKindName(this.kind) || undefined
     }
     if (!this._objects.some((obj) => { return equals(obj, object) })) {
       return this.added(object)
@@ -143,7 +144,7 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     return true
   }
 
-  deleted(object: any): boolean {
+  deleted(object: KubeObject): boolean {
     if (!this.belongs(object)) {
       return false
     }

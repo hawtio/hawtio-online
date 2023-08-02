@@ -26,12 +26,12 @@ namespace Online {
     .filter('jolokiaPort', jolokiaPortFilter)
     .filter('connectUrl', connectUrlFilter)
     .filter('podDetailsUrl', podDetailsUrlFilter)
-    .name;
+    .name
 
 
   function podDirective(viewType: ViewType, templateUrl: string) {
     return function podDirective($window: ng.IWindowService, openShiftConsole: ConsoleService) {
-      'ngInject';
+      'ngInject'
       return {
         restrict: 'EA',
         templateUrl: templateUrl,
@@ -40,66 +40,66 @@ namespace Online {
         },
         link: function ($scope: ng.IScope | any) {
           if (openShiftConsole.enabled) {
-            openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url);
+            openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url)
           }
-          $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType });
+          $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType })
           $scope.open = (url) => {
-            $window.open(url);
-            return true;
-          };
+            $window.open(url)
+            return true
+          }
         },
-      };
-    };
+      }
+    }
   }
 
   function expansionDirective() {
-    return new ListRowExpandDirective();
+    return new ListRowExpandDirective()
   }
 
   function matchHeightDirective($timeout: ng.ITimeoutService) {
-    'ngInject';
-    return new MatchHeightDirective($timeout);
+    'ngInject'
+    return new MatchHeightDirective($timeout)
   }
 
   function httpSrcDirective($http: ng.IHttpService) {
-    'ngInject';
-    return new HttpSrcDirective($http);
+    'ngInject'
+    return new HttpSrcDirective($http)
   }
 
   function jolokiaContainersFilter() {
-    return containers => (containers || []).filter(container => container.ports.some(port => port.name === 'jolokia'));
+    return containers => (containers || []).filter(container => container.ports.some(port => port.name === 'jolokia'))
   }
 
   function jolokiaPortFilter() {
-    return container => container.ports.find(port => port.name === 'jolokia');
+    return container => container.ports.find(port => port.name === 'jolokia')
   }
 
   function connectUrlFilter() {
     return (pod: Pod, port = 8778) => {
-      const jolokiaPath = getManagementJolokiaPath(pod, port);
+      const jolokiaPath = getManagementJolokiaPath(pod, port)
       return new URI().path('/integration/')
         .query({
           jolokiaUrl: new URI().query('').path(jolokiaPath),
           title: pod.metadata.name,
           returnTo: new URI().toString(),
-        });
-    };
+        })
+    }
   }
 
   function podDetailsUrlFilter(openShiftService: OpenShiftService) {
-    'ngInject';
-    let os4 = false;
+    'ngInject'
+    let os4 = false
     openShiftService.getClusterVersion().then((clusterVersion => {
-      os4 = isOpenShift4(clusterVersion);
-    }));
+      os4 = isOpenShift4(clusterVersion)
+    }))
     return (pod: Pod, openShiftConsoleUrl: string) => {
       if (os4) {
-        return UrlHelpers.join(openShiftConsoleUrl, 'k8s/ns', pod.metadata.namespace, 'pods', pod.metadata.name);
+        return UrlHelpers.join(openShiftConsoleUrl, 'k8s/ns', pod.metadata.namespace, 'pods', pod.metadata.name)
       } else {
-        return UrlHelpers.join(openShiftConsoleUrl, 'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name);
+        return UrlHelpers.join(openShiftConsoleUrl, 'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name)
       }
-    };
+    }
   }
 
-  hawtioPluginLoader.addModule(discoverModule);
+  hawtioPluginLoader.addModule(discoverModule)
 }

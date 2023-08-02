@@ -1,4 +1,4 @@
-import { configManager, hawtio, Hawtio } from '@hawtio/react'
+import { configManager, hawtio } from '@hawtio/react'
 import { oAuthInit } from '@hawtio/online-oauth'
 import React from 'react'
 import ReactDOM from 'react-dom/client'

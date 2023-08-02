@@ -17,6 +17,7 @@ export function isArray<T>(obj: T | T[]): obj is T[] {
   return Array.isArray(obj)
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export function isFunction(value: unknown): value is Function {
   return typeof value === 'function'
 }
@@ -53,7 +54,7 @@ export function objectSorter(aValue: unknown, bValue: unknown, sortDesc?: boolea
  * @param {Array} paths an array of path names to navigate or a string of dot separated paths to navigate
  * @return {*} the last step on the path which is updated
  */
-export function pathGet(object: any, paths: string[]|string): Record<string, unknown> | unknown {
+export function pathGet(object: object, paths: string[]|string): Record<string, unknown> | unknown {
   const pathArray = (isArray(paths)) ? paths : (paths || "").split(".")
   let value: unknown | null = object
 
@@ -73,13 +74,13 @@ export function pathGet(object: any, paths: string[]|string): Record<string, unk
     }
 
     // Test that value has a property of name
-    if (! value.hasOwnProperty(name)) {
+    if (! Object.prototype.hasOwnProperty.call(value, name)) {
       value = null
       return
     }
 
-    let valueObj = value as Record<string, unknown>
-    let v = valueObj[name]
+    const valueObj = value as Record<string, unknown>
+    const v = valueObj[name]
 
     // Test whether v is valid
     if (!v) {

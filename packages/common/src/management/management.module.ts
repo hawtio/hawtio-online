@@ -9,9 +9,9 @@ namespace Online {
     ])
     .service('managementService', ManagementService)
     .filter('management', managementFilter)
-    .name;
+    .name
 
   function managementFilter() {
-    return (pod, attribute) => Core.pathGet(pod, 'management.' + attribute);
+    return (pod, attribute) => Core.pathGet(pod, 'management.' + attribute)
   }
 }

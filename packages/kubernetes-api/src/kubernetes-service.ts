@@ -15,9 +15,12 @@ import { clientFactory, Collection, log } from "./client"
 import { K8Actions, KubeObject } from './globals'
 import { k8Api } from './init'
 
+export type ProcessDataCallback = (data: KubeObject[]) => void
+export type ErrorDataCallback = (err: Error) => void
+
 export interface Client {
   collection: Collection
-  watch: (data: any[]) => void
+  watch: ProcessDataCallback
 }
 
 export class KubernetesService extends EventEmitter {
@@ -25,7 +28,7 @@ export class KubernetesService extends EventEmitter {
   private readonly jolokiaPortQuery = '$.spec.containers[*].ports[?(@.name=="jolokia")]'
 
   private _loading = 0
-  private _initialized: boolean = false
+  private _initialized = false
   private _error: Error|null = null
   private _oAuthProfile: UserProfile | null = null
   private projects: KubeObject[] = []
