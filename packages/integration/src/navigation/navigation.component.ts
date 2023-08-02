@@ -1,24 +1,24 @@
 namespace Online {
 
   export class NavigationController {
-    homeUrl: string;
-    openshiftConsoleUrl: string;
+    homeUrl: string
+    openshiftConsoleUrl: string
 
     constructor(private $rootScope: ng.IRootScopeService, openShiftConsole: ConsoleService,
       private $window: ng.IWindowService) {
-      'ngInject';
-      this.homeUrl = new URI().query('').path('/online/').valueOf();
+      'ngInject'
+      this.homeUrl = new URI().query('').path('/online/').valueOf()
       if (openShiftConsole.enabled) {
-        openShiftConsole.url.then(url => this.openshiftConsoleUrl = url);
+        openShiftConsole.url.then(url => this.openshiftConsoleUrl = url)
       }
     }
 
     $onInit() {
-      this.$rootScope.$emit(Page.CLOSE_MAIN_NAV_EVENT);
+      this.$rootScope.$emit(Page.CLOSE_MAIN_NAV_EVENT)
     }
 
     goto(url: string) {
-      this.$window.location.href = url;
+      this.$window.location.href = url
     }
   }
 
@@ -44,6 +44,6 @@ namespace Online {
       </div>
     `,
     controller: NavigationController,
-  };
+  }
 
 }

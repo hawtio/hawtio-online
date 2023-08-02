@@ -4,14 +4,14 @@ namespace Online {
     .module('hawtio-online-labels', [])
     .directive('labels', labelsDirective)
     .filter('hashSize', hashSizeFilter)
-    .name;
+    .name
 
   function labelsDirective($location: ng.ILocationService, $timeout: ng.ITimeoutService, openShiftService: OpenShiftService) {
-    'ngInject';
-    return new LabelsDirective($location, $timeout, openShiftService);
+    'ngInject'
+    return new LabelsDirective($location, $timeout, openShiftService)
   }
 
   function hashSizeFilter() {
-    return (hash: any) => !hash ? 0 : Object.keys(hash).length;
+    return (hash: any) => !hash ? 0 : Object.keys(hash).length
   }
 }

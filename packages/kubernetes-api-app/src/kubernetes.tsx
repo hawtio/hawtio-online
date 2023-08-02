@@ -29,7 +29,6 @@ export const Kubernetes: React.FunctionComponent = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error|null>()
   const [username, setUsername] = useState('')
-  const [isLogin, setIsLogin] = useState(false)
 
   useEffect(() => {
     setIsLoading(true)
@@ -53,9 +52,7 @@ export const Kubernetes: React.FunctionComponent = () => {
 
       await userService.fetchUser()
       const username = await userService.getUsername()
-      const isLogin = await userService.isLogin()
       setUsername(username)
-      setIsLogin(isLogin)
     }
 
     checkLoading()

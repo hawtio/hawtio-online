@@ -1,8 +1,9 @@
-import { KubeObject } from './globals'
+import { KubeObject, KubeStatus } from './globals'
 import { WatchTypes, NamespacedTypes, ExtensionTypes, KindTypes } from './model'
 import { K8S_PREFIX, K8S_API_VERSION, K8S_EXT_PREFIX, K8S_EXT_VERSION, OS_PREFIX, OS_API_VERSION } from './globals'
 import { joinPaths } from './utils/urls'
 import { isObject, pathGetString, pathGetObject } from './utils/objects'
+import { KOptions } from './client'
 
 export function namespaced(kind: string): boolean {
   switch (kind) {
@@ -53,19 +54,19 @@ export function kubernetesApiPrefix(): string {
     switch (kind) {
       case WatchTypes.OAUTH_CLIENTS:
         return 'oauth.openshift.io'
-      case WatchTypes.BUILDS,
-        WatchTypes.BUILD_CONFIGS:
+      case WatchTypes.BUILDS:
+      case WatchTypes.BUILD_CONFIGS:
         return 'build.openshift.io'
       case WatchTypes.DEPLOYMENT_CONFIGS:
         return 'apps.openshift.io'
-      case WatchTypes.IMAGES,
-        WatchTypes.IMAGE_STREAMS,
-        WatchTypes.IMAGE_STREAM_TAGS:
+      case WatchTypes.IMAGES:
+      case WatchTypes.IMAGE_STREAMS:
+      case WatchTypes.IMAGE_STREAM_TAGS:
         return 'image.openshift.io'
       case WatchTypes.PROJECTS:
         return 'project.openshift.io'
-      case WatchTypes.ROLES,
-        WatchTypes.ROLE_BINDINGS:
+      case WatchTypes.ROLES:
+      case WatchTypes.ROLE_BINDINGS:
         return 'authorization.openshift.io'
       case WatchTypes.ROUTES:
         return 'route.openshift.io'
@@ -291,7 +292,7 @@ export function kubernetesApiPrefix(): string {
       pathGetString(entity, "name") || pathGetString(entity, "id")
   }
 
-  export function getKind(entity: KubeObject): string | null {
+  export function getKind(entity: KubeObject | KOptions): string | null {
     return pathGetString(entity, ["metadata", "kind"]) || pathGetString(entity, "kind")
   }
 
@@ -320,7 +321,7 @@ export function kubernetesApiPrefix(): string {
   /**
    * Returns true if the current status of the pod is running
    */
-  export function isRunning(podCurrentState: any): boolean {
+  export function isRunning(podCurrentState: KubeStatus): boolean {
     const status = (podCurrentState || {}).phase
     if (status) {
       const lower = status.toLowerCase()

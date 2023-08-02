@@ -1,48 +1,48 @@
 namespace Online {
 
-  const log = Logger.get('hawtio-online-openshift');
+  const log = Logger.get('hawtio-online-openshift')
 
   export class ConsoleService {
 
-    private _url: ng.IPromise<string | undefined>;
-    private _enabled: boolean = true;
+    private _url: ng.IPromise<string | undefined>
+    private _enabled = true
 
     constructor(
       $http: ng.IHttpService,
       $window: ng.IWindowService,
       $q: ng.IQService,
     ) {
-      'ngInject';
+      'ngInject'
 
       if (!$window.OPENSHIFT_CONFIG.openshift) {
-        this._enabled = false;
-        return;
+        this._enabled = false
+        return
       }
 
-      const url = $window.OPENSHIFT_CONFIG.openshift.web_console_url;
+      const url = $window.OPENSHIFT_CONFIG.openshift.web_console_url
       if (url) {
-        this._url = $q.resolve(url);
+        this._url = $q.resolve(url)
       } else {
         this._url = $http({
           method : 'GET',
           url    : new URI().query('').path('/console').valueOf(),
         }).then(response => {
-          const url = response.headers('location');
-          log.debug('Using OpenShift Web console URL:', url);
-          return response.headers('location');
+          const url = response.headers('location')
+          log.debug('Using OpenShift Web console URL:', url)
+          return response.headers('location')
         }, error => {
-          log.debug('Unable to retrieve OpenShift Web console URL');
-          return undefined;
-        });
+          log.debug('Unable to retrieve OpenShift Web console URL')
+          return undefined
+        })
       }
     }
 
     get url(): ng.IPromise<string | undefined> {
-      return this._url;
+      return this._url
     }
 
     get enabled(): boolean {
-      return this._enabled;
+      return this._enabled
     }
   }
 }

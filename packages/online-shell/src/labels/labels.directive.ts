@@ -14,7 +14,7 @@ namespace Online {
 
   export class LabelsDirective implements ng.IDirective {
 
-    restrict = 'E';
+    restrict = 'E'
 
     scope = {
       labels            : '=',
@@ -27,16 +27,16 @@ namespace Online {
                                 // title, it will put this string instead, e.g. if you want 'builds for build config foo'
       navigateUrl       : '@?', // optional to override the default
       filterCurrentPage : '=?', // optional don't navigate, just filter here
-    };
+    }
 
-    templateUrl = 'src/labels/labels.html';
+    templateUrl = 'src/labels/labels.html'
 
     constructor(
       $location: ng.ILocationService,
       $timeout: ng.ITimeoutService,
       openShiftService: OpenShiftService,
     ) {
-      'ngInject';
+      'ngInject'
     }
 
     link(scope: LabelsDirectiveScope) {
@@ -45,19 +45,19 @@ namespace Online {
           if (!scope.filterCurrentPage) {
             this.openShiftService.getClusterVersion().then((clusterVersion: string) => {
               if (isOpenShift4(clusterVersion)) {
-                this.$location.url(scope.navigateUrl || `/k8s/ns/${scope.projectName}/${scope.kind}`);
+                this.$location.url(scope.navigateUrl || `/k8s/ns/${scope.projectName}/${scope.kind}`)
               } else {
-                this.$location.url(scope.navigateUrl || `/project/${scope.projectName}/browse/${scope.kind}`);
+                this.$location.url(scope.navigateUrl || `/project/${scope.projectName}/browse/${scope.kind}`)
               }
             })
           }
           this.$timeout(function () {
-            const selector = {};
-            selector[key] = value;
+            const selector = {}
+            selector[key] = value
             // LabelFilter.setLabelSelector(new LabelSelector(selector, true));
-          }, 1);
+          }, 1)
         }
-      };
+      }
     }
   }
 }

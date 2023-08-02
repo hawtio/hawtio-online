@@ -1,3 +1,4 @@
+import { ProcessDataCallback } from '../kubernetes-service'
 import { ClientInstance, ClientMap } from './client-instance'
 import { CollectionImpl } from './collection'
 import { log, Collection, KOptions, ClientFactory } from './globals'
@@ -7,7 +8,7 @@ import { getKey } from './support'
  * Factory implementation that's available as an angular service
  */
 export class ClientFactoryImpl implements ClientFactory {
-  private _clients = <ClientMap>{}
+  private _clients = {} as ClientMap
 
   create(options: KOptions, namespace?: string): Collection {
 
@@ -28,7 +29,7 @@ export class ClientFactoryImpl implements ClientFactory {
     }
   }
 
-  destroy(client: Collection, ...handles: Array<(data: any[]) => void>) {
+  destroy(client: Collection, ...handles: Array<ProcessDataCallback>) {
     handles.forEach((handle) => {
       client.unwatch(handle)
     })

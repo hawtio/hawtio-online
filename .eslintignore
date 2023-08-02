@@ -8,6 +8,7 @@
 /app/*.js
 /app/*.cjs
 /**/ignore/**
+/**/craco.config.js
 
 jest.config.ts
 tsup.config.ts

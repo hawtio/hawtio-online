@@ -8,21 +8,21 @@ namespace Online {
     .service('openShiftConsole', ConsoleService)
     .service('openShiftService', OpenShiftService)
     .directive('openshiftLink', openshiftLinkDirective)
-    .name;
+    .name
 
   const OS4 = {
     'dc': 'deploymentconfigs',
     'rc': 'replicationcontrollers',
     'rs': 'replicasets',
     'sts': "statefulsets",
-  };
+  }
 
   function openshiftLinkDirective(
     openShiftConsole: ConsoleService,
     openShiftService: OpenShiftService,
     $q: ng.IQService,
   ) {
-    'ngInject';
+    'ngInject'
     return {
       restrict: 'EA',
       templateUrl: 'src/openshift/openshiftLink.html',
@@ -37,13 +37,13 @@ namespace Online {
           .then(([clusterVersion, consoleUrl]) => {
             if (consoleUrl) {
               if (isOpenShift4(clusterVersion)) {
-                $scope.url = UrlHelpers.join(consoleUrl, 'k8s/ns', $scope.namespace, (OS4[$scope.resources] || $scope.resources), $scope.name);
+                $scope.url = UrlHelpers.join(consoleUrl, 'k8s/ns', $scope.namespace, (OS4[$scope.resources] || $scope.resources), $scope.name)
               } else {
-                $scope.url = UrlHelpers.join(consoleUrl, 'project', $scope.namespace, 'browse', $scope.resources, $scope.name);
+                $scope.url = UrlHelpers.join(consoleUrl, 'project', $scope.namespace, 'browse', $scope.resources, $scope.name)
               }
             }
-          });
+          })
       },
-    };
+    }
   }
 }

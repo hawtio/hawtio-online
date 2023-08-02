@@ -1,81 +1,81 @@
 import Jolokia from 'jolokia.js'
 
 class ManagedPod {
-  readonly jolokia: Jolokia.IJolokia;
+  readonly jolokia: Jolokia.IJolokia
 
   constructor(public pod: any, private openShiftService: OpenShiftService) {
-    const port = this.jolokiaPort(pod);
-    const path = getManagementJolokiaPath(pod, port);
-    this.jolokia = new Jolokia(new URI().query('').path(path).valueOf());
+    const port = this.jolokiaPort(pod)
+    const path = getManagementJolokiaPath(pod, port)
+    this.jolokia = new Jolokia(new URI().query('').path(path).valueOf())
   }
 
   private jolokiaPort(pod: any): number {
-    const ports = jsonpath.query(pod, this.openShiftService.jolokiaPortQuery);
-    return ports[0].containerPort || 8778;
+    const ports = jsonpath.query(pod, this.openShiftService.jolokiaPortQuery)
+    return ports[0].containerPort || 8778
   }
 }
 
 export class ManagementService extends EventEmitter {
 
-  private pods: { [key: string]: ManagedPod; } = {};
+  private pods: { [key: string]: ManagedPod; } = {}
 
   constructor(
     openShiftService: OpenShiftService,
     podStatusFilter: PodStatusFilter,
     $interval: ng.IIntervalService,
   ) {
-    'ngInject';
+    'ngInject'
 
-      super();
+      super()
 
     openShiftService.on('changed', _ => {
-      const pods = openShiftService.getPods();
+      const pods = openShiftService.getPods()
       pods.forEach(pod => {
-        const mPod = this.pods[pod.metadata.uid];
+        const mPod = this.pods[pod.metadata.uid]
         if (!mPod) {
-          this.pods[pod.metadata.uid] = new ManagedPod(pod, openShiftService);
+          this.pods[pod.metadata.uid] = new ManagedPod(pod, openShiftService)
         } else {
-          pod.management = mPod.pod.management;
-          mPod.pod = pod;
+          pod.management = mPod.pod.management
+          mPod.pod = pod
         }
-        for (let uid in this.pods) {
+        for (const uid in this.pods) {
           if (!pods.some(pod => pod.metadata.uid === uid)) {
-            delete this.pods[uid];
+            delete this.pods[uid]
           }
         }
-      });
+      })
       // let's kick a polling cycle
-      pollManagementData();
-    });
+      pollManagementData()
+    })
 
     const pollManagementData = _.debounce(() => {
-      let req = 0, res = 0;
-      for (let uid in this.pods) {
-        const mPod: ManagedPod = this.pods[uid];
+      let req = 0, res = 0
+      for (const uid in this.pods) {
+        const mPod: ManagedPod = this.pods[uid]
         if (podStatusFilter(mPod.pod) === 'Running') {
-          req++;
+          req++
           mPod.jolokia.search('org.apache.camel:context=*,type=routes,*', {
             method: 'POST',
             success: (routes: []) => {
-              res++;
-                Core.pathSet(mPod.pod, 'management.camel.routes_count', routes.length);
+              res++
+                Core.pathSet(mPod.pod, 'management.camel.routes_count', routes.length)
                 if (res === req) {
-                  this.emit('updated');
+                  this.emit('updated')
                 }
               },
               error: error => {
                 // TODO
-                res++;
+                res++
                 if (res === req) {
-                  this.emit('updated');
+                  this.emit('updated')
                 }
               },
-            });
+            })
           }
         }
-      }, 1000, { leading: false, trailing: true });
+      }, 1000, { leading: false, trailing: true })
 
       // TODO: Use Jolokia polling preference
-      $interval(() => pollManagementData(), 10000);
+      $interval(() => pollManagementData(), 10000)
     }
   }

@@ -1,4 +1,5 @@
-import { K8S_EXT_PREFIX } from '../globals'
+import { K8S_EXT_PREFIX, KubeObject } from '../globals'
+import { ErrorDataCallback, ProcessDataCallback } from '../kubernetes-service'
 import { fetchPath, FetchPathCallback, isFunction, joinPaths } from '../utils'
 import { getName, getNamespace, namespaced, prefixForKind, toCollectionName, wsUrl } from '../helpers'
 import { WatchActions, WatchTypes } from '../model'
@@ -53,7 +54,7 @@ export class CollectionImpl implements Collection {
     let url
 
     if (this.options.urlFunction && isFunction(this.options.urlFunction)) {
-      let answer = this.options.urlFunction(this.options)
+      const answer = this.options.urlFunction(this.options)
       if (answer === null || !answer) {
         return null
       }
@@ -73,18 +74,18 @@ export class CollectionImpl implements Collection {
     let url
 
     if (this.options.urlFunction && isFunction(this.options.urlFunction)) {
-      let answer = this.options.urlFunction(this.options)
+      const answer = this.options.urlFunction(this.options)
       if (answer === null || !answer) {
         return null
       }
       url = wsUrl(answer)
     } else {
       let urlStr = joinPaths(k8Api.getMasterUri(), this._path)
-      let location = window.location
+      const location = window.location
       if (location && urlStr.indexOf("://") < 0) {
         let hostname = location.hostname
         if (hostname) {
-          let port = location.port
+          const port = location.port
           if (port) {
             hostname += ":" + port
           }
@@ -141,9 +142,9 @@ export class CollectionImpl implements Collection {
   }
 
   // one time fetch of the data...
-  get(cb: (data: any[]) => void) {
+  get(cb: ProcessDataCallback) {
     if (!this.list.initialized) {
-      this.list.listenOnce(WatchActions.INIT, cb)
+      this.list.doOnce(WatchActions.INIT, cb)
     } else {
       setTimeout(() => {
         cb(this.list.objects)
@@ -164,7 +165,7 @@ export class CollectionImpl implements Collection {
     return pref
   }
 
-  private restUrlFor(item: any, useName: boolean = true) {
+  private restUrlFor(item: KubeObject, useName = true) {
     const name = getName(item)
     if (useName && !name) {
       log.debug("Name missing from item:", item)
@@ -202,7 +203,7 @@ export class CollectionImpl implements Collection {
   }
 
   // continually get updates
-  watch(cb: (data: any[]) => void): (data: any[]) => void {
+  watch(cb: ProcessDataCallback): ProcessDataCallback {
     if (this.list.initialized) {
       setTimeout(() => {
         log.debug(this.kind, "passing existing objects:", this.list.objects)
@@ -218,12 +219,12 @@ export class CollectionImpl implements Collection {
     return cb
   }
 
-  unwatch(cb: (data: any[]) => void) {
+  unwatch(cb: ProcessDataCallback) {
     log.debug(this.kind, "removing watch callback:", cb)
     this.list.doOff(WatchActions.ANY, cb)
   }
 
-  put(item: any, cb: (data: any) => void, error?: (err: any) => void) {
+  put(item: KubeObject, cb: ProcessDataCallback, error?: ErrorDataCallback) {
     let method = 'PUT'
     let url = this.restUrlFor(item)
     if (!this.list.hasNamedItem(item)) {
@@ -246,7 +247,7 @@ export class CollectionImpl implements Collection {
     // Custom checks for specific cases
     switch (this.kind) {
       case WatchTypes.SERVICES:
-        if (item.spec.clusterIP === '') {
+        if (item.spec?.clusterIP === '') {
           delete item.spec.clusterIP
         }
         break
@@ -255,13 +256,16 @@ export class CollectionImpl implements Collection {
     }
     try {
 
-      const callback: FetchPathCallback<any> = {
+      const callback: FetchPathCallback<void> = {
         success: (data) => {
           try {
             const response = JSON.parse(data)
             cb(response)
           } catch (err) {
-            cb({})
+            log.error(err)
+            if (error && err instanceof Error) {
+              error(err as Error)
+            }
           }
         },
         error: (err: Error) => {
@@ -288,7 +292,7 @@ export class CollectionImpl implements Collection {
     }
   }
 
-  delete(item: any, cb: (data: any) => void, error?: (err: any) => void) {
+  delete(item: KubeObject, cb: ProcessDataCallback, error?: ErrorDataCallback) {
     const url = this.restUrlFor(item)
     if (!url) {
       return
@@ -297,13 +301,16 @@ export class CollectionImpl implements Collection {
     this.list.triggerChangedEvent()
     try {
 
-      const callback: FetchPathCallback<any> = {
+      const callback: FetchPathCallback<void> = {
         success: (data) => {
           try {
             const response = JSON.parse(data)
             cb(response)
           } catch (err) {
-            cb({})
+            console.error(err)
+            if (error && err instanceof Error) {
+              error(err as Error)
+            }
           }
         },
         error: (err: Error) => {

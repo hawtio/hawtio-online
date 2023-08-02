@@ -50,8 +50,8 @@ export interface IOSOAuthService {
 
 class OSOAuthService implements IOSOAuthService {
   private userProfile: OSOAuthUserProfile = new OSOAuthUserProfile(moduleName)
-  private userInfoUri: string = ''
-  private keepaliveInterval: number = 10
+  private userInfoUri = ''
+  private keepaliveInterval = 10
   private keepAliveHandler: NodeJS.Timeout | null = null
 
   private readonly rawConfig: Promise<OpenShiftConfig | null>

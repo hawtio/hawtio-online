@@ -1,15 +1,12 @@
 import { KubeObject } from '@hawtio/online-kubernetes-api'
-import React, { useRef, useEffect, useState } from 'react'
 import {
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
   Panel,
-  PanelHeader,
   PanelMain,
-  PanelMainBody,
-  Title } from '@patternfly/react-core'
+  PanelMainBody } from '@patternfly/react-core'
 import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 
 type KubePodsProps = {

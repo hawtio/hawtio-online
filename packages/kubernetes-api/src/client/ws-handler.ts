@@ -1,4 +1,5 @@
-import { KubeObjectList } from '../globals'
+import { KubeObject, KubeObjectList } from '../globals'
+import { ErrorDataCallback } from '../kubernetes-service'
 import { fetchPath, isFunction, isString, SimpleResponse } from '../utils'
 import { Collection, log, ObjectList, pollingOnly, WSHandler } from "./globals"
 import { ObjectListImpl } from "./object-list"
@@ -11,8 +12,8 @@ export class WSHandlerImpl implements WSHandler {
   private _collection: Collection
   private _list?: ObjectList
 
-  private retries: number = 0
-  private connectTime: number = 0
+  private retries = 0
+  private connectTime = 0
   private socket?: WebSocket
   private poller?: ObjectPoller
   private destroyed = false
@@ -33,7 +34,7 @@ export class WSHandlerImpl implements WSHandler {
     return this._collection
   }
 
-  get error(): ((err: any) => void) | undefined {
+  get error(): (ErrorDataCallback) | undefined {
     return this._collection.options.error
   }
 
@@ -67,22 +68,30 @@ export class WSHandlerImpl implements WSHandler {
         if (key.startsWith('on')) {
           const evt = key.replace('on', '')
           log.debug("Adding event handler for '" + evt + "' using '" + key + "'")
-          ws.addEventListener(evt, (event: any) => {
+          ws.addEventListener(evt, (event: Event | CloseEvent | MessageEvent) => {
             log.debug("received websocket event:", event)
-
-            let method: keyof WSHandler
-            method = key as any
-            const property = self[method]
-            if (isFunction(property))
-              property(event)
-            else
-              log.debug(`Property ${key} is not a function`)
+            switch(key) {
+              case'onmessage':
+                this.onmessage(event as MessageEvent)
+                break
+              case 'onopen':
+                this.onopen(event as Event)
+                break
+              case 'onclose':
+                this.onclose(event as CloseEvent)
+                break
+              case 'onerror':
+                this.onerror(event as Event)
+                break
+              default:
+                log.debug(`WSHandler event ${key} is not handled`)
+            }
           })
         }
       })
   }
 
-  send(data: any) {
+  send(data: string | KubeObject) {
     if (!isString(data)) {
       data = JSON.stringify(data)
     }
@@ -91,7 +100,7 @@ export class WSHandlerImpl implements WSHandler {
       this.socket.send(data)
   }
 
-  shouldClose(event: any): boolean {
+  shouldClose(event: Event): boolean {
     if (this.destroyed && this.socket && this.socket.readyState === WebSocket.OPEN) {
       log.debug("Connection destroyed but still receiving messages, closing websocket, kind:", this.collection.kind, "namespace:", this.collection.namespace)
       try {
@@ -105,7 +114,7 @@ export class WSHandlerImpl implements WSHandler {
     return false
   }
 
-  onmessage(event: any) {
+  onmessage(event: MessageEvent) {
     log.debug("Receiving message from web socket: ", event)
     if (this.shouldClose(event)) {
       log.debug("Should be closed!")
@@ -117,8 +126,7 @@ export class WSHandlerImpl implements WSHandler {
     }
     const data = JSON.parse(event.data)
 
-    let eventType: keyof ObjectList
-    eventType = data.type.toLowerCase()
+    const eventType: keyof ObjectList = data.type.toLowerCase()
     if (eventType !== 'added' && eventType !== 'modified' && eventType !== 'deleted')
       return
 
@@ -129,7 +137,7 @@ export class WSHandlerImpl implements WSHandler {
       log.debug(`Property ${data.object} is not a function`)
   }
 
-  onopen(event: any) {
+  onopen(event: Event) {
     log.debug("Received open event for kind:", this.collection.kind, "namespace:", this.collection.namespace)
     if (this.shouldClose(event)) {
       return
@@ -138,7 +146,7 @@ export class WSHandlerImpl implements WSHandler {
     this.connectTime = new Date().getTime()
   }
 
-  onclose(event: any) {
+  onclose(event: CloseEvent) {
     log.debug("Received close event for kind:", this.collection.kind, "namespace:", this.collection.namespace)
     if (this.destroyed) {
       log.debug("websocket destroyed for kind:", this.collection.kind, "namespace:", this.collection.namespace)
@@ -146,13 +154,12 @@ export class WSHandlerImpl implements WSHandler {
       return
     }
     if (this.retries < 3 && this.connectTime && (new Date().getTime() - this.connectTime) > 5000) {
-      const self = this
       setTimeout(() => {
         log.debug("Retrying after connection closed:", event)
         this.retries = this.retries + 1
         log.debug("watch ", this.collection.kind, "disconnected, retry #", this.retries)
         const ws = this.createWebSocket(this.collection.wsURL)
-        this.setHandlers(self, ws)
+        this.setHandlers(this, ws)
       }, 5000)
     } else {
       log.debug("websocket for ", this.collection.kind, "closed, event:", event)
@@ -165,7 +172,7 @@ export class WSHandlerImpl implements WSHandler {
     }
   }
 
-  onerror(event: any) {
+  onerror(event: Event) {
     log.debug("websocket for kind:", this.collection.kind, "received an error:", event)
     if (this.shouldClose(event)) {
       return

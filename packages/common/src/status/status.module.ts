@@ -6,7 +6,7 @@ namespace Online {
     .filter('podStatus', podStatusFilter)
     .filter('humanizeReason', humanizeReasonFilter)
     .filter('humanizePodStatus', humanizeReasonFilter => humanizeReasonFilter)
-    .name;
+    .name
 
   export interface PodStatusFilter {
     (pod: object): string;
@@ -22,13 +22,13 @@ namespace Online {
         class: '=',
       },
       link: function ($scope: any, $elem, $attrs) {
-        $scope.spinning = !angular.isDefined($attrs.disableAnimation);
+        $scope.spinning = !angular.isDefined($attrs.disableAnimation)
       }
-    };
+    }
   }
 
   function humanizeReasonFilter() {
-    return reason => _.startCase(reason).replace('Back Off', 'Back-off').replace('O Auth', 'OAuth');
+    return reason => _.startCase(reason).replace('Back Off', 'Back-off').replace('O Auth', 'OAuth')
   }
 
   function podStatusFilter() {
@@ -36,76 +36,76 @@ namespace Online {
     // https://github.com/openshift/origin/blob/master/vendor/k8s.io/kubernetes/pkg/printers/internalversion/printers.go#L523-L615
     return function (pod) {
       if (!pod || (!pod.metadata.deletionTimestamp && !pod.status)) {
-        return '';
+        return ''
       }
 
       if (pod.metadata.deletionTimestamp) {
-        return 'Terminating';
+        return 'Terminating'
       }
 
-      var initializing = false;
-      var reason;
+      let initializing = false
+      let reason
 
       // Print detailed container reasons if available. Only the first will be
       // displayed if multiple containers have this detail.
 
       _.each(pod.status.initContainerStatuses, function (initContainerStatus) {
-        var initContainerState = _.get(initContainerStatus, 'state');
+        const initContainerState = _.get(initContainerStatus, 'state')
 
         if (initContainerState.terminated && initContainerState.terminated.exitCode === 0) {
           // initialization is complete
-          return;
+          return
         }
 
         if (initContainerState.terminated) {
           // initialization is failed
           if (!initContainerState.terminated.reason) {
             if (initContainerState.terminated.signal) {
-              reason = 'Init Signal: ' + initContainerState.terminated.signal;
+              reason = 'Init Signal: ' + initContainerState.terminated.signal
             } else {
-              reason = 'Init Exit Code: ' + initContainerState.terminated.exitCode;
+              reason = 'Init Exit Code: ' + initContainerState.terminated.exitCode
             }
           } else {
-            reason = 'Init ' + initContainerState.terminated.reason;
+            reason = 'Init ' + initContainerState.terminated.reason
           }
-          initializing = true;
-          return true;
+          initializing = true
+          return true
         }
 
         if (initContainerState.waiting && initContainerState.waiting.reason && initContainerState.waiting.reason !== 'PodInitializing') {
-          reason = 'Init ' + initContainerState.waiting.reason;
-          initializing = true;
+          reason = 'Init ' + initContainerState.waiting.reason
+          initializing = true
         }
-      });
+      })
 
       if (!initializing) {
-        reason = pod.status.reason || pod.status.phase;
+        reason = pod.status.reason || pod.status.phase
 
         _.each(pod.status.containerStatuses, function (containerStatus) {
-          var containerReason = _.get(containerStatus, 'state.waiting.reason') || _.get(containerStatus, 'state.terminated.reason'),
+          let containerReason = _.get(containerStatus, 'state.waiting.reason') || _.get(containerStatus, 'state.terminated.reason'),
             signal,
-            exitCode;
+            exitCode
 
           if (containerReason) {
-            reason = containerReason;
-            return true;
+            reason = containerReason
+            return true
           }
 
-          signal = _.get(containerStatus, 'state.terminated.signal');
+          signal = _.get(containerStatus, 'state.terminated.signal')
           if (signal) {
-            reason = 'Signal: ' + signal;
-            return true;
+            reason = 'Signal: ' + signal
+            return true
           }
 
-          exitCode = _.get(containerStatus, 'state.terminated.exitCode');
+          exitCode = _.get(containerStatus, 'state.terminated.exitCode')
           if (exitCode) {
-            reason = 'Exit Code: ' + exitCode;
-            return true;
+            reason = 'Exit Code: ' + exitCode
+            return true
           }
-        });
+        })
       }
 
-      return reason;
-    };
+      return reason
+    }
   }
 }

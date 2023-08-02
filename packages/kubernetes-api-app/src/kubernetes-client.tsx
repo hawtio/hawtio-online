@@ -1,17 +1,10 @@
 import { k8Service, K8Actions } from '@hawtio/online-kubernetes-api'
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
-  Alert,
-  DescriptionList,
-  DescriptionListDescription,
-  DescriptionListGroup,
-  DescriptionListTerm,
-  Divider,
   Panel,
   PanelHeader,
   PanelMain,
   PanelMainBody,
-  Skeleton,
   Tab,
   Tabs,
   TabTitleText,
@@ -23,7 +16,7 @@ import { KubernetesPods } from './kubernetes-pods'
 export const KubernetesClient: React.FunctionComponent = () => {
   const [projects, setProjects] = useState<KubeObject[]>([])
   const [pods, setPods] = useState<KubeObject[]>([])
-  const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0);
+  const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0)
 
   useEffect(() => {
     k8Service.on(K8Actions.CHANGED, () => {
@@ -32,7 +25,7 @@ export const KubernetesClient: React.FunctionComponent = () => {
     })
   }, [])
 
-  const handleTabClick = (event: React.MouseEvent<any> | React.KeyboardEvent|MouseEvent, tabIndex: string|number) => {
+  const handleTabClick = (event: React.MouseEvent<unknown> | React.KeyboardEvent|MouseEvent, tabIndex: string|number) => {
     setActiveTabKey(tabIndex)
   }
 

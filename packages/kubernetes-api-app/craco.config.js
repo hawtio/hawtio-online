@@ -196,8 +196,8 @@ module.exports = () => {
               }
               break
             default:
-              console.error('Invalid value for the Hawtio Online mode, must be one of [cluster, namespace]');
-              process.exit(1);
+              console.error('Invalid value for the Hawtio Online mode, must be one of [cluster, namespace]')
+              process.exit(1)
           }
 
           res.set('Content-Type', 'application/javascript')

@@ -20,7 +20,7 @@ import {
   MastheadContent,
   Label} from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
-import { oAuthInitialised, getActiveProfile, UserProfile } from '@hawtio/online-oauth'
+import { UserProfile, oAuthRegister, getActiveProfile } from '@hawtio/online-oauth'
 import { userService } from '@hawtio/react'
 
 class DefaultProfile extends UserProfile {
@@ -47,7 +47,6 @@ export const OAuthStatus: React.FunctionComponent = () => {
   const timeout = useRef<number>()
 
   const [username, setUsername] = useState('')
-  const [isLogin, setIsLogin] = useState(false)
 
   const unwrap = (error: Error): string => {
     if (!error)
@@ -64,6 +63,7 @@ export const OAuthStatus: React.FunctionComponent = () => {
 
     const checkLoading = async () => {
       try {
+        await oAuthRegister()
         const userProfile = await getActiveProfile()
 
         if (userProfile.hasError())
@@ -73,9 +73,7 @@ export const OAuthStatus: React.FunctionComponent = () => {
 
         await userService.fetchUser()
         const username = await userService.getUsername()
-        const isLogin = await userService.isLogin()
         setUsername(username)
-        setIsLogin(isLogin)
 
       } catch (error) {
         if (error instanceof Error)
@@ -95,7 +93,7 @@ export const OAuthStatus: React.FunctionComponent = () => {
       window.clearTimeout(timeout.current)
     }
 
-  }, [oAuthInitialised])
+  }, [])
 
   if (isLoading) {
     return (
