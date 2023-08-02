@@ -18,9 +18,6 @@ import {
   Button,
   Masthead,
   MastheadContent,
-  ToolbarContent,
-  Toolbar,
-  ToolbarItem,
   Label} from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
 import { oAuthInitialised, getActiveProfile, UserProfile } from '@hawtio/online-oauth'

@@ -326,7 +326,6 @@ class OSOAuthService implements IOSOAuthService {
       if (this.userProfile.getToken()) {
         const userInfo = await fetchPath<UserObject | null>(this.userInfoUri, {
           success: (data: string) => {
-            log.debug('Retrieved user info from cluster server', data)
             return JSON.parse(data)
           },
           error: () => null
