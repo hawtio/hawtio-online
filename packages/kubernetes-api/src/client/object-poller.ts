@@ -1,20 +1,22 @@
-import { KubeObject, KubeObjectList } from "../globals"
-import { fetchPath, SimpleResponse } from "../utils"
-import { log, WSHandler } from "./globals"
-import { compare } from "./support"
+import { KubeObject, KubeObjectList } from '../globals'
+import { fetchPath, SimpleResponse } from '../utils'
+import { log, WSHandler } from './globals'
+import { compare } from './support'
 
 /*
  * Manages polling the server for objects that don't support websocket connections
  */
 export class ObjectPoller {
-
   private _lastFetch: KubeObject[]
   private _connected = false
   private _interval = 5000
   private retries = 0
   private tCancel?: NodeJS.Timeout
 
-  constructor(private restURL: string, private handler: WSHandler) {
+  constructor(
+    private restURL: string,
+    private handler: WSHandler,
+  ) {
     this._lastFetch = this.handler.list.objects
   }
 
@@ -28,15 +30,15 @@ export class ObjectPoller {
     }
 
     fetchPath(this.restURL, {
-      success: (data) => {
+      success: data => {
         if (!this._connected) {
           return
         }
 
         const kObjList: KubeObjectList = JSON.parse(data)
 
-        log.debug(this.handler.kind, "fetched data:", data)
-        const items = (kObjList && kObjList.items) ? kObjList.items : []
+        log.debug(this.handler.kind, 'fetched data:', data)
+        const items = kObjList && kObjList.items ? kObjList.items : []
         const result = compare(this._lastFetch, items)
         this._lastFetch = items
 
@@ -45,8 +47,8 @@ export class ObjectPoller {
             const event = {
               data: JSON.stringify({
                 type: action.toUpperCase(),
-                object: item
-              })
+                object: item,
+              }),
             }
             this.handler.onmessage(event)
           })
@@ -56,7 +58,7 @@ export class ObjectPoller {
         //log.debug("Result:", result)
         if (this._connected) {
           this.tCancel = setTimeout(() => {
-            log.debug(this.handler.kind, "polling")
+            log.debug(this.handler.kind, 'polling')
             this.doGet()
           }, this._interval)
         }
@@ -67,23 +69,23 @@ export class ObjectPoller {
         }
 
         if (response?.status === 403) {
-          log.info(this.handler.kind, "- Failed to poll objects, user is not authorized")
+          log.info(this.handler.kind, '- Failed to poll objects, user is not authorized')
           return
         }
         if (this.retries >= 3) {
-          log.debug(this.handler.kind, "- Out of retries, stopping polling, error:", err)
+          log.debug(this.handler.kind, '- Out of retries, stopping polling, error:', err)
           this.stop()
           if (this.handler.error) {
             this.handler.error(err)
           }
         } else {
           this.retries = this.retries + 1
-          log.debug(this.handler.kind, "- Error polling, retry #", this.retries + 1, "error:", err)
+          log.debug(this.handler.kind, '- Error polling, retry #', this.retries + 1, 'error:', err)
           this.tCancel = setTimeout(() => {
             this.doGet()
           }, this._interval)
         }
-      }
+      },
     })
   }
 
@@ -99,9 +101,9 @@ export class ObjectPoller {
 
   stop() {
     this._connected = false
-    log.debug(this.handler.kind, "- disconnecting")
+    log.debug(this.handler.kind, '- disconnecting')
     if (this.tCancel) {
-      log.debug(this.handler.kind, "- cancelling polling")
+      log.debug(this.handler.kind, '- cancelling polling')
       clearTimeout(this.tCancel)
       this.tCancel = undefined
     }
@@ -109,7 +111,6 @@ export class ObjectPoller {
 
   destroy() {
     this.stop()
-    log.debug(this.handler.kind, "- destroyed")
+    log.debug(this.handler.kind, '- destroyed')
   }
-
 }

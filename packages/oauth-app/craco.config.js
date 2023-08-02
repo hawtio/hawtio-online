@@ -8,8 +8,8 @@ module.exports = () => {
   return {
     plugins: [
       {
-        plugin: CracoEsbuildPlugin
-      }
+        plugin: CracoEsbuildPlugin,
+      },
     ],
     webpack: {
       plugins: {
@@ -19,13 +19,12 @@ module.exports = () => {
             allowEmptyValues: true,
             defaults: true,
             systemvars: true,
-            ignoreStub: true
+            ignoreStub: true,
           }),
           new ModuleFederationPlugin({
             name: 'app',
             filename: 'remoteEntry.js',
-            exposes: {
-            },
+            exposes: {},
             shared: {
               ...dependencies,
               react: {
@@ -73,18 +72,15 @@ module.exports = () => {
         const plugins = resolve['plugins'] || []
 
         webpackConfig['resolve'] = {
-          modules: [
-            path.resolve(__dirname, 'node_modules'),
-            path.resolve(__dirname, '../../node_modules'),
-          ],
+          modules: [path.resolve(__dirname, 'node_modules'), path.resolve(__dirname, '../../node_modules')],
           extensions: extensions,
           alias: alias,
           plugins: plugins,
           fallback: {
             os: require.resolve('os-browserify'),
             path: require.resolve('path-browserify'),
-            process: require.resolve("process/browser"),
-            url: require.resolve("url/"),
+            process: require.resolve('process/browser'),
+            url: require.resolve('url/'),
           },
         }
 
@@ -105,9 +101,7 @@ module.exports = () => {
         // Automatically clear mock calls and instances between every test
         clearMocks: true,
 
-        coveragePathIgnorePatterns: [
-          '<rootDir>/node_modules/'
-        ],
+        coveragePathIgnorePatterns: ['<rootDir>/node_modules/'],
 
         moduleDirectories: ['<rootDir>/node_modules/'],
 
@@ -118,9 +112,7 @@ module.exports = () => {
         // The path to a module that runs some code to configure or set up the testing framework before each test
         setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
 
-        testPathIgnorePatterns: [
-          '<rootDir>/node_modules/'
-        ],
+        testPathIgnorePatterns: ['<rootDir>/node_modules/'],
 
         transformIgnorePatterns: ['node_modules/(?!@patternfly/react-icons/dist/esm/icons)/'],
 
@@ -128,9 +120,8 @@ module.exports = () => {
       },
     },
     devServer: (devServerConfig, { env, paths, proxy, allowedHost }) => {
-
       const master_uri = process.env.CLUSTER_MASTER
-      if (! master_uri) {
+      if (!master_uri) {
         console.error('The CLUSTER_MASTER environment variable must be set!')
         process.exit(1)
       }
@@ -159,7 +150,7 @@ module.exports = () => {
         '/master': {
           target: master_uri,
           pathRewrite: { '^/master': '' },
-          secure: false
+          secure: false,
         },
       }
 
@@ -169,8 +160,7 @@ module.exports = () => {
         directory: path.join(__dirname, 'public'),
       }
 
-      devServerConfig.onBeforeSetupMiddleware = (devServer) => {
-
+      devServerConfig.onBeforeSetupMiddleware = devServer => {
         /*
          * Function to construct the config.json file
          * and make it available for authentication
@@ -179,7 +169,7 @@ module.exports = () => {
           const oscConfig = {
             master_uri: proxiedMaster,
             hawtio: {
-              mode: mode
+              mode: mode,
             },
           }
 
@@ -190,7 +180,7 @@ module.exports = () => {
                 oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
                 oauth_client_id: `system:serviceaccount:${namespace}:hawtio-online-dev`,
                 scope: `user:info user:check-access user:full`,
-                cluster_version: '4.11.0'
+                cluster_version: '4.11.0',
               }
               break
             case 'cluster':
@@ -198,7 +188,7 @@ module.exports = () => {
                 oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
                 oauth_client_id: `hawtio-online-dev`,
                 scope: `user:info user:check-access user:full`,
-                cluster_version: '4.11.0'
+                cluster_version: '4.11.0',
               }
               break
             default:
@@ -225,7 +215,6 @@ module.exports = () => {
         devServer.app.get('/hawtio/proxy/enabled', (_, res) => res.send(String(proxyEnabled)))
         devServer.app.get('/hawtio/keycloak/enabled', (_, res) => res.send(String(keycloakEnabled)))
       }
-
 
       return devServerConfig
     },

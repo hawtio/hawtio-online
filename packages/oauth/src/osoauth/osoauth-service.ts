@@ -8,22 +8,10 @@ import {
   DEFAULT_HAWTIO_MODE,
   DEFAULT_HAWTIO_NAMESPACE,
   HAWTIO_MODE_KEY,
-  HAWTIO_NAMESPACE_KEY
+  HAWTIO_NAMESPACE_KEY,
 } from '../metadata'
-import {
-  moduleName,
-  PATH_OSCONSOLE_CLIENT_CONFIG,
-  OpenShiftConfig,
-  ResolveUser,
-  TokenMetadata
-} from './globals'
-import {
-  buildUserInfoUri,
-  checkToken,
-  currentTimeSeconds,
-  doLogout,
-  tokenHasExpired
-} from './support'
+import { moduleName, PATH_OSCONSOLE_CLIENT_CONFIG, OpenShiftConfig, ResolveUser, TokenMetadata } from './globals'
+import { buildUserInfoUri, checkToken, currentTimeSeconds, doLogout, tokenHasExpired } from './support'
 
 export class OSOAuthUserProfile extends UserProfile implements TokenMetadata {
   access_token?: string
@@ -33,13 +21,13 @@ export class OSOAuthUserProfile extends UserProfile implements TokenMetadata {
 }
 
 interface UserObject {
-  kind: string,
-  apiVersion: string,
+  kind: string
+  apiVersion: string
   metadata: {
-    name: string,
-    selfLink: string,
-    creationTimestamp: string|null,
-  },
+    name: string
+    selfLink: string
+    creationTimestamp: string | null
+  }
   groups: string[]
 }
 
@@ -71,28 +59,27 @@ class OSOAuthService implements IOSOAuthService {
         log.debug('Loaded', PATH_OSCONSOLE_CLIENT_CONFIG, ':', data)
         return JSON.parse(data)
       },
-      error: (err) => {
+      error: err => {
         this.userProfile.setError(err)
         return null
-      }
+      },
     })
   }
 
-  private async processConfig(): Promise<OpenShiftConfig|null> {
+  private async processConfig(): Promise<OpenShiftConfig | null> {
     const config = await this.rawConfig
     if (!config || !config.openshift) {
-      this.userProfile.setError(new Error("Cannot find the openshift auth configuration"))
+      this.userProfile.setError(new Error('Cannot find the openshift auth configuration'))
       return null
     }
     log.debug('OS OAuth config to be processed: ', config)
 
     const openshiftAuth = config.openshift
-    if (openshiftAuth.oauth_authorize_uri)
-      return config
+    if (openshiftAuth.oauth_authorize_uri) return config
 
     // Try to fetch authorize uri from metadata uri
     if (!openshiftAuth.oauth_metadata_uri) {
-      this.userProfile.setError(new Error("Cannot determine authorize uri as no metadata uri"))
+      this.userProfile.setError(new Error('Cannot determine authorize uri as no metadata uri'))
       return null
     }
 
@@ -113,11 +100,11 @@ class OSOAuthService implements IOSOAuthService {
 
         return config
       },
-      error: (err) => {
-        const e: Error = new Error("Failed to contact the oauth metadata uri", {cause: err})
+      error: err => {
+        const e: Error = new Error('Failed to contact the oauth metadata uri', { cause: err })
         this.userProfile.setError(e)
         return null
-      }
+      },
     })
   }
 
@@ -190,12 +177,12 @@ class OSOAuthService implements IOSOAuthService {
 
   private setupKeepAlive(config: OpenShiftConfig) {
     const keepAlive = async () => {
-      log.debug("Running oAuth keepAlive function")
-      const response = await fetch(this.userInfoUri, {method: 'GET'})
+      log.debug('Running oAuth keepAlive function')
+      const response = await fetch(this.userInfoUri, { method: 'GET' })
       if (response.ok) {
         const keepaliveJson = await response.json()
         if (!keepaliveJson) {
-          this.userProfile.setError(new Error("Cannot parse the keepalive json response"))
+          this.userProfile.setError(new Error('Cannot parse the keepalive json response'))
           return
         }
 
@@ -205,15 +192,15 @@ class OSOAuthService implements IOSOAuthService {
           const remainingTime = obtainedAt + expiry - currentTimeSeconds()
           if (remainingTime > 0) {
             this.keepaliveInterval = Math.min(Math.round(remainingTime / 4), 24 * 60 * 60)
-            log.debug("Resetting keepAlive interval to " + this.keepaliveInterval)
+            log.debug('Resetting keepAlive interval to ' + this.keepaliveInterval)
           }
         }
         if (!this.keepaliveInterval) {
           this.keepaliveInterval = 10
         }
-        log.debug("userProfile:", this.userProfile)
+        log.debug('userProfile:', this.userProfile)
       } else {
-        log.debug("keepAlive response failure so re-login")
+        log.debug('keepAlive response failure so re-login')
         // The request may have been cancelled as the browser refresh request in
         // extractToken may be triggered before getting the AJAX response.
         // In that case, let's just skip the error and go through another refresh cycle.
@@ -227,24 +214,22 @@ class OSOAuthService implements IOSOAuthService {
   }
 
   private clearKeepAlive() {
-    if (!this.keepAliveHandler)
-      return
+    if (!this.keepAliveHandler) return
 
     clearTimeout(this.keepAliveHandler)
     this.keepAliveHandler = null
   }
 
   private checkTokenExpired(config: OpenShiftConfig) {
-    if (!this.userProfile.hasToken())
-      return true // no token so must be expired
+    if (!this.userProfile.hasToken()) return true // no token so must be expired
 
     if (tokenHasExpired(this.userProfile)) {
-      log.debug("Token has expired so logging out")
+      log.debug('Token has expired so logging out')
       doLogout(config)
       return true
     }
 
-    log.debug("User Profile has good token so nothing to do")
+    log.debug('User Profile has good token so nothing to do')
     return false
   }
 
@@ -255,24 +240,23 @@ class OSOAuthService implements IOSOAuthService {
     }
 
     if (this.userProfile.hasError()) {
-      log.debug("Cannot login as user profile has error: ", this.userProfile.getError())
+      log.debug('Cannot login as user profile has error: ', this.userProfile.getError())
       return false
     }
 
     const currentURI = new URL(window.location.href)
     try {
-
       this.clearKeepAlive()
 
-      log.debug("Checking token for validity")
+      log.debug('Checking token for validity')
       const tokenParams = checkToken(currentURI)
       if (!tokenParams) {
-        log.debug("No Token so initiating new login")
+        log.debug('No Token so initiating new login')
         doLogout(config)
         return false
       }
 
-      log.debug("Populating user profile with token metadata")
+      log.debug('Populating user profile with token metadata')
       /* Populate the profile with the new token */
       this.userProfile.expires_in = tokenParams.expires_in
       this.userProfile.token_type = tokenParams.token_type
@@ -283,14 +267,14 @@ class OSOAuthService implements IOSOAuthService {
       if (this.checkTokenExpired(config)) return false
 
       /* Promote the hawtio mode to expose to third-parties */
-      log.debug("Adding cluster version to profile metadata")
+      log.debug('Adding cluster version to profile metadata')
       this.userProfile.addMetadata(CLUSTER_VERSION_KEY, config.openshift?.cluster_version || DEFAULT_CLUSTER_VERSION)
 
-      log.debug("Adding hawtio-mode to profile metadata")
+      log.debug('Adding hawtio-mode to profile metadata')
       const hawtioMode = config.hawtio?.mode || DEFAULT_HAWTIO_MODE
       this.userProfile.addMetadata(HAWTIO_MODE_KEY, hawtioMode)
       if (hawtioMode !== DEFAULT_HAWTIO_MODE)
-      this.userProfile.addMetadata(HAWTIO_NAMESPACE_KEY, config.hawtio?.namespace || DEFAULT_HAWTIO_NAMESPACE)
+        this.userProfile.addMetadata(HAWTIO_NAMESPACE_KEY, config.hawtio?.namespace || DEFAULT_HAWTIO_NAMESPACE)
 
       // Need fetch for keepalive
       this.setupFetch(config)
@@ -298,7 +282,6 @@ class OSOAuthService implements IOSOAuthService {
 
       this.setupKeepAlive(config)
       return true
-
     } catch (error) {
       this.userProfile.setError(error instanceof Error ? error : new Error('Error from checking token'))
       return false
@@ -328,7 +311,7 @@ class OSOAuthService implements IOSOAuthService {
           success: (data: string) => {
             return JSON.parse(data)
           },
-          error: () => null
+          error: () => null,
         })
 
         let username = this.userProfile.getToken() // default
@@ -362,7 +345,6 @@ class OSOAuthService implements IOSOAuthService {
     }
     userService.addLogoutHook(moduleName, logout)
   }
-
 }
 
 export const osOAuthService = new OSOAuthService()

@@ -1,5 +1,5 @@
 import { KubeObject } from '../globals'
-import { CompareResult, } from './globals'
+import { CompareResult } from './globals'
 import { equals } from '../helpers'
 
 export function getKey(kind: string, namespace?: string) {
@@ -10,11 +10,11 @@ export function compare(old: KubeObject[], _new: KubeObject[]): CompareResult<Ku
   const answer = {
     added: [],
     modified: [],
-    deleted: []
+    deleted: [],
   } as CompareResult<KubeObject>
 
-  _new.forEach((newObj) => {
-    const oldObj = old.find((o) => equals(o, newObj))
+  _new.forEach(newObj => {
+    const oldObj = old.find(o => equals(o, newObj))
     if (!oldObj) {
       answer.added.push(newObj)
       return
@@ -23,8 +23,8 @@ export function compare(old: KubeObject[], _new: KubeObject[]): CompareResult<Ku
       answer.modified.push(newObj)
     }
   })
-  old.forEach((oldObj) => {
-    const newObj = _new.find((o) => equals(o, oldObj))
+  old.forEach(oldObj => {
+    const newObj = _new.find(o => equals(o, oldObj))
     if (!newObj) {
       answer.deleted.push(oldObj)
     }

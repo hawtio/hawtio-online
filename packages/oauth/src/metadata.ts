@@ -2,10 +2,10 @@
  * Openshift / kubernetes Metadata
  */
 
- export enum HawtioMode {
-   Cluster = 'cluster',
-   Namespace = 'namespace',
- }
+export enum HawtioMode {
+  Cluster = 'cluster',
+  Namespace = 'namespace',
+}
 
 export const HAWTIO_MODE_KEY = 'hawtio-mode'
 export const DEFAULT_HAWTIO_MODE = HawtioMode.Cluster

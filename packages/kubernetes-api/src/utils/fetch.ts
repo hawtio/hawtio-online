@@ -16,13 +16,15 @@ export async function fetchPath<T>(path: string, callback: FetchPathCallback<T>,
     if (!res.ok) {
       const msg = `Failed to fetch ${path} : ${res.status}, ${res.statusText}`
       log.error(msg)
-      return callback.error(new Error(msg), {status: res.status, statusText: res.statusText})
+      return callback.error(new Error(msg), { status: res.status, statusText: res.statusText })
     }
 
     const data = await res.text()
     return callback.success(data)
   } catch (err) {
     log.error('Failed to fetch', path, ':', err)
-    return callback.error((err instanceof Error) ? err : new Error('Fetch failed due to unknown error. See log for details'))
+    return callback.error(
+      err instanceof Error ? err : new Error('Fetch failed due to unknown error. See log for details'),
+    )
   }
 }

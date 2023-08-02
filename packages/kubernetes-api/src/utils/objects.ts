@@ -54,14 +54,13 @@ export function objectSorter(aValue: unknown, bValue: unknown, sortDesc?: boolea
  * @param {Array} paths an array of path names to navigate or a string of dot separated paths to navigate
  * @return {*} the last step on the path which is updated
  */
-export function pathGet(object: object, paths: string[]|string): Record<string, unknown> | unknown {
-  const pathArray = (isArray(paths)) ? paths : (paths || "").split(".")
+export function pathGet(object: object, paths: string[] | string): Record<string, unknown> | unknown {
+  const pathArray = isArray(paths) ? paths : (paths || '').split('.')
   let value: unknown | null = object
 
-  pathArray.forEach((name) => {
+  pathArray.forEach(name => {
     // Test that value is valid
-    if (!value)
-      return
+    if (!value) return
 
     /*
      * If we are still traversing and value is not an object
@@ -74,7 +73,7 @@ export function pathGet(object: object, paths: string[]|string): Record<string, 
     }
 
     // Test that value has a property of name
-    if (! Object.prototype.hasOwnProperty.call(value, name)) {
+    if (!Object.prototype.hasOwnProperty.call(value, name)) {
       value = null
       return
     }
@@ -95,12 +94,15 @@ export function pathGet(object: object, paths: string[]|string): Record<string, 
   return value
 }
 
-export function pathGetString(entity: Record<string, unknown>, path: string[]|string): string | null {
+export function pathGetString(entity: Record<string, unknown>, path: string[] | string): string | null {
   const v = pathGet(entity, path)
-  return isString(v) ? v as string : null
+  return isString(v) ? (v as string) : null
 }
 
-export function pathGetObject(entity: Record<string, unknown>, path: string[]|string): Record<string, unknown> | null {
+export function pathGetObject(
+  entity: Record<string, unknown>,
+  path: string[] | string,
+): Record<string, unknown> | null {
   const v = pathGet(entity, path)
-  return isObject(v) ? v as Record<string, unknown> : null
+  return isObject(v) ? (v as Record<string, unknown>) : null
 }

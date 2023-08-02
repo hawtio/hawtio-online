@@ -25,7 +25,9 @@ describe('helpers', () => {
 
     expect(helpers.openshiftApiPrefix('')).toBe(OS_PREFIX + '/' + OS_API_VERSION)
     expect(helpers.openshiftApiPrefix(WatchTypes.NODES)).toBe(OS_PREFIX + '/' + OS_API_VERSION)
-    expect(helpers.openshiftApiPrefix(WatchTypes.BUILD_CONFIGS)).toBe(OS_PREFIX + '/build.openshift.io/' + OS_API_VERSION)
+    expect(helpers.openshiftApiPrefix(WatchTypes.BUILD_CONFIGS)).toBe(
+      OS_PREFIX + '/build.openshift.io/' + OS_API_VERSION,
+    )
 
     expect(helpers.prefixForKind('')).toBeNull()
     expect(helpers.prefixForKind(WatchTypes.NAMESPACES)).toBe(K8S_PREFIX + '/' + K8S_API_VERSION)
@@ -41,11 +43,11 @@ describe('helpers', () => {
 
   test('createShallowObject', () => {
     const expected = {
-      apiVersion: "v1",
+      apiVersion: 'v1',
       kind: 'deployment',
       metadata: {
         name: 'test',
-        namespace: 'scratch'
+        namespace: 'scratch',
       },
     }
 

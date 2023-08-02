@@ -6,7 +6,7 @@ import { reportWebVitals } from './reportWebVitals'
 import { Kubernetes } from './kubernetes'
 
 Logger.setLevel(Logger.DEBUG)
-console.log("Logging Level set to ", Logger.getLevel())
+console.log('Logging Level set to ', Logger.getLevel())
 
 // Configure the console
 const configure = () => {

@@ -7,7 +7,8 @@ import {
   DescriptionListTerm,
   Panel,
   PanelMain,
-  PanelMainBody } from '@patternfly/react-core'
+  PanelMainBody,
+} from '@patternfly/react-core'
 import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 
 type KubeProjectProps = {
@@ -15,7 +16,6 @@ type KubeProjectProps = {
 }
 
 export const KubernetesProjects: React.FunctionComponent<KubeProjectProps> = (props: KubeProjectProps) => {
-
   return (
     <Panel isScrollable>
       <PanelMain>
@@ -34,32 +34,26 @@ export const KubernetesProjects: React.FunctionComponent<KubeProjectProps> = (pr
                   <Td dataLabel='Name'>{project.metadata.name}</Td>
                   <Td dataLabel='Labels'>
                     <DescriptionList>
-                      {
-                        Object.entries(project.metadata.labels || {})
-                          .map(([key, value]) => {
-                            return (
-                              <DescriptionListGroup key={key}>
-                                <DescriptionListTerm>{key}</DescriptionListTerm>
-                                <DescriptionListDescription>{value as string}</DescriptionListDescription>
-                              </DescriptionListGroup>
-                            )
-                          })
-                        }
+                      {Object.entries(project.metadata.labels || {}).map(([key, value]) => {
+                        return (
+                          <DescriptionListGroup key={key}>
+                            <DescriptionListTerm>{key}</DescriptionListTerm>
+                            <DescriptionListDescription>{value as string}</DescriptionListDescription>
+                          </DescriptionListGroup>
+                        )
+                      })}
                     </DescriptionList>
                   </Td>
                   <Td dataLabel='Annotations'>
                     <DescriptionList>
-                      {
-                        Object.entries(project.metadata.annotations || {})
-                          .map(([key, value]) => {
-                            return (
-                              <DescriptionListGroup key={key}>
-                                <DescriptionListTerm>{key}</DescriptionListTerm>
-                                <DescriptionListDescription>{value as string}</DescriptionListDescription>
-                              </DescriptionListGroup>
-                            )
-                          })
-                        }
+                      {Object.entries(project.metadata.annotations || {}).map(([key, value]) => {
+                        return (
+                          <DescriptionListGroup key={key}>
+                            <DescriptionListTerm>{key}</DescriptionListTerm>
+                            <DescriptionListDescription>{value as string}</DescriptionListDescription>
+                          </DescriptionListGroup>
+                        )
+                      })}
                     </DescriptionList>
                   </Td>
                 </Tr>

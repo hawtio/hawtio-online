@@ -21,7 +21,7 @@ export function buildUserInfoUri(config: OpenShiftConfig): string {
 
 function forceRelogin(url: URL, config: OpenShiftConfig) {
   clearTokenStorage()
-  doLogin(config, {uri: url.toString()})
+  doLogin(config, { uri: url.toString() })
 }
 
 export function doLogout(config: OpenShiftConfig): void {
@@ -37,7 +37,7 @@ export function doLogout(config: OpenShiftConfig): void {
 
 export function doLogin(config: OpenShiftConfig, options: { uri: string }): void {
   if (!config || !config.openshift) {
-    log.debug("Cannot login due to config now being properly defined")
+    log.debug('Cannot login due to config now being properly defined')
     return
   }
 
@@ -59,30 +59,32 @@ export function doLogin(config: OpenShiftConfig, options: { uri: string }): void
   uri.searchParams.append('scope', scope)
 
   const target = uri.toString()
-  log.debug("Redirecting to URI:", target)
+  log.debug('Redirecting to URI:', target)
 
   // Redirect to the target URI
   window.location.href = target
 }
 
-function extractToken(uri: URL): TokenMetadata|null {
-  log.debug("Extract token from URI - query:", uri.search)
+function extractToken(uri: URL): TokenMetadata | null {
+  log.debug('Extract token from URI - query:', uri.search)
 
   const fragmentParams = new URLSearchParams(uri.hash.substring(1))
 
-  log.debug("Extract token from URI - fragmentParams:", fragmentParams)
-  if (!fragmentParams.has('access_token') ||
-      (fragmentParams.get('token_type') !== 'bearer' && fragmentParams.get('token_type') !== "Bearer")) {
-    log.debug("No token in URI")
+  log.debug('Extract token from URI - fragmentParams:', fragmentParams)
+  if (
+    !fragmentParams.has('access_token') ||
+    (fragmentParams.get('token_type') !== 'bearer' && fragmentParams.get('token_type') !== 'Bearer')
+  ) {
+    log.debug('No token in URI')
     return null
   }
 
-  log.debug("Got token")
+  log.debug('Got token')
   const credentials: TokenMetadata = {
     token_type: fragmentParams.get('token_type') || '',
     access_token: fragmentParams.get('access_token') || '',
     expires_in: parseInt(fragmentParams.get('expires_in') || '') || 0,
-    obtainedAt: currentTimeSeconds()
+    obtainedAt: currentTimeSeconds(),
   }
   localStorage.setItem(OS_TOKEN_STORAGE_KEY, JSON.stringify(credentials))
 
@@ -95,7 +97,7 @@ function extractToken(uri: URL): TokenMetadata|null {
   uri.hash = fragmentParams.toString()
 
   const target = uri.toString()
-  log.debug("redirecting to:", target)
+  log.debug('redirecting to:', target)
 
   // Redirect to new location
   window.location.href = target
@@ -110,11 +112,9 @@ export function clearTokenStorage(): void {
 export function tokenHasExpired(profile: OSOAuthUserProfile): boolean {
   // if no token metadata then remaining will end up as (-1 - now())
   let remaining = -1
-  if (! profile)
-    return true // no profile so no oken
+  if (!profile) return true // no profile so no oken
 
-  if (! profile.getToken())
-    return true // no token then must have expired!
+  if (!profile.getToken()) return true // no token then must have expired!
 
   const obtainedAt = profile.obtainedAt || 0
   const expiry = profile.expires_in || 0
@@ -135,18 +135,17 @@ export function checkToken(uri: URL): TokenMetadata {
       answer = JSON.parse(tokenJson)
     } catch (e) {
       clearTokenStorage()
-      throw new Error("Error extracting osAuthCreds value:", {cause: e})
+      throw new Error('Error extracting osAuthCreds value:', { cause: e })
     }
   }
 
   if (!answer) {
-    log.debug("Extracting token from uri", answer)
+    log.debug('Extracting token from uri', answer)
     answer = extractToken(uri)
   }
 
-  if (!answer)
-    throw new Error("Failed to get token from either storage or uri")
+  if (!answer) throw new Error('Failed to get token from either storage or uri')
 
-  log.debug("Using extracted credentials:", answer)
+  log.debug('Using extracted credentials:', answer)
   return answer
 }

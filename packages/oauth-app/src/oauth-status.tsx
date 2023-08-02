@@ -18,13 +18,13 @@ import {
   Button,
   Masthead,
   MastheadContent,
-  Label} from '@patternfly/react-core'
+  Label,
+} from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
 import { UserProfile, oAuthRegister, getActiveProfile } from '@hawtio/online-oauth'
 import { userService } from '@hawtio/react'
 
 class DefaultProfile extends UserProfile {
-
   constructor() {
     super('default-profile')
   }
@@ -42,18 +42,16 @@ const defaultProfile = new DefaultProfile()
 
 export const OAuthStatus: React.FunctionComponent = () => {
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<Error|null>()
+  const [error, setError] = useState<Error | null>()
   const [profile, setProfile] = useState<UserProfile>(defaultProfile)
   const timeout = useRef<number>()
 
   const [username, setUsername] = useState('')
 
   const unwrap = (error: Error): string => {
-    if (!error)
-      return 'unknown error'
+    if (!error) return 'unknown error'
 
-    if (error.cause instanceof Error)
-      return unwrap(error.cause)
+    if (error.cause instanceof Error) return unwrap(error.cause)
 
     return error.message
   }
@@ -66,20 +64,15 @@ export const OAuthStatus: React.FunctionComponent = () => {
         await oAuthRegister()
         const userProfile = await getActiveProfile()
 
-        if (userProfile.hasError())
-          setError(userProfile.getError())
-        else
-          setProfile(userProfile)
+        if (userProfile.hasError()) setError(userProfile.getError())
+        else setProfile(userProfile)
 
         await userService.fetchUser()
         const username = await userService.getUsername()
         setUsername(username)
-
       } catch (error) {
-        if (error instanceof Error)
-          setError(error)
-        else
-          setError(new Error(error as string))
+        if (error instanceof Error) setError(error)
+        else setError(new Error(error as string))
       }
 
       setIsLoading(false)
@@ -92,7 +85,6 @@ export const OAuthStatus: React.FunctionComponent = () => {
     return () => {
       window.clearTimeout(timeout.current)
     }
-
   }, [])
 
   if (isLoading) {
@@ -111,7 +103,7 @@ export const OAuthStatus: React.FunctionComponent = () => {
       <Card>
         <CardTitle>OAuth</CardTitle>
         <CardBody>
-          <Alert variant="danger" title={error?.message}>
+          <Alert variant='danger' title={error?.message}>
             {unwrap(error)}
           </Alert>
         </CardBody>
@@ -121,16 +113,24 @@ export const OAuthStatus: React.FunctionComponent = () => {
 
   return (
     <Card>
-      <CardTitle><Title headingLevel="h1">OAuth</Title></CardTitle>
+      <CardTitle>
+        <Title headingLevel='h1'>OAuth</Title>
+      </CardTitle>
       <CardBody>
-
-        <Masthead id="login-credentials">
+        <Masthead id='login-credentials'>
           <MastheadContent>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignContent: 'stretch', width: '100%'}}>
-              <Label color="green" icon={<InfoCircleIcon />}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignContent: 'stretch', width: '100%' }}>
+              <Label color='green' icon={<InfoCircleIcon />}>
                 {username}
               </Label>
-              <Button variant="danger" ouiaId="Logout" onClick={() => {console.log("Logout"); userService.logout()}}>
+              <Button
+                variant='danger'
+                ouiaId='Logout'
+                onClick={() => {
+                  console.log('Logout')
+                  userService.logout()
+                }}
+              >
                 Logout
               </Button>
             </div>
@@ -155,17 +155,14 @@ export const OAuthStatus: React.FunctionComponent = () => {
                   <DescriptionListTerm>Master URI</DescriptionListTerm>
                   <DescriptionListDescription>{profile.getMasterUri()}</DescriptionListDescription>
                 </DescriptionListGroup>
-                {
-                  Object.entries(profile.getMetadata())
-                      .map(([key, value]) => {
-                        return (
-                          <DescriptionListGroup key={key}>
-                            <DescriptionListTerm>{key}</DescriptionListTerm>
-                            <DescriptionListDescription>{value as string}</DescriptionListDescription>
-                          </DescriptionListGroup>
-                        )
-                      })
-                }
+                {Object.entries(profile.getMetadata()).map(([key, value]) => {
+                  return (
+                    <DescriptionListGroup key={key}>
+                      <DescriptionListTerm>{key}</DescriptionListTerm>
+                      <DescriptionListDescription>{value as string}</DescriptionListDescription>
+                    </DescriptionListGroup>
+                  )
+                })}
               </DescriptionList>
             </PanelMainBody>
           </PanelMain>

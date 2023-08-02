@@ -6,7 +6,8 @@ import {
   DescriptionListTerm,
   Panel,
   PanelMain,
-  PanelMainBody } from '@patternfly/react-core'
+  PanelMainBody,
+} from '@patternfly/react-core'
 import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 
 type KubePodsProps = {
@@ -14,7 +15,6 @@ type KubePodsProps = {
 }
 
 export const KubernetesPods: React.FunctionComponent<KubePodsProps> = (props: KubePodsProps) => {
-
   return (
     <Panel isScrollable>
       <PanelMain>
@@ -36,32 +36,26 @@ export const KubernetesPods: React.FunctionComponent<KubePodsProps> = (props: Ku
                   <Td dataLabel='Namespace'>{pod.metadata.namespace}</Td>
                   <Td dataLabel='Labels'>
                     <DescriptionList>
-                      {
-                        Object.entries(pod.metadata.labels || {})
-                          .map(([key, value]) => {
-                            return (
-                              <DescriptionListGroup key={key}>
-                                <DescriptionListTerm>{key}</DescriptionListTerm>
-                                <DescriptionListDescription>{value as string}</DescriptionListDescription>
-                              </DescriptionListGroup>
-                            )
-                          })
-                        }
+                      {Object.entries(pod.metadata.labels || {}).map(([key, value]) => {
+                        return (
+                          <DescriptionListGroup key={key}>
+                            <DescriptionListTerm>{key}</DescriptionListTerm>
+                            <DescriptionListDescription>{value as string}</DescriptionListDescription>
+                          </DescriptionListGroup>
+                        )
+                      })}
                     </DescriptionList>
                   </Td>
                   <Td dataLabel='Annotations'>
                     <DescriptionList>
-                      {
-                        Object.entries(pod.metadata.annotations || {})
-                          .map(([key, value]) => {
-                            return (
-                              <DescriptionListGroup key={key}>
-                                <DescriptionListTerm>{key}</DescriptionListTerm>
-                                <DescriptionListDescription>{value as string}</DescriptionListDescription>
-                              </DescriptionListGroup>
-                            )
-                          })
-                        }
+                      {Object.entries(pod.metadata.annotations || {}).map(([key, value]) => {
+                        return (
+                          <DescriptionListGroup key={key}>
+                            <DescriptionListTerm>{key}</DescriptionListTerm>
+                            <DescriptionListDescription>{value as string}</DescriptionListDescription>
+                          </DescriptionListGroup>
+                        )
+                      })}
                     </DescriptionList>
                   </Td>
                   <Td dataLabel='Status'>{pod.status?.phase}</Td>
