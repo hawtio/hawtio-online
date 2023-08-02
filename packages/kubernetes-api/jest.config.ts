@@ -27,9 +27,7 @@ export default {
 
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '../../node_modules'],
 
-  transformIgnorePatterns: [
-    'node_modules/(?!@patternfly/react-icons/dist/esm/icons)/',
-  ],
+  transformIgnorePatterns: ['node_modules/(?!@patternfly/react-icons/dist/esm/icons)/'],
 
   coveragePathIgnorePatterns: ['node_modules/'],
 }

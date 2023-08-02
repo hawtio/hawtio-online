@@ -18,6 +18,8 @@ export async function fetchPath<T>(path: string, callback: FetchPathCallback<T>)
     return callback.success(data)
   } catch (err) {
     log.error('Failed to fetch', path, ':', err)
-    return callback.error((err instanceof Error) ? err : new Error('Fetch failed due to unknown error. See log for details'))
+    return callback.error(
+      err instanceof Error ? err : new Error('Fetch failed due to unknown error. See log for details'),
+    )
   }
 }

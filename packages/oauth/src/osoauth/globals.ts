@@ -24,15 +24,15 @@ export interface OpenShiftConfig {
 }
 
 export interface TokenMetadata {
-  access_token?: string,
-  token_type?: string,
-  expires_in?: number,
+  access_token?: string
+  token_type?: string
+  expires_in?: number
   obtainedAt?: number
 }
 
 export type User = {
-  username: string;
-  isLogin: boolean;
+  username: string
+  isLogin: boolean
 }
 
-export type ResolveUser = (user: User) => void;
+export type ResolveUser = (user: User) => void

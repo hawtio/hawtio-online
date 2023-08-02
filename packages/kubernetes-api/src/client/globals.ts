@@ -37,7 +37,7 @@ export interface Collection {
   restURL: string
   namespace?: string
   connected: boolean
-  oAuthToken: string,
+  oAuthToken: string
   connect(): void
   get(cb: ProcessDataCallback): void
   watch(cb: ProcessDataCallback): ProcessDataCallback
@@ -69,7 +69,7 @@ export interface WSHandler {
   kind: string
   list: ObjectList
   collection: Collection
-  error: (ErrorDataCallback) | undefined
+  error: ErrorDataCallback | undefined
   connect(): void
   send(data: string | KubeObject): void
   onopen(event: Event): void

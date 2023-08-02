@@ -11,14 +11,13 @@ export class ClientFactoryImpl implements ClientFactory {
   private _clients = {} as ClientMap
 
   create(options: KOptions, namespace?: string): Collection {
-
     namespace = options.namespace || namespace
 
     const key = getKey(options.kind, namespace)
     if (this._clients[key]) {
       const client = this._clients[key]
       client.addRef()
-      log.debug("Returning existing client for key:", key, "refcount is:", client.refCount)
+      log.debug('Returning existing client for key:', key, 'refcount is:', client.refCount)
       return client.collection
     } else {
       const client = new ClientInstance(new CollectionImpl(options))
@@ -30,18 +29,18 @@ export class ClientFactoryImpl implements ClientFactory {
   }
 
   destroy(client: Collection, ...handles: Array<ProcessDataCallback>) {
-    handles.forEach((handle) => {
+    handles.forEach(handle => {
       client.unwatch(handle)
     })
     const key = client.getKey()
     if (this._clients[key]) {
       const c = this._clients[key]
       c.removeRef()
-      log.debug("Removed reference to client with key:", key, "refcount is:", c.refCount)
+      log.debug('Removed reference to client with key:', key, 'refcount is:', c.refCount)
       if (c.disposable()) {
         delete this._clients[key]
         c.destroy()
-        log.debug("Destroyed client for key:", key)
+        log.debug('Destroyed client for key:', key)
       }
     }
   }

@@ -1,5 +1,3 @@
-
-
 export function isString(value: unknown): value is string {
   if (value != null && typeof value === 'string') {
     return true

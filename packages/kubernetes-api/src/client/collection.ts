@@ -13,7 +13,6 @@ import { getKey } from './support'
  * Implements the external API for working with k8s collections of objects
  */
 export class CollectionImpl implements Collection {
-
   private _namespace?: string
   private _path: string
   private _apiVersion: string
@@ -38,7 +37,7 @@ export class CollectionImpl implements Collection {
     log.debug("Creating new collection for kind: '", this.kind, "' path: '", this._path, "'")
 
     this.handler = new WSHandlerImpl(this)
-    const list = this.list = new ObjectListImpl(_options.kind, _options.namespace)
+    const list = (this.list = new ObjectListImpl(_options.kind, _options.namespace))
     this.handler.list = list
   }
 
@@ -82,12 +81,12 @@ export class CollectionImpl implements Collection {
     } else {
       let urlStr = joinPaths(k8Api.getMasterUri(), this._path)
       const location = window.location
-      if (location && urlStr.indexOf("://") < 0) {
+      if (location && urlStr.indexOf('://') < 0) {
         let hostname = location.hostname
         if (hostname) {
           const port = location.port
           if (port) {
-            hostname += ":" + port
+            hostname += ':' + port
           }
           urlStr = joinPaths(hostname, k8Api.getMasterUri(), this._path)
         }
@@ -108,11 +107,11 @@ export class CollectionImpl implements Collection {
   }
 
   get wsURL() {
-    return (this._wsUrl || "").toString()
+    return (this._wsUrl || '').toString()
   }
 
   get restURL() {
-    return (this._restUrl || "").toString()
+    return (this._restUrl || '').toString()
   }
 
   get namespace() {
@@ -168,12 +167,12 @@ export class CollectionImpl implements Collection {
   private restUrlFor(item: KubeObject, useName = true) {
     const name = getName(item)
     if (useName && !name) {
-      log.debug("Name missing from item:", item)
+      log.debug('Name missing from item:', item)
       return undefined
     }
 
-    if (! this._restUrl) {
-      log.debug("The rest url is missing")
+    if (!this._restUrl) {
+      log.debug('The rest url is missing')
       return undefined
     }
 
@@ -181,17 +180,16 @@ export class CollectionImpl implements Collection {
     if (this.options.urlFunction && isFunction(this.options.urlFunction)) {
       // lets trust the url to be correct
     } else {
-      if (! item.kind)
-        return undefined
+      if (!item.kind) return undefined
 
       const collectionName = toCollectionName(item.kind)
       if (collectionName && namespaced(collectionName)) {
         const namespace = getNamespace(item) || this._namespace || UNKNOWN_VALUE
         let prefix = this.getPrefix()
         const kind = this.kind
-        if (!this._isOpenshift && (kind === "buildconfigs" || kind === "BuildConfig")) {
-          prefix = joinPaths("/api/v1/proxy/namespaces", namespace, "/services/jenkinshift:80/", prefix)
-          log.debug("Using buildconfigs URL override")
+        if (!this._isOpenshift && (kind === 'buildconfigs' || kind === 'BuildConfig')) {
+          prefix = joinPaths('/api/v1/proxy/namespaces', namespace, '/services/jenkinshift:80/', prefix)
+          log.debug('Using buildconfigs URL override')
         }
         url = joinPaths(k8Api.getMasterUri(), prefix, 'namespaces', namespace, kind)
       }
@@ -206,21 +204,21 @@ export class CollectionImpl implements Collection {
   watch(cb: ProcessDataCallback): ProcessDataCallback {
     if (this.list.initialized) {
       setTimeout(() => {
-        log.debug(this.kind, "passing existing objects:", this.list.objects)
+        log.debug(this.kind, 'passing existing objects:', this.list.objects)
         cb(this.list.objects)
       }, 10)
     }
-    log.debug(this.kind, "adding watch callback:", cb)
+    log.debug(this.kind, 'adding watch callback:', cb)
 
-    this.list.doOn(WatchActions.ANY, (data) => {
-      log.debug(this.kind, "got data:", data)
+    this.list.doOn(WatchActions.ANY, data => {
+      log.debug(this.kind, 'got data:', data)
       cb(data)
     })
     return cb
   }
 
   unwatch(cb: ProcessDataCallback) {
-    log.debug(this.kind, "removing watch callback:", cb)
+    log.debug(this.kind, 'removing watch callback:', cb)
     this.list.doOff(WatchActions.ANY, cb)
   }
 
@@ -252,12 +250,10 @@ export class CollectionImpl implements Collection {
         }
         break
       default:
-
     }
     try {
-
       const callback: FetchPathCallback<void> = {
-        success: (data) => {
+        success: data => {
           try {
             const response = JSON.parse(data)
             cb(response)
@@ -269,11 +265,11 @@ export class CollectionImpl implements Collection {
           }
         },
         error: (err: Error) => {
-          log.debug("Failed to create or update, error:", err)
+          log.debug('Failed to create or update, error:', err)
           if (err) {
             log.error(err)
           }
-        }
+        },
       }
 
       const requestHeaders: HeadersInit = new Headers()
@@ -282,11 +278,10 @@ export class CollectionImpl implements Collection {
       const options: RequestInit = {
         method: method,
         headers: requestHeaders,
-        body: JSON.stringify(item)
+        body: JSON.stringify(item),
       }
 
       fetchPath(url, callback, options)
-
     } catch (err) {
       log.error(err)
     }
@@ -300,9 +295,8 @@ export class CollectionImpl implements Collection {
     this.list.deleted(item)
     this.list.triggerChangedEvent()
     try {
-
       const callback: FetchPathCallback<void> = {
-        success: (data) => {
+        success: data => {
           try {
             const response = JSON.parse(data)
             cb(response)
@@ -314,17 +308,16 @@ export class CollectionImpl implements Collection {
           }
         },
         error: (err: Error) => {
-          log.debug("Failed to delete, error:", err)
+          log.debug('Failed to delete, error:', err)
           this.list.added(item)
           this.list.triggerChangedEvent()
           if (error) {
             error(err)
           }
-        }
+        },
       }
 
       fetchPath(url, callback, { method: 'DELETE' })
-
     } catch (err) {
       log.error(err)
     }

@@ -1,4 +1,4 @@
-import { Collection } from "./globals"
+import { Collection } from './globals'
 
 export interface ClientMap {
   [name: string]: ClientInstance

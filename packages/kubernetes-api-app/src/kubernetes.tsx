@@ -19,7 +19,8 @@ import {
   Masthead,
   MastheadContent,
   Label,
-  Button} from '@patternfly/react-core'
+  Button,
+} from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
 import { KubernetesClient } from './kubernetes-client'
 import { userService } from '@hawtio/react'
@@ -27,7 +28,7 @@ import { userService } from '@hawtio/react'
 export const Kubernetes: React.FunctionComponent = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<Error|null>()
+  const [error, setError] = useState<Error | null>()
   const [username, setUsername] = useState('')
 
   useEffect(() => {
@@ -36,8 +37,7 @@ export const Kubernetes: React.FunctionComponent = () => {
     const checkLoading = async () => {
       const k8Loaded = await k8Init()
 
-      if (!k8Loaded)
-        return
+      if (!k8Loaded) return
 
       setIsLoading(false)
 
@@ -62,7 +62,6 @@ export const Kubernetes: React.FunctionComponent = () => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
     }
-
   }, [])
 
   if (isLoading) {
@@ -77,11 +76,9 @@ export const Kubernetes: React.FunctionComponent = () => {
   }
 
   const unwrap = (error: Error): string => {
-    if (!error)
-      return 'unknown error'
+    if (!error) return 'unknown error'
 
-    if (error.cause instanceof Error)
-      return unwrap(error.cause)
+    if (error.cause instanceof Error) return unwrap(error.cause)
 
     return error.message
   }
@@ -90,7 +87,7 @@ export const Kubernetes: React.FunctionComponent = () => {
     return (
       <Card>
         <CardBody>
-          <Alert variant="danger" title={error?.message}>
+          <Alert variant='danger' title={error?.message}>
             {unwrap(error)}
           </Alert>
         </CardBody>
@@ -100,16 +97,23 @@ export const Kubernetes: React.FunctionComponent = () => {
 
   return (
     <Card>
-      <CardTitle><Title headingLevel="h1">Kubernetes API</Title></CardTitle>
+      <CardTitle>
+        <Title headingLevel='h1'>Kubernetes API</Title>
+      </CardTitle>
       <CardBody>
-
-        <Masthead id="login-credentials">
+        <Masthead id='login-credentials'>
           <MastheadContent>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignContent: 'stretch', width: '100%'}}>
-              <Label color="green" icon={<InfoCircleIcon />}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignContent: 'stretch', width: '100%' }}>
+              <Label color='green' icon={<InfoCircleIcon />}>
                 {username}
-                </Label>
-                <Button variant="danger" ouiaId="Logout" onClick={() => {userService.logout()}}>
+              </Label>
+              <Button
+                variant='danger'
+                ouiaId='Logout'
+                onClick={() => {
+                  userService.logout()
+                }}
+              >
                 Logout
               </Button>
             </div>
@@ -132,14 +136,16 @@ export const Kubernetes: React.FunctionComponent = () => {
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Kubernetes Config</DescriptionListTerm>
-                  <DescriptionListDescription><pre>{JSON.stringify(k8Api.oAuthProfile, null, 2)}</pre></DescriptionListDescription>
+                  <DescriptionListDescription>
+                    <pre>{JSON.stringify(k8Api.oAuthProfile, null, 2)}</pre>
+                  </DescriptionListDescription>
                 </DescriptionListGroup>
               </DescriptionList>
             </PanelMainBody>
           </PanelMain>
         </Panel>
 
-        <Divider/>
+        <Divider />
 
         <KubernetesClient />
       </CardBody>

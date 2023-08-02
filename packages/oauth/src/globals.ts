@@ -7,7 +7,7 @@ export class UserProfile {
   private oauthType: string // which type of oauth is the profile, eg. google, openshift, github
   private masterUri?: string
   private token?: string
-  private error: Error|null = null
+  private error: Error | null = null
   private metadata: Record<string, string> = {}
 
   constructor(oauthType: string) {
@@ -51,7 +51,7 @@ export class UserProfile {
   }
 
   setError(error: Error) {
-    this.error = new Error("Openshift OAuth Error", { cause: error})
+    this.error = new Error('Openshift OAuth Error', { cause: error })
     log.error(error)
   }
 

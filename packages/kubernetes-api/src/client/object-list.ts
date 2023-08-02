@@ -11,7 +11,6 @@ import { log, ObjectList } from './globals'
  *  Manages the array of k8s objects for a client instance
  **/
 export class ObjectListImpl extends EventEmitter implements ObjectList {
-
   triggerChangedEvent = debounce(() => {
     this.emit(WatchActions.ANY, this._objects)
   }, 75)
@@ -19,26 +18,29 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
   private _initialized = false
   private _objects: Array<KubeObject> = []
 
-  constructor(private _kind?: string, private namespace?: string) {
+  constructor(
+    private _kind?: string,
+    private namespace?: string,
+  ) {
     super()
     if (log.enabledFor(Logger.DEBUG)) {
-      this.on(WatchActions.ADDED, (object) => {
-        log.debug("added", this.kind, ":", object)
+      this.on(WatchActions.ADDED, object => {
+        log.debug('added', this.kind, ':', object)
       })
-      this.on(WatchActions.MODIFIED, (object) => {
-        log.debug("modified", this.kind, ":", object)
+      this.on(WatchActions.MODIFIED, object => {
+        log.debug('modified', this.kind, ':', object)
       })
-      this.on(WatchActions.DELETED, (object) => {
-        log.debug("deleted", this.kind, ":", object)
+      this.on(WatchActions.DELETED, object => {
+        log.debug('deleted', this.kind, ':', object)
       })
-      this.on(WatchActions.ANY, (objects) => {
-        log.debug(this.kind, "changed:", objects)
+      this.on(WatchActions.ANY, objects => {
+        log.debug(this.kind, 'changed:', objects)
       })
-      this.on(WatchActions.INIT, (objects) => {
-        log.debug(this.kind, "initialized")
+      this.on(WatchActions.INIT, objects => {
+        log.debug(this.kind, 'initialized')
       })
     }
-    this.on(WatchActions.ANY, (objects) => {
+    this.on(WatchActions.ANY, objects => {
       this.initialize()
     })
   }
@@ -67,7 +69,7 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
 
   set objects(objs: KubeObject[]) {
     this._objects.length = 0
-    objs.forEach((obj) => {
+    objs.forEach(obj => {
       if (!obj.kind) {
         obj.kind = toKindName(this.kind) || undefined
       }
@@ -84,9 +86,11 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
   }
 
   getNamedItem(name: string): KubeObject | null {
-    return this.objects.find((obj: KubeObject) => {
-      return getName(obj) === name
-    }) || null
+    return (
+      this.objects.find((obj: KubeObject) => {
+        return getName(obj) === name
+      }) || null
+    )
   }
 
   // filter out objects from other namespaces that could be returned
@@ -116,7 +120,11 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     if (!object.kind) {
       object.kind = toKindName(this.kind) || undefined
     }
-    if (this._objects.some((obj) => { return equals(obj, object)})) {
+    if (
+      this._objects.some(obj => {
+        return equals(obj, object)
+      })
+    ) {
       return this.modified(object)
     }
     this._objects.push(object)
@@ -132,10 +140,14 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     if (!object.kind) {
       object.kind = toKindName(this.kind) || undefined
     }
-    if (!this._objects.some((obj) => { return equals(obj, object) })) {
+    if (
+      !this._objects.some(obj => {
+        return equals(obj, object)
+      })
+    ) {
       return this.added(object)
     }
-    this._objects.forEach((obj) => {
+    this._objects.forEach(obj => {
       if (equals(obj, object)) {
         this.emit(WatchActions.MODIFIED, object)
         this.triggerChangedEvent()
