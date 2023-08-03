@@ -29,7 +29,7 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/react": "^0.4.0-dev.2",
+    "@hawtio/react": "^0.4.0",
     "babel-jest": "^29.6.1",
     "jest-extended": "^4.0.0",
     "jquery": "^3.7.0",

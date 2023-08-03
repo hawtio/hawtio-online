@@ -2564,10 +2564,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hawtio/camel-model@npm:^3.20.6":
-  version: 3.20.6
-  resolution: "@hawtio/camel-model@npm:3.20.6"
-  checksum: 248009173137ddf31ddda834e3a2adaf83b3f471fd0d0311c8c21d05847e16a0659f506ced8f3202dc528b198cfc7433f35d6f1f6b03f5f2016d9821607d62cd
+"@hawtio/camel-model-v3@npm:@hawtio/camel-model@^3.21.0":
+  version: 3.21.0
+  resolution: "@hawtio/camel-model@npm:3.21.0"
+  checksum: 6e4f02eda269a0e53966fdfc126b6467ed965edb34a56a749c81fcacdb68c28644d1970e45ee0b4df1c912f664c5be99afe4ca7e3d9c7f3758b0c571d55400a2
+  languageName: node
+  linkType: hard
+
+"@hawtio/camel-model-v4@npm:@hawtio/camel-model@^4.0.0-rc.1":
+  version: 4.0.0-rc.1
+  resolution: "@hawtio/camel-model@npm:4.0.0-rc.1"
+  checksum: 8bda5090ef71fb114f0ac7ec079cf7b3b78e213444db0f6db74326052536d64d18de82bb200781c84bba700228a8ee0d5465a45ba866fb516ea11583f41902a3
   languageName: node
   linkType: hard
 
@@ -2607,7 +2614,7 @@ __metadata:
   resolution: "@hawtio/online-integration@workspace:packages/integration"
   dependencies:
     "@hawtio/online-common": "*"
-    "@hawtio/react": ^0.4.0-dev.2
+    "@hawtio/react": ^0.4.0
     artemis-plugin-npm: ^1.8.0
     eslint-config-react-app: ^7.0.1
     hawtio-node-backend: ^2.1.3
@@ -2635,7 +2642,7 @@ __metadata:
   dependencies:
     "@craco/craco": ^7.1.0
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": ^0.4.0-dev.2
+    "@hawtio/react": ^0.4.0
     "@patternfly/react-core": ^4.276.8
     craco-esbuild: ^0.5.2
     dotenv-webpack: ^8.0.1
@@ -2654,7 +2661,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api@workspace:packages/kubernetes-api"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": ^0.4.0-dev.2
+    "@hawtio/react": ^0.4.0
     "@types/jest": ^29.5.3
     "@types/jquery": ^3.5.16
     babel-jest: ^29.6.1
@@ -2688,7 +2695,7 @@ __metadata:
   dependencies:
     "@craco/craco": ^7.1.0
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": ^0.4.0-dev.2
+    "@hawtio/react": ^0.4.0
     "@patternfly/react-core": ^4.276.8
     craco-esbuild: ^0.5.2
     dotenv-webpack: ^8.0.1
@@ -2708,7 +2715,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hawtio/online-oauth@workspace:packages/oauth"
   dependencies:
-    "@hawtio/react": ^0.4.0-dev.2
+    "@hawtio/react": ^0.4.0
     "@types/jest": ^29.5.3
     "@types/jquery": ^3.5.16
     babel-jest: ^29.6.1
@@ -2739,7 +2746,6 @@ __metadata:
     eslint: ^8.44.0
     eslint-config-prettier: ^8.8.0
     eslint-config-react-app: ^7.0.1
-    eslint-plugin-import: ^2.26.0
     eslint-plugin-react-hooks: ^4.6.0
     prettier: 3.0.0
   languageName: unknown
@@ -2772,24 +2778,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:^0.4.0-dev.2":
-  version: 0.4.0-dev.2
-  resolution: "@hawtio/react@npm:0.4.0-dev.2"
+"@hawtio/react@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@hawtio/react@npm:0.4.0"
   dependencies:
-    "@hawtio/camel-model": ^3.20.6
+    "@hawtio/camel-model-v3": "npm:@hawtio/camel-model@^3.21.0"
+    "@hawtio/camel-model-v4": "npm:@hawtio/camel-model@^4.0.0-rc.1"
     "@module-federation/utilities": ^2.0.4
-    "@patternfly/react-charts": ^6.94.19
-    "@patternfly/react-code-editor": ^4.82.113
+    "@patternfly/react-charts": ^7.0.0
+    "@patternfly/react-code-editor": ^5.0.0
     "@patternfly/react-core": ^4.276.8
     "@patternfly/react-table": ^4.113.0
     "@testing-library/jest-dom": ^5.17.0
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.4.3
-    "@types/dagre": ^0.7.48
+    "@types/dagre": ^0.7.49
     "@types/dagre-layout": ^0.8.2
     "@types/jest": ^29.5.3
-    "@types/node": ^18.16.19
-    "@types/react": ^18.2.15
+    "@types/node": ^18.17.1
+    "@types/react": ^18.2.18
     "@types/react-dom": ^18.2.7
     "@types/react-router-dom": ^5.3.3
     dagre: ^0.8.5
@@ -2802,7 +2809,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-markdown: ^8.0.7
-    react-monaco-editor: ^0.53.0
+    react-monaco-editor: ^0.54.0
     react-router-dom: ^6.14.2
     react-split: ^2.0.14
     reactflow: ^11.7.4
@@ -2817,7 +2824,7 @@ __metadata:
   peerDependenciesMeta:
     keycloak-js:
       optional: true
-  checksum: 310f7045caa5b135beddc63bd33aab95bf54dd536656be53e6b0d5702e4d184d98eba65a9cc6dec60cd863de8be26ace6ba07e13b7550c94f2e2183a9080af7f
+  checksum: 96d368af58d22f4f6058d6d9272f6c03288111bd311d33bc301f9f36f6356b0e1ae01302c048e1b1e3533387d36ad9f701f99f7da1bd1dec1bb2e46576b058b7
   languageName: node
   linkType: hard
 
@@ -3612,52 +3619,60 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-charts@npm:^6.94.19":
-  version: 6.94.21
-  resolution: "@patternfly/react-charts@npm:6.94.21"
-  dependencies:
-    "@patternfly/react-styles": ^4.92.8
-    "@patternfly/react-tokens": ^4.94.7
-    hoist-non-react-statics: ^3.3.0
-    lodash: ^4.17.19
-    tslib: ^2.0.0
-    victory-area: ^36.6.7
-    victory-axis: ^36.6.7
-    victory-bar: ^36.6.7
-    victory-chart: ^36.6.7
-    victory-core: ^36.6.7
-    victory-create-container: ^36.6.7
-    victory-cursor-container: ^36.6.7
-    victory-group: ^36.6.7
-    victory-legend: ^36.6.7
-    victory-line: ^36.6.7
-    victory-pie: ^36.6.7
-    victory-scatter: ^36.6.7
-    victory-stack: ^36.6.7
-    victory-tooltip: ^36.6.7
-    victory-voronoi-container: ^36.6.7
-    victory-zoom-container: ^36.6.7
-  peerDependencies:
-    react: ^16.8 || ^17 || ^18
-    react-dom: ^16.8 || ^17 || ^18
-  checksum: 2da954fdfb4069cb3cbdc62a73c5c31eba3645279941312cb3e97a95851253c2c0822d656c26d598661452d48f4b8e28cdfb4e29e4c95326a36a97f5e331761f
+"@patternfly/patternfly@npm:5.0.2":
+  version: 5.0.2
+  resolution: "@patternfly/patternfly@npm:5.0.2"
+  checksum: 5b386efb172b553cf90622c613170c63ead66d388c4cb62bdf264ee9ba7f03df2fcaab497fd2d1390482e7e93dca36eab428a370e21578205a30b857c100bc10
   languageName: node
   linkType: hard
 
-"@patternfly/react-code-editor@npm:^4.82.113":
-  version: 4.82.117
-  resolution: "@patternfly/react-code-editor@npm:4.82.117"
+"@patternfly/react-charts@npm:^7.0.0":
+  version: 7.1.0
+  resolution: "@patternfly/react-charts@npm:7.1.0"
   dependencies:
-    "@patternfly/react-core": ^4.276.10
-    "@patternfly/react-icons": ^4.93.7
-    "@patternfly/react-styles": ^4.92.8
-    react-dropzone: 9.0.0
-    tslib: ^2.0.0
+    "@patternfly/react-styles": ^5.1.0
+    "@patternfly/react-tokens": ^5.1.0
+    hoist-non-react-statics: ^3.3.0
+    lodash: ^4.17.19
+    tslib: ^2.5.0
+    victory-area: ^36.6.11
+    victory-axis: ^36.6.11
+    victory-bar: ^36.6.11
+    victory-box-plot: ^36.6.11
+    victory-chart: ^36.6.11
+    victory-core: ^36.6.11
+    victory-create-container: ^36.6.11
+    victory-cursor-container: ^36.6.11
+    victory-group: ^36.6.11
+    victory-legend: ^36.6.11
+    victory-line: ^36.6.11
+    victory-pie: ^36.6.11
+    victory-scatter: ^36.6.11
+    victory-stack: ^36.6.11
+    victory-tooltip: ^36.6.11
+    victory-voronoi-container: ^36.6.11
+    victory-zoom-container: ^36.6.11
   peerDependencies:
-    react: ^16.8 || ^17 || ^18
-    react-dom: ^16.8 || ^17 || ^18
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
+  checksum: 499c80a296f1c9f615f5576426b2b52534da2492d1436ef6b778b93716221ef0725348a8276de549f3af6e242bfe936f24a8a136afd3f8e43b378049485e57b0
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-code-editor@npm:^5.0.0":
+  version: 5.1.0
+  resolution: "@patternfly/react-code-editor@npm:5.1.0"
+  dependencies:
+    "@patternfly/react-core": ^5.1.0
+    "@patternfly/react-icons": ^5.1.0
+    "@patternfly/react-styles": ^5.1.0
+    react-dropzone: 14.2.3
+    tslib: ^2.5.0
+  peerDependencies:
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
     react-monaco-editor: ^0.51.0
-  checksum: 802a41e123178672c446bb756d0ca032d28edaeec3ddf6143164adc3692b61e4cbd011adb7a2becb83e2a815dd6251bb6ff414d5bac61654b3ab5b9e86da184e
+  checksum: 5d6e9d32491effa040c75f748a042d25d4405dfd2ce462df1abdd1bd2ea3fb6173b4caab58f399c4a42e40db1a820fd6cc4f0412fc59e47797eda2c277a8f72c
   languageName: node
   linkType: hard
 
@@ -3679,6 +3694,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@patternfly/react-core@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@patternfly/react-core@npm:5.1.0"
+  dependencies:
+    "@patternfly/patternfly": 5.0.2
+    "@patternfly/react-icons": ^5.1.0
+    "@patternfly/react-styles": ^5.1.0
+    "@patternfly/react-tokens": ^5.1.0
+    focus-trap: 7.4.3
+    react-dropzone: ^14.2.3
+    tslib: ^2.5.0
+  peerDependencies:
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
+  checksum: 5d21a63c12bfde1849f337c35fe168165316253632b938a9fe921ac78d5d8c85bd99f5f6593214e07d3cbbc2eea8bd169388046b5973e0ff2ad47a42b5212929
+  languageName: node
+  linkType: hard
+
 "@patternfly/react-icons@npm:^4.93.7":
   version: 4.93.7
   resolution: "@patternfly/react-icons@npm:4.93.7"
@@ -3689,10 +3722,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@patternfly/react-icons@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@patternfly/react-icons@npm:5.1.0"
+  dependencies:
+    "@patternfly/patternfly": 5.0.2
+  peerDependencies:
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
+  checksum: a7238a92b9de573c19f2409b6b41dff6df2df472de2b636f1443b040e05872119bb328caecd3e8916bdbea5cc3b957c36a2021ee4d6785714d9aaec71c785eaa
+  languageName: node
+  linkType: hard
+
 "@patternfly/react-styles@npm:^4.92.8":
   version: 4.92.8
   resolution: "@patternfly/react-styles@npm:4.92.8"
   checksum: ab4cd3d57c96bb1988a3d635388108aeac1fb310be2678f06ea9c3ce47517c005ae47cbc93b7f90fa6208356282104dfbaa4a04980b7024b4c8129cd8c838687
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-styles@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@patternfly/react-styles@npm:5.1.0"
+  dependencies:
+    "@patternfly/patternfly": 5.0.2
+  checksum: 0dd938f8f537f7a39e23b00a7d038c98f902bd705d5771e77969fb1281140dcd783190aa5f0d70be0bca28276da3533714e09518a6cf0fcef9a5d2f91a2b0859
   languageName: node
   linkType: hard
 
@@ -3717,6 +3771,15 @@ __metadata:
   version: 4.94.7
   resolution: "@patternfly/react-tokens@npm:4.94.7"
   checksum: 726fe4d9edd996b228f02c02586e51969af72b846f8b14fa3090f476bb831bd8a12f8530d51baafe9d5aa21fb007553b57e2d96da5f3b03f6f9e174e5d640af9
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-tokens@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@patternfly/react-tokens@npm:5.1.0"
+  dependencies:
+    "@patternfly/patternfly": 5.0.2
+  checksum: fb240efd00f211667feb92984af439a2aae65172225c16fcca4fe0cf7a286a5095ca91430b747f88e3affa342dda8f42c21fd1543c034de025b1b7f1d3a5c0a2
   languageName: node
   linkType: hard
 
@@ -4604,10 +4667,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/dagre@npm:^0.7.48":
-  version: 0.7.48
-  resolution: "@types/dagre@npm:0.7.48"
-  checksum: 9d06fc08219056db7c55041bf2099cea24fe824d8c8741ae11c365c7464502d8c65273153446a5546b4a92bc0833802ac1c6bddb708bfcaa75af3963e7fc84aa
+"@types/dagre@npm:^0.7.49":
+  version: 0.7.49
+  resolution: "@types/dagre@npm:0.7.49"
+  checksum: cb27683074f8c89c073d0b7b549692b67ddae7225a2b6f9586d75c11598f7bd32d9246ecb184017a55592e7daaf63e4d33dcbc56ca4c3999cf34352460ddf772
   languageName: node
   linkType: hard
 
@@ -4856,10 +4919,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.16.19":
-  version: 18.16.19
-  resolution: "@types/node@npm:18.16.19"
-  checksum: 63c31f09616508aa7135380a4c79470a897b75f9ff3a70eb069e534dfabdec3f32fb0f9df5939127f1086614d980ddea0fa5e8cc29a49103c4f74cd687618aaf
+"@types/node@npm:^18.17.1":
+  version: 18.17.1
+  resolution: "@types/node@npm:18.17.1"
+  checksum: 56201bda9a2d05d68602df63b4e67b0545ac8c6d0280bd5fb31701350a978a577a027501fbf49db99bf177f2242ebd1244896bfd35e89042d5bd7dfebff28d4e
   languageName: node
   linkType: hard
 
@@ -4955,14 +5018,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.2.15":
-  version: 18.2.15
-  resolution: "@types/react@npm:18.2.15"
+"@types/react@npm:^18.2.18":
+  version: 18.2.18
+  resolution: "@types/react@npm:18.2.18"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 36989f638201bfe2f4110b06c119180f6df9c0e13d7060481e82e7a745f81745a01ae543c478a25b61e0767cb52e82da2ad5b0dedacabf99339e523d06176705
+  checksum: 2e0d75de2b618e76780019e52478b1bec2b015a9187aea30f84518c0c3ddc639055bdfea50864aece937bad0cb0544d0100b80d30f5461e72fbc1c3c0be8b140
   languageName: node
   linkType: hard
 
@@ -5864,19 +5927,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array.prototype.findlastindex@npm:^1.2.2":
-  version: 1.2.2
-  resolution: "array.prototype.findlastindex@npm:1.2.2"
-  dependencies:
-    call-bind: ^1.0.2
-    define-properties: ^1.1.4
-    es-abstract: ^1.20.4
-    es-shim-unscopables: ^1.0.0
-    get-intrinsic: ^1.1.3
-  checksum: 8a166359f69a2a751c843f26b9c8cd03d0dc396a92cdcb85f4126b5f1cecdae5b2c0c616a71ea8aff026bde68165b44950b3664404bb73db0673e288495ba264
-  languageName: node
-  linkType: hard
-
 "array.prototype.flat@npm:^1.3.1":
   version: 1.3.1
   resolution: "array.prototype.flat@npm:1.3.1"
@@ -6007,6 +6057,13 @@ __metadata:
   dependencies:
     core-js: ^2.5.0
   checksum: 836c0e863719c0355e8ad4214e4c81f24dd9e724233153200189732da691f73e6f13316b8ac456d75749a89780f0da67e44387e46dfc3fd9a517a84a0e45acbc
+  languageName: node
+  linkType: hard
+
+"attr-accept@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "attr-accept@npm:2.2.2"
+  checksum: 496f7249354ab53e522510c1dc8f67a1887382187adde4dc205507d2f014836a247073b05e9d9ea51e2e9c7f71b0d2aa21730af80efa9af2d68303e5f0565c4d
   languageName: node
   linkType: hard
 
@@ -9178,7 +9235,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-module-utils@npm:^2.7.4, eslint-module-utils@npm:^2.8.0":
+"eslint-module-utils@npm:^2.7.4":
   version: 2.8.0
   resolution: "eslint-module-utils@npm:2.8.0"
   dependencies:
@@ -9226,34 +9283,6 @@ __metadata:
   peerDependencies:
     eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
   checksum: f500571a380167e25d72a4d925ef9a7aae8899eada57653e5f3051ec3d3c16d08271fcefe41a30a9a2f4fefc232f066253673ee4ea77b30dba65ae173dade85d
-  languageName: node
-  linkType: hard
-
-"eslint-plugin-import@npm:^2.26.0":
-  version: 2.28.0
-  resolution: "eslint-plugin-import@npm:2.28.0"
-  dependencies:
-    array-includes: ^3.1.6
-    array.prototype.findlastindex: ^1.2.2
-    array.prototype.flat: ^1.3.1
-    array.prototype.flatmap: ^1.3.1
-    debug: ^3.2.7
-    doctrine: ^2.1.0
-    eslint-import-resolver-node: ^0.3.7
-    eslint-module-utils: ^2.8.0
-    has: ^1.0.3
-    is-core-module: ^2.12.1
-    is-glob: ^4.0.3
-    minimatch: ^3.1.2
-    object.fromentries: ^2.0.6
-    object.groupby: ^1.0.0
-    object.values: ^1.1.6
-    resolve: ^1.22.3
-    semver: ^6.3.1
-    tsconfig-paths: ^3.14.2
-  peerDependencies:
-    eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
-  checksum: f9eba311b93ca1bb89311856b1f7285bd79e0181d7eb70fe115053ff77e2235fea749b30f538b78927dc65769340b5be61f4c9581d1c82bcdcccb2061f440ad1
   languageName: node
   linkType: hard
 
@@ -9918,6 +9947,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"file-selector@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "file-selector@npm:0.6.0"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: 7d051b6e5d793f3c6e2ab287ba5e7c2c6a0971bccc9d56e044c8047ba483e18f60fc0b5771c951dc707c0d15f4f36ccb4f1f1aaf385d21ec8f7700dadf8325ba
+  languageName: node
+  linkType: hard
+
 "filelist@npm:^1.0.4":
   version: 1.0.4
   resolution: "filelist@npm:1.0.4"
@@ -10062,6 +10100,15 @@ __metadata:
   dependencies:
     tabbable: ^5.3.2
   checksum: 326f210dceb5db6fec414e758bfd388a8ce9c9a013380fbe2fbaf40558436219fbbd6c747e4ed7bf4149086382c0d755490ca5847e37808e0d33b4ccc7c7369e
+  languageName: node
+  linkType: hard
+
+"focus-trap@npm:7.4.3":
+  version: 7.4.3
+  resolution: "focus-trap@npm:7.4.3"
+  dependencies:
+    tabbable: ^6.1.2
+  checksum: 3426a46b6e3c487e4fc6d6ddfd53b1cb2f9ec4e64857bb502a9661bb765276b4be89172477177a1569812e2b733e541f6780da72cdead2f7f0961a6a5c430a85
   languageName: node
   linkType: hard
 
@@ -10339,7 +10386,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-intrinsic@npm:^1.0.2, get-intrinsic@npm:^1.1.1, get-intrinsic@npm:^1.1.3, get-intrinsic@npm:^1.2.0, get-intrinsic@npm:^1.2.1":
+"get-intrinsic@npm:^1.0.2, get-intrinsic@npm:^1.1.1, get-intrinsic@npm:^1.1.3, get-intrinsic@npm:^1.2.0":
   version: 1.2.1
   resolution: "get-intrinsic@npm:1.2.1"
   dependencies:
@@ -11350,7 +11397,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-core-module@npm:^2.11.0, is-core-module@npm:^2.12.0, is-core-module@npm:^2.12.1, is-core-module@npm:^2.9.0":
+"is-core-module@npm:^2.11.0, is-core-module@npm:^2.12.0, is-core-module@npm:^2.9.0":
   version: 2.12.1
   resolution: "is-core-module@npm:2.12.1"
   dependencies:
@@ -14839,18 +14886,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object.groupby@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "object.groupby@npm:1.0.0"
-  dependencies:
-    call-bind: ^1.0.2
-    define-properties: ^1.2.0
-    es-abstract: ^1.21.2
-    get-intrinsic: ^1.2.1
-  checksum: 64b00b287d57580111c958e7ff375c9b61811fa356f2cf0d35372d43cab61965701f00fac66c19fd8f49c4dfa28744bee6822379c69a73648ad03e09fcdeae70
-  languageName: node
-  linkType: hard
-
 "object.hasown@npm:^1.1.2":
   version: 1.1.2
   resolution: "object.hasown@npm:1.1.2"
@@ -16569,6 +16604,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dropzone@npm:14.2.3, react-dropzone@npm:^14.2.3":
+  version: 14.2.3
+  resolution: "react-dropzone@npm:14.2.3"
+  dependencies:
+    attr-accept: ^2.2.2
+    file-selector: ^0.6.0
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ">= 16.8 || 18.0.0"
+  checksum: 174b744d5ca898cf3d84ec1aeb6cef5211c446697e45dc8ece8287a03d291f8d07253206d5a1247ef156fd385d65e7de666d4d5c2986020b8543b8f2434e8b40
+  languageName: node
+  linkType: hard
+
 "react-dropzone@npm:9.0.0":
   version: 9.0.0
   resolution: "react-dropzone@npm:9.0.0"
@@ -16644,16 +16692,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-monaco-editor@npm:^0.53.0":
-  version: 0.53.0
-  resolution: "react-monaco-editor@npm:0.53.0"
+"react-monaco-editor@npm:^0.54.0":
+  version: 0.54.0
+  resolution: "react-monaco-editor@npm:0.54.0"
   dependencies:
     prop-types: ^15.8.1
   peerDependencies:
     "@types/react": ">=16 <= 18"
-    monaco-editor: ^0.38.0
+    monaco-editor: ^0.39.0
     react: ">=16 <= 18"
-  checksum: c71801f8cca4f5f80d25818d5cb83b3ab71b247ed4069b5c67e8c75391d65ec3b7b49ed760c49a412106b644d2ad7282f6dcd599348482c4daf00ac15bd87022
+  checksum: 86ae96e92964f6f999ff5090482b76df412775edc51868f2b255005d5bf3c53c9193de3a398e48a2ba46c990d83d64cace8a3183f3121d79b21b4bc3fc5abed3
   languageName: node
   linkType: hard
 
@@ -17159,7 +17207,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.7, resolve@npm:^1.14.2, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:^1.22.2, resolve@npm:^1.22.3":
+"resolve@npm:^1.1.7, resolve@npm:^1.14.2, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:^1.22.2":
   version: 1.22.3
   resolution: "resolve@npm:1.22.3"
   dependencies:
@@ -17185,7 +17233,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.3#~builtin<compat/resolve>":
+"resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.2#~builtin<compat/resolve>":
   version: 1.22.3
   resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=c3c19d"
   dependencies:
@@ -18511,6 +18559,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tabbable@npm:^6.1.2":
+  version: 6.2.0
+  resolution: "tabbable@npm:6.2.0"
+  checksum: f8440277d223949272c74bb627a3371be21735ca9ad34c2570f7e1752bd646ccfc23a9d8b1ee65d6561243f4134f5fbbf1ad6b39ac3c4b586554accaff4a1300
+  languageName: node
+  linkType: hard
+
 "tailwindcss@npm:^3.0.2":
   version: 3.3.2
   resolution: "tailwindcss@npm:3.3.2"
@@ -18959,7 +19014,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:^3.14.1, tsconfig-paths@npm:^3.14.2":
+"tsconfig-paths@npm:^3.14.1":
   version: 3.14.2
   resolution: "tsconfig-paths@npm:3.14.2"
   dependencies:
@@ -18989,6 +19044,13 @@ __metadata:
   version: 2.6.0
   resolution: "tslib@npm:2.6.0"
   checksum: c01066038f950016a18106ddeca4649b4d76caa76ec5a31e2a26e10586a59fceb4ee45e96719bf6c715648e7c14085a81fee5c62f7e9ebee68e77a5396e5538f
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.4.0, tslib@npm:^2.5.0":
+  version: 2.6.1
+  resolution: "tslib@npm:2.6.1"
+  checksum: b0d176d176487905b66ae4d5856647df50e37beea7571c53b8d10ba9222c074b81f1410fb91da13debaf2cbc970663609068bdebafa844ea9d69b146527c38fe
   languageName: node
   linkType: hard
 
@@ -19616,7 +19678,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-area@npm:^36.6.7":
+"victory-area@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-area@npm:36.6.11"
   dependencies:
@@ -19630,7 +19692,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-axis@npm:^36.6.11, victory-axis@npm:^36.6.7":
+"victory-axis@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-axis@npm:36.6.11"
   dependencies:
@@ -19643,7 +19705,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-bar@npm:^36.6.7":
+"victory-bar@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-bar@npm:36.6.11"
   dependencies:
@@ -19654,6 +19716,20 @@ __metadata:
   peerDependencies:
     react: ">=16.6.0"
   checksum: 960a59890148c35b5ffa6319684d8b379c0c57bdc0eb4836d071b03f6d3b8fbc5f30eda3e9caa2cb5ed1b1e4b046edfe55f45c0c4030e2b70f4d91dc6d5f03aa
+  languageName: node
+  linkType: hard
+
+"victory-box-plot@npm:^36.6.11":
+  version: 36.6.11
+  resolution: "victory-box-plot@npm:36.6.11"
+  dependencies:
+    lodash: ^4.17.19
+    prop-types: ^15.8.1
+    victory-core: ^36.6.11
+    victory-vendor: ^36.6.11
+  peerDependencies:
+    react: ">=16.6.0"
+  checksum: 0681b154000bf7b7263039379afc83434fcda53dd044625311c70677866b395967879f05d9ca97944dfe32f6eb17cfd8f85586c826d51e41eb0948ef61ba5508
   languageName: node
   linkType: hard
 
@@ -19671,7 +19747,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-chart@npm:^36.6.7":
+"victory-chart@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-chart@npm:36.6.11"
   dependencies:
@@ -19688,7 +19764,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-core@npm:^36.6.11, victory-core@npm:^36.6.7":
+"victory-core@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-core@npm:36.6.11"
   dependencies:
@@ -19702,7 +19778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-create-container@npm:^36.6.7":
+"victory-create-container@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-create-container@npm:36.6.11"
   dependencies:
@@ -19719,7 +19795,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-cursor-container@npm:^36.6.11, victory-cursor-container@npm:^36.6.7":
+"victory-cursor-container@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-cursor-container@npm:36.6.11"
   dependencies:
@@ -19732,7 +19808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-group@npm:^36.6.7":
+"victory-group@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-group@npm:36.6.11"
   dependencies:
@@ -19747,7 +19823,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-legend@npm:^36.6.7":
+"victory-legend@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-legend@npm:36.6.11"
   dependencies:
@@ -19760,7 +19836,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-line@npm:^36.6.7":
+"victory-line@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-line@npm:36.6.11"
   dependencies:
@@ -19774,7 +19850,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-pie@npm:^36.6.7":
+"victory-pie@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-pie@npm:36.6.11"
   dependencies:
@@ -19801,7 +19877,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-scatter@npm:^36.6.7":
+"victory-scatter@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-scatter@npm:36.6.11"
   dependencies:
@@ -19842,7 +19918,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-stack@npm:^36.6.7":
+"victory-stack@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-stack@npm:36.6.11"
   dependencies:
@@ -19857,7 +19933,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-tooltip@npm:^36.6.11, victory-tooltip@npm:^36.6.7":
+"victory-tooltip@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-tooltip@npm:36.6.11"
   dependencies:
@@ -19892,7 +19968,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-voronoi-container@npm:^36.6.11, victory-voronoi-container@npm:^36.6.7":
+"victory-voronoi-container@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-voronoi-container@npm:36.6.11"
   dependencies:
@@ -19908,7 +19984,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory-zoom-container@npm:^36.6.11, victory-zoom-container@npm:^36.6.7":
+"victory-zoom-container@npm:^36.6.11":
   version: 36.6.11
   resolution: "victory-zoom-container@npm:36.6.11"
   dependencies:
