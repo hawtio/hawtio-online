@@ -1,5 +1,5 @@
 import { Logger, configManager, hawtio } from '@hawtio/react'
-import { registerK8Api } from '@hawtio/online-kubernetes-api'
+import * as K8API from '@hawtio/online-kubernetes-api'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
@@ -13,7 +13,7 @@ const configure = () => {
   configManager.addProductInfo('Kubernetes API Test App', '1.0.0')
 }
 configure()
-registerK8Api()
+K8API.registerK8Api()
 
 // Bootstrap Hawtio
 hawtio.bootstrap()

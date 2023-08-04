@@ -1,19 +1,18 @@
-import { k8Service, K8Actions } from '@hawtio/online-kubernetes-api'
+import * as K8API from '@hawtio/online-kubernetes-api'
 import React, { useEffect, useState } from 'react'
 import { Panel, PanelHeader, PanelMain, PanelMainBody, Tab, Tabs, TabTitleText, Title } from '@patternfly/react-core'
 import { KubernetesProjects } from './kubernetes-projects'
-import { KubeObject } from '@hawtio/online-kubernetes-api'
 import { KubernetesPods } from './kubernetes-pods'
 
 export const KubernetesClient: React.FunctionComponent = () => {
-  const [projects, setProjects] = useState<KubeObject[]>([])
-  const [pods, setPods] = useState<KubeObject[]>([])
+  const [projects, setProjects] = useState<K8API.KubeObject[]>([])
+  const [pods, setPods] = useState<K8API.KubeObject[]>([])
   const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0)
 
   useEffect(() => {
-    k8Service.on(K8Actions.CHANGED, () => {
-      setProjects(k8Service.getProjects())
-      setPods(k8Service.getPods())
+    K8API.k8Service.on(K8API.K8Actions.CHANGED, () => {
+      setProjects(K8API.k8Service.getProjects())
+      setPods(K8API.k8Service.getPods())
     })
   }, [])
 

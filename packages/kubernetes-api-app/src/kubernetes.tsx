@@ -1,4 +1,4 @@
-import { k8Init, k8Api, k8Service } from '@hawtio/online-kubernetes-api'
+import * as K8API from '@hawtio/online-kubernetes-api'
 import React, { useRef, useEffect, useState } from 'react'
 import {
   Alert,
@@ -35,19 +35,19 @@ export const Kubernetes: React.FunctionComponent = () => {
     setIsLoading(true)
 
     const checkLoading = async () => {
-      const k8Loaded = await k8Init()
+      const k8Loaded = await K8API.k8Init()
 
       if (!k8Loaded) return
 
       setIsLoading(false)
 
-      if (k8Api.hasError()) {
-        setError(k8Api.error)
+      if (K8API.k8Api.hasError()) {
+        setError(K8API.k8Api.error)
         return
       }
 
-      if (k8Service.hasError()) {
-        setError(k8Service.error)
+      if (K8API.k8Service.hasError()) {
+        setError(K8API.k8Service.error)
       }
 
       await userService.fetchUser()
@@ -128,16 +128,16 @@ export const Kubernetes: React.FunctionComponent = () => {
               <DescriptionList isHorizontal>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Kubernetes Master</DescriptionListTerm>
-                  <DescriptionListDescription>{k8Api.getMasterUri()}</DescriptionListDescription>
+                  <DescriptionListDescription>{K8API.k8Api.getMasterUri()}</DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Is Openshift?</DescriptionListTerm>
-                  <DescriptionListDescription>{k8Api.isOpenshift ? 'true' : 'false'}</DescriptionListDescription>
+                  <DescriptionListDescription>{K8API.k8Api.isOpenshift ? 'true' : 'false'}</DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Kubernetes Config</DescriptionListTerm>
                   <DescriptionListDescription>
-                    <pre>{JSON.stringify(k8Api.oAuthProfile, null, 2)}</pre>
+                    <pre>{JSON.stringify(K8API.k8Api.oAuthProfile, null, 2)}</pre>
                   </DescriptionListDescription>
                 </DescriptionListGroup>
               </DescriptionList>
