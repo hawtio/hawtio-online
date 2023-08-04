@@ -12,7 +12,7 @@ export const OS_API_VERSION = 'v1'
 export const K8S_EXT_VERSION = 'v1beta1'
 
 export interface KubeMetadata {
-  name?: string
+  name: string
   namespace?: string
   uid?: string
   resourceVersion?: string
