@@ -98,7 +98,7 @@ module.exports = () => {
             singleton: true,
             requiredVersion: dependencies['@hawtio/react'],
           },
-          '@hawtio/online-oauth': {
+          '@hawtio/online-kubernetes-api': {
             singleton: true,
             // Hardcoding needed because it cannot handle yarn 'workspace:*' version
             requiredVersion: '^0.0.0',
