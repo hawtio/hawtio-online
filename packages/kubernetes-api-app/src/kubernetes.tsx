@@ -1,4 +1,4 @@
-import { k8Init, k8Api, k8Service } from '@hawtio/online-kubernetes-api'
+import { isK8ApiRegistered, k8Api, k8Service } from '@hawtio/online-kubernetes-api'
 import React, { useRef, useEffect, useState } from 'react'
 import {
   Alert,
@@ -35,7 +35,7 @@ export const Kubernetes: React.FunctionComponent = () => {
     setIsLoading(true)
 
     const checkLoading = async () => {
-      const k8Loaded = await k8Init()
+      const k8Loaded = await isK8ApiRegistered()
 
       if (!k8Loaded) return
 

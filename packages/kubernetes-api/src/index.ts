@@ -1,9 +1,9 @@
-import { HawtioPlugin, configManager } from '@hawtio/react'
+import { configManager } from '@hawtio/react'
 import { oAuthRegister } from '@hawtio/online-oauth'
 import { k8Init } from './init'
 import { log } from './globals'
 
-export const registerK8Api: HawtioPlugin = async () => {
+const registerK8Api = async (): Promise<boolean> => {
   // Add Product Info
   configManager.addProductInfo('Hawtio Kubernetes API', 'PACKAGE_VERSION_PLACEHOLDER')
 
@@ -11,8 +11,12 @@ export const registerK8Api: HawtioPlugin = async () => {
   await oAuthRegister()
 
   log.debug('OAuth registered -  getting active profile')
-  k8Init()
+  return await k8Init()
+}
+
+export async function isK8ApiRegistered(): Promise<boolean> {
+  return await registerK8Api()
 }
 
 export * from './globals'
-export * from './init'
+export {k8Api, k8Service} from './init'
