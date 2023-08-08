@@ -14,6 +14,8 @@
     "docker"
   ],
   "scripts": {
+    "start:online": "yarn build:oAuthApi && yarn build:k8Api && yarn start:shell",
+    "start:shell": "yarn workspace @hawtio/online-shell start",
     "start:k8": "yarn build:oAuthApi && yarn build:k8Api && yarn start:k8App",
     "start:k8App": "yarn workspace @hawtio/online-kubernetes-api-app start",
     "build:k8": "yarn build:oAuthApi && yarn build:k8Api && yarn build:k8App",

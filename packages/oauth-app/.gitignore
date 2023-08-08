@@ -1,5 +1,0 @@
-.env
-build
-
-# Debugging output file for webpack
-__webpackConfig__.txt

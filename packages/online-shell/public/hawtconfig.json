@@ -4,11 +4,13 @@
     "productInfo": [],
     "additionalInfo": "The Hawtio Console eases the discovery and management of 'hawtio-enabled' applications deployed on OpenShift.",
     "copyright": "",
-    "imgSrc": "node_modules/@hawtio/core/dist/img/hawtio-logo.svg"
+    "imgSrc": "/hawtio-logo.svg"
   },
   "branding": {
     "appName": "Hawtio Console",
-    "appLogoUrl": "node_modules/@hawtio/core/dist/img/hawtio-logo.svg"
+    "appLogoUrl": "/hawtio-logo.svg",
+    "css": "branding-example.css",
+    "favicon": "favicon.ico"
   },
-  "disabledRoutes": []
+  "disabledRoutes": ["connect"]
 }
