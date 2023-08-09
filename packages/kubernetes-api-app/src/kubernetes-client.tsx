@@ -12,8 +12,11 @@ export const KubernetesClient: React.FunctionComponent = () => {
 
   useEffect(() => {
     k8Service.on(K8Actions.CHANGED, () => {
-      setProjects(k8Service.getProjects())
+      const projects = k8Service.getProjects()
+      setProjects(projects)
       setPods(k8Service.getPods())
+
+      setActiveTabKey(projects.length > 0 ? 0 : 1)
     })
   }, [])
 
@@ -32,9 +35,11 @@ export const KubernetesClient: React.FunctionComponent = () => {
       <PanelMain>
         <PanelMainBody>
           <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox>
-            <Tab eventKey={0} title={<TabTitleText>Projects</TabTitleText>}>
-              <KubernetesProjects projects={projects} />
-            </Tab>
+            {projects.length > 0 && (
+              <Tab eventKey={0} title={<TabTitleText>Projects</TabTitleText>}>
+                <KubernetesProjects projects={projects} />
+              </Tab>
+            )}
             <Tab eventKey={1} title={<TabTitleText>Pods</TabTitleText>}>
               <KubernetesPods pods={pods} />
             </Tab>

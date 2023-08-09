@@ -10,10 +10,8 @@ import { getKey } from './support'
 export class ClientFactoryImpl implements ClientFactory {
   private _clients = {} as ClientMap
 
-  create(options: KOptions, namespace?: string): Collection {
-    namespace = options.namespace || namespace
-
-    const key = getKey(options.kind, namespace)
+  create(options: KOptions): Collection {
+    const key = getKey(options.kind, options.namespace)
     if (this._clients[key]) {
       const client = this._clients[key]
       client.addRef()

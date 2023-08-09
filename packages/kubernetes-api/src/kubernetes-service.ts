@@ -71,7 +71,7 @@ export class KubernetesService extends EventEmitter {
       log.warn("No namespace can be found - defaulting to 'default'")
       namespace = 'default'
     }
-    const pods_client = clientFactory.create({ kind: WatchTypes.PODS }, namespace)
+    const pods_client = clientFactory.create({ kind: WatchTypes.PODS, namespace: namespace })
     const pods_watch = pods_client.watch(pods => {
       this._loading--
       this.pods.splice(0, this.pods.length) // clear the array
@@ -99,7 +99,7 @@ export class KubernetesService extends EventEmitter {
       let filtered = projects.filter(project => !this.projects.some(p => p.metadata.uid === project.metadata.uid))
       for (const project of filtered) {
         this._loading++
-        const pods_client = clientFactory.create({ kind: WatchTypes.PODS }, project.metadata.name)
+        const pods_client = clientFactory.create({ kind: WatchTypes.PODS, namespace: project.metadata.name })
         const pods_watch = pods_client.watch(pods => {
           this._loading--
           const others = this.pods.filter(pod => pod.metadata.namespace !== project.metadata.name)
