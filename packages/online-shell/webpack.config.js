@@ -116,6 +116,10 @@ module.exports = () => {
     ],
     output : {
       path: path.resolve(__dirname, 'build'),
+
+      // Set base path to /
+      publicPath: '/',
+
       pathinfo: true,
       filename: 'static/js/bundle.js',
       chunkFilename: 'static/js/[name].chunk.js',
@@ -150,6 +154,9 @@ module.exports = () => {
       compress: true,
       liveReload: true,
       port: devPort,
+
+      // Pushes any 404 page responses back to showing index.html
+      historyApiFallback: true,
 
       /*
        * Proxy to bring the cluster into the app as a redirect.
