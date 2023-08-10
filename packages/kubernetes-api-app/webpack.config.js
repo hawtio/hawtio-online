@@ -22,9 +22,16 @@ module.exports = () => {
 
   const namespace = process.env.CLUSTER_NAMESPACE || 'hawtio-dev'
   const mode = process.env.HAWTIO_MODE || 'cluster'
+  const clientId = process.env.OAUTH_CLIENT_ID
+  if (!clientId) {
+    console.error("The OAUTH_CLIENT_ID must be set!")
+    process.exit(1)
+  }
+
   console.log('Using Cluster URL:', master_uri)
   console.log('Using Cluster Namespace:', namespace)
   console.log('Using Hawtio Cluster Mode:', mode)
+  console.log('USing OAuth Client Id:', clientId)
 
   const kubeBase = master_uri
   const kube = new URL(kubeBase)
@@ -189,12 +196,29 @@ module.exports = () => {
             },
           }
 
+          /*
+           * The oauth_client_id *must* be the same as the name of an
+           * OAuthClient resource added to the cluster, eg.
+           *
+           * apiVersion: oauth.openshift.io/v1
+           * grantMethod: auto
+           * kind: OAuthClient
+           * metadata:
+           *   annotations:
+           *     kubectl.kubernetes.io/last-applied-configuration: |
+           *       {"apiVersion":"oauth.openshift.io/v1","grantMethod":"auto","kind":"OAuthClient","metadata":{"annotations":{},"name":"hawtio-online-dev"},"redirectURIs":["http://localhost:2772","http://localhost:2772/online","http://localhost:8080"]}
+           *   name: hawtio-online-dev
+           * redirectURIs:
+           * - http://localhost:2772
+           * - http://localhost:2772/online
+           * - http://localhost:8080
+           */
           switch (mode) {
             case 'namespace':
               oscConfig.hawtio.namespace = namespace
               oscConfig.openshift = {
                 oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
-                oauth_client_id: `system:serviceaccount:${namespace}:hawtio-online-dev`,
+                oauth_client_id: clientId,
                 scope: `user:info user:check-access user:full`,
                 cluster_version: '4.11.0',
               }

@@ -66,7 +66,15 @@ export function doLogin(config: OpenShiftConfig, options: { uri: string }): void
 }
 
 function extractToken(uri: URL): TokenMetadata | null {
-  log.debug('Extract token from URI - query:', uri.search)
+  log.debug('Extract token from URI - query:', uri.search, 'hash: ', uri.hash)
+
+  //
+  // Error has occurred on the lines of a scoping denied
+  //
+  const searchParams = new URLSearchParams(uri.search)
+  if (searchParams.has('error')) {
+    throw new Error(searchParams.get('error_description') || searchParams.get('error_description') || 'unknown login error occurred')
+  }
 
   const fragmentParams = new URLSearchParams(uri.hash.substring(1))
 
@@ -141,7 +149,12 @@ export function checkToken(uri: URL): TokenMetadata | null {
 
   if (!answer) {
     log.debug('Extracting token from uri', answer)
-    answer = extractToken(uri)
+    try {
+      answer = extractToken(uri)
+    } catch (e) {
+      clearTokenStorage()
+      throw e
+    }
   }
 
   log.debug('Using extracted credentials:', answer)
