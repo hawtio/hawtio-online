@@ -128,11 +128,15 @@ export const Kubernetes: React.FunctionComponent = () => {
               <DescriptionList isHorizontal>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Kubernetes Master</DescriptionListTerm>
-                  <DescriptionListDescription>{k8Api.getMasterUri()}</DescriptionListDescription>
+                  <DescriptionListDescription>{k8Api.masterUri()}</DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Is Openshift?</DescriptionListTerm>
                   <DescriptionListDescription>{k8Api.isOpenshift ? 'true' : 'false'}</DescriptionListDescription>
+                </DescriptionListGroup>
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Cluster Console</DescriptionListTerm>
+                  <DescriptionListDescription>{k8Api.consoleUri ? <a href={k8Api.consoleUri}>{k8Api.consoleUri}</a> : '<not found>'}</DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Kubernetes Config</DescriptionListTerm>

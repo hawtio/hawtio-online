@@ -3,6 +3,7 @@ import { userService } from '@hawtio/react'
 import { log, UserProfile } from '../globals'
 import { fetchPath, isBlank, getCookie } from '../utils'
 import {
+  CLUSTER_CONSOLE_KEY,
   CLUSTER_VERSION_KEY,
   DEFAULT_CLUSTER_VERSION,
   DEFAULT_HAWTIO_MODE,
@@ -81,6 +82,11 @@ class OSOAuthService implements IOSOAuthService {
     if (!openshiftAuth.oauth_metadata_uri) {
       this.userProfile.setError(new Error('Cannot determine authorize uri as no metadata uri'))
       return null
+    }
+
+    // See if web_console_url has been added to config
+    if (openshiftAuth.web_console_uri) {
+      this.userProfile.addMetadata(CLUSTER_CONSOLE_KEY, openshiftAuth.web_console_uri)
     }
 
     log.debug('Fetching OAuth server metadata from:', openshiftAuth.oauth_metadata_uri)

@@ -59,7 +59,7 @@ export class CollectionImpl implements Collection {
       }
       url = new URL(answer)
     } else {
-      url = new URL(joinPaths(k8Api.getMasterUri(), this._path))
+      url = new URL(joinPaths(k8Api.masterUri(), this._path))
     }
 
     if (this.options.labelSelector) {
@@ -79,7 +79,7 @@ export class CollectionImpl implements Collection {
       }
       url = wsUrl(answer)
     } else {
-      let urlStr = joinPaths(k8Api.getMasterUri(), this._path)
+      let urlStr = joinPaths(k8Api.masterUri(), this._path)
       const location = window.location
       if (location && urlStr.indexOf('://') < 0) {
         let hostname = location.hostname
@@ -88,7 +88,7 @@ export class CollectionImpl implements Collection {
           if (port) {
             hostname += ':' + port
           }
-          urlStr = joinPaths(hostname, k8Api.getMasterUri(), this._path)
+          urlStr = joinPaths(hostname, k8Api.masterUri(), this._path)
         }
       }
       url = wsUrl(urlStr)
@@ -191,7 +191,7 @@ export class CollectionImpl implements Collection {
           prefix = joinPaths('/api/v1/proxy/namespaces', namespace, '/services/jenkinshift:80/', prefix)
           log.debug('Using buildconfigs URL override')
         }
-        url = joinPaths(k8Api.getMasterUri(), prefix, 'namespaces', namespace, kind)
+        url = joinPaths(k8Api.masterUri(), prefix, 'namespaces', namespace, kind)
       }
     }
     if (useName) {
