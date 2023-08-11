@@ -11,16 +11,13 @@ import {
 import jsonpath from 'jsonpath'
 import { WatchTypes } from './model'
 import { pathGet } from './utils'
-import { clientFactory, Collection, log } from './client'
-import { K8Actions, KubeObject } from './globals'
+import { clientFactory, Collection, log, ProcessDataCallback } from './client'
+import { K8Actions, KubeObject, KubePod, KubeProject } from './globals'
 import { k8Api } from './init'
 
-export type ProcessDataCallback = (data: KubeObject[]) => void
-export type ErrorDataCallback = (err: Error) => void
-
-export interface Client {
-  collection: Collection
-  watch: ProcessDataCallback
+export interface Client<T extends KubeObject> {
+  collection: Collection<T>
+  watch: ProcessDataCallback<T>
 }
 
 export class KubernetesService extends EventEmitter {
@@ -30,10 +27,10 @@ export class KubernetesService extends EventEmitter {
   private _initialized = false
   private _error: Error | null = null
   private _oAuthProfile: UserProfile | null = null
-  private projects: KubeObject[] = []
-  private pods: KubeObject[] = []
-  private projects_client: Client | null = null
-  private pods_clients: { [key: string]: Client } = {}
+  private projects: KubeProject[] = []
+  private pods: KubePod[] = []
+  private projects_client: Client<KubeProject> | null = null
+  private pods_clients: { [key: string]: Client<KubePod> } = {}
 
   async initialize(): Promise<boolean> {
     if (this._initialized) return this._initialized
@@ -71,7 +68,7 @@ export class KubernetesService extends EventEmitter {
       log.warn("No namespace can be found - defaulting to 'default'")
       namespace = 'default'
     }
-    const pods_client = clientFactory.create({ kind: WatchTypes.PODS, namespace: namespace })
+    const pods_client = clientFactory.create<KubePod>({ kind: WatchTypes.PODS, namespace: namespace })
     const pods_watch = pods_client.watch(pods => {
       this._loading--
       this.pods.splice(0, this.pods.length) // clear the array
@@ -88,7 +85,7 @@ export class KubernetesService extends EventEmitter {
     log.debug('Initialising Cluster Config')
     const kindToWatch = k8Api.isOpenshift ? WatchTypes.PROJECTS : WatchTypes.NAMESPACES
     const labelSelector = pathGet(hawtConfig, ['online', 'projectSelector']) as string
-    const projects_client = clientFactory.create({
+    const projects_client = clientFactory.create<KubeProject>({
       kind: kindToWatch,
       labelSelector: labelSelector,
     })
@@ -96,13 +93,13 @@ export class KubernetesService extends EventEmitter {
     this._loading++
     const projects_watch = projects_client.watch(projects => {
       // subscribe to pods update for new projects
-      let filtered = projects.filter(project => !this.projects.some(p => p.metadata.uid === project.metadata.uid))
+      let filtered = projects.filter(project => !this.projects.some(p => p.metadata?.uid === project.metadata?.uid))
       for (const project of filtered) {
         this._loading++
-        const pods_client = clientFactory.create({ kind: WatchTypes.PODS, namespace: project.metadata.name })
+        const pods_client = clientFactory.create<KubePod>({ kind: WatchTypes.PODS, namespace: project.metadata?.name })
         const pods_watch = pods_client.watch(pods => {
           this._loading--
-          const others = this.pods.filter(pod => pod.metadata.namespace !== project.metadata.name)
+          const others = this.pods.filter(pod => pod.metadata?.namespace !== project.metadata?.name)
 
           // clear pods
           this.pods.splice(0, this.pods.length)
@@ -113,7 +110,7 @@ export class KubernetesService extends EventEmitter {
           const jolokiaPods = pods.filter(pod => jsonpath.query(pod, this.jolokiaPortQuery).length > 0)
 
           for (const jpod of jolokiaPods) {
-            const pos = this.pods.findIndex(pod => pod.metadata.uid === jpod.metadata.uid)
+            const pos = this.pods.findIndex(pod => pod.metadata?.uid === jpod.metadata?.uid)
             if (pos > -1) {
               // replace the pod - not sure we need to ...?
               this.pods.splice(pos, 1)
@@ -124,7 +121,7 @@ export class KubernetesService extends EventEmitter {
 
           this.emit(K8Actions.CHANGED)
         })
-        this.pods_clients[project.metadata.name] = {
+        this.pods_clients[project.metadata?.name as string] = {
           collection: pods_client,
           watch: pods_watch,
         }
@@ -132,11 +129,11 @@ export class KubernetesService extends EventEmitter {
       }
 
       // handle delete projects
-      filtered = this.projects.filter(project => !projects.some(p => p.metadata.uid === project.metadata.uid))
+      filtered = this.projects.filter(project => !projects.some(p => p.metadata?.uid === project.metadata?.uid))
       for (const project of filtered) {
-        const handle = this.pods_clients[project.metadata.name]
+        const handle = this.pods_clients[project.metadata?.name as string]
         clientFactory.destroy(handle.collection, handle.watch)
-        delete this.pods_clients[project.metadata.name]
+        delete this.pods_clients[project.metadata?.name as string]
       }
 
       this.projects.splice(0, this.projects.length) // clear the array
@@ -182,12 +179,12 @@ export class KubernetesService extends EventEmitter {
     return mode === this._oAuthProfile?.metadataValue(HAWTIO_MODE_KEY)
   }
 
-  getPods(): KubeObject[] {
+  getPods(): KubePod[] {
     this.checkInitOrError()
     return this.pods
   }
 
-  getProjects(): KubeObject[] {
+  getProjects(): KubeProject[] {
     this.checkInitOrError()
     return this.projects
   }

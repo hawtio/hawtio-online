@@ -1,16 +1,15 @@
 import { KubeObject, KubeObjectList } from '../globals'
-import { ErrorDataCallback } from '../kubernetes-service'
 import { fetchPath, isFunction, isString, SimpleResponse } from '../utils'
-import { Collection, log, ObjectList, pollingOnly, WSHandler } from './globals'
+import { Collection, ErrorDataCallback, log, ObjectList, pollingOnly, WSHandler } from './globals'
 import { ObjectListImpl } from './object-list'
 import { ObjectPoller } from './object-poller'
 
 /**
  * Manages the websocket connection to the backend and passes events to the ObjectListImpl
  */
-export class WSHandlerImpl implements WSHandler {
-  private _collection: Collection
-  private _list?: ObjectList
+export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
+  private _collection: Collection<T>
+  private _list?: ObjectList<T>
 
   private retries = 0
   private connectTime = 0
@@ -18,16 +17,16 @@ export class WSHandlerImpl implements WSHandler {
   private poller?: ObjectPoller
   private destroyed = false
 
-  constructor(collection: Collection) {
+  constructor(collection: Collection<T>) {
     this._collection = collection
   }
 
-  set list(_list: ObjectList) {
+  set list(_list: ObjectList<T>) {
     this._list = _list
   }
 
-  get list(): ObjectList {
-    return this._list || new ObjectListImpl()
+  get list(): ObjectList<T> {
+    return this._list || new ObjectListImpl<T>()
   }
 
   get collection() {
@@ -61,7 +60,7 @@ export class WSHandlerImpl implements WSHandler {
     return new WebSocket(url, protocols)
   }
 
-  private setHandlers(self: WSHandler, ws: WebSocket) {
+  private setHandlers(self: WSHandler<T>, ws: WebSocket) {
     Object.entries(self).forEach(([key, value]) => {
       if (key.startsWith('on')) {
         const evt = key.replace('on', '')
@@ -128,7 +127,7 @@ export class WSHandlerImpl implements WSHandler {
     }
     const data = JSON.parse(event.data)
 
-    const eventType: keyof ObjectList = data.type.toLowerCase()
+    const eventType: keyof ObjectList<T> = data.type.toLowerCase()
     if (eventType !== 'added' && eventType !== 'modified' && eventType !== 'deleted') return
 
     const property = this.list[eventType]
@@ -220,7 +219,7 @@ export class WSHandlerImpl implements WSHandler {
         log.debug('Fetching intial collection of object from web socket: ' + this.collection.restURL)
         fetchPath(this.collection.restURL, {
           success: (data: string) => {
-            const objectList: KubeObjectList = JSON.parse(data)
+            const objectList: KubeObjectList<T> = JSON.parse(data)
             this.list.objects = objectList.items || []
 
             setTimeout(() => {

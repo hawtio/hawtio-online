@@ -1,4 +1,4 @@
-import { KubeObject } from '@hawtio/online-kubernetes-api'
+import { KubeProject } from '@hawtio/online-kubernetes-api'
 import React from 'react'
 import {
   DescriptionList,
@@ -12,7 +12,7 @@ import {
 import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 
 type KubeProjectProps = {
-  projects: KubeObject[]
+  projects: KubeProject[]
 }
 
 export const KubernetesProjects: React.FunctionComponent<KubeProjectProps> = (props: KubeProjectProps) => {
@@ -30,11 +30,11 @@ export const KubernetesProjects: React.FunctionComponent<KubeProjectProps> = (pr
             </Thead>
             <Tbody>
               {props.projects.map(project => (
-                <Tr key={project.metadata.uid}>
-                  <Td dataLabel='Name'>{project.metadata.name}</Td>
+                <Tr key={project.metadata?.uid}>
+                  <Td dataLabel='Name'>{project.metadata?.name}</Td>
                   <Td dataLabel='Labels'>
                     <DescriptionList>
-                      {Object.entries(project.metadata.labels || {}).map(([key, value]) => {
+                      {Object.entries(project.metadata?.labels || {}).map(([key, value]) => {
                         return (
                           <DescriptionListGroup key={key}>
                             <DescriptionListTerm>{key}</DescriptionListTerm>
@@ -46,7 +46,7 @@ export const KubernetesProjects: React.FunctionComponent<KubeProjectProps> = (pr
                   </Td>
                   <Td dataLabel='Annotations'>
                     <DescriptionList>
-                      {Object.entries(project.metadata.annotations || {}).map(([key, value]) => {
+                      {Object.entries(project.metadata?.annotations || {}).map(([key, value]) => {
                         return (
                           <DescriptionListGroup key={key}>
                             <DescriptionListTerm>{key}</DescriptionListTerm>

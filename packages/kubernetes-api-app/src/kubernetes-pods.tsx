@@ -1,4 +1,4 @@
-import { KubeObject } from '@hawtio/online-kubernetes-api'
+import { KubeObject, KubePod } from '@hawtio/online-kubernetes-api'
 import {
   DescriptionList,
   DescriptionListDescription,
@@ -11,7 +11,7 @@ import {
 import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 
 type KubePodsProps = {
-  pods: KubeObject[]
+  pods: KubePod[]
 }
 
 export const KubernetesPods: React.FunctionComponent<KubePodsProps> = (props: KubePodsProps) => {
@@ -31,12 +31,12 @@ export const KubernetesPods: React.FunctionComponent<KubePodsProps> = (props: Ku
             </Thead>
             <Tbody>
               {props.pods.map(pod => (
-                <Tr key={pod.metadata.uid}>
-                  <Td dataLabel='Name'>{pod.metadata.name}</Td>
-                  <Td dataLabel='Namespace'>{pod.metadata.namespace}</Td>
+                <Tr key={pod.metadata?.uid}>
+                  <Td dataLabel='Name'>{pod.metadata?.name}</Td>
+                  <Td dataLabel='Namespace'>{pod.metadata?.namespace}</Td>
                   <Td dataLabel='Labels'>
                     <DescriptionList>
-                      {Object.entries(pod.metadata.labels || {}).map(([key, value]) => {
+                      {Object.entries(pod.metadata?.labels || {}).map(([key, value]) => {
                         return (
                           <DescriptionListGroup key={key}>
                             <DescriptionListTerm>{key}</DescriptionListTerm>
@@ -48,7 +48,7 @@ export const KubernetesPods: React.FunctionComponent<KubePodsProps> = (props: Ku
                   </Td>
                   <Td dataLabel='Annotations'>
                     <DescriptionList>
-                      {Object.entries(pod.metadata.annotations || {}).map(([key, value]) => {
+                      {Object.entries(pod.metadata?.annotations || {}).map(([key, value]) => {
                         return (
                           <DescriptionListGroup key={key}>
                             <DescriptionListTerm>{key}</DescriptionListTerm>

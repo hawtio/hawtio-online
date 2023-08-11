@@ -1,17 +1,14 @@
+import { KubeObject } from 'src/globals'
 import { Collection } from './globals'
-
-export interface ClientMap {
-  [name: string]: ClientInstance
-}
 
 /*
  * Manages references to collection instances to allow them to be shared between views
  */
-export class ClientInstance {
+export class ClientInstance<T extends KubeObject> {
   private _refCount = 0
-  private _collection: Collection
+  private _collection: Collection<T>
 
-  constructor(_collection: Collection) {
+  constructor(_collection: Collection<T>) {
     this._collection = _collection
   }
 

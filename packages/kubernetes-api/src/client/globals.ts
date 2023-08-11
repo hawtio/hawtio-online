@@ -1,5 +1,4 @@
 import { Logger } from '@hawtio/react'
-import { ErrorDataCallback, ProcessDataCallback } from '../kubernetes-service'
 import { KubeObject } from '../globals'
 import { WatchActions, WatchTypes } from '../model'
 
@@ -30,7 +29,11 @@ export interface KOptions extends Record<string, unknown> {
   urlFunction?: (options: KOptions) => string
 }
 
-export interface Collection {
+export type ProcessDataCallback<T extends KubeObject> = (data: T[]) => void
+
+export type ErrorDataCallback = (err: Error) => void
+
+export interface Collection<T extends KubeObject> {
   options: KOptions
   kind: string
   wsURL: string
@@ -39,36 +42,36 @@ export interface Collection {
   connected: boolean
   oAuthToken: string
   connect(): void
-  get(cb: ProcessDataCallback): void
-  watch(cb: ProcessDataCallback): ProcessDataCallback
-  unwatch(cb: ProcessDataCallback): void
-  put(item: KubeObject, cb: ProcessDataCallback, error?: ErrorDataCallback): void
-  delete(item: KubeObject, cb: ProcessDataCallback, error?: ErrorDataCallback): void
+  get(cb: ProcessDataCallback<T>): void
+  watch(cb: ProcessDataCallback<T>): ProcessDataCallback<T>
+  unwatch(cb: ProcessDataCallback<T>): void
+  put(item: T, cb: ProcessDataCallback<T>, error?: ErrorDataCallback): void
+  delete(item: T, cb: ProcessDataCallback<T>, error?: ErrorDataCallback): void
   getKey(): string
   destroy(): void
 }
 
-export interface ObjectList {
+export interface ObjectList<T extends KubeObject> {
   kind: string
   initialized: boolean
-  objects: KubeObject[]
+  objects: T[]
   initialize(): void
-  hasNamedItem(item: KubeObject): boolean
-  getNamedItem(name: string): KubeObject | null
-  added(object: KubeObject): boolean
-  modified(object: KubeObject): boolean
-  deleted(object: KubeObject): boolean
+  hasNamedItem(item: T): boolean
+  getNamedItem(name: string): T | null
+  added(object: T): boolean
+  modified(object: T): boolean
+  deleted(object: T): boolean
   triggerChangedEvent(): void
-  doOnce(action: WatchActions, cb: ProcessDataCallback): void
-  doOn(action: WatchActions, cb: ProcessDataCallback): void
-  doOff(action: WatchActions, cb: ProcessDataCallback): void
+  doOnce(action: WatchActions, cb: ProcessDataCallback<T>): void
+  doOn(action: WatchActions, cb: ProcessDataCallback<T>): void
+  doOff(action: WatchActions, cb: ProcessDataCallback<T>): void
 }
 
-export interface WSHandler {
+export interface WSHandler<T extends KubeObject> {
   connected: boolean
   kind: string
-  list: ObjectList
-  collection: Collection
+  list: ObjectList<T>
+  collection: Collection<T>
   error: ErrorDataCallback | undefined
   connect(): void
   send(data: string | KubeObject): void
@@ -81,6 +84,6 @@ export interface WSHandler {
 }
 
 export interface ClientFactory {
-  create(options: KOptions, namespace?: string): Collection
-  destroy(client: Collection, ...handles: Array<ProcessDataCallback>): void
+  create<T extends KubeObject>(options: KOptions, namespace?: string): Collection<T>
+  destroy<T extends KubeObject>(client: Collection<T>, ...handles: Array<ProcessDataCallback<T>>): void
 }

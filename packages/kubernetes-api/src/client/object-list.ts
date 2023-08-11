@@ -1,22 +1,21 @@
 import EventEmitter from 'eventemitter3'
 import { Logger } from '@hawtio/react'
 import { KubeObject } from '../globals'
-import { ProcessDataCallback } from '../kubernetes-service'
 import { equals, getName, getNamespace, toKindName } from '../helpers'
 import { WatchActions } from '../model'
 import { debounce } from '../utils'
-import { log, ObjectList } from './globals'
+import { log, ObjectList, ProcessDataCallback } from './globals'
 
 /**
  *  Manages the array of k8s objects for a client instance
  **/
-export class ObjectListImpl extends EventEmitter implements ObjectList {
+export class ObjectListImpl<T extends KubeObject> extends EventEmitter implements ObjectList<T> {
   triggerChangedEvent = debounce(() => {
     this.emit(WatchActions.ANY, this._objects)
   }, 75)
 
   private _initialized = false
-  private _objects: Array<KubeObject> = []
+  private _objects: Array<T> = []
 
   constructor(
     private _kind?: string,
@@ -63,11 +62,11 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     return this._initialized
   }
 
-  get objects() {
+  get objects(): T[] {
     return this._objects
   }
 
-  set objects(objs: KubeObject[]) {
+  set objects(objs: T[]) {
     this._objects.length = 0
     objs.forEach(obj => {
       if (!obj.kind) {
@@ -79,41 +78,41 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     this.triggerChangedEvent()
   }
 
-  hasNamedItem(item: KubeObject): boolean {
-    return this._objects.some((obj: KubeObject) => {
+  hasNamedItem(item: T): boolean {
+    return this._objects.some((obj: T) => {
       return getName(obj) === getName(item)
     })
   }
 
-  getNamedItem(name: string): KubeObject | null {
+  getNamedItem(name: string): T | null {
     return (
-      this.objects.find((obj: KubeObject) => {
+      this.objects.find((obj: T) => {
         return getName(obj) === name
       }) || null
     )
   }
 
   // filter out objects from other namespaces that could be returned
-  private belongs(object: KubeObject): boolean {
+  private belongs(object: T): boolean {
     if (this.namespace && getNamespace(object) !== this.namespace) {
       return false
     }
     return true
   }
 
-  doOnce(action: WatchActions, cb: ProcessDataCallback) {
+  doOnce(action: WatchActions, cb: ProcessDataCallback<T>) {
     this.once(action, cb)
   }
 
-  doOn(action: WatchActions, cb: ProcessDataCallback) {
+  doOn(action: WatchActions, cb: ProcessDataCallback<T>) {
     this.once(action, cb)
   }
 
-  doOff(action: WatchActions, cb: ProcessDataCallback) {
+  doOff(action: WatchActions, cb: ProcessDataCallback<T>) {
     this.off(action, cb)
   }
 
-  added(object: KubeObject): boolean {
+  added(object: T): boolean {
     if (!this.belongs(object)) {
       return false
     }
@@ -133,7 +132,7 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     return true
   }
 
-  modified(object: KubeObject): boolean {
+  modified(object: T): boolean {
     if (!this.belongs(object)) {
       return false
     }
@@ -156,7 +155,7 @@ export class ObjectListImpl extends EventEmitter implements ObjectList {
     return true
   }
 
-  deleted(object: KubeObject): boolean {
+  deleted(object: T): boolean {
     if (!this.belongs(object)) {
       return false
     }

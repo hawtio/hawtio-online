@@ -20,3 +20,4 @@ export async function isK8ApiRegistered(): Promise<boolean> {
 
 export * from './globals'
 export {k8Api, k8Service} from './init'
+export * from './utils'

@@ -1,4 +1,5 @@
-import { KubeObject, KubeStatus } from './globals'
+import { KubeObject, KubePod } from './globals'
+import { PodStatus } from 'kubernetes-types/core/v1'
 import { WatchTypes, NamespacedTypes, ExtensionTypes, KindTypes } from './model'
 import { K8S_PREFIX, K8S_API_VERSION, K8S_EXT_PREFIX, K8S_EXT_VERSION, OS_PREFIX, OS_API_VERSION } from './globals'
 import { joinPaths } from './utils/urls'
@@ -365,7 +366,7 @@ export function getSelector(entity: KubeObject): string | null {
   return pathGetString(entity, ['spec', 'selector'])
 }
 
-export function getHost(pod: KubeObject): string | null {
+export function getHost(pod: KubePod): string | null {
   return (
     pathGetString(pod, ['spec', 'host']) ||
     pathGetString(pod, ['spec', 'nodeName']) ||
@@ -373,7 +374,7 @@ export function getHost(pod: KubeObject): string | null {
   )
 }
 
-export function getStatus(pod: KubeObject): string | null {
+export function getStatus(pod: KubePod): string | null {
   return pathGetString(pod, ['status', 'phase'])
 }
 
@@ -385,10 +386,14 @@ export function getCreationTimestamp(entity: KubeObject): string | null {
   return pathGetString(entity, ['metadata', 'creationTimestamp'])
 }
 
+export function getClusterIP(entity: KubeObject): string | null {
+  return pathGetString(entity, ['spec', 'clusterIP'])
+}
+
 /**
  * Returns true if the current status of the pod is running
  */
-export function isRunning(podCurrentState: KubeStatus): boolean {
+export function isRunning(podCurrentState: PodStatus): boolean {
   const status = (podCurrentState || {}).phase
   if (status) {
     const lower = status.toLowerCase()
@@ -398,7 +403,7 @@ export function isRunning(podCurrentState: KubeStatus): boolean {
   }
 }
 
-export function podStatus(pod: KubeObject): string | null {
+export function podStatus(pod: KubePod): string | null {
   return getStatus(pod)
 }
 

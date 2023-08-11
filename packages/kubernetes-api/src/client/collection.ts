@@ -1,10 +1,11 @@
+import { ServiceSpec } from 'kubernetes-types/core/v1'
 import { K8S_EXT_PREFIX, KubeObject } from '../globals'
-import { ErrorDataCallback, ProcessDataCallback } from '../kubernetes-service'
+import {  } from '../kubernetes-service'
 import { fetchPath, FetchPathCallback, isFunction, joinPaths } from '../utils'
-import { getName, getNamespace, namespaced, prefixForKind, toCollectionName, wsUrl } from '../helpers'
+import { getClusterIP, getName, getNamespace, namespaced, prefixForKind, toCollectionName, wsUrl } from '../helpers'
 import { WatchActions, WatchTypes } from '../model'
 import { k8Api } from '../init'
-import { log, UNKNOWN_VALUE, Collection, KOptions, ObjectList, WSHandler } from './globals'
+import { log, UNKNOWN_VALUE, Collection, KOptions, ObjectList, WSHandler, ProcessDataCallback, ErrorDataCallback } from './globals'
 import { ObjectListImpl } from './object-list'
 import { WSHandlerImpl } from './ws-handler'
 import { getKey } from './support'
@@ -12,12 +13,12 @@ import { getKey } from './support'
 /*
  * Implements the external API for working with k8s collections of objects
  */
-export class CollectionImpl implements Collection {
+export class CollectionImpl<T extends KubeObject> implements Collection<T> {
   private _namespace?: string
   private _path: string
   private _apiVersion: string
-  private list: ObjectList
-  private handler: WSHandler
+  private list: ObjectList<T>
+  private handler: WSHandler<T>
   private _isOpenshift: boolean
   private _oAuthToken: string
 
@@ -141,7 +142,7 @@ export class CollectionImpl implements Collection {
   }
 
   // one time fetch of the data...
-  get(cb: ProcessDataCallback) {
+  get(cb: ProcessDataCallback<T>) {
     if (!this.list.initialized) {
       this.list.doOnce(WatchActions.INIT, cb)
     } else {
@@ -164,7 +165,7 @@ export class CollectionImpl implements Collection {
     return pref
   }
 
-  private restUrlFor(item: KubeObject, useName = true) {
+  private restUrlFor(item: T, useName = true) {
     const name = getName(item)
     if (useName && !name) {
       log.debug('Name missing from item:', item)
@@ -201,7 +202,7 @@ export class CollectionImpl implements Collection {
   }
 
   // continually get updates
-  watch(cb: ProcessDataCallback): ProcessDataCallback {
+  watch(cb: ProcessDataCallback<T>): ProcessDataCallback<T> {
     if (this.list.initialized) {
       setTimeout(() => {
         log.debug(this.kind, 'passing existing objects:', this.list.objects)
@@ -210,19 +211,19 @@ export class CollectionImpl implements Collection {
     }
     log.debug(this.kind, 'adding watch callback:', cb)
 
-    this.list.doOn(WatchActions.ANY, data => {
+    this.list.doOn(WatchActions.ANY, (data:T[]) => {
       log.debug(this.kind, 'got data:', data)
       cb(data)
     })
     return cb
   }
 
-  unwatch(cb: ProcessDataCallback) {
+  unwatch(cb: ProcessDataCallback<T>) {
     log.debug(this.kind, 'removing watch callback:', cb)
     this.list.doOff(WatchActions.ANY, cb)
   }
 
-  put(item: KubeObject, cb: ProcessDataCallback, error?: ErrorDataCallback) {
+  put(item: T, cb: ProcessDataCallback<T>, error?: ErrorDataCallback) {
     let method = 'PUT'
     let url = this.restUrlFor(item)
     if (!this.list.hasNamedItem(item)) {
@@ -231,12 +232,17 @@ export class CollectionImpl implements Collection {
       url = this.restUrlFor(item, false)
     } else {
       // updating an existing object
-      let resourceVersion = item.metadata.resourceVersion
+      let resourceVersion = item.metadata?.resourceVersion
       if (!resourceVersion) {
         const name = getName(item) || ''
         const current = this.list.getNamedItem(name)
-        resourceVersion = current.metadata.resourceVersion
-        item.metadata.resourceVersion = resourceVersion
+        resourceVersion = current?.metadata?.resourceVersion
+        if (item.metadata?.resourceVersion) {
+          // TODO
+          // Necessary since resourceVersion has the readonly modified
+          // @ts-ignore
+          item.metadata.resourceVersion = resourceVersion
+        }
       }
     }
     if (!url) {
@@ -245,8 +251,9 @@ export class CollectionImpl implements Collection {
     // Custom checks for specific cases
     switch (this.kind) {
       case WatchTypes.SERVICES:
-        if (item.spec?.clusterIP === '') {
-          delete item.spec.clusterIP
+        if (getClusterIP(item) === '') {
+          const podSpec = item.spec as ServiceSpec
+          delete podSpec.clusterIP
         }
         break
       default:
@@ -287,7 +294,7 @@ export class CollectionImpl implements Collection {
     }
   }
 
-  delete(item: KubeObject, cb: ProcessDataCallback, error?: ErrorDataCallback) {
+  delete(item: T, cb: ProcessDataCallback<T>, error?: ErrorDataCallback) {
     const url = this.restUrlFor(item)
     if (!url) {
       return

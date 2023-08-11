@@ -1,24 +1,24 @@
-import { ProcessDataCallback } from '../kubernetes-service'
-import { ClientInstance, ClientMap } from './client-instance'
+import { KubeObject } from '../globals'
+import { ClientInstance } from './client-instance'
 import { CollectionImpl } from './collection'
-import { log, Collection, KOptions, ClientFactory } from './globals'
+import { log, Collection, KOptions, ClientFactory, ProcessDataCallback } from './globals'
 import { getKey } from './support'
 
 /*
- * Factory implementation that's available as an angular service
+ * Factory implementation
  */
 export class ClientFactoryImpl implements ClientFactory {
-  private _clients = {} as ClientMap
+  private _clients: Record<string, unknown> = {}
 
-  create(options: KOptions): Collection {
+  create<T extends KubeObject>(options: KOptions): Collection<T> {
     const key = getKey(options.kind, options.namespace)
     if (this._clients[key]) {
-      const client = this._clients[key]
+      const client = this._clients[key] as ClientInstance<T>
       client.addRef()
       log.debug('Returning existing client for key:', key, 'refcount is:', client.refCount)
       return client.collection
     } else {
-      const client = new ClientInstance(new CollectionImpl(options))
+      const client = new ClientInstance<T>(new CollectionImpl(options))
       client.addRef()
       log.debug("Creating new client for key: '", key, "' refcount is: ", client.refCount)
       this._clients[key] = client
@@ -26,13 +26,13 @@ export class ClientFactoryImpl implements ClientFactory {
     }
   }
 
-  destroy(client: Collection, ...handles: Array<ProcessDataCallback>) {
+  destroy<T extends KubeObject>(client: Collection<T>, ...handles: Array<ProcessDataCallback<T>>) {
     handles.forEach(handle => {
       client.unwatch(handle)
     })
     const key = client.getKey()
     if (this._clients[key]) {
-      const c = this._clients[key]
+      const c = this._clients[key] as ClientInstance<T>
       c.removeRef()
       log.debug('Removed reference to client with key:', key, 'refcount is:', c.refCount)
       if (c.disposable()) {

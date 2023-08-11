@@ -34,6 +34,7 @@
     "jquery": "^3.7.0",
     "js-logger": "^1.6.1",
     "jsonpath": "^1.1.1",
+    "kubernetes-types": "^1.26.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
