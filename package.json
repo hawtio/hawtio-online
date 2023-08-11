@@ -15,10 +15,12 @@
   ],
   "scripts": {
     "start:online": "yarn build:oAuthApi && yarn build:k8Api && yarn start:shell",
+    "build:online": "yarn build:oAuthApi && yarn build:k8Api && yarn build:shell",
     "start:shell": "yarn workspace @hawtio/online-shell start",
+    "build:shell": "yarn workspace @hawtio/online-shell build",
     "start:k8": "yarn build:oAuthApi && yarn build:k8Api && yarn start:k8App",
-    "start:k8App": "yarn workspace @hawtio/online-kubernetes-api-app start",
     "build:k8": "yarn build:oAuthApi && yarn build:k8Api && yarn build:k8App",
+    "start:k8App": "yarn workspace @hawtio/online-kubernetes-api-app start",
     "build:k8App": "yarn workspace @hawtio/online-kubernetes-api-app build",
     "build:k8Api": "yarn workspace @hawtio/online-kubernetes-api build",
     "build:k8Api:watch": "yarn workspace @hawtio/online-kubernetes-api build:watch",

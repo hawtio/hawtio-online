@@ -1,8 +1,9 @@
-import { Logger, configManager, hawtio, Hawtio, registerPlugins } from '@hawtio/react'
+import { Logger, configManager, hawtio, Hawtio, registerPlugins, HawtioPlugin } from '@hawtio/react'
 import { isK8ApiRegistered } from '@hawtio/online-kubernetes-api'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
+import { discover } from './discover'
 
 Logger.setLevel(Logger.DEBUG)
 console.log('Logging Level set to ', Logger.getLevel())
@@ -15,6 +16,9 @@ isK8ApiRegistered()
 
     // Register hawtio plugins
     registerPlugins()
+
+    // Register discover plugin
+    discover()
 
     // Bootstrap Hawtio
     hawtio.bootstrap()

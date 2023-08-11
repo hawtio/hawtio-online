@@ -25,6 +25,10 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.1.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.2",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@hawtio/online-kubernetes-api": "workspace:*",
     "@hawtio/react": "^0.4.0",
     "@patternfly/react-core": "^4.276.8",
