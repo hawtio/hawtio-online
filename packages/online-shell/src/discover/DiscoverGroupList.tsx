@@ -5,11 +5,9 @@ import {
   AccordionItem,
   AccordionToggle,
   List,
-  Title,
 } from '@patternfly/react-core'
 import { DisplayGroup } from './discover-service'
 import './Discover.css'
-import { ConsoleLink } from './ConsoleLink'
 import { DiscoverGroupLabel } from './DiscoverGroupLabel'
 import { DiscoverPodItem } from './DiscoverPodItem'
 
@@ -46,7 +44,7 @@ export const DiscoverGroupList: React.FunctionComponent<DiscoverGroupListProps> 
                 <DiscoverGroupLabel group={group} />
               </AccordionToggle>
               <AccordionContent id={'item-' + group.name + 'expand'} isHidden={!group.expanded}>
-                <List isPlain isBordered iconSize="large">
+                <List isBordered={true} iconSize='large'>
                 {
                   group.replicas.map(replica => {
                     return ( <DiscoverPodItem pod={replica}/> )

@@ -1,4 +1,4 @@
-import { k8Api, joinPaths, KubePod, OwnerReference, PodStatus, PodCondition } from "@hawtio/online-kubernetes-api"
+import { KubePod, OwnerReference, PodStatus, PodCondition } from "@hawtio/online-kubernetes-api"
 
 export interface TypeFilter {
   type: string
@@ -182,20 +182,8 @@ enum OS4 {
   'dc' = 'deploymentconfigs',
   'rc' = 'replicationcontrollers',
   'rs' = 'replicasets',
-  'sts' = "statefulsets"
-}
-
-export interface OSLinkConfig {
-  namespace: string,
-  resources: string,
-  name: string
-}
-
-export function osLink(config: OSLinkConfig): URL | null {
-  if (! k8Api.consoleUri)
-      return null
-
-  return new URL(joinPaths(k8Api.consoleUri, 'k8s/ns', config.namespace, (OS4[config.resources as keyof typeof OS4] || config.resources), config.name))
+  'sts' = 'statefulsets',
+  'search' = 'search'
 }
 
 export enum ViewType {

@@ -1,22 +1,27 @@
 import React, { PropsWithChildren } from 'react'
-import * as discoverService from './discover-service'
-import './Discover.css'
 import { Button } from '@patternfly/react-core'
+import { ConsoleType } from './globals'
+import * as consoleService from './console-service'
+import './Console.css'
 
 interface ConsoleLinkProps {
-  namespace: string,
-  resources: string,
-  name: string
+  type: ConsoleType,
+  namespace?: string,
+  selector?: string,
+  resource?: string,
+  kind?: string
+  inline?: boolean
 }
 
 export const ConsoleLink: React.FunctionComponent<PropsWithChildren<ConsoleLinkProps>> = (props: PropsWithChildren<ConsoleLinkProps>) => {
 
-  const url = discoverService.osLink({name: props.name, namespace: props.namespace, resources: props.resources})
+  const url = consoleService.osLink(props)
 
   return (
     <React.Fragment>
       { url && (
-        <Button component="a" href={url.toString()} target="_blank" variant="link" isInline>
+        <Button component="a" href={url.toString()} target="_blank"
+                variant="link" isInline className='console-link'>
           {props.children}
         </Button>
         )

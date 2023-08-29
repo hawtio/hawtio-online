@@ -2,3 +2,9 @@
   text-align: left;
   color: rgb(117, 117, 117);
 }
+
+.pod-item-name-with-labels {
+  display: flex;
+  flex-direction: column;
+  max-width: 40%;
+}

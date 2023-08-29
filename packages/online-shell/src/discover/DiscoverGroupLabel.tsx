@@ -1,7 +1,7 @@
 import React from 'react'
 import { Title } from '@patternfly/react-core'
 import { DisplayGroup } from './discover-service'
-import { ConsoleLink } from './ConsoleLink'
+import { ConsoleLink, ConsoleType } from '../console'
 import './Discover.css'
 
 interface DiscoverGroupLabelProps {
@@ -13,13 +13,13 @@ export const DiscoverGroupLabel: React.FunctionComponent<DiscoverGroupLabelProps
   const configContent = (): React.ReactNode => {
     return (
       <React.Fragment>
-        <ConsoleLink name={props.group.config as string} namespace={props.group.namespace} resources='dc'>
+        <ConsoleLink type={ConsoleType.resource} selector={props.group.config as string} namespace={props.group.namespace} resource='dc' inline={true}>
           {props.group.config}
         </ConsoleLink>
 
         <span>, </span>
 
-        <ConsoleLink name={props.group.name as string} namespace={props.group.namespace} resources='rc'>
+        <ConsoleLink type={ConsoleType.resource} selector={props.group.name as string} namespace={props.group.namespace} resource='rc' inline={true}>
           #{props.group.version}
         </ConsoleLink>
       </React.Fragment>
@@ -28,7 +28,7 @@ export const DiscoverGroupLabel: React.FunctionComponent<DiscoverGroupLabelProps
 
   const statefulSetContent = () => {
     return (
-      <ConsoleLink name={props.group.name as string} namespace={props.group.namespace} resources='sts'>
+      <ConsoleLink type={ConsoleType.resource} selector={props.group.name as string} namespace={props.group.namespace} resource='sts'>
         {props.group.name}
       </ConsoleLink>
     )
@@ -36,7 +36,7 @@ export const DiscoverGroupLabel: React.FunctionComponent<DiscoverGroupLabelProps
 
   const deploymentContent = () => {
     return (
-      <ConsoleLink name={props.group.name as string} namespace={props.group.namespace} resources='rs'>
+      <ConsoleLink type={ConsoleType.resource} selector={props.group.name as string} namespace={props.group.namespace} resource='rs'>
         {props.group.name}
       </ConsoleLink>
     )
