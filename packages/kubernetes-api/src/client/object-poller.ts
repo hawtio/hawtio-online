@@ -6,7 +6,7 @@ import { compare } from './support'
 /*
  * Manages polling the server for objects that don't support websocket connections
  */
-export class ObjectPoller {
+export class ObjectPoller<T extends KubeObject> {
   private _lastFetch: KubeObject[]
   private _connected = false
   private _interval = 5000
@@ -15,7 +15,7 @@ export class ObjectPoller {
 
   constructor(
     private restURL: string,
-    private handler: WSHandler,
+    private handler: WSHandler<T>,
   ) {
     this._lastFetch = this.handler.list.objects
   }
@@ -35,7 +35,7 @@ export class ObjectPoller {
           return
         }
 
-        const kObjList: KubeObjectList = JSON.parse(data)
+        const kObjList: KubeObjectList<T> = JSON.parse(data)
 
         log.debug(this.handler.kind, 'fetched data:', data)
         const items = kObjList && kObjList.items ? kObjList.items : []

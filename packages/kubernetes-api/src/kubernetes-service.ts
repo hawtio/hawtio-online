@@ -20,9 +20,9 @@ export interface Client<T extends KubeObject> {
   watch: ProcessDataCallback<T>
 }
 
-export class KubernetesService extends EventEmitter {
-  private readonly jolokiaPortQuery = '$.spec.containers[*].ports[?(@.name=="jolokia")]'
 
+export class KubernetesService extends EventEmitter {
+  private readonly _jolokiaPortQuery = '$.spec.containers[*].ports[?(@.name=="jolokia")]'
   private _loading = 0
   private _initialized = false
   private _error: Error | null = null
@@ -175,6 +175,10 @@ export class KubernetesService extends EventEmitter {
     return this._error
   }
 
+  get jolokiaPortQuery() {
+    return this._jolokiaPortQuery
+  }
+
   is(mode: HawtioMode): boolean {
     return mode === this._oAuthProfile?.metadataValue(HAWTIO_MODE_KEY)
   }
@@ -203,5 +207,86 @@ export class KubernetesService extends EventEmitter {
     Object.values(this.pods_clients).forEach(client => {
       clientFactory.destroy(client.collection, client.watch)
     })
+  }
+
+  podStatus(pod: KubePod): string {
+    // Return results that match
+    // https://github.com/openshift/origin/blob/master/vendor/k8s.io/kubernetes/pkg/printers/internalversion/printers.go#L523-L615
+
+    if (!pod || (!pod.metadata?.deletionTimestamp && !pod.status)) {
+      return ''
+    }
+
+    if (pod.metadata?.deletionTimestamp) {
+      return 'Terminating'
+    }
+
+    let initializing = false
+    let reason
+
+    // Print detailed container reasons if available. Only the first will be
+    // displayed if multiple containers have this detail.
+
+    const initContainerStatuses = pod.status?.initContainerStatuses || []
+    for (const initContainerStatus of initContainerStatuses) {
+      const initContainerState = initContainerStatus['state']
+      if (!initContainerState)
+        continue
+
+      if (initContainerState.terminated && initContainerState.terminated.exitCode === 0) {
+        // initialization is complete
+        break
+      }
+
+      if (initContainerState.terminated) {
+        // initialization is failed
+        if (!initContainerState.terminated.reason) {
+          if (initContainerState.terminated.signal) {
+            reason = 'Init Signal: ' + initContainerState.terminated.signal
+          } else {
+            reason = 'Init Exit Code: ' + initContainerState.terminated.exitCode
+          }
+        } else {
+          reason = 'Init ' + initContainerState.terminated.reason
+        }
+        initializing = true
+        break
+      }
+
+      if (initContainerState.waiting && initContainerState.waiting.reason && initContainerState.waiting.reason !== 'PodInitializing') {
+        reason = 'Init ' + initContainerState.waiting.reason
+        initializing = true
+      }
+    }
+
+    if (!initializing) {
+      reason = pod.status?.reason || pod.status?.phase || ''
+
+      const containerStatuses = pod.status?.containerStatuses || []
+      for (const containerStatus of containerStatuses) {
+        const containerReason = containerStatus.state?.waiting?.reason ||
+                                containerStatus.state?.terminated?.reason
+        let signal, exitCode
+
+        if (containerReason) {
+          reason = containerReason
+          break
+        }
+
+        signal = containerStatus.state?.terminated?.signal
+        if (signal) {
+          reason = `Signal: ${signal}`
+          break
+        }
+
+        exitCode = containerStatus.state?.terminated?.exitCode
+        if (exitCode) {
+          reason = `Exit Code: ${exitCode}`
+          break
+        }
+      }
+    }
+
+    return reason || 'unknown'
   }
 }

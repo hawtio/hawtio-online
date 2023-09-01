@@ -75,11 +75,11 @@ export interface WSHandler<T extends KubeObject> {
   error: ErrorDataCallback | undefined
   connect(): void
   send(data: string | KubeObject): void
-  onopen(event: Event): void
-  onmessage(event: MessageEvent): void
-  onerror(event: Event): void
+  onOpen(event: Event): void
+  onMessage(event: MessageEvent): void
+  onError(event: Event): void
   shouldClose(event: Event): boolean
-  onclose(event: CloseEvent): void
+  onClose(event: CloseEvent): void
   destroy(): void
 }
 

@@ -14,7 +14,7 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
   private retries = 0
   private connectTime = 0
   private socket?: WebSocket
-  private poller?: ObjectPoller
+  private poller?: ObjectPoller<T>
   private destroyed = false
 
   constructor(collection: Collection<T>) {
@@ -61,31 +61,17 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
   }
 
   private setHandlers(self: WSHandler<T>, ws: WebSocket) {
-    Object.entries(self).forEach(([key, value]) => {
-      if (key.startsWith('on')) {
-        const evt = key.replace('on', '')
-        log.debug("Adding event handler for '" + evt + "' using '" + key + "'")
-        ws.addEventListener(evt, (event: Event | CloseEvent | MessageEvent) => {
-          log.debug('received websocket event:', event)
-          switch (key) {
-            case 'onmessage':
-              this.onmessage(event as MessageEvent)
-              break
-            case 'onopen':
-              this.onopen(event as Event)
-              break
-            case 'onclose':
-              this.onclose(event as CloseEvent)
-              break
-            case 'onerror':
-              this.onerror(event as Event)
-              break
-            default:
-              log.debug(`WSHandler event ${key} is not handled`)
-          }
-        })
-      }
-    })
+    log.debug("Adding WebSocket event handler for 'open'")
+    ws.addEventListener('open', (event: Event) => self.onOpen(event))
+
+    log.debug("Adding WebSocket event handler for 'message'")
+    ws.addEventListener('message', (event: MessageEvent) => self.onMessage(event))
+
+    log.debug("Adding WebSocket event handler for 'close'")
+    ws.addEventListener('close', (event: CloseEvent) => self.onClose(event))
+
+    log.debug("Adding WebSocket event handler for 'error'")
+    ws.addEventListener('error', (event: Event) => self.onError(event))
   }
 
   send(data: string | KubeObject) {
@@ -115,7 +101,7 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
     return false
   }
 
-  onmessage(event: MessageEvent) {
+  onMessage(event: MessageEvent) {
     log.debug('Receiving message from web socket: ', event)
     if (this.shouldClose(event)) {
       log.debug('Should be closed!')
@@ -130,12 +116,13 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
     const eventType: keyof ObjectList<T> = data.type.toLowerCase()
     if (eventType !== 'added' && eventType !== 'modified' && eventType !== 'deleted') return
 
-    const property = this.list[eventType]
-    if (isFunction(property)) property(data.object)
-    else log.debug(`Property ${data.object} is not a function`)
+    if (isFunction(this.list[eventType]))
+      this.list[eventType](data.object)
+    else
+      log.debug(`Property ${data.object} is not a function`)
   }
 
-  onopen(event: Event) {
+  onOpen(event: Event) {
     log.debug('Received open event for kind:', this.collection.kind, 'namespace:', this.collection.namespace)
     if (this.shouldClose(event)) {
       return
@@ -144,7 +131,7 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
     this.connectTime = new Date().getTime()
   }
 
-  onclose(event: CloseEvent) {
+  onClose(event: CloseEvent) {
     log.debug('Received close event for kind:', this.collection.kind, 'namespace:', this.collection.namespace)
     if (this.destroyed) {
       log.debug('websocket destroyed for kind:', this.collection.kind, 'namespace:', this.collection.namespace)
@@ -164,13 +151,13 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
       if (!event.wasClean) {
         log.debug('Switching to polling mode')
         delete this.socket
-        this.poller = new ObjectPoller(this.collection.restURL, this)
+        this.poller = new ObjectPoller<T>(this.collection.restURL, this)
         this.poller.start()
       }
     }
   }
 
-  onerror(event: Event) {
+  onError(event: Event) {
     log.debug('websocket for kind:', this.collection.kind, 'received an error:', event)
     if (this.shouldClose(event)) {
       return
@@ -216,7 +203,7 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
           }
         }
 
-        log.debug('Fetching intial collection of object from web socket: ' + this.collection.restURL)
+        log.debug('Fetching initial collection of object from web socket: ' + this.collection.restURL)
         fetchPath(this.collection.restURL, {
           success: (data: string) => {
             const objectList: KubeObjectList<T> = JSON.parse(data)

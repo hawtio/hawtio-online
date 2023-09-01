@@ -12,8 +12,10 @@ export const KubernetesClient: React.FunctionComponent = () => {
   useEffect(() => {
     k8Service.on(K8Actions.CHANGED, () => {
       const projects = k8Service.getProjects()
-      setProjects(projects)
-      setPods(k8Service.getPods())
+      setProjects([...projects]) // must use spread to ensure update
+
+      const pods = k8Service.getPods()
+      setPods([...pods]) // must use spread to ensure update
 
       setActiveTabKey(projects.length > 0 ? 0 : 1)
     })

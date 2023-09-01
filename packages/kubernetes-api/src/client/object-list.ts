@@ -105,7 +105,7 @@ export class ObjectListImpl<T extends KubeObject> extends EventEmitter implement
   }
 
   doOn(action: WatchActions, cb: ProcessDataCallback<T>) {
-    this.once(action, cb)
+    this.on(action, cb)
   }
 
   doOff(action: WatchActions, cb: ProcessDataCallback<T>) {
@@ -113,19 +113,15 @@ export class ObjectListImpl<T extends KubeObject> extends EventEmitter implement
   }
 
   added(object: T): boolean {
-    if (!this.belongs(object)) {
+    if (!this.belongs(object))
       return false
-    }
-    if (!object.kind) {
+
+    if (!object.kind)
       object.kind = toKindName(this.kind) || undefined
-    }
-    if (
-      this._objects.some(obj => {
-        return equals(obj, object)
-      })
-    ) {
-      return this.modified(object)
-    }
+
+    const objIdx = this.objects.findIndex(obj => obj.metadata?.uid === object.metadata?.uid)
+    if (objIdx >= 0) return this.modified(object)
+
     this._objects.push(object)
     this.emit(WatchActions.ADDED, object)
     this.triggerChangedEvent()
@@ -133,25 +129,20 @@ export class ObjectListImpl<T extends KubeObject> extends EventEmitter implement
   }
 
   modified(object: T): boolean {
-    if (!this.belongs(object)) {
+    if (!this.belongs(object))
       return false
-    }
-    if (!object.kind) {
+
+    if (!object.kind)
       object.kind = toKindName(this.kind) || undefined
-    }
-    if (
-      !this._objects.some(obj => {
-        return equals(obj, object)
-      })
-    ) {
-      return this.added(object)
-    }
-    this._objects.forEach(obj => {
-      if (equals(obj, object)) {
-        this.emit(WatchActions.MODIFIED, object)
-        this.triggerChangedEvent()
-      }
-    })
+
+    const objIdx = this.objects.findIndex(obj => obj.metadata?.uid === object.metadata?.uid)
+    if (objIdx < 0) return this.added(object)
+
+    // Replace the old object with the new one
+    this._objects.splice(objIdx, 1, object)
+
+    this.emit(WatchActions.MODIFIED, object)
+    this.triggerChangedEvent()
     return true
   }
 
@@ -160,8 +151,10 @@ export class ObjectListImpl<T extends KubeObject> extends EventEmitter implement
       return false
     }
 
-    const idx = this._objects.indexOf(object)
-    const deleted = this._objects.splice(idx, 1)
+    const objIdx = this.objects.findIndex(obj => obj.metadata?.uid === object.metadata?.uid)
+    if (objIdx < 0) return false
+
+    const deleted = this._objects.splice(objIdx, 1)
     if (deleted) {
       this.emit(WatchActions.DELETED, deleted)
       this.triggerChangedEvent()
