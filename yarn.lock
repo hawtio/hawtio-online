@@ -2590,6 +2590,73 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@hawtio/online-management-api-app@workspace:packages/management-api-app":
+  version: 0.0.0-use.local
+  resolution: "@hawtio/online-management-api-app@workspace:packages/management-api-app"
+  dependencies:
+    "@hawtio/online-management-api": "workspace:*"
+    "@hawtio/react": ^0.4.0
+    "@patternfly/react-core": ^4.276.8
+    "@patternfly/react-styles": ^4.92.6
+    "@patternfly/react-table": ^4.113.0
+    "@patternfly/react-tokens": ^4.94.6
+    css-loader: ^6.8.1
+    dotenv-webpack: ^8.0.1
+    html-webpack-plugin: ^5.5.3
+    interpolate-html-plugin: ^4.0.0
+    jest: ^29.6.2
+    mini-css-extract-plugin: 2.7.2
+    os-browserify: ^0.3.0
+    path-browserify: ^1.0.1
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    source-map-loader: ^4.0.1
+    style-loader: ^3.3.3
+    ts-loader: ^9.4.4
+    tsconfig-paths-webpack-plugin: ^4.1.0
+    typescript: ^5.1.6
+    web-vitals: ^3.4.0
+    webpack: ^5.88.1
+    webpack-cli: ^5.1.4
+    webpack-dev-server: ^4.15.1
+    webpack-merge: ^5.9.0
+  languageName: unknown
+  linkType: soft
+
+"@hawtio/online-management-api@workspace:*, @hawtio/online-management-api@workspace:packages/management-api":
+  version: 0.0.0-use.local
+  resolution: "@hawtio/online-management-api@workspace:packages/management-api"
+  dependencies:
+    "@hawtio/online-kubernetes-api": "workspace:*"
+    "@hawtio/react": ^0.4.0
+    "@types/jest": ^29.5.3
+    "@types/jquery": ^3.5.16
+    babel-jest: ^29.6.1
+    eslint-config-react-app: ^7.0.1
+    eventemitter3: ^5.0.1
+    jest: ^29.6.1
+    jest-environment-jsdom: ^29.6.1
+    jest-extended: ^4.0.0
+    jest-fetch-mock: ^3.0.3
+    jest-watch-typeahead: ^2.2.2
+    jolokia.js: ^1.7.3-2
+    jquery: ^3.7.0
+    js-logger: ^1.6.1
+    jsonpath: ^1.1.1
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    react-markdown: ^8.0.7
+    replace: ^1.2.2
+    ts-jest: ^29.1.1
+    ts-node: ^10.9.1
+    tsup: ^7.1.0
+    typescript: ^4.9.5
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+    react-dom: ^16.8 || ^17 || ^18
+  languageName: unknown
+  linkType: soft
+
 "@hawtio/online-oauth-app@workspace:packages/oauth-app":
   version: 0.0.0-use.local
   resolution: "@hawtio/online-oauth-app@workspace:packages/oauth-app"
