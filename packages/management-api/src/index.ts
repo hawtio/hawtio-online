@@ -5,9 +5,14 @@ import { isK8ApiRegistered } from '@hawtio/online-kubernetes-api'
 
 export const mgmtService = new ManagementService()
 
+let configAdded = false
+
 const registerManagementApi = async (): Promise<boolean> => {
-  // Add Product Info
-  configManager.addProductInfo('Hawtio Management API', 'PACKAGE_VERSION_PLACEHOLDER')
+  if (! configAdded) {
+    // Add Product Info
+    configManager.addProductInfo('Hawtio Management API', 'PACKAGE_VERSION_PLACEHOLDER')
+    configAdded = true
+  }
 
   await isK8ApiRegistered()
 
