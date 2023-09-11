@@ -33,7 +33,6 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
   }
 
   const routesLabel = (): ReactNode => {
-    console.log(props.pod.mPod)
     const total = props.pod.mPod.management.camel.routes_count
     return `${total} route${total !== 1 ? 's' : ''}`
   }
@@ -71,7 +70,7 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
       </LabelGroup>
 
       <div className='pod-item-connect-button'>
-        <DiscoverPodConnect pod={props.pod}/>
+        <DiscoverPodConnect key={props.pod.uid} pod={props.pod}/>
       </div>
 
     </ListItem>

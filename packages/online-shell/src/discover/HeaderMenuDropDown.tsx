@@ -1,6 +1,6 @@
 import React from 'react'
 import { ThIcon } from '@patternfly/react-icons'
-import { Button, Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
+import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
 import { ConsoleLink, ConsoleType } from '../console'
 
 export const HeaderMenuDropDown: React.FunctionComponent = () => {

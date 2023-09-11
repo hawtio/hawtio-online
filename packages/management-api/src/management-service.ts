@@ -242,14 +242,10 @@ export class ManagementService extends EventEmitter {
     })
   }
 
-  connectUrl(pod: ManagedPod, container: Container) {
+  connectToUrl(pod: ManagedPod, container: Container): URL {
     const jolokiaPort = this.jolokiaContainerPort(container)
     const jolokiaPath = ManagedPod.getJolokiaPath(pod.pod, jolokiaPort) || ''
-
-    const url: URL = new URL('/integration', window.location.origin)
-    url.searchParams.set('jolokiaUrl', jolokiaPath)
-    url.searchParams.set('title', pod.metadata?.name ?? pod.metadata?.uid ?? '')
-    url.searchParams.set('returnTo', window.location.href)
-    return url.toString()
+    const url: URL = new URL(jolokiaPath)
+    return url
   }
 }

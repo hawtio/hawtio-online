@@ -1,9 +1,9 @@
 import React from 'react'
 import { Button, Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
-import { DiscoverPod } from './globals'
+import { Connection, Connections, connectService } from '@hawtio/react'
 import { Container } from '@hawtio/online-kubernetes-api'
 import { mgmtService } from '@hawtio/online-management-api'
-import * as discoverService from './discover-service'
+import { DiscoverPod } from './globals'
 import './Discover.css'
 
 interface DiscoverPodConnectProps {
@@ -13,6 +13,28 @@ interface DiscoverPodConnectProps {
 export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps> = (props: DiscoverPodConnectProps) => {
 
   const containers: Array<Container> = mgmtService.jolokiaContainers(props.pod.mPod)
+  const connections: Connections = connectService.loadConnections()
+
+  const connectionKeyName = (container: Container) => {
+    return `${props.pod.name}-${container.name}`
+  }
+
+  for (const container of containers) {
+    const url: URL = mgmtService.connectToUrl(props.pod.mPod, container)
+    const connection: Connection = {
+      name: connectionKeyName(container),
+      jolokiaUrl: url.toString(),
+
+      // Not necessary but included to satisfy rules of Connection object
+      scheme: url.protocol,
+      host: url.hostname,
+      port: Number(url.port),
+      path: url.pathname
+    }
+    connections[connectionKeyName(container)] = connection
+  }
+
+  connectService.saveConnections(connections)
 
   const [isOpen, setIsOpen] = React.useState(false)
 
@@ -34,15 +56,18 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
     return mgmtService.podStatus(props.pod.mPod) !== 'Running' || containers.length === 0
   }
 
+  const onConnect = (container: Container) => {
+    connectService.connect(connections[connectionKeyName(container)])
+  }
+
   return (
     <React.Fragment>
       { containers.length <= 1 && (
         <Button
           variant='primary'
-          component='a'
+          component='button'
           className='connect-button'
-          href={mgmtService.connectUrl(props.pod.mPod, containers[0])}
-          target='_blank'
+          onClick={() => onConnect(containers[0])}
           isDisabled={disableContainerButton()} >
           Connect
         </Button>
@@ -67,9 +92,8 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
               return (
                 <DropdownItem
                   key={`${props.pod.uid}-container-${index}`}
-                  component='a'
-                  href={mgmtService.connectUrl(props.pod.mPod, container)}
-                  target='_blank'
+                  component='button'
+                  onClick={() => onConnect(container)}
                 >
                   {container.name}
                 </DropdownItem>
