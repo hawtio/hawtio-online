@@ -1939,13 +1939,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bitauth/libauth@npm:^1.17.1":
-  version: 1.19.1
-  resolution: "@bitauth/libauth@npm:1.19.1"
-  checksum: d6f1ed0aaa36014529eb7e095a96644f8d06ec5f80f223b74d30414a19e2516a194d165d90fee09a96ed51d3bff6d80406b3ecaff194489579dbea4ae1c9f93c
-  languageName: node
-  linkType: hard
-
 "@commitlint/config-validator@npm:^17.4.4":
   version: 17.4.4
   resolution: "@commitlint/config-validator@npm:17.4.4"
@@ -2439,18 +2432,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hawtio/backend-middleware@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@hawtio/backend-middleware@npm:1.0.3"
-  dependencies:
-    "@bitauth/libauth": ^1.17.1
-    axios: ^1.0.0
-    express: ^4.18.1
-    js-logger: ^1.6.1
-  checksum: 2042a7c6055e192d14adf0909a2d87e93c865b28f580f39fb1050f45bc40cb13fe7c430d7e2e3055dfa8b175ff278d86d740b4f5d91df84364b2c189ebc4911d
-  languageName: node
-  linkType: hard
-
 "@hawtio/camel-model-v3@npm:@hawtio/camel-model@^3.21.0":
   version: 3.21.0
   resolution: "@hawtio/camel-model@npm:3.21.0"
@@ -2465,31 +2446,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hawtio/online-common@*, @hawtio/online-common@workspace:packages/common":
-  version: 0.0.0-use.local
-  resolution: "@hawtio/online-common@workspace:packages/common"
-  dependencies:
-    "@types/jsonpath": ^0.2.0
-    eslint-config-react-app: ^7.0.1
-    jest: ^29.6.1
-    jest-environment-jsdom: ^29.6.1
-    jest-fetch-mock: ^3.0.3
-    jest-watch-typeahead: ^2.2.2
-    jolokia.js: ^1.7.3-2
-    jsonpath: ^1.1.1
-    react: ^18.2.0
-    react-dom: ^18.2.0
-    react-markdown: ^8.0.7
-    replace: ^1.2.2
-    ts-jest: ^29.1.1
-    tsup: ^7.1.0
-    typescript: ^4.9.5
-  peerDependencies:
-    react: ^16.8 || ^17 || ^18
-    react-dom: ^16.8 || ^17 || ^18
-  languageName: unknown
-  linkType: soft
-
 "@hawtio/online-docker@workspace:docker":
   version: 0.0.0-use.local
   resolution: "@hawtio/online-docker@workspace:docker"
@@ -2500,7 +2456,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hawtio/online-integration@workspace:packages/integration"
   dependencies:
-    "@hawtio/online-common": "*"
     "@hawtio/react": ^0.4.0
     artemis-plugin-npm: ^1.8.0
     eslint-config-react-app: ^7.0.1
@@ -2564,6 +2519,7 @@ __metadata:
     "@hawtio/react": ^0.4.0
     "@types/jest": ^29.5.3
     "@types/jquery": ^3.5.16
+    "@types/jsonpath": ^0.2.0
     babel-jest: ^29.6.1
     eslint-config-react-app: ^7.0.1
     eventemitter3: ^5.0.1
@@ -2742,8 +2698,8 @@ __metadata:
     "@fortawesome/free-brands-svg-icons": ^6.4.2
     "@fortawesome/free-solid-svg-icons": ^6.4.2
     "@fortawesome/react-fontawesome": ^0.2.0
-    "@hawtio/backend-middleware": ^1.0.3
     "@hawtio/online-kubernetes-api": "workspace:*"
+    "@hawtio/online-management-api": "workspace:*"
     "@hawtio/react": ^0.4.0
     "@patternfly/react-core": ^4.276.8
     "@patternfly/react-styles": ^4.92.6
@@ -6245,17 +6201,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.0.0":
-  version: 1.4.0
-  resolution: "axios@npm:1.4.0"
-  dependencies:
-    follow-redirects: ^1.15.0
-    form-data: ^4.0.0
-    proxy-from-env: ^1.1.0
-  checksum: 7fb6a4313bae7f45e89d62c70a800913c303df653f19eafec88e56cea2e3821066b8409bc68be1930ecca80e861c52aa787659df0ffec6ad4d451c7816b9386b
-  languageName: node
-  linkType: hard
-
 "axobject-query@npm:^3.1.1":
   version: 3.2.1
   resolution: "axobject-query@npm:3.2.1"
@@ -9563,7 +9508,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.11.1, express@npm:^4.17.3, express@npm:^4.18.1":
+"express@npm:^4.11.1, express@npm:^4.17.3":
   version: 4.18.2
   resolution: "express@npm:4.18.2"
   dependencies:
@@ -9936,7 +9881,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.0":
+"follow-redirects@npm:^1.0.0":
   version: 1.15.2
   resolution: "follow-redirects@npm:1.15.2"
   peerDependenciesMeta:
@@ -16277,13 +16222,6 @@ __metadata:
     forwarded: 0.2.0
     ipaddr.js: 1.9.1
   checksum: 29c6990ce9364648255454842f06f8c46fcd124d3e6d7c5066df44662de63cdc0bad032e9bf5a3d653ff72141cc7b6019873d685708ac8210c30458ad99f2b74
-  languageName: node
-  linkType: hard
-
-"proxy-from-env@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "proxy-from-env@npm:1.1.0"
-  checksum: ed7fcc2ba0a33404958e34d95d18638249a68c430e30fcb6c478497d72739ba64ce9810a24f53a7d921d0c065e5b78e3822759800698167256b04659366ca4d4
   languageName: node
   linkType: hard
 

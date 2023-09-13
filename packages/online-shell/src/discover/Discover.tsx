@@ -6,6 +6,7 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
+  List,
   PageSection,
   PageSectionVariants,
   Title
@@ -16,13 +17,14 @@ import * as discoverService from './discover-service'
 import { DiscoverToolbar } from './DiscoverToolbar'
 import { DiscoverContext, useDisplayItems } from './context'
 import { DiscoverGroupList } from './DiscoverGroupList'
+import { DiscoverPodItem } from './DiscoverPodItem'
 
 export const Discover: React.FunctionComponent = () => {
 
   const {
-    error, isLoading, pods,
-    displayGroups, setDisplayGroups,
-    displayPods, setDisplayPods,
+    error, isLoading,
+    discoverGroups, setDiscoverGroups,
+    discoverPods, setDiscoverPods,
     filters, setFilters
   } = useDisplayItems()
 
@@ -44,7 +46,7 @@ export const Discover: React.FunctionComponent = () => {
     )
   }
 
-  if (pods.length === 0) {
+  if ((discoverGroups.length + discoverPods.length) === 0) {
     return (
       <EmptyState>
         <EmptyStateIcon icon={CubesIcon} />
@@ -65,17 +67,26 @@ export const Discover: React.FunctionComponent = () => {
       <DiscoverContext.Provider
         value={
           {
-            pods, displayGroups, setDisplayGroups,
-            displayPods, setDisplayPods, filters, setFilters
+            discoverGroups, setDiscoverGroups,
+            discoverPods, setDiscoverPods, filters, setFilters
           }
         }>
 
         <DiscoverToolbar />
 
-        { displayGroups.length > 0 && ( <DiscoverGroupList groups={displayGroups} updateGroups={setDisplayGroups}/>)}
+        { discoverGroups.length > 0 && ( <DiscoverGroupList groups={discoverGroups} updateGroups={setDiscoverGroups}/>)}
+
+        { discoverPods.length > 0 && (
+          <List isBordered={true} iconSize='large'>
+          {
+            discoverPods.map(pod => {
+              return ( <DiscoverPodItem pod={pod}/> )
+            })
+          }
+          </List>
+        )}
 
       </DiscoverContext.Provider>
     </PageSection>
   )
 }
-// { displayPods.length > 0 && ( <DiscoverPods groups={displayPods}/>)}

@@ -1,5 +1,5 @@
 import { Logger, configManager, hawtio, Hawtio, registerPlugins, HawtioPlugin } from '@hawtio/react'
-import { isK8ApiRegistered } from '@hawtio/online-kubernetes-api'
+import { isMgmtApiRegistered } from '@hawtio/online-management-api'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
@@ -10,8 +10,8 @@ console.log('Logging Level set to ', Logger.getLevel())
 
 configManager.addProductInfo('Hawtio Online', '__PACKAGE_VERSION_PLACEHOLDER__')
 
-// Register kubernetes - only then complete hawtio bootstrap
-isK8ApiRegistered()
+// Register kubernetes & management - only then complete hawtio bootstrap
+isMgmtApiRegistered()
   .then(() => {
 
     // Register hawtio plugins

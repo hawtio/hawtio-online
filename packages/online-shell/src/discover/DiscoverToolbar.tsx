@@ -15,7 +15,8 @@ import {
 } from '@patternfly/react-core'
 import { LongArrowAltUpIcon, LongArrowAltDownIcon} from '@patternfly/react-icons'
 import { DiscoverContext } from './context'
-import { DisplayItem, TypeFilter, filterAndGroupPods } from './discover-service'
+import { DiscoverItem, TypeFilter } from './globals'
+import { filterAndGroupPods } from './discover-service'
 
 const defaultFilterInputPlaceholder = 'Filter by Name...'
 const headers = ['Name', 'Namespace']
@@ -30,7 +31,7 @@ const descending: SortOrder = { id: 'descending', icon: <LongArrowAltDownIcon/>}
 
 export const DiscoverToolbar: React.FunctionComponent = () => {
 
-  const { pods, displayGroups, setDisplayGroups, displayPods, setDisplayPods, filters, setFilters } = useContext(DiscoverContext)
+  const { discoverGroups, setDiscoverGroups, discoverPods, setDiscoverPods, filters, setFilters } = useContext(DiscoverContext)
   // Ref for toggle of filter type Select control
   const filterTypeToggleRef = useRef<HTMLButtonElement | null>()
 
@@ -58,9 +59,9 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
     setFilters(emptyFilters)
     setFilterInput('')
 
-    const [newDisplayGroups, newDisplayPods] = filterAndGroupPods(pods, emptyFilters, [...displayGroups])
-    setDisplayGroups(newDisplayGroups)
-    setDisplayPods(newDisplayPods)
+    const [newDiscoverGroups, newDiscoverPods] = filterAndGroupPods(emptyFilters, [...discoverGroups])
+    setDiscoverGroups(newDiscoverGroups)
+    setDiscoverPods(newDiscoverPods)
   }
 
   const onSelectFilterType = (
@@ -104,9 +105,9 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
     const newFilters = filters.concat(filter)
     setFilters(newFilters)
 
-    const [newDisplayGroups, newDisplayPods] = filterAndGroupPods(pods, newFilters, [...displayGroups])
-    setDisplayGroups(newDisplayGroups)
-    setDisplayPods(newDisplayPods)
+    const [newDiscoverGroups, newDiscoverPods] = filterAndGroupPods(newFilters, [...discoverGroups])
+    setDiscoverGroups(newDiscoverGroups)
+    setDiscoverPods(newDiscoverPods)
   }
 
   const deleteFilter = (filterChip: string) => {
@@ -116,9 +117,9 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
 
     setFilters(remaining)
 
-    const [newDisplayGroups, newDisplayPods] = filterAndGroupPods(pods, remaining, [...displayGroups])
-    setDisplayGroups(newDisplayGroups)
-    setDisplayPods(newDisplayPods)
+    const [newDiscoverGroups, newDiscoverPods] = filterAndGroupPods(remaining, [...discoverGroups])
+    setDiscoverGroups(newDiscoverGroups)
+    setDiscoverPods(newDiscoverPods)
   }
 
 
@@ -138,7 +139,7 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
     setIsSortTypeOpen(isOpen)
   }
 
-  const compareDisplayItems = (item1: DisplayItem, item2: DisplayItem) => {
+  const compareDiscoverItems = (item1: DiscoverItem, item2: DiscoverItem) => {
     let value = 0
 
     type FilterKey = keyof typeof item1 // name or namespace
@@ -154,14 +155,14 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
   }
 
   const sortItems = () => {
-    const sortedGroups = [...displayGroups]
-    const sortedPods = [...displayPods]
+    const sortedGroups = [...discoverGroups]
+    const sortedPods = [...discoverPods]
 
-    sortedGroups.sort(compareDisplayItems)
-    sortedPods.sort(compareDisplayItems)
+    sortedGroups.sort(compareDiscoverItems)
+    sortedPods.sort(compareDiscoverItems)
 
-    setDisplayGroups(sortedGroups)
-    setDisplayPods(sortedPods)
+    setDiscoverGroups(sortedGroups)
+    setDiscoverPods(sortedPods)
 
     if (sortOrder === ascending)
       setSortOrder(descending)
@@ -220,7 +221,7 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
               selections={sortType}
               isOpen={isSortTypeOpen}
               direction={SelectDirection.down}
-              isDisabled={(displayGroups.length + displayPods.length) <= 1}
+              isDisabled={(discoverGroups.length + discoverPods.length) <= 1}
             >
               {headers.map((name, index) => (
                 <SelectOption key={name + '-' + index} value={name} />
@@ -232,7 +233,7 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
               variant="control"
               aria-label="Sort"
               onClick={sortItems}
-              isDisabled={(displayGroups.length + displayPods.length) <= 1}
+              isDisabled={(discoverGroups.length + discoverPods.length) <= 1}
             >
               {sortOrder.icon}
             </Button>

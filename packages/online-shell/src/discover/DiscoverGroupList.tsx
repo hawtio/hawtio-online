@@ -6,19 +6,19 @@ import {
   AccordionToggle,
   List,
 } from '@patternfly/react-core'
-import { DisplayGroup } from './discover-service'
-import './Discover.css'
+import { DiscoverGroup } from './globals'
 import { DiscoverGroupLabel } from './DiscoverGroupLabel'
 import { DiscoverPodItem } from './DiscoverPodItem'
+import './Discover.css'
 
 interface DiscoverGroupListProps {
-  groups: DisplayGroup[],
-  updateGroups: (groups: DisplayGroup[]) => void
+  groups: DiscoverGroup[],
+  updateGroups: (groups: DiscoverGroup[]) => void
 }
 
 export const DiscoverGroupList: React.FunctionComponent<DiscoverGroupListProps> = (props: DiscoverGroupListProps) => {
 
-  const onToggle = (group: DisplayGroup) => {
+  const onToggle = (group: DiscoverGroup) => {
 
     const groups = [...props.groups]
 
@@ -46,9 +46,7 @@ export const DiscoverGroupList: React.FunctionComponent<DiscoverGroupListProps> 
               <AccordionContent id={'item-' + group.name + 'expand'} isHidden={!group.expanded}>
                 <List isBordered={true} iconSize='large'>
                 {
-                  group.replicas.map(replica => {
-                    return ( <DiscoverPodItem pod={replica}/> )
-                  })
+                  group.replicas.map(replica => ( <DiscoverPodItem key={replica.uid} pod={replica}/> ))
                 }
                 </List>
               </AccordionContent>
@@ -59,22 +57,3 @@ export const DiscoverGroupList: React.FunctionComponent<DiscoverGroupListProps> 
       </Accordion>
     )
 }
-
-//
-//               <!-- Replicas pods -->
-//               <div ng-if="pod.deployment"
-//                    class="list-group-item-container container-fluid"
-//                    ng-class="{'hidden': !pod.expanded}">
-//                 <div ng-repeat="replica in pod.replicas"
-//                      class="list-group-item list-view-pf-stacked"
-//                      pod-list-row pod="replica">
-//                 </div>
-//               </div>
-//
-//
-//
-//
-//     <!-- Pod item -->
-//     <pod-list-row ng-if="!pod.deployment" pod="pod" />
-//   </div>
-// </div>

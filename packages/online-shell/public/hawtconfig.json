@@ -9,7 +9,7 @@
   "branding": {
     "appName": "Hawtio Console",
     "appLogoUrl": "/hawtio-logo.svg",
-    "css": "branding-example.css",
+    "css": "branding.css",
     "favicon": "favicon.ico"
   },
   "disabledRoutes": ["connect"]

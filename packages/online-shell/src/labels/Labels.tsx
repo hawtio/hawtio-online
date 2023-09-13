@@ -21,7 +21,7 @@ export const Labels: React.FunctionComponent<LabelsProps> = (props: LabelsProps)
 
   const clickableLabel = (key: string, value: string): ReactNode => {
     return (
-      <Label color="blue" className='k8s-clickable-label'>
+      <Label color="blue" className='k8s-clickable-label' key={key + '-' + value}>
         <ConsoleLink type={ConsoleType.search} namespace={props.namespace} kind='core~v1~Pod' selector={`${key}=${value}`}>
           <span className='k8s-label-key'>{key}</span>
           <span>=</span>
@@ -33,7 +33,7 @@ export const Labels: React.FunctionComponent<LabelsProps> = (props: LabelsProps)
 
   const textLabel = (key: string, value: string): ReactNode => {
     return (
-      <Label color='blue' icon={<InfoCircleIcon />} className='k8s-clickable-label'>
+      <Label color='blue' icon={<InfoCircleIcon />} className='k8s-clickable-label' key={key + '-' + value}>
         <span className='k8s-label-key'>{key}</span>
         <span>=</span>
         <span className='k8s-label-value'>{value}</span>

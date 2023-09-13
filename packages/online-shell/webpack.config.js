@@ -5,7 +5,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const InterpolateHtmlPlugin = require('interpolate-html-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
-const { hawtioBackend } = require('@hawtio/backend-middleware')
 const path = require('path')
 const dotenv = require('dotenv')
 const { dependencies } = require('./package.json')
@@ -111,6 +110,11 @@ module.exports = () => {
             requiredVersion: dependencies['@hawtio/react'],
           },
           '@hawtio/online-kubernetes-api': {
+            singleton: true,
+            // Hardcoding needed because it cannot handle yarn 'workspace:*' version
+            requiredVersion: '^0.0.0',
+          },
+          '@hawtio/online-management-api': {
             singleton: true,
             // Hardcoding needed because it cannot handle yarn 'workspace:*' version
             requiredVersion: '^0.0.0',
@@ -271,15 +275,6 @@ module.exports = () => {
         devServer.app.get('/hawtio/keycloak/validate-subject-matches', (_, res) => res.send('true'))
         devServer.app.get('/hawtio/auth/logout', (_, res) => res.redirect('/hawtio/login'))
         devServer.app.post('/hawtio/auth/login', (_, res) => res.send(String(login)))
-
-        middlewares.push({
-          name: 'hawtio-backend',
-          path: '/proxy',
-          middleware: hawtioBackend({
-            // Uncomment it if you want to see debug log for Hawtio backend
-            logLevel: 'debug',
-          }),
-        })
 
         return middlewares
       }

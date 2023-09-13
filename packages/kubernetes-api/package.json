@@ -44,6 +44,7 @@
   "devDependencies": {
     "@types/jest": "^29.5.3",
     "@types/jquery": "^3.5.16",
+    "@types/jsonpath": "^0.2.0",
     "babel-jest": "^29.6.1",
     "eslint-config-react-app": "^7.0.1",
     "jest": "^29.6.1",

@@ -31,7 +31,6 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/online-common": "*",
     "@hawtio/react": "^0.4.0",
     "artemis-plugin-npm": "^1.8.0",
     "openshift-logos-icon": "^1.7.1",

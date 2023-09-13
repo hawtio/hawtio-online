@@ -1,36 +1,6 @@
-import { KubePod, OwnerReference, PodStatus, PodCondition } from "@hawtio/online-kubernetes-api"
-
-export interface TypeFilter {
-  type: string
-  value: string
-}
-
-export enum DisplayType {
-  Group = 0,
-  Pod = 1
-}
-
-export interface DisplayItem {
-  type: DisplayType
-  name: string
-  namespace: string
-  uid: string
-}
-
-export interface DisplayGroup extends DisplayItem {
-  replicas: DisplayPod[]
-  expanded: boolean
-  config?: string
-  version?: string
-  statefulset?: string
-}
-
-export interface DisplayPod extends DisplayItem {
-  owner?: string
-  labels: Record<string, string>
-  annotations: Record<string, string>
-  target: KubePod
-}
+import { OwnerReference } from "@hawtio/online-kubernetes-api"
+import { ManagedPod, mgmtService } from "@hawtio/online-management-api"
+import { DiscoverGroup, DiscoverPod, DiscoverType, TypeFilter } from "./globals"
 
 export function unwrap(error: Error): string {
   if (!error) return 'unknown error'
@@ -40,7 +10,7 @@ export function unwrap(error: Error): string {
   return error.message
 }
 
-function applyFilter(filter: TypeFilter, pod: KubePod): boolean {
+function applyFilter(filter: TypeFilter, pod: ManagedPod): boolean {
   if (! pod.metadata) return false
 
   type KubeObjKey = keyof typeof pod.metadata
@@ -60,15 +30,15 @@ function recordValue(values: Record<string, string>|undefined, key: string): str
   return values[key]
 }
 
-function toDisplayGroup(pod: KubePod, owner: OwnerReference, replicas: KubePod[], expanded: boolean): DisplayGroup {
-  const displayReplicas = [pod, ...replicas].map(replica => toDisplayPod(replica))
+function toDiscoverGroup(pod: ManagedPod, owner: OwnerReference, replicas: ManagedPod[], expanded: boolean): DiscoverGroup {
+  const discoverReplicas = [pod, ...replicas].map(replica => createDiscoverPod(replica))
 
   return {
-    type: DisplayType.Group,
+    type: DiscoverType.Group,
     name: owner.name,
     uid: owner.uid,
     namespace: pod.metadata?.namespace || '<unknown>',
-    replicas: displayReplicas || [],
+    replicas: discoverReplicas || [],
     expanded: expanded,
     config: recordValue(pod.metadata?.annotations, 'openshift.io/deployment-config.name'),
     version: recordValue(pod.metadata?.annotations, 'openshift.io/deployment-config.latest-version'),
@@ -76,19 +46,19 @@ function toDisplayGroup(pod: KubePod, owner: OwnerReference, replicas: KubePod[]
   }
 }
 
-function toDisplayPod(pod: KubePod): DisplayPod {
+function createDiscoverPod(pod: ManagedPod): DiscoverPod {
   return {
-    type: DisplayType.Pod,
+    type: DiscoverType.Pod,
     name: pod.metadata?.name || '<unknown>',
     uid: pod.metadata?.uid || '<unknown>',
     namespace: pod.metadata?.namespace || '<unknown>',
     labels: pod.metadata?.labels || {},
     annotations: pod.metadata?.annotations || {},
-    target: pod
+    mPod: pod
   }
 }
 
-function podOwner(pod: KubePod): OwnerReference|null {
+function podOwner(pod: ManagedPod): OwnerReference|null {
   if (!pod.metadata || !pod.metadata?.ownerReferences)
   return null
 
@@ -98,7 +68,7 @@ function podOwner(pod: KubePod): OwnerReference|null {
   return pod.metadata.ownerReferences[0]
 }
 
-function podsWithOwner(remainingPods: KubePod[], ownerRef: OwnerReference): KubePod[] {
+function podsWithOwner(remainingPods: ManagedPod[], ownerRef: OwnerReference): ManagedPod[] {
   if (! remainingPods) return []
 
   return remainingPods.filter(pod => {
@@ -107,22 +77,18 @@ function podsWithOwner(remainingPods: KubePod[], ownerRef: OwnerReference): Kube
   })
 }
 
-function groupPodsByDeployment(pods: KubePod[], exDisplayGroups: DisplayGroup[]): [DisplayGroup[], DisplayPod[]] {
-  const displayPods: DisplayPod[] = []
-  const displayGroups: DisplayGroup[] = []
+function groupPodsByDeployment(pods: ManagedPod[], exDiscoverGroups: DiscoverGroup[]): [DiscoverGroup[], DiscoverPod[]] {
+  const discoverPods: DiscoverPod[] = []
+  const discoverGroups: DiscoverGroup[] = []
 
   pods.forEach((pod, index) => {
     const ownerRef = podOwner(pod)
-
     if (! ownerRef || ! ownerRef?.uid) {
-      displayPods.push(toDisplayPod(pod))
+      discoverPods.push(createDiscoverPod(pod))
       return
     }
 
-    const groups = displayGroups.filter(group => {
-      group.uid === ownerRef.uid
-    })
-
+    const groups = discoverGroups.filter(group => group.uid === ownerRef.uid)
     if (groups.length > 0)
       return // pod already processed into a display group
 
@@ -134,22 +100,24 @@ function groupPodsByDeployment(pods: KubePod[], exDisplayGroups: DisplayGroup[])
     const remainingPods = (index < (pods.length - 1)) ? pods.slice((index + 1)) : []
     const replicas = podsWithOwner(remainingPods, ownerRef)
 
-    const theExDisplayGroups = exDisplayGroups.filter(group => {
+    const theExDiscoverGroups = exDiscoverGroups.filter(group => {
       group.uid === pod.metadata?.uid &&
       group.namespace === pod.metadata.namespace &&
       group.name === ownerRef?.name
     })
 
     // Determine if group previously expanded
-    const expanded = (theExDisplayGroups.length > 0) ? theExDisplayGroups[0].expanded : true
+    const expanded = (theExDiscoverGroups.length > 0) ? theExDiscoverGroups[0].expanded : true
 
-    displayGroups.push(toDisplayGroup(pod, ownerRef, replicas, expanded))
+    discoverGroups.push(toDiscoverGroup(pod, ownerRef, replicas, expanded))
   })
 
-  return [displayGroups, displayPods]
+  return [discoverGroups, discoverPods]
 }
 
-export function filterAndGroupPods(pods: KubePod[], theFilters: TypeFilter[], currentGroups: DisplayGroup[]): [DisplayGroup[], DisplayPod[]] {
+export function filterAndGroupPods(theFilters: TypeFilter[], currentGroups: DiscoverGroup[]): [DiscoverGroup[], DiscoverPod[]] {
+  const pods: ManagedPod[] = mgmtService.pods || []
+
   if (!theFilters || theFilters.length === 0)
     return groupPodsByDeployment(pods, currentGroups)
 
@@ -170,95 +138,11 @@ export function filterAndGroupPods(pods: KubePod[], theFilters: TypeFilter[], cu
   return groupPodsByDeployment(filtered, currentGroups)
 }
 
-export function isPodReady(pod: DisplayPod): boolean {
-  if (! pod.target) return false
-
-  const status = pod.target.status as PodStatus
-  const conditions = status.conditions as Array<PodCondition>
-  return conditions && conditions.some(c => c.type === 'Ready' && c.status === 'True')
-}
-
-enum OS4 {
-  'dc' = 'deploymentconfigs',
-  'rc' = 'replicationcontrollers',
-  'rs' = 'replicasets',
-  'sts' = 'statefulsets',
-  'search' = 'search'
+export function getStatus(pod: DiscoverPod): string {
+  return mgmtService.podStatus(pod.mPod)
 }
 
 export enum ViewType {
   listView = 'listView',
   cardView = 'cardView',
-}
-
-export function podDirective(viewType: ViewType, templateUrl: string) {
-  // return function podDirective($window: ng.IWindowService, openShiftConsole: ConsoleService) {
-  //   'ngInject'
-  //   return {
-  //     restrict: 'EA',
-  //     templateUrl: templateUrl,
-  //     scope: {
-  //       pod: '=',
-  //     },
-  //     link: function ($scope: ng.IScope | any) {
-  //       if (openShiftConsole.enabled) {
-  //         openShiftConsole.url.then(url => $scope.openshiftConsoleUrl = url)
-  //       }
-  //       $scope.getStatusClasses = (pod, status) => getPodClasses(pod, { status, viewType })
-  //       $scope.open = (url) => {
-  //         $window.open(url)
-  //         return true
-  //       }
-  //     },
-  //   }
-  // }
-}
-
-export function expansionDirective() {
-  // return new ListRowExpandDirective()
-}
-
-export function matchHeightDirective($timeout: any) {
-  // 'ngInject'
-  // return new MatchHeightDirective($timeout)
-}
-
-export function httpSrcDirective($http: any) {
-  // 'ngInject'
-  // return new HttpSrcDirective($http)
-}
-
-export function jolokiaContainersFilter() {
-  // return containers => (containers || []).filter(container => container.ports.some(port => port.name === 'jolokia'))
-}
-
-export function jolokiaPortFilter() {
-  // return container => container.ports.find(port => port.name === 'jolokia')
-}
-
-export function connectUrlFilter() {
-  // return (pod: Pod, port = 8778) => {
-  //   const jolokiaPath = getManagementJolokiaPath(pod, port)
-  //   return new URI().path('/integration/')
-  //     .query({
-  //       jolokiaUrl: new URI().query('').path(jolokiaPath),
-  //       title: pod.metadata.name,
-  //       returnTo: new URI().toString(),
-  //     })
-  // }
-}
-
-export function podDetailsUrlFilter() {
-  // 'ngInject'
-  // let os4 = false
-  // openShiftService.getClusterVersion().then((clusterVersion => {
-  //   os4 = isOpenShift4(clusterVersion)
-  // }))
-  // return (pod: Pod, openShiftConsoleUrl: string) => {
-  //   if (os4) {
-  //     return UrlHelpers.join(openShiftConsoleUrl, 'k8s/ns', pod.metadata.namespace, 'pods', pod.metadata.name)
-  //   } else {
-  //     return UrlHelpers.join(openShiftConsoleUrl, 'project', pod.metadata.namespace, 'browse/pods', pod.metadata.name)
-  //   }
-  // }
 }

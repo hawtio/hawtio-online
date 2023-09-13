@@ -1,51 +1,45 @@
 import React, { ReactNode } from 'react'
 import { Label, LabelGroup, ListItem, Title } from '@patternfly/react-core'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowsRotate, faCircleExclamation } from '@fortawesome/free-solid-svg-icons'
 import { DatabaseIcon, HomeIcon, OutlinedHddIcon} from '@patternfly/react-icons'
 import { ConsoleLink, ConsoleType } from '../console'
-import * as discoverService from './discover-service'
+import { Labels } from '../labels'
+import { DiscoverPod } from './globals'
 import { CamelRouteIcon } from './svg'
+import { StatusIcon } from './StatusIcon'
+import { DiscoverPodConnect } from './DiscoverPodConnect'
 import './Discover.css'
-import { Labels } from 'src/labels/Labels'
 
 interface DiscoverPodItemProps {
-  pod: discoverService.DisplayPod
+  pod: DiscoverPod
 }
 
 export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (props: DiscoverPodItemProps) => {
 
-  const statusIcon = (): ReactNode => {
-    if (!discoverService.isPodReady(props.pod))
-      return <FontAwesomeIcon icon={faCircleExclamation} beat style={{color: "#a51d2d",}} />
-
-    return (<FontAwesomeIcon icon={faArrowsRotate} spin style={{color: "#26a269",}} />)
-  }
-
   const nodeLabel = (): ReactNode => {
-    if (props.pod.target.spec?.nodeName) {
+    if (props.pod.mPod.spec?.nodeName) {
       return (
-        <ConsoleLink type={ConsoleType.node} selector={props.pod.target.spec?.nodeName}>
-          {props.pod.target.spec?.nodeName}
+        <ConsoleLink type={ConsoleType.node} selector={props.pod.mPod.spec?.nodeName}>
+          {props.pod.mPod.spec?.nodeName}
         </ConsoleLink>
       )
     }
 
-    return props.pod.target.status?.hostIP
+    return props.pod.mPod.status?.hostIP
   }
 
   const containersLabel = (): ReactNode => {
-    const total = props.pod.target.spec?.containers.length || 0
+    const total = props.pod.mPod.spec?.containers.length || 0
     return `${total} container${total !== 1 ? 's' : ''}`
   }
 
   const routesLabel = (): ReactNode => {
-    console.log(props.pod.target)
-    return 'number routes'
+    console.log(props.pod.mPod)
+    const total = props.pod.mPod.management.camel.routes_count
+    return `${total} route${total !== 1 ? 's' : ''}`
   }
 
   return (
-    <ListItem icon={statusIcon()}>
+    <ListItem icon={<StatusIcon pod={props.pod}/>} key={'item-' + props.pod.uid}>
       <div className='pod-item-name-with-labels'>
         <Title headingLevel="h3">
           <ConsoleLink type={ConsoleType.resource} selector={props.pod.name} namespace={props.pod.namespace} resource='pods'>
@@ -56,7 +50,7 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
         <Labels labels={props.pod.labels} namespace={props.pod.namespace} limit={3} clickable={true}/>
       </div>
 
-      <LabelGroup>
+      <LabelGroup numLabels={4} className='pod-item-label-group'>
         <Label color='gold' icon={<HomeIcon />} className='pod-item-home'>
           <ConsoleLink type={ConsoleType.namespace} namespace={props.pod.namespace}>
             {props.pod.namespace}
@@ -75,6 +69,11 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
           {routesLabel()}
         </Label>
       </LabelGroup>
+
+      <div className='pod-item-connect-button'>
+        <DiscoverPodConnect pod={props.pod}/>
+      </div>
+
     </ListItem>
   )
 }

@@ -3,7 +3,7 @@ import $ from 'jquery'
 import { log } from './globals'
 import jsonpath from 'jsonpath'
 import { func, is, object } from 'superstruct'
-import { KubePod, k8Service, ObjectMeta, PodStatus, joinPaths } from '@hawtio/online-kubernetes-api'
+import { KubePod, k8Service, ObjectMeta, PodStatus, joinPaths, PodSpec } from '@hawtio/online-kubernetes-api'
 import { k8Api } from '@hawtio/online-kubernetes-api'
 
 const DEFAULT_JOLOKIA_OPTIONS: IOptions = {
@@ -13,8 +13,6 @@ const DEFAULT_JOLOKIA_OPTIONS: IOptions = {
   canonicalProperties: false,
   ignoreErrors: true,
 } as const
-
-const DEFAULT_JOLOKIA_PORT = 8778
 
 /**
  * Dummy Jolokia implementation that does nothing.
@@ -90,6 +88,8 @@ export type Management = {
 }
 
 export class ManagedPod {
+  static readonly DEFAULT_JOLOKIA_PORT = 8778
+
   readonly jolokiaPort: number
   readonly jolokiaPath: string
   readonly jolokia: IJolokia
@@ -106,18 +106,18 @@ export class ManagedPod {
 
   constructor(public pod: KubePod) {
     this.jolokiaPort = this.extractPort(pod)
-    this.jolokiaPath = this.createPath(pod, this.jolokiaPort) || ''
+    this.jolokiaPath = ManagedPod.getJolokiaPath(pod, this.jolokiaPort) || ''
     this.jolokia = this.createJolokia() || new DummyJolokia()
   }
 
-  private getAnnotation(pod: KubePod, name: string, defaultValue: string): string {
+  static getAnnotation(pod: KubePod, name: string, defaultValue: string): string {
     if (pod.metadata?.annotations && pod.metadata?.annotations[name]) {
       return pod.metadata.annotations[name]
     }
     return defaultValue
   }
 
-  private createPath(pod: KubePod, port: number): string | null {
+  static getJolokiaPath(pod: KubePod, port: number): string | null {
     if (! k8Api.masterUri()) {
       return null
     }
@@ -129,16 +129,16 @@ export class ManagedPod {
 
     const namespace = pod.metadata?.namespace
     const name = pod.metadata?.name
-    const protocol = this.getAnnotation(pod, 'hawt.io/protocol', 'https')
-    const jolokiaPath = this.getAnnotation(pod, 'hawt.io/jolokiaPath', '/proxy/jolokia/')
+    const protocol = ManagedPod.getAnnotation(pod, 'hawt.io/protocol', 'https')
+    const jolokiaPath = ManagedPod.getAnnotation(pod, 'hawt.io/jolokiaPath', '/proxy/jolokia/')
     const path = `/api/v1/namespaces/${namespace}/pods/${protocol}:${name}:${port}${jolokiaPath}`
     return joinPaths(k8Api.masterUri(), path)
   }
 
   private extractPort(pod: KubePod): number {
     const ports = jsonpath.query(pod, k8Service.jolokiaPortQuery)
-    if (!ports || ports.length === 0) return DEFAULT_JOLOKIA_PORT
-    return ports[0].containerPort || DEFAULT_JOLOKIA_PORT
+    if (!ports || ports.length === 0) return ManagedPod.DEFAULT_JOLOKIA_PORT
+    return ports[0].containerPort || ManagedPod.DEFAULT_JOLOKIA_PORT
   }
 
   private createJolokia() {
@@ -153,8 +153,16 @@ export class ManagedPod {
     return new Jolokia(options)
   }
 
+  get kind(): string | undefined {
+    return this.pod.kind
+  }
+
   get metadata(): ObjectMeta | undefined {
     return this.pod.metadata
+  }
+
+  get spec(): PodSpec | undefined {
+    return this.pod.spec
   }
 
   get status(): PodStatus | undefined {

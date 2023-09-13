@@ -1,9 +1,7 @@
 import { EventEmitter } from 'eventemitter3'
 import { ManagedPod, Management } from './managed-pod'
-import { k8Service, KubePod, debounce } from '@hawtio/online-kubernetes-api'
+import { k8Service, k8Api, KubePod, K8Actions, Container, ContainerPort, debounce } from '@hawtio/online-kubernetes-api'
 import { MgmtActions, log } from './globals'
-import { K8Actions } from '@hawtio/online-kubernetes-api'
-import { k8Api } from '@hawtio/online-kubernetes-api'
 
 export class ManagementService extends EventEmitter {
 
@@ -226,5 +224,32 @@ export class ManagementService extends EventEmitter {
     }
 
     return reason || 'unknown'
+  }
+
+  jolokiaContainerPort(container: Container): number {
+    const ports: Array<ContainerPort> = container.ports || []
+    const containerPort = ports.find(port => port.name === 'jolokia')
+    return containerPort?.containerPort ?? ManagedPod.DEFAULT_JOLOKIA_PORT
+  }
+
+  jolokiaContainers(pod: ManagedPod): Array<Container> {
+    if (!pod)
+      return []
+
+    const containers: Array<Container> = pod.spec?.containers || []
+    return containers.filter(container => {
+      return this.jolokiaContainerPort(container) !== null
+    })
+  }
+
+  connectUrl(pod: ManagedPod, container: Container) {
+    const jolokiaPort = this.jolokiaContainerPort(container)
+    const jolokiaPath = ManagedPod.getJolokiaPath(pod.pod, jolokiaPort) || ''
+
+    const url: URL = new URL('/integration', window.location.origin)
+    url.searchParams.set('jolokiaUrl', jolokiaPath)
+    url.searchParams.set('title', pod.metadata?.name ?? pod.metadata?.uid ?? '')
+    url.searchParams.set('returnTo', window.location.href)
+    return url.toString()
   }
 }

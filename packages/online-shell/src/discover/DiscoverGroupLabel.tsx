@@ -1,11 +1,11 @@
 import React from 'react'
 import { Title } from '@patternfly/react-core'
-import { DisplayGroup } from './discover-service'
+import { DiscoverGroup } from './globals'
 import { ConsoleLink, ConsoleType } from '../console'
 import './Discover.css'
 
 interface DiscoverGroupLabelProps {
-  group: DisplayGroup
+  group: DiscoverGroup
 }
 
 export const DiscoverGroupLabel: React.FunctionComponent<DiscoverGroupLabelProps> = (props: DiscoverGroupLabelProps) => {

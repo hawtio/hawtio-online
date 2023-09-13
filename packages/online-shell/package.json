@@ -30,6 +30,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@hawtio/online-kubernetes-api": "workspace:*",
+    "@hawtio/online-management-api": "workspace:*",
     "@hawtio/react": "^0.4.0",
     "@patternfly/react-core": "^4.276.8",
     "@patternfly/react-styles": "^4.92.6",
@@ -45,7 +46,6 @@
     "typescript": "^4.9.5"
   },
   "devDependencies": {
-    "@hawtio/backend-middleware": "^1.0.3",
     "babel-loader": "^9.1.3",
     "css-loader": "^6.8.1",
     "dotenv-webpack": "^8.0.1",

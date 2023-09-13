@@ -1,6 +1,8 @@
-import { K8Actions, KubeObject, KubePod, isK8ApiRegistered, k8Api, k8Service } from "@hawtio/online-kubernetes-api"
 import { createContext, useEffect, useRef, useState } from "react"
-import { DisplayGroup, DisplayPod, TypeFilter, filterAndGroupPods } from './discover-service'
+import { k8Api, k8Service } from "@hawtio/online-kubernetes-api"
+import { MgmtActions, isMgmtApiRegistered, mgmtService } from "@hawtio/online-management-api"
+import { filterAndGroupPods } from './discover-service'
+import { DiscoverGroup, DiscoverPod, TypeFilter } from './globals'
 
 /**
  * Custom React hook for using filters.
@@ -9,10 +11,8 @@ export function useDisplayItems() {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>()
-
-  const [pods, setPods] = useState<KubePod[]>([])
-  const [displayGroups, setDisplayGroups] = useState<DisplayGroup[]>([])
-  const [displayPods, setDisplayPods] = useState<DisplayPod[]>([])
+  const [discoverGroups, setDiscoverGroups] = useState<DiscoverGroup[]>([])
+  const [discoverPods, setDiscoverPods] = useState<DiscoverPod[]>([])
 
   // Set of filters created by filter control and displayed as chips
   const [filters, setFilters] = useState<TypeFilter[]>([])
@@ -21,9 +21,9 @@ export function useDisplayItems() {
     setIsLoading(true)
 
     const checkLoading = async () => {
-      const k8Loaded = await isK8ApiRegistered()
+      const mgmtLoaded = await isMgmtApiRegistered()
 
-      if (!k8Loaded) return
+      if (!mgmtLoaded) return
 
       setIsLoading(false)
 
@@ -38,22 +38,16 @@ export function useDisplayItems() {
       }
 
       const organisePods = () => {
-        const pods = k8Service.getPods()
-        setPods(pods)
-
-        const [newDisplayGroups, newDisplayPods] = filterAndGroupPods(pods, filters, [...displayGroups])
-        setDisplayGroups(newDisplayGroups)
-        setDisplayPods(newDisplayPods)
+        const [newDiscoverGroups, newDiscoverPods] = filterAndGroupPods(filters, [...discoverGroups])
+        setDiscoverGroups([...newDiscoverGroups])
+        setDiscoverPods([...newDiscoverPods])
       }
 
       organisePods()
 
-      k8Service.on(K8Actions.CHANGED, () => {
+      mgmtService.on(MgmtActions.UPDATED, () => {
         organisePods()
       })
-
-      // TODO
-      // managementService.on ....
     }
 
     checkLoading()
@@ -65,25 +59,23 @@ export function useDisplayItems() {
     }
   }, [])
 
-  return { error, isLoading, pods, displayGroups, setDisplayGroups, displayPods, setDisplayPods, filters, setFilters }
+  return { error, isLoading, discoverGroups, setDiscoverGroups, discoverPods, setDiscoverPods, filters, setFilters }
 }
 
 type DiscoverContext = {
-  pods: KubePod[],
-  displayGroups: DisplayGroup[],
-  setDisplayGroups: (items: DisplayGroup[]) => void,
-  displayPods: DisplayPod[],
-  setDisplayPods: (items: DisplayPod[]) => void,
+  discoverGroups: DiscoverGroup[],
+  setDiscoverGroups: (items: DiscoverGroup[]) => void,
+  discoverPods: DiscoverPod[],
+  setDiscoverPods: (items: DiscoverPod[]) => void,
   filters: TypeFilter[],
   setFilters: (filters: TypeFilter[]) => void
 }
 
 export const DiscoverContext = createContext<DiscoverContext>({
-  pods: [],
-  displayGroups: [],
-  setDisplayGroups: (groups: DisplayGroup[]) => {},
-  displayPods: [],
-  setDisplayPods: (pod: DisplayPod[]) => {},
+  discoverGroups: [],
+  setDiscoverGroups: (groups: DiscoverGroup[]) => {},
+  discoverPods: [],
+  setDiscoverPods: (pod: DiscoverPod[]) => {},
   filters: [],
   setFilters: (filters: TypeFilter[]) => {}
 })
