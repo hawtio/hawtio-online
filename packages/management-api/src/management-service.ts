@@ -1,5 +1,6 @@
 import { EventEmitter } from 'eventemitter3'
 import { ManagedPod, Management } from './managed-pod'
+import { Connection, Connections, connectService } from '@hawtio/react'
 import { k8Service, k8Api, KubePod, K8Actions, Container, ContainerPort, debounce } from '@hawtio/online-kubernetes-api'
 import { MgmtActions, log } from './globals'
 
@@ -247,5 +248,50 @@ export class ManagementService extends EventEmitter {
     const jolokiaPath = ManagedPod.getJolokiaPath(pod.pod, jolokiaPort) || ''
     const url: URL = new URL(jolokiaPath)
     return url
+  }
+
+  private connectionKeyName(pod: ManagedPod, container: Container) {
+    return `${pod.metadata?.name}-${container.name}`
+  }
+
+  refreshConnections(pod: ManagedPod): string[] {
+    const containers: Array<Container> = this.jolokiaContainers(pod)
+    const connections: Connections = connectService.loadConnections()
+
+    const connNames: string[] = []
+    for (const container of containers) {
+      const url: URL = this.connectToUrl(pod, container)
+      const connection: Connection = {
+        name: this.connectionKeyName(pod, container),
+        jolokiaUrl: url.toString(),
+
+        // Not necessary but included to satisfy rules of Connection object
+        scheme: url.protocol,
+        host: url.hostname,
+        port: Number(url.port),
+        path: url.pathname
+      }
+
+      const connName = this.connectionKeyName(pod, container)
+      connections[connName] = connection
+      connNames.push(connName)
+    }
+
+    connectService.saveConnections(connections)
+
+    // returns the names of the given pod's connections
+    return connNames
+  }
+
+  connect(connectName: string) {
+    const connections: Connections = connectService.loadConnections()
+
+    const connection: Connection = connections[connectName]
+    if (! connection) {
+      log.error(`There is no connection configured with name ${connectName}`)
+      return
+    }
+
+    connectService.connect(connection)
   }
 }

@@ -2775,7 +2775,7 @@ __metadata:
     typescript: ^4.9.5
     xml-formatter: ^3.4.1
   peerDependencies:
-    "@patternfly/react-core": ^4.276.8
+    "@patternfly/react-core": ^4.276.12
     keycloak-js: ^21
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
