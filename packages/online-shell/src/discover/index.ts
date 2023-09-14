@@ -9,10 +9,7 @@ export const discover: HawtioPlugin = () => {
     title: 'Discover',
     path: pluginPath,
     component: Discover,
-    headerItems: {
-      components: [ HeaderMenuDropDown ],
-      universal: true
-    },
+    headerItems: [ { component: HeaderMenuDropDown, universal: true } ],
     isActive: async () => true
   })
 }
