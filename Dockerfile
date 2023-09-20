@@ -59,17 +59,14 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
 
 EXPOSE 8443
 
-# Add symbolic link to config.json to avoid mounting issues
-RUN ln -sf /usr/share/nginx/html/config/config.json /usr/share/nginx/html/config.json
+## Add symbolic link to config.json to avoid mounting issues
+#RUN ln -sf /usr/share/nginx/html/config.json /usr/share/nginx/html/config.json
 
 RUN rm /usr/share/nginx/html/index.html
 
-RUN touch config.json && \
-    chown 998 config.json && chmod g=u config.json && \
-    mkdir -p /usr/share/nginx/html/online/osconsole && \
-    ln -sf /config.json /usr/share/nginx/html/online/osconsole/config.json && \
-    mkdir -p /usr/share/nginx/html/integration/osconsole && \
-    ln -sf /config.json /usr/share/nginx/html/integration/osconsole/config.json
+RUN mkdir -p /usr/share/nginx/html/online/osconsole && \
+    touch /usr/share/nginx/html/online/osconsole/config.json && \
+    chown 998 config.json && chmod g=u config.json
 
 COPY docker/nginx.js docker/rbac.js docker/js-yaml.js docker/jwt-decode.js /etc/nginx/conf.d/
 COPY docker/nginx.conf docker/nginx-gateway.conf.template docker/nginx-gateway-k8s.conf.template docker/osconsole/config.sh docker/nginx.sh docker/ACL.yaml /

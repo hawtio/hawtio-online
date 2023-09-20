@@ -6,7 +6,10 @@
 # Fail on error and undefined vars
 set -eu
 
-./config.sh > config.json
+NGINX_HTML="/usr/share/nginx/html"
+HAWTIO_HTML="${NGINX_HTML}/online"
+mkdir -p "${HAWTIO_HTML}/osconsole"
+./config.sh > "${HAWTIO_HTML}/osconsole/config.json"
 
 # nginx.conf parameter default values
 export NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE=${NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE:-10m}
