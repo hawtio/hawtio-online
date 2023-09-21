@@ -13,7 +13,7 @@ data:
       },
       "branding": {
         "appName": "Hawtio Online Console",
-        "appLogoUrl": "img/hawtio-logo.svg"
+        "appLogoUrl": "/online/hawtio-logo.svg"
       },
-      "disabledRoutes": []
+      "disabledRoutes": ["connect"]
     }

@@ -58,9 +58,6 @@ spec:
             - name: hawtio-online
               mountPath: /usr/share/nginx/html/online/hawtconfig.json
               subPath: hawtconfig.json
-            - name: hawtio-integration
-              mountPath: /usr/share/nginx/html/integration/hawtconfig.json
-              subPath: hawtconfig.json
             - name: hawtio-rbac
               mountPath: /etc/hawtio/rbac
             - name: hawtio-online-tls-serving
@@ -69,9 +66,6 @@ spec:
         - name: hawtio-online
           configMap:
             name: hawtio-online
-        - name: hawtio-integration
-          configMap:
-            name: hawtio-integration
         - name: hawtio-rbac
           configMap:
             name: hawtio-rbac
