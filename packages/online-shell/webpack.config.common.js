@@ -10,6 +10,8 @@ const common = (mode) => {
 
   console.log(`Compilation Mode: ${mode}`)
 
+  const publicPath = mode === 'production' ? '/online' : ''
+
   return {
     mode: mode,
     module: {
@@ -88,6 +90,8 @@ const common = (mode) => {
       new HtmlWebpackPlugin({
         inject: true,
         template: path.resolve(__dirname, 'public', 'index.html'),
+        favicon: path.resolve(__dirname, 'public', 'favicon.ico'),
+        publicPath: publicPath
       }),
       new webpack.DefinePlugin({
        'process.env': JSON.stringify(process.env)

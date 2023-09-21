@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "start": "webpack serve --hot --mode development --progress --config webpack.config.dev.js",
-    "build": "webpack --mode production --progress --config webpack.config.prod.js",
+    "build": "webpack --mode production --progress --config webpack.config.prod.js --output-public-path='/online/'",
     "test": "jest --watchAll=false --passWithNoTests src/**/*.test.ts*",
     "test:coverage": "yarn test --coverage"
   },

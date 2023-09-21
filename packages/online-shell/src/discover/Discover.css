@@ -1,3 +1,11 @@
+/*
+ * TODO probably should push this down into hawtio-next
+ * Moves the user and help button on nav bar to the end
+ */
+#hawtio-header-toolbar .pf-c-toolbar__content-section {
+  justify-content: end;
+}
+
 .online-header-toolbar-dropdown {
   border: none;
 }
