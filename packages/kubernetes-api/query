@@ -1,14 +1,26 @@
 #!/bin/bash
 
-if [ -z "${1}" ]; then
-  echo "Error: ${0} <url>"
+while getopts :t:u: option
+do
+  case "${option}"
+  in
+    t) TOKEN=${OPTARG} ;;
+    u) URL=${OPTARG} ;;
+    \?) echo "Usage: $0 -u <url> [-t <token>]"; exit ;;
+  esac
+done
+shift $((OPTIND -1))
+
+if [ -z "${TOKEN}" ]; then
+  TOKEN=$(oc whoami -t)
+fi
+
+if [ -z "${URL}" ]; then
+  echo "Error: specify an url using -u"
   exit 1
 fi
 
-url="${1}"
-
-token=$(oc whoami -t)
-if [ -z "${token}" ]; then
+if [ -z "${TOKEN}" ]; then
   echo "Error: Cannot get token. Try logging in to cluster first?"
   exit 1
 fi
@@ -18,8 +30,8 @@ fi
 # http://localhost:2772/master/apis/apps.openshift.io/v1
 
 curl -k \
-  -H "Authorization: Bearer ${token}" \
-  "${url}"
+  -H "Authorization: Bearer ${TOKEN}" \
+  "${URL}"
 
 echo
-echo "Token used: ${token}"
+echo "Token used: ${TOKEN}"

@@ -8,10 +8,14 @@ export function currentTimeSeconds(): number {
   return Math.floor(new Date().getTime() / 1000)
 }
 
+export function relToAbsUrl(relativeUrl: string): string {
+  return new URL(relativeUrl, window.location.origin).href
+}
+
 export function buildUserInfoUri(config: OpenShiftConfig): string {
   let uri: URL
   if (config.master_uri) {
-    uri = new URL(`${config.master_uri}/apis/user.openshift.io/v1/users/~`)
+    uri = new URL(relToAbsUrl(config.master_uri) + '/apis/user.openshift.io/v1/users/~')
   } else {
     uri = new URL(`${config.openshift?.oauth_authorize_uri}/apis/user.openshift.io/v1/users/~`)
   }

@@ -9,7 +9,7 @@ export interface OpenShiftOAuthConfig {
   oauth_client_id: string
   scope: string
   cluster_version?: string
-  web_console_uri?: string
+  web_console_url?: string
 }
 
 export interface Hawtio {

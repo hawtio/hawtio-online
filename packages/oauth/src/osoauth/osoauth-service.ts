@@ -12,7 +12,7 @@ import {
   HAWTIO_NAMESPACE_KEY,
 } from '../metadata'
 import { moduleName, PATH_OSCONSOLE_CLIENT_CONFIG, OpenShiftConfig, ResolveUser, TokenMetadata } from './globals'
-import { buildUserInfoUri, checkToken, currentTimeSeconds, doLogout, tokenHasExpired } from './support'
+import { buildUserInfoUri, checkToken, currentTimeSeconds, doLogout, relToAbsUrl, tokenHasExpired } from './support'
 
 export class OSOAuthUserProfile extends UserProfile implements TokenMetadata {
   access_token?: string
@@ -85,8 +85,9 @@ class OSOAuthService implements IOSOAuthService {
     }
 
     // See if web_console_url has been added to config
-    if (openshiftAuth.web_console_uri) {
-      this.userProfile.addMetadata(CLUSTER_CONSOLE_KEY, openshiftAuth.web_console_uri)
+    if (openshiftAuth.web_console_url && openshiftAuth.web_console_url.length > 0) {
+      log.debug(`Adding web console URI to user profile ${openshiftAuth.web_console_url}`)
+      this.userProfile.addMetadata(CLUSTER_CONSOLE_KEY, openshiftAuth.web_console_url)
     }
 
     log.debug('Fetching OAuth server metadata from:', openshiftAuth.oauth_metadata_uri)
@@ -268,7 +269,7 @@ class OSOAuthService implements IOSOAuthService {
       this.userProfile.token_type = tokenParams.token_type
       this.userProfile.obtainedAt = tokenParams.obtainedAt || 0
       this.userProfile.setToken(tokenParams.access_token || '')
-      this.userProfile.setMasterUri(config.master_uri || '')
+      this.userProfile.setMasterUri(relToAbsUrl(config.master_uri || '/master'))
 
       if (this.checkTokenExpired(config)) return false
 

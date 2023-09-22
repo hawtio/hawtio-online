@@ -44,16 +44,19 @@ DRY_RUN ?= false
 NAMESPACE ?= hawtio-online
 
 # Cluster on which to install [ openshift | k8s ]
-CLUSTER ?= k8s
+CLUSTER_TYPE ?= k8s
 # The mode of installation [ cluster | namespace ]
 MODE ?= namespace
+# The URL to use for access to the openshift console
+OPENSHIFT_CONSOLE_URL ?= ""
 
 # Uninstall all hawtio-onlineresources: [true|false]
 UNINSTALL_ALL ?=false
 
-
+PATCHES := patches
 PLACEHOLDER := placeholder
-YAML := yaml
+
+OS_CONSOLE_URL_PATCH := $(PATCHES)/patch-os-console-url.yml
 
 #
 # Macro for editing kustomization to define
@@ -102,6 +105,17 @@ endef
 check-admin: kubectl
 	@output=$$(kubectl get crd 2>&1) || (echo "****" && echo "**** ERROR: Cannot continue as user is not a Cluster-Admin ****" && echo "****"; exit 1)
 
+#
+# Handle if console url has been specified for openshift
+#
+.openshift-console-url:
+ifeq ($(CONSOLE_URL), '')
+	@$(call add-remove-kind-patch,$(CLUSTER_TYPE)/$(MODE),remove,../../$(OS_CONSOLE_URL_PATCH),Deployment)
+else
+	@sed -i 's~.*value:.*~              value: "$(CONSOLE_URL)"~' $(OS_CONSOLE_URL_PATCH)
+	@$(call add-remove-kind-patch,$(CLUSTER_TYPE)/$(MODE),add,../../$(OS_CONSOLE_URL_PATCH),Deployment)
+endif
+
 #---
 #
 #@ install
@@ -112,27 +126,36 @@ check-admin: kubectl
 #=== Calls kubectl
 #
 #* PARAMETERS:
-#** CLUSTER:        Set the cluster type to install on [ openshift | k8s ]
-#** MODE:           Set the mode of installation [ cluster | namespace ]
-#** NAMESPACE:      Set the namespace for the resources
-#** CUSTOM_IMAGE:   Set a custom image to install from
-#** CUSTOM_VERSION: Set a custom version to install from
-#** DRY_RUN:      Print the resources to be applied instead of applying them [ true | false ]
+#** CLUSTER_TYPE:        Set the cluster type to install on [ openshift | k8s ]
+#** MODE:                Set the mode of installation [ cluster | namespace ]
+#** NAMESPACE:           Set the namespace for the resources
+#** CUSTOM_IMAGE:        Set a custom image to install from
+#** CUSTOM_VERSION:      Set a custom version to install from
+#** DRY_RUN:             Print the resources to be applied instead of applying them [ true | false ]
 #
 #---
 install: kustomize kubectl
 # Set the namespace in the setup kustomization yaml
-	@$(call set-kustomize-namespace, $(CLUSTER)/$(MODE))
+	@$(call set-kustomize-namespace, $(CLUSTER_TYPE)/$(MODE))
 # Set the image reference of the kustomization
-	@$(call set-kustomize-image,$(CLUSTER)/$(MODE))
+	@$(call set-kustomize-image,$(CLUSTER_TYPE)/$(MODE))
+# Set the console url on openshift, if specified
+ifeq ($(CLUSTER_TYPE), openshift)
+	@$(MAKE) -s .openshift-console-url
+endif
 #
 # Build the resources
 # Either apply to the cluster or output to CLI
+# Post-processes any remaining 'placeholder'
+# that may remain, eg. in rolebindings
 #
 ifeq ($(DRY_RUN), false)
-	@$(KUSTOMIZE) build $(KOPTIONS) $(CLUSTER)/$(MODE) | kubectl apply -f -
+	@$(KUSTOMIZE) build $(KOPTIONS) $(CLUSTER_TYPE)/$(MODE) | \
+		sed 's/$(PLACEHOLDER)/$(NAMESPACE)/' | \
+		kubectl apply -f -
 else
-	@$(KUSTOMIZE) build $(KOPTIONS) $(CLUSTER)/$(MODE)
+	@$(KUSTOMIZE) build $(KOPTIONS) $(CLUSTER_TYPE)/$(MODE) | \
+		sed 's/$(PLACEHOLDER)/$(NAMESPACE)/'
 endif
 
 .PHONY: uninstall
@@ -146,20 +169,20 @@ endif
 #=== Cluster-admin privileges are required.
 #
 #* PARAMETERS:
-#** CLUSTER:   Set the cluster type to install on [ openshift | k8s ]
-#** MODE:      Set the mode of installation [ cluster | namespace ]
-#** NAMESPACE:     Set the namespace to uninstall the resources from
-#** UNINSTALL_ALL: Uninstall all Camel K resources including crds and cluster roles installed by setup-cluster [true|false]
-#** DRY_RUN:       Print the resources to be applied instead of applying them [true|false]
+#** CLUSTER_TYPE:   Set the cluster type to install on [ openshift | k8s ]
+#** MODE:           Set the mode of installation [ cluster | namespace ]
+#** NAMESPACE:      Set the namespace to uninstall the resources from
+#** UNINSTALL_ALL:  Uninstall all Camel K resources including crds and cluster roles installed by setup-cluster [true|false]
+#** DRY_RUN:        Print the resources to be applied instead of applying them [true|false]
 #
 #---
 uninstall: kubectl kustomize
 # Set the namespace in the all target kustomization yaml
-	@$(call set-kustomize-namespace, $(CLUSTER)/$(MODE))
+	@$(call set-kustomize-namespace, $(CLUSTER_TYPE)/$(MODE))
 ifeq ($(DRY_RUN), false)
-	@$(KUSTOMIZE) build $(KOPTIONS) $(CLUSTER)/$(MODE) | kubectl delete --ignore-not-found=true -f -
+	@$(KUSTOMIZE) build $(KOPTIONS) $(CLUSTER_TYPE)/$(MODE) | kubectl delete --ignore-not-found=true -f -
 else
-	@$(KUSTOMIZE) build $(KOPTIONS) $(CLUSTER)/$(MODE) | kubectl delete --dry-run=client -f -
+	@$(KUSTOMIZE) build $(KOPTIONS) $(CLUSTER_TYPE)/$(MODE) | kubectl delete --dry-run=client -f -
 endif
 
 .DEFAULT_GOAL := help

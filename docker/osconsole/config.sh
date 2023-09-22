@@ -12,7 +12,7 @@ openshift_config_cluster() {
   "openshift": {
     "oauth_metadata_uri": "/master/.well-known/oauth-authorization-server",
     "oauth_client_id": "${HAWTIO_OAUTH_CLIENT_ID:-hawtio-online}",
-    "scope": "user:info user:check-access user:full",
+    "scope": "user:info user:check-access role:edit:*",
     "web_console_url": "${OPENSHIFT_WEB_CONSOLE_URL:-}",
     "cluster_version": "${OPENSHIFT_CLUSTER_VERSION:-}"
   }
@@ -30,8 +30,8 @@ openshift_config_namespace() {
   },
   "openshift": {
     "oauth_metadata_uri": "/master/.well-known/oauth-authorization-server",
-    "oauth_client_id": "${HAWTIO_OAUTH_CLIENT_ID:-hawtio-online}",
-    "scope": "user:info user:check-access user:full",
+    "oauth_client_id": "system:serviceaccount:${HAWTIO_ONLINE_NAMESPACE}:${HAWTIO_OAUTH_CLIENT_ID:-hawtio-online}",
+    "scope": "user:info user:check-access role:edit:${HAWTIO_ONLINE_NAMESPACE}",
     "web_console_url": "${OPENSHIFT_WEB_CONSOLE_URL:-}",
     "cluster_version": "${OPENSHIFT_CLUSTER_VERSION:-}"
   }

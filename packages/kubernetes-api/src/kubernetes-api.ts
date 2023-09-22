@@ -38,8 +38,11 @@ export class KubernetesAPI {
 
     const consoleUri = profile.metadataValue(CLUSTER_CONSOLE_KEY)
     if (consoleUri) {
+      log.debug(`Console URI specified: ${consoleUri}`)
       return consoleUri
     }
+
+    log.debug(`Querying for console URI from cluster`)
 
     // Try to find it from the cluster
     // Will fail if the logged in user lacks the permissions
