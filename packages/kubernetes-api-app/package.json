@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@hawtio/online-kubernetes-api": "workspace:*",
-    "@hawtio/react": "^0.4.0",
+    "@hawtio/react": "^0.5.0",
     "@patternfly/react-core": "^4.276.8",
     "@patternfly/react-styles": "^4.92.6",
     "@patternfly/react-table": "^4.113.0",
