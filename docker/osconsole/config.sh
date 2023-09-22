@@ -4,15 +4,15 @@ FORM_URI=/online/login.html
 
 openshift_config_cluster() {
   cat << EOF
-window.OPENSHIFT_CONFIG = {
-  master_uri: new URI().query('').path('/master').toString(),
+{
+  master_uri: '/master',
   hawtio: {
     mode: '${HAWTIO_ONLINE_MODE}'
   },
   openshift: {
-    oauth_metadata_uri: new URI().query('').path('/master/.well-known/oauth-authorization-server').toString(),
+    oauth_metadata_uri: '/master/.well-known/oauth-authorization-server',
     oauth_client_id: '${HAWTIO_OAUTH_CLIENT_ID:-hawtio-online}',
-    scope: 'user:info user:check-access user:list-projects role:edit:*',
+    scope: 'user:info user:check-access user:full',
     web_console_url: '${OPENSHIFT_WEB_CONSOLE_URL:-}',
     cluster_version: '${OPENSHIFT_CLUSTER_VERSION:-}'
   }
@@ -22,16 +22,16 @@ EOF
 
 openshift_config_namespace() {
   cat << EOF
-window.OPENSHIFT_CONFIG = {
-  master_uri: new URI().query('').path('/master').toString(),
+{
+  master_uri: '/master',
   hawtio: {
     mode: '${HAWTIO_ONLINE_MODE}',
-    namespace: '${HAWTIO_ONLINE_NAMESPACE}'
+    namespace: '${HAWTIO_ONLINE_NAMESPACE}',
   },
   openshift: {
-    oauth_metadata_uri: new URI().query('').path('/master/.well-known/oauth-authorization-server').toString(),
-    oauth_client_id: 'system:serviceaccount:${HAWTIO_ONLINE_NAMESPACE}:${HAWTIO_OAUTH_CLIENT_ID:-hawtio-online}',
-    scope: 'user:info user:check-access role:edit:${HAWTIO_ONLINE_NAMESPACE}',
+    oauth_metadata_uri: '/master/.well-known/oauth-authorization-server',
+    oauth_client_id: '${HAWTIO_OAUTH_CLIENT_ID:-hawtio-online}',
+    scope: 'user:info user:check-access user:full',
     web_console_url: '${OPENSHIFT_WEB_CONSOLE_URL:-}',
     cluster_version: '${OPENSHIFT_CLUSTER_VERSION:-}'
   }
@@ -41,7 +41,7 @@ EOF
 
 form_config_cluster() {
   cat << EOF
-window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
+{
   master_uri: new URI().query('').path('/master').toString(),
   hawtio: {
     mode: '${HAWTIO_ONLINE_MODE}'
@@ -55,7 +55,7 @@ EOF
 
 form_config_namespace() {
   cat << EOF
-window.OPENSHIFT_CONFIG = window.HAWTIO_OAUTH_CONFIG = {
+{
   master_uri: new URI().query('').path('/master').toString(),
   hawtio: {
     mode: '${HAWTIO_ONLINE_MODE}',

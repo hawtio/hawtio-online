@@ -5,6 +5,9 @@
 !package.json
 !yarn.lock
 !packages/
+!.yarnrc.yml
+!.yarn/plugins
+!.yarn/releases
 
 **/node_modules/
 **/site/

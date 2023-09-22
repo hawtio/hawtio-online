@@ -126,7 +126,7 @@ module.exports = () => {
             case 'cluster':
               oscConfig.openshift = {
                 oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
-                oauth_client_id: `hawtio-online-dev`,
+                oauth_client_id: clientId,
                 scope: `user:info user:check-access user:full`,
                 cluster_version: '4.11.0',
               }

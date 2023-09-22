@@ -1,37 +1,39 @@
-FROM docker.io/node:12.21.0 as builder
-
-RUN yarn global add gulp-cli
+FROM quay.io/jitesoft/node:16 as builder
 
 WORKDIR /hawtio-online
 
-COPY gulpfile.js package.json yarn.lock ./
+RUN npm install -g yarn
+
+COPY package.json yarn.lock ./
+COPY .yarnrc.yml ./
 ADD packages/ packages/
+ADD .yarn/plugins .yarn/plugins
+ADD .yarn/releases .yarn/releases
 
 RUN yarn install
-RUN gulp --series build site
+RUN yarn build:online
 
 # Build stage to extract envsubst
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6 as envsubst
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.8 as envsubst
 
 RUN microdnf -y install gettext
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.8
 
-# njs >= 0.5.x fails to run nginx.js
-ENV NGINX_VERSION 1.18.0-2.el8
-ENV NGINX_MODULE_NJS_VERSION 1.18.0.0.4.4-2.el8
+ENV NGINX_VERSION 1.24.0-1.el8
+ENV NGINX_MODULE_NJS_VERSION 1.24.0+0.8.1-1.el8
 
 LABEL name="nginxinc/nginx" \
-      vendor="NGINX Inc." \
-      version="${NGINX_VERSION}" \
-      release="1" \
-      summary="NGINX" \
-      description="nginx will do ....."
-### Required labels above - recommended below
+    vendor="NGINX Inc." \
+    version="${NGINX_VERSION}" \
+    release="1" \
+    summary="NGINX" \
+    description="nginx will do ....."
+## Required labels above - recommended below
 LABEL url="https://www.nginx.com/" \
-      io.k8s.display-name="NGINX" \
-      io.openshift.expose-services="8443:https" \
-      io.openshift.tags="nginx,nginxinc"
+    io.k8s.display-name="NGINX" \
+    io.openshift.expose-services="8443:https" \
+    io.openshift.tags="nginx,nginxinc"
 
 ADD docker/nginx.repo /etc/yum.repos.d/nginx.repo
 
@@ -50,9 +52,9 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
     sed -i -e '/user/!b' -e '/nginx/!b' -e '/nginx/d' /etc/nginx/nginx.conf && \
     echo -e "load_module modules/ngx_http_js_module.so;\n$(cat /etc/nginx/nginx.conf)" > /etc/nginx/nginx.conf && \
     # Uncomment this line to output info log for nginx.js
-    #sed -i 's|/var/log/nginx/error.log warn|/var/log/nginx/error.log info|g' /etc/nginx/nginx.conf && \
-    rm -f /etc/nginx/conf.d/default.conf && \
+    sed -i 's|/var/log/nginx/error.log warn|/var/log/nginx/error.log info|g' /etc/nginx/nginx.conf && \
     chown -R 998 /var/cache/nginx /etc/nginx && \
+    rm -f /etc/nginx/conf.d/default.conf && \
     chmod -R g=u /var/cache/nginx /etc/nginx
 
 EXPOSE 8443
@@ -62,17 +64,17 @@ RUN ln -sf /usr/share/nginx/html/config/config.json /usr/share/nginx/html/config
 
 RUN rm /usr/share/nginx/html/index.html
 
-RUN touch config.js && \
-    chown 998 config.js && chmod g=u config.js && \
+RUN touch config.json && \
+    chown 998 config.json && chmod g=u config.json && \
     mkdir -p /usr/share/nginx/html/online/osconsole && \
-    ln -sf /config.js /usr/share/nginx/html/online/osconsole/config.js && \
+    ln -sf /config.json /usr/share/nginx/html/online/osconsole/config.json && \
     mkdir -p /usr/share/nginx/html/integration/osconsole && \
-    ln -sf /config.js /usr/share/nginx/html/integration/osconsole/config.js
+    ln -sf /config.json /usr/share/nginx/html/integration/osconsole/config.json
 
 COPY docker/nginx.js docker/rbac.js docker/js-yaml.js docker/jwt-decode.js /etc/nginx/conf.d/
 COPY docker/nginx.conf docker/nginx-gateway.conf.template docker/nginx-gateway-k8s.conf.template docker/osconsole/config.sh docker/nginx.sh docker/ACL.yaml /
 
-COPY --from=builder /hawtio-online/docker/site /usr/share/nginx/html/
+COPY --from=builder /hawtio-online/packages/online-shell/build /usr/share/nginx/html/
 COPY --from=envsubst /usr/bin/envsubst /usr/local/bin/
 
 USER 998

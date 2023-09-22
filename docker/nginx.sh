@@ -6,7 +6,7 @@
 # Fail on error and undefined vars
 set -eu
 
-./config.sh > config.js
+./config.sh > config.json
 
 # nginx.conf parameter default values
 export NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE=${NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE:-10m}
@@ -16,10 +16,11 @@ export NGINX_PROXY_BUFFERS=${NGINX_PROXY_BUFFERS:-16 128k}
 OPENSHIFT=true
 
 check_openshift_api() {
-  APISERVER=https://kubernetes.default.svc
+  APISERVER="https://${CLUSTER_MASTER:-kubernetes.default.svc}"
   SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount
   TOKEN=$(cat ${SERVICEACCOUNT}/token)
   CACERT=${SERVICEACCOUNT}/ca.crt
+
   STATUS_CODE=$(curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET ${APISERVER}/apis/apps.openshift.io/v1 --write-out '%{http_code}' --silent --output /dev/null)
   if [ "${STATUS_CODE}" != "200" ]; then
     OPENSHIFT=false
@@ -56,5 +57,6 @@ if [ $? = 0 ]; then
   echo Starting NGINX...
   nginx -g 'daemon off;'
 else
+  echo Failed to configure correctly...
   exit 1
 fi
