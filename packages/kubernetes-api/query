@@ -1,9 +1,13 @@
 #!/bin/bash
 
-while getopts :t:u: option
+METHOD="GET"
+
+while getopts :d:m:t:u: option
 do
   case "${option}"
   in
+    d) DATA=${OPTARG} ;;
+    m) METHOD=${OPTARG} ;;
     t) TOKEN=${OPTARG} ;;
     u) URL=${OPTARG} ;;
     \?) echo "Usage: $0 -u <url> [-t <token>]"; exit ;;
@@ -29,9 +33,24 @@ fi
 # https://api.crc.testing:6443/.well-known/oauth-authorization-server
 # http://localhost:2772/master/apis/apps.openshift.io/v1
 
-curl -k \
-  -H "Authorization: Bearer ${TOKEN}" \
-  "${URL}"
+if [ -n "${DATA}" ]; then
+  DATA="${DATA}"
+fi
+
+if [ -n "${DATA}" ]; then
+  echo "Using data: ${DATA}"
+
+  curl -k -X ${METHOD} \
+    -H "Authorization: Bearer ${TOKEN}" \
+    -H "Content-Type: application/json" \
+    ${URL} \
+    --data ${DATA}
+else
+  curl -vvv -k -X ${METHOD} \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${TOKEN}" \
+    ${URL}
+fi
 
 echo
 echo "Token used: ${TOKEN}"

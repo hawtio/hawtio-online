@@ -52,7 +52,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
     sed -i -e '/user/!b' -e '/nginx/!b' -e '/nginx/d' /etc/nginx/nginx.conf && \
     echo -e "load_module modules/ngx_http_js_module.so;\n$(cat /etc/nginx/nginx.conf)" > /etc/nginx/nginx.conf && \
     # Uncomment this line to output info log for nginx.js
-    sed -i 's|/var/log/nginx/error.log warn|/var/log/nginx/error.log info|g' /etc/nginx/nginx.conf && \
+    sed -i 's|/var/log/nginx/error.log notice|/var/log/nginx/error.log debug|g' /etc/nginx/nginx.conf && \
     chown -R 998 /var/cache/nginx /etc/nginx && \
     rm -f /etc/nginx/conf.d/default.conf && \
     chmod -R g=u /var/cache/nginx /etc/nginx

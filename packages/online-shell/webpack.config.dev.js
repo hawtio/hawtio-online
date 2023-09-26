@@ -11,12 +11,6 @@ dotenv.config( { path: path.join(__dirname, '.env') } )
 
 module.exports = () => {
 
-  // TODO
-  // Convert this to be either production or development mode
-  // Only include env vars if in development mode since they
-  // are only applicable to dev mode / server
-  //
-
   const master_uri = process.env.CLUSTER_MASTER
   if (!master_uri) {
     console.error('The CLUSTER_MASTER environment variable must be set!')
@@ -76,7 +70,7 @@ module.exports = () => {
           pathRewrite: { '^/master': '' },
           secure: false,
           ws: true,
-        },
+        }
       },
 
       static: {
@@ -140,6 +134,19 @@ module.exports = () => {
           res.send(JSON.stringify(oscConfig))
         }
 
+        /* Redirects from management alias path to full master path */
+        const management = (req, res, next) => {
+          const url = /\/management\/namespaces\/(.+)\/pods\/(http|https):([^/]+)\/(.+)/
+          const match = req.originalUrl.match(url)
+          const redirectPath = `/master/api/v1/namespaces/${match[1]}/pods/${match[2]}:${match[3]}/proxy/${match[4]}`
+          if (match) {
+            // 307 - post redirect
+            res.redirect(307, redirectPath)
+          } else {
+            next()
+          }
+        }
+
         const username = 'developer'
         const login = false
         const proxyEnabled = true
@@ -155,6 +162,9 @@ module.exports = () => {
         }
 
         devServer.app.get('/osconsole/config.json', osconsole)
+        devServer.app.get('/management/*', management)
+        devServer.app.post('/management/*', management)
+
         devServer.app.get('/keycloak/enabled', (_, res) => res.send(String(keycloakEnabled)))
         devServer.app.get('/proxy/enabled', (_, res) => res.send(String(proxyEnabled)))
 
