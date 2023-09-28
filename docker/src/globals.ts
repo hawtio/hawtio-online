@@ -19,21 +19,33 @@ export function isObject(value: unknown): value is object {
   return value != null && (type === 'object' || type === 'function')
 }
 
+export function isString(value: unknown): value is string {
+  return typeof value === 'string' || value instanceof String
+}
+
+export interface InterceptedResponse {
+  status: number,
+  request: IRequest,
+  value?: unknown,
+  timestamp?: number,
+  reason?: string
+}
+
 export interface Intercepted {
   intercepted: boolean,
   request: IRequest,
-  response?: {
-    status: number,
-    request: IRequest,
-    value: unknown,
-    timestamp: number
-  }
+  response?: InterceptedResponse
 }
 
 export interface BulkValue {
   CanInvoke: boolean,
   Method: string,
   ObjectName: string
+}
+
+export interface ACLCheck {
+  allowed: boolean,
+  reason: string
 }
 
 // Taken from hawtio/next

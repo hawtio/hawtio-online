@@ -1,5 +1,5 @@
 import { IJmxAttribute, IJmxDomains, IJmxMBean, IJmxOperation, IRequest } from "jolokia.js"
-import { BulkValue, Intercepted, isObject, OptimisedJmxMBean } from './globals'
+import { ACLCheck, BulkValue, Intercepted, isObject, OptimisedJmxMBean } from './globals'
 
 type JmxOperationEntry = [string, IJmxOperation | IJmxOperation[]]
 type JmxMBeanInfoCache = Record<string, IJmxMBean>
@@ -451,7 +451,7 @@ function decorateOperations(mbean: string, info: IJmxMBean, role: string) {
 
 // ===== check =============================================
 
-export function check(request: IRequest, role: string) {
+export function check(request: IRequest, role: string): ACLCheck {
   let domain
   let objectName
   if ('mbean' in request) {
@@ -471,7 +471,7 @@ export function check(request: IRequest, role: string) {
   })
 }
 
-function checkACLs(role: string, jolokia: JmxUnionRequest) {
+function checkACLs(role: string, jolokia: JmxUnionRequest): ACLCheck {
   let rbac
   // lookup ACL by domain and type
   if (jolokia.properties && jolokia.properties.type) {
@@ -496,7 +496,7 @@ function checkACLs(role: string, jolokia: JmxUnionRequest) {
   return { allowed: false, reason: `No ACL matching request ${JSON.stringify(jolokia)}` }
 }
 
-function checkACL(role: string, jolokia: JmxUnionRequest, name: string) {
+function checkACL(role: string, jolokia: JmxUnionRequest, name: string): ACLCheck|null {
   const acl: unknown = ACL[name]
   if (!acl) {
     return null
@@ -549,7 +549,7 @@ function checkACL(role: string, jolokia: JmxUnionRequest, name: string) {
   return null
 }
 
-function checkRoles(role: string, name: string, key: string, roles: unknown) {
+function checkRoles(role: string, name: string, key: string, roles: unknown): ACLCheck {
   const allowed = { allowed: true, reason: `Role '${role}' allowed by '${name}[${key}]: ${roles}'` }
   const denied = { allowed: false, reason: `Role '${role}' denied by '${name}[${key}]: ${roles}'` }
 

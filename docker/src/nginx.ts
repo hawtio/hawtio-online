@@ -3,10 +3,10 @@
 // https://github.com/xeioex/njs-examples
 
 import jsyaml from 'js-yaml'
-import { IJmxDomains, IRequest, IResponse } from 'jolokia.js'
+import jwt_decode from 'jwt-decode'
+import { IJmxDomains, IRequest } from 'jolokia.js'
 import * as RBAC from './rbac'
-import jwt_decode from './jwt-decode'
-import { isRequestMethod, MethodType } from './globals'
+import { ACLCheck, isRequestMethod, MethodType, InterceptedResponse, isObject, isString } from './globals'
 import fs from 'fs'
 
 RBAC.initACL(jsyaml.load(fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || 'ACL.yaml', 'utf8')))
@@ -20,8 +20,14 @@ const useForm = process.env['HAWTIO_ONLINE_AUTH'] === 'form'
  * The r.responseBuffer or the r.responseText property should be used instead.
  */
 
+ interface SimpleResponse {
+  status: number,
+  responseText: string,
+  headersOut: Record<string, string | string[] | undefined>
+ }
+
 export function proxyJolokiaAgent(req: NginxHTTPRequest) {
-  req.log('=== PROXY JOLOKIA REQUEST ===')
+   req.log('=== PROXY JOLOKIA REQUEST ===')
   req.log('Request URL: ' + req.uri)
 
   const parts = req.uri.match(/\/management\/namespaces\/(.+)\/pods\/(http|https):(.+):(\d+)\/(.*)/)
@@ -41,7 +47,7 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
   req.log(`PORT: ${port}`)
   req.log(`PATH: ${path}`)
 
-  function jsonResponse(res: NginxHTTPRequest) {
+  function jsonResponse(res: NginxHTTPRequest | SimpleResponse): Record<string, unknown> {
     req.log('==== jsonResponse ====')
     let payload: string = '{}'
     if (res && res.responseText) {
@@ -54,11 +60,11 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
     return resBody
   }
 
-  function response(res) {
+  function response(res: SimpleResponse) {
     req.log('==== response ====')
-    req.log(`PGR1 response: status=${res.status}`)
+    req.log(`PGR1 response: res=${JSON.stringify(res)}`)
 
-    if (res.headersOut) {
+    if (res.headersOut && Array.isArray(res.headersOut)) {
       for (const header in res.headersOut) {
         req.headersOut[header] = res.headersOut[header]
       }
@@ -72,14 +78,14 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
     req.log('==== reject ====')
     return Promise.reject({
       status: status,
-      responseBody: message,
+      responseText: message,
       headersOut: {
         'Content-Type': 'application/json',
       }
     })
   }
 
-  function getSubjectFromJwt() {
+  function getSubjectFromJwt(): string {
     req.log('==== getSubjectFromJwt ====')
     const authz = req.headersIn['Authorization']
     if (!authz) {
@@ -87,11 +93,11 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
       return ''
     }
     const token = authz.split(' ')[1]
-    const payload = jwt_decode(token)
-    return payload.sub
+    const payload = jwt_decode<Record<string, unknown>>(token)
+    return payload.sub as string
   }
 
-  async function selfLocalSubjectAccessReview(verb: string): Promise<NginxHTTPRequest> {
+  async function selfLocalSubjectAccessReview(verb: string): Promise<SimpleResponse> {
     req.log('==== selfLocalSubjectAccessReview ====')
     let api
     let body
@@ -134,10 +140,17 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
     req.log(`SubRequest: /authorization${suffix}/${api}/namespaces/${namespace}/localsubjectaccessreviews}`)
     req.log(`Body: ${json}`)
 
-    return await req.subrequest(`/authorization${suffix}/${api}/namespaces/${namespace}/localsubjectaccessreviews`, {
+    const res = await req.subrequest(`/authorization${suffix}/${api}/namespaces/${namespace}/localsubjectaccessreviews`, {
       method: 'POST',
       body: json
     })
+    req.log(`Result of sub request: ${JSON.stringify(res)} - object? ${isObject(res)}`)
+
+    return {
+      status: res.status,
+      responseText: res.responseText || '',
+      headersOut: res.headersOut
+    }
   }
 
   async function getPodIP(): Promise<string> {
@@ -145,12 +158,18 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
 
     const res = await req.subrequest(`/podIP/${namespace}/${pod}`, { method: 'GET' })
 
-    req.log(`getPodIP(${namespace}/${pod}): status=${res.status}`)
+    req.log(`getPodIP(${namespace}/${pod}): res=${JSON.stringify(res)}`)
     if (res.status !== 200) {
       return Promise.reject('Error: failed to get pod ip')
     }
 
-    return jsonResponse(res).status.podIP
+    const response = jsonResponse(res)
+    if (response.status && isObject(response.status)) {
+      const statusObj = response.status as Record<string, string>
+      return statusObj.podIP
+    }
+
+    return Promise.reject('Error: failed to attain pod ip in response')
   }
 
   // This is usually called once upon the front-end loads, still we may want to cache it
@@ -163,14 +182,19 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
     return jsonResponse(res).value as IJmxDomains
   }
 
-  async function callJolokiaAgent(podIP: string, request: string | undefined): Promise<NginxHTTPRequest> {
+  async function callJolokiaAgent(podIP: string, request: string | undefined): Promise<SimpleResponse> {
     req.log('==== callJolokiaAgent ====')
     const encodedPath = encodeURI(path)
     req.log(`callJolokiaAgent: ${req.method} /proxy/${protocol}:${podIP}:${port}/${encodedPath}`)
 
     if (req.method === 'GET') {
       req.log('GET callJolokiaAgent')
-      return await req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${encodedPath}`)
+      const res = await req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${encodedPath}`)
+      return {
+        status: res.status,
+        responseText: res.responseText || '',
+        headersOut: res.headersOut
+      }
 
     } else {
       req.log('OTHER callJolokiaAgent')
@@ -184,24 +208,37 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
         method: method
       }
 
-      return await req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${encodedPath}`, options)
+      const res = await req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${encodedPath}`, options)
+      return {
+        status: res.status,
+        responseText: res.responseText || '',
+        headersOut: res.headersOut
+      }
     }
   }
 
-  async function proxyJolokiaAgentWithoutRbac() {
+  function isAllowed(res: SimpleResponse): boolean {
+    const body = jsonResponse(res)
+
+    if (useForm && isObject(body.status)) {
+      return (body.status as Record<string, unknown>).allowed as boolean
+    } else {
+      return body.allowed as boolean
+    }
+  }
+
+  async function proxyJolokiaAgentWithoutRbac(): Promise<SimpleResponse> {
     req.log('==== proxyJolokiaAgentWithoutRbac ====')
     // Only requests impersonating a user granted the `update` verb on for the pod
     // hosting the Jolokia endpoint is authorized
     const res = await selfLocalSubjectAccessReview('update')
-    req.log(`proxyJolokiaAgentWithoutRbac(update): status=${res.status}`)
+    req.log(`proxyJolokiaAgentWithoutRbac(update): res=${JSON.stringify(res)}`)
     if (res.status !== 201) {
       return Promise.reject(res)
     }
 
-    const sar = jsonResponse(res)
-    const allowed = useForm ? sar.status.allowed : sar.allowed
-    if (!allowed) {
-      return reject(403, JSON.stringify(sar))
+    if (!isAllowed(res)) {
+      return reject(403, JSON.stringify(res))
     }
 
     const podIP = await getPodIP()
@@ -210,10 +247,10 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
     return await callJolokiaAgent(podIP, req.requestText)
   }
 
-  async function proxyJolokiaAgentWithRbac() {
+  async function proxyJolokiaAgentWithRbac(): Promise<SimpleResponse> {
     req.log('==== proxyJolokiaAgentWithRbac ====')
     let res = await selfLocalSubjectAccessReview('update')
-    req.log(`proxyJolokiaAgentWithRbac(update): status=${res.status}`)
+    req.log(`proxyJolokiaAgentWithRbac(update): res=${JSON.stringify(res)}`)
     if (res.status !== 201) {
       return Promise.reject(res)
     }
@@ -222,9 +259,8 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
     req.log(`proxyJolokiaAgentWithRbac(update) response: ${res.responseText}`)
 
     let role = ''
-    let sar = jsonResponse(res)
-    let allowed = useForm ? sar.status.allowed : sar.allowed
-    if (allowed) {
+
+    if (isAllowed(res)) {
       req.log(`proxyJolokiaAgentWithRbac(update): allowed as admin`)
       // map the `update` verb to the `admin` role
       role = 'admin'
@@ -232,20 +268,19 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
 
     req.log(`proxyJolokiaAgentWithRbac(update): returning selfLocalSubjectAccessReview('get')`)
     res = await selfLocalSubjectAccessReview('get')
-    req.log(`proxyJolokiaAgentWithRbac(get): status=${res.status}`)
+    req.log(`proxyJolokiaAgentWithRbac(get): res=${JSON.stringify(res)}`)
     if (res.status !== 201) {
       return Promise.reject(res)
     }
-    sar = jsonResponse(res)
-    allowed = useForm ? sar.status.allowed : sar.allowed
-    if (allowed && role.length === 0) {
+
+    if (isAllowed(res) && role.length === 0) {
       // map the `get` verb to the `viewer` role
       // only if not already admin
       role = 'viewer'
     }
 
     if (role.length === 0)
-      return reject(403, JSON.stringify(sar))
+      return reject(403, JSON.stringify(res))
 
     req.log('Handling Request With Role')
     const handler = await handleRequestWithRole(role)
@@ -262,10 +297,11 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
     // GET method
     // path: ...jolokia/<type>/<arg1>/<arg2>/...
     // https://jolokia.org/reference/html/protocol.html#get-request
-    req.log(`parseRequest: ${req.method} path=${path}`)
+    req.log(`parseRequest: ${req.method || 'GET'} path=${path}`)
     // path is already decoded no need for decodeURIComponent()
     const match = path.split('?')[0].match(/.*jolokia\/(read|write|exec|search|list|version)\/?(.*)/) || []
     const type = match ? match[1] : 'unknown'
+    req.log(`Type of jolokia request: ${type}`)
 
     let args: string[] = []
 
@@ -315,11 +351,21 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
         // /version
         return { type: type }
       default:
-        throw `Unexpected Jolokia GET request: ${path}`
+        let msg = `Unexpected Jolokia GET request.`
+        if (type) {
+          msg = `${msg} Type is determined as ${type} and not handled.`
+        } else {
+          msg = `${msg} Type has not been defined on the path, eg. .../jolokia/read.`
+        }
+
+        if (req.requestText && req.requestText.length > 0) {
+          msg = `${msg} This GET request is using a request body. Such requests should use the path instead. If the body is preferred then change to a POST request.`
+        }
+        throw new Error(msg)
     }
   }
 
-  async function handleRequestWithRole(role: string): Promise<NginxHTTPRequest> {
+  async function handleRequestWithRole(role: string): Promise<SimpleResponse> {
     req.log('==== handleRequestWithRole ====')
     const request = parseRequest()
     if (req.method === 'GET') {
@@ -334,32 +380,32 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
       if (mbeanListRequired)
         mbeans = await listMBeans(podIP)
 
-      const rbac: IRequest[] = request.map(r => RBAC.check(r, role))
-      const intercept = request.filter((_, i) => rbac[i].allowed).map(r => RBAC.intercept(r, role, mbeans))
+      const rbacChecks: ACLCheck[] = request.map(r => RBAC.check(r, role))
+      const intercept = request.filter((_, i) => rbacChecks[i].allowed).map(r => RBAC.intercept(r, role, mbeans))
       const requestBody = JSON.stringify(intercept.filter(i => !i.intercepted).map(i => i.request))
       req.log('inside handling request with role - about to callJolokiaAgent')
-      const jolokia = await callJolokiaAgent(podIP, requestBody)
+      const body = await callJolokiaAgent(podIP, requestBody)
 
-      req.log('Post callJolokiaAgent')
-      const body = jsonResponse(jolokia)
-
-      req.log('Post callJolokiaAgent: ')
-      req.log(body)
+      req.log(`Post callJolokiaAgent: ${JSON.stringify(body)}`)
 
       // Unroll intercepted requests
-      let bulk = intercept.reduce((res, rbac, i) => {
-        if (rbac.intercepted) {
+      let initial: InterceptedResponse[] = []
+      let bulk = intercept.reduce((res, rbac) => {
+        if (rbac.intercepted && rbac.response) {
           res.push(rbac.response)
         } else {
-          res.push(body.splice(0, 1)[0])
+          // TODO
+          req.log("ERROR ERROR ERROR NEED TO FIX")
+          // res.push(body.splice(0, 1)[0])
         }
         return res
-      }, [])
+      }, initial)
 
       req.log('Unrolled bulk')
 
       // Unroll denied requests
-      bulk = rbac.reduce((res, rbac, i) => {
+      initial = []
+      bulk = rbacChecks.reduce((res, rbac, i) => {
         if (rbac.allowed) {
           res.push(bulk.splice(0, 1)[0])
         } else {
@@ -370,22 +416,21 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
           })
         }
         return res
-      }, [])
+      }, initial)
 
       req.log('Unrolled denied requests')
 
       // Re-assembled bulk response
       const response = {
-        status: jolokia.status,
-        responseBody: JSON.stringify(bulk),
-        headersOut: jolokia.headersOut,
+        status: body.status,
+        responseText: JSON.stringify(bulk),
+        headersOut: body.headersOut as Record<string, string>,
       }
 
-      req.log('Expected response: ' + response.status)
-      req.log(response)
+      req.log('Expected response: status => ' + response.status + ' reponseBody => ' + response.responseText)
 
       // Override the content length that changed while re-assembling the bulk response
-      response.headersOut['Content-Length'] = response.responseBody.length
+      response.headersOut['Content-Length'] = `${response.responseText.length}`
       return response
 
     } else {
@@ -399,17 +444,25 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
         mbeans = await listMBeans(podIP)
 
       req.log('no mbean list required')
-      const rbac = RBAC.check(request, role)
-      if (!rbac.allowed) {
-        return reject(403, rbac.reason)
-      }
-      rbac = RBAC.intercept(request, role, mbeans)
-      if (rbac.intercepted) {
-        return { status: rbac.response.status, responseBody: JSON.stringify(rbac.response) }
+      const rbacCheck = RBAC.check(request, role)
+      if (!rbacCheck.allowed) {
+        return reject(403, rbacCheck.reason)
       }
 
-      req.log('XXX callJolokiaAgent using :' + req.requestBody)
-      return await callJolokiaAgent(podIP, req.requestBody)
+      const rbacIntercept = RBAC.intercept(request, role, mbeans)
+      if (rbacIntercept.intercepted) {
+        if (! rbacIntercept.response)
+          return reject(502, 'No response from rbac interception')
+
+        return {
+          status: rbacIntercept.response?.status,
+          responseText: JSON.stringify(rbacIntercept.response),
+          headersOut: req.headersOut
+        }
+      }
+
+      req.log('XXX callJolokiaAgent using :' + req.requestText)
+      return await callJolokiaAgent(podIP, req.requestText)
     }
   }
 
@@ -420,13 +473,20 @@ export function proxyJolokiaAgent(req: NginxHTTPRequest) {
     })
     .catch(error => {
       req.log('CATCH AT FOOT OF MAIN NGINX FUNCTION')
+
       if (error.status) {
-        req.log('Catch error at foot of main nginx function: ' + error.status)
-        req.log(error)
         response(error)
-      } else {
-        req.log(error)
-        req.return(502, `nginx jolokia gateway error: ${error.message}`)
+        return
       }
+
+      let msg = 'NGINX jolokia gateway error:'
+      if (error.message) {
+        msg = `${msg}\n\t${error.message}`
+      } else if (isObject(error)) {
+        msg = `${msg}\n\t${JSON.stringify(error)}`
+      } else {
+        msg = `${msg}\n\t${error}`
+      }
+      req.return(502, msg)
     })
 }
