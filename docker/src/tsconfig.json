@@ -44,16 +44,16 @@
       // "ES2021.WeakRef",
     ],
     "declaration": true,
-    "outDir": "../lib",
+    "outDir": "../dist",
     "composite": true,
-    "tsBuildInfoFile": "../node_modules/.cache/tsc/src.tsbuildinfo",
+    "tsBuildInfoFile": "../../node_modules/.cache/tsc/src.tsbuildinfo",
     "noEmit": false,
     "emitDeclarationOnly": true,
     "isolatedModules": true,
 
-    "typeRoots": [],
     "types": [
       "njs-types",
+      "jest"
     ],
   },
   "include": [

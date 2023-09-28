@@ -1,10 +1,10 @@
 import yaml from 'js-yaml'
-import * as fs from 'fs'
+import fs from 'fs'
 import * as rbac from './rbac'
 import { BulkValue, isObject, OptimisedJmxMBean } from './globals'
 
 rbac.initACL(yaml.load(fs.readFileSync('./ACL.yaml', 'utf8')))
-const listMBeans = JSON.parse(fs.readFileSync('./test.listMBeans.json', 'utf8')).value
+const listMBeans = JSON.parse(fs.readFileSync('./test-resources/test.listMBeans.json', 'utf8')).value
 
 // Roles
 const admin = 'admin'
@@ -119,7 +119,7 @@ describe('intercept', function () {
     expect(isObject(result.response?.value)).toBe(true)
 
     const valObj = result.response?.value as Record<string, Record<string, BulkValue>>
-    for (const [key, value] of Object.entries(valObj)) {
+    for (const [_, value] of Object.entries(valObj)) {
       expect(isObject(value)).toBe(true)
       expect(value.CanInvoke).toBe(true)
     }

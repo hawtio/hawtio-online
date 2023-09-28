@@ -38,10 +38,16 @@
     /* Completeness */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
+  "types": [
+    "jest"
+  ],
   "include": [
     "./integration-tests",
     "./*.js",
     "./*.mjs"
+  ],
+  "exclude": [
+    "./njs-tests"
   ],
   "files": [
     "../node_modules/njs-types/ngx_http_js_module.d.ts",

@@ -7,7 +7,7 @@ import gateway from '../dist/nginx.js';
 
 var fs = require('fs');
 
-var listMBeans = fs.readFileSync('./njs/test.listMBeans.json');
+var listMBeans = fs.readFileSync('./test-resources/test.listMBeans.json');
 
 function report(code, message) {
   console.log('code:', code);
