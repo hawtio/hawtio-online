@@ -38,17 +38,14 @@ server {
 
     # Static content serving
     location /online {
+        add_header location-rule ONLINE always;
         alias     /usr/share/nginx/html/online;
         try_files $uri$args $uri /online/index.html;
     }
 
-    location /integration/ {
-        alias     /usr/share/nginx/html/integration/;
-        try_files $uri$args $uri /integration/index.html;
-    }
-
     # Kubernetes master API reverse proxying
     location /master {
+        add_header                    location-rule MASTER always;
         proxy_pass                    https://kubernetes.default/;
         rewrite                       /master/(.*) /$1 break;
         proxy_pass_request_headers    on;
@@ -63,7 +60,8 @@ server {
     }
 
     location /management {
-        js_content gateway.proxyJolokiaAgent;
+        add_header                    location-rule MANAGEMENT always;
+        js_content                    gateway.proxyJolokiaAgent;
     }
 
     # Self-LocalSubjectAccessReview requests cache
@@ -106,6 +104,7 @@ server {
 
     # Pod details requests cache
     location /podIP {
+        add_header location-rule POD_IP always;
         internal;
         proxy_pass                    https://kubernetes.default/;
         rewrite                       /podIP/(.+)/(.+) /api/v1/namespaces/$1/pods/$2 break;
