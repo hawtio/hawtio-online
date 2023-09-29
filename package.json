@@ -14,6 +14,7 @@
     "docker"
   ],
   "scripts": {
+    "build": "yarn build:online",
     "start:online": "yarn build:mgmt && yarn start:shell",
     "build:online": "yarn build:mgmt && yarn build:shell",
     "start:shell": "yarn workspace @hawtio/online-shell start",
