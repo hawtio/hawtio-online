@@ -1,0 +1,15 @@
+{
+  "branding": {
+    "appName": "oauth",
+    "appLogoUrl": "node_modules/@hawtio/core/dist/img/hawtio-logo.svg",
+    "css": "branding-example.css",
+    "favicon": "favicon.ico"
+  },
+  "about": {
+    "title": "OAuth Testing",
+    "description": "Test the OAuth API",
+    "imgSrc": "hawtio-logo.svg",
+    "copyright": "© Hawtio project"
+  },
+  "disabledRoutes": ["disabled"]
+}

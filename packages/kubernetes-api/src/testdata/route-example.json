@@ -1,0 +1,57 @@
+{
+  "apiVersion": "route.openshift.io/v1",
+  "kind": "Route",
+  "metadata": {
+    "annotations": {
+      "openshift.io/host.generated": "true"
+    },
+    "creationTimestamp": "2023-06-13T10:51:14Z",
+    "labels": {
+      "app": "hawtio"
+    },
+    "name": "fuse-console",
+    "namespace": "hawtio",
+    "ownerReferences": [
+      {
+        "apiVersion": "hawt.io/v1alpha1",
+        "blockOwnerDeletion": true,
+        "controller": true,
+        "kind": "Hawtio",
+        "name": "fuse-console",
+        "uid": "d3a09b8d-3caa-4d4d-9c58-fec5c32159f1"
+      }
+    ],
+    "resourceVersion": "275527",
+    "uid": "66a1d356-e634-4cec-9c18-11e4c7066f91"
+  },
+  "spec": {
+    "host": "fuse-console-hawtio.apps-crc.testing",
+    "tls": {
+      "insecureEdgeTerminationPolicy": "Redirect",
+      "termination": "reencrypt"
+    },
+    "to": {
+      "kind": "Service",
+      "name": "fuse-console",
+      "weight": 100
+    },
+    "wildcardPolicy": "None"
+  },
+  "status": {
+    "ingress": [
+      {
+        "conditions": [
+          {
+            "lastTransitionTime": "2023-06-13T10:51:14Z",
+            "status": "True",
+            "type": "Admitted"
+          }
+        ],
+        "host": "fuse-console-hawtio.apps-crc.testing",
+        "routerCanonicalHostname": "router-default.apps-crc.testing",
+        "routerName": "default",
+        "wildcardPolicy": "None"
+      }
+    ]
+  }
+}

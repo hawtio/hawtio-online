@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hawtio-online
+spec:
+  template:
+    spec:
+      containers:
+        - name: hawtio-online
+          env:
+            - name: OPENSHIFT_WEB_CONSOLE_URL
+              value: ""

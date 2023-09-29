@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
 - configmap-hawtio-online.yml
-- configmap-hawtio-integration.yml
 - configmap-hawtio-rbac.yml
 - deployment.yml
 - service.yml

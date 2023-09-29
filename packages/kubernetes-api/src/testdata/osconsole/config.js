@@ -1,0 +1,13 @@
+window.OPENSHIFT_CONFIG = {
+  master_uri: 'http://localhost/master',
+  hawtio: {
+    mode: 'cluster',
+  },
+  openshift: {
+    oauth_metadata_uri: 'http://localhost/master/.well-known/oauth-authorization-server',
+    oauth_client_id: 'hawtio',
+    scope: 'user:info user:check-access user:list-projects role:edit:*',
+    web_console_url: 'https://console-openshift-console.apps-crc.testing',
+    cluster_version: '4.13.0',
+  },
+}

@@ -20,7 +20,7 @@ exithandler() {
 usage() {
   cat <<EOT
 This script generates a client certificate and then creates a TLS secret with it
-for Hawtio proxing on OpenShift 4.
+for Hawtio proxying on OpenShift 4.
 
 Usage:
   $(basename $0) [-h] [SECRET_NAME] [CN]

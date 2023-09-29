@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- ensures that relative urls for hawtconfig.json and osconsole/config.json are accessible -->
+    <base href="<%= htmlWebpackPlugin.options.publicPath %>/" />
+    <link rel="icon" href="<%= htmlWebpackPlugin.options.publicPath %>/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Hawtio Online" />
+
+    <!-- Hawtio branding styles placeholder -->
+    <link id="branding" rel="stylesheet" type="text/css" href="" />
+
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="<%= htmlWebpackPlugin.options.publicPath %>/manifest.json" />
+
+    <title>Hawtio Online</title>
+  </head>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>

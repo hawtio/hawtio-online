@@ -1,0 +1,91 @@
+/*
+ * TODO probably should push this down into hawtio-next
+ * Moves the user and help button on nav bar to the end
+ */
+#hawtio-header-toolbar .pf-c-toolbar__content-section {
+  justify-content: end;
+}
+
+.online-header-toolbar-dropdown {
+  border: none;
+}
+
+.online-header-toolbar-dropdown .online-header-toolbar-dropdown-toggle::before {
+  border: none !important;
+}
+
+.online-header-toolbar-dropdown .online-header-toolbar-dropdown-toggle {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.online-header-toolbar-dropdown .online-header-toolbar-dropdown-toggle .pf-c-dropdown__toggle-icon {
+  display: none;
+}
+
+
+.discover-group-label {
+  text-align: left;
+  color: rgb(117, 117, 117);
+}
+
+.pod-item-name-with-labels {
+  flex-grow: 3;
+  display: flex;
+  flex-direction: column;
+  max-width: 40%;
+}
+
+.pod-item-label-group {
+  flex-grow: 2;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+.pod-item-label-group ul {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pod-item-connect-button {
+  max-height: 2em;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.state-icon {
+  border-radius: 50%;
+  height: 1.5em;
+  line-height: 1.5em;
+  width: 1.5em;
+}
+
+.running-state {
+  color: green;
+  background-color: lightcyan;
+}
+
+.text-danger {
+  color: #c00;
+}
+
+.text-success {
+  color: #3c763d;
+}
+
+.text-muted {
+  color: #9c9c9c;
+}
+
+.connect-button {
+  max-height: 2em;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.connect-button-dropdown {
+  max-height: 2em;
+  margin-top: auto;
+  margin-bottom: auto;
+}
