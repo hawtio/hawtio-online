@@ -14,7 +14,8 @@
     "docker"
   ],
   "scripts": {
-    "build": "yarn build:online",
+    "build": "yarn build:online && yarn build:docker",
+    "build:docker": "yarn workspace @hawtio/online-docker build",
     "start:online": "yarn build:mgmt && yarn start:shell",
     "build:online": "yarn build:mgmt && yarn build:shell",
     "start:shell": "yarn workspace @hawtio/online-shell start",
@@ -38,8 +39,9 @@
     "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml -o=docker/licenses",
     "gen:proxying": "./scripts/generate-proxying.sh",
     "gen:serving": "./scripts/generate-serving.sh",
-    "test:docker": "jasmine docker/*.spec.js",
-    "test:nginx": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js",
+    "test": "yarn test:docker && yarn test:nginx",
+    "test:docker": "yarn workspace @hawtio/online-docker test",
+    "test:nginx": "yarn workspace @hawtio/online-docker njs:test",
     "deploy:k8s:namespace": "kubectl apply --kustomize deploy/k8s/namespace/",
     "deploy:k8s:cluster": "kubectl apply --kustomize deploy/k8s/cluster/",
     "deploy:openshift:namespace": "oc apply --kustomize deploy/openshift/namespace/",
