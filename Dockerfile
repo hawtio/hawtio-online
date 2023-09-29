@@ -7,11 +7,13 @@ RUN npm install -g yarn
 COPY package.json yarn.lock ./
 COPY .yarnrc.yml ./
 ADD packages/ packages/
+ADD docker/ docker/
 ADD .yarn/plugins .yarn/plugins
 ADD .yarn/releases .yarn/releases
+ADD .yarn/patches .yarn/patches
 
 RUN yarn install
-RUN yarn build:online
+RUN yarn build
 
 # Build stage to extract envsubst
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.8 as envsubst
@@ -69,9 +71,10 @@ RUN mkdir -p /usr/share/nginx/html/online/osconsole && \
     chown 998 /usr/share/nginx/html/online/osconsole/config.json && \
     chmod g=u /usr/share/nginx/html/online/osconsole/config.json
 
-COPY docker/nginx.js docker/rbac.js docker/js-yaml.js docker/jwt-decode.js /etc/nginx/conf.d/
+## Copies these to / then nginx.sh will link to them on running of the container
 COPY docker/nginx.conf docker/nginx-gateway.conf.template docker/nginx-gateway-k8s.conf.template docker/osconsole/config.sh docker/nginx.sh docker/ACL.yaml /
 
+COPY --from=builder /hawtio-online/docker/dist/nginx.js /etc/nginx/conf.d/
 COPY --from=builder /hawtio-online/packages/online-shell/build /usr/share/nginx/html/online/
 COPY --from=envsubst /usr/bin/envsubst /usr/local/bin/
 
