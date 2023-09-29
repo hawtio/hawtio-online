@@ -1,13 +1,14 @@
-import rbac from './rbac.js';
-import yaml from './js-yaml.js';
-import * as fs from 'fs';
+import yaml from 'js-yaml'
+import * as fs from 'fs'
+import * as rbac from './rbac'
+import { BulkValue, isObject, OptimisedJmxMBean } from './globals'
 
-rbac.initACL(yaml.safeLoad(fs.readFileSync('./docker/ACL.yaml')));
-const listMBeans = JSON.parse(fs.readFileSync('./docker/test.listMBeans.json')).value;
+rbac.initACL(yaml.load(fs.readFileSync('./ACL.yaml', 'utf8')))
+const listMBeans = JSON.parse(fs.readFileSync('./test.listMBeans.json', 'utf8')).value
 
 // Roles
-const admin = 'admin';
-const viewer = 'viewer';
+const admin = 'admin'
+const viewer = 'viewer'
 
 describe('check', function () {
   it('should handle a request with viewer role', function () {
@@ -15,9 +16,9 @@ describe('check', function () {
       type: 'exec',
       mbean: 'org.apache.camel:type=context',
       operation: 'dumpRoutesAsXml()',
-    }, viewer);
-    expect(result.allowed).toBe(true);
-  });
+    }, viewer)
+    expect(result.allowed).toBe(true)
+  })
 
   it('should handle a request with arguments and no roles allowed', function () {
     const result1 = rbac.check({
@@ -27,8 +28,8 @@ describe('check', function () {
       arguments: [
         '0',
       ],
-    }, admin);
-    expect(result1.allowed).toBe(false);
+    }, admin)
+    expect(result1.allowed).toBe(false)
     const result2 = rbac.check({
       type: 'exec',
       mbean: 'org.apache.karaf:type=bundle',
@@ -36,9 +37,9 @@ describe('check', function () {
       arguments: [
         '0',
       ],
-    }, viewer);
-    expect(result2.allowed).toBe(false);
-  });
+    }, viewer)
+    expect(result2.allowed).toBe(false)
+  })
 
   it('should handle a request with arguments and only admin allowed', function () {
     const result1 = rbac.check({
@@ -49,8 +50,8 @@ describe('check', function () {
         '50',
         'value',
       ],
-    }, admin);
-    expect(result1.allowed).toBe(true);
+    }, admin)
+    expect(result1.allowed).toBe(true)
     const result2 = rbac.check({
       type: 'exec',
       mbean: 'org.apache.karaf:type=bundle',
@@ -59,10 +60,10 @@ describe('check', function () {
         '50',
         'value',
       ],
-    }, viewer);
-    expect(result2.allowed).toBe(false);
-  });
-});
+    }, viewer)
+    expect(result2.allowed).toBe(false)
+  })
+})
 
 describe('intercept', function () {
   it('should intercept RBAC MBean search requests', function () {
@@ -71,10 +72,10 @@ describe('intercept', function () {
         type: 'search',
         mbean: '*:type=security,area=jmx,*'
       },
-      admin, listMBeans);
-    expect(result.intercepted).toBe(true);
-    expect(result.response.value).toEqual(['hawtio:type=security,area=jmx,name=HawtioOnlineRBAC']);
-  });
+      admin, listMBeans)
+    expect(result.intercepted).toBe(true)
+    expect(result.response?.value).toEqual(['hawtio:type=security,area=jmx,name=HawtioOnlineRBAC'])
+  })
 
   it('should intercept single canInvoke requests on RBAC MBean', function () {
     const result = rbac.intercept(
@@ -84,11 +85,11 @@ describe('intercept', function () {
         operation: 'canInvoke(java.lang.String)',
         arguments: ['java.lang:type=Memory']
       },
-      admin, listMBeans);
-    expect(result.intercepted).toBe(true);
+      admin, listMBeans)
+    expect(result.intercepted).toBe(true)
     // canInvoke should be true
-    expect(result.response.value).toBe(true);
-  });
+    expect(result.response?.value).toBe(true)
+  })
 
   it('should intercept bulk canInvoke requests on RBAC MBean', function () {
     const result = rbac.intercept(
@@ -112,11 +113,18 @@ describe('intercept', function () {
           },
         ],
       },
-      admin, listMBeans);
-    expect(result.intercepted).toBe(true);
-    expect(result.response.value).toBeDefined();
-    // canInvoke should be ???
-  });
+      admin, listMBeans)
+    expect(result.intercepted).toBe(true)
+    expect(result.response?.value).toBeDefined()
+    expect(isObject(result.response?.value)).toBe(true)
+
+    const valObj = result.response?.value as Record<string, Record<string, BulkValue>>
+    for (const [key, value] of Object.entries(valObj)) {
+      expect(isObject(value)).toBe(true)
+      expect(value.CanInvoke).toBe(true)
+    }
+
+  })
 
   it('should intercept RBACRegistry list requests', function () {
     const result = rbac.intercept(
@@ -124,10 +132,14 @@ describe('intercept', function () {
         type: 'list',
         path: 'hawtio/type=security,name=RBACRegistry',
       },
-      admin, listMBeans);
-    expect(result.intercepted).toBe(true);
-    expect(result.response.value.op).toBeDefined();
-  });
+      admin, listMBeans)
+    expect(result.intercepted).toBe(true)
+    expect(result.response?.value).toBeDefined()
+
+    expect(isObject(result.response?.value)).toBe(true)
+    const val = result.response?.value as Record<string, unknown>
+    expect(val.op).toBeDefined()
+  })
 
   it('should intercept optimised list MBeans requests', function () {
     const result = rbac.intercept(
@@ -136,10 +148,10 @@ describe('intercept', function () {
         mbean: 'hawtio:type=security,name=RBACRegistry',
         operation: 'list()',
       },
-      admin, listMBeans);
-    expect(result.intercepted).toBe(true);
-    expect(result.response.value).toBeDefined();
-  });
+      admin, listMBeans)
+    expect(result.intercepted).toBe(true)
+    expect(result.response?.value).toBeDefined()
+  })
 
   it('should not intercept other requests', function () {
     const result = rbac.intercept(
@@ -148,61 +160,65 @@ describe('intercept', function () {
         mbean: 'java.lang.Memory',
         operation: 'gc()',
       },
-      admin, listMBeans);
-    expect(result.intercepted).toBe(false);
-    expect(result.response).toBeUndefined();
-  });
-});
+      admin, listMBeans)
+    expect(result.intercepted).toBe(false)
+    expect(result.response).toBeUndefined()
+  })
+})
 
 describe('optimisedMBeans', function () {
   it('should optimise MBean list', function () {
-    const result = rbac.testing.optimisedMBeans(listMBeans, admin);
+    const result = rbac.testing.optimisedMBeans(listMBeans, admin)
 
     // cache
-    expect(result.cache).toBeDefined();
-    expect(result.cache).not.toEqual({});
+    expect(result.cache).toBeDefined()
+    expect(result.cache).not.toEqual({})
     Object.entries(result.cache).forEach(info => {
-      expect(info[1].canInvoke).toBe(true);
+      expect(info[1].canInvoke).toBe(true)
       if (info[1].op) {
         Object.entries(info[1].op).forEach(op => {
-          var sigs = Array.isArray(op[1]) ? op[1] : [op[1]];
+          var sigs = Array.isArray(op[1]) ? op[1] : [op[1]]
           sigs.forEach(sig => {
-            expect(sig.canInvoke).toBe(true);
-          });
-        });
-        expect(info[1].opByString).toBeDefined();
-        expect(info[1].opByString).not.toEqual({});
+            expect(sig.canInvoke).toBe(true)
+          })
+        })
+
+        const opInfo = info[1] as OptimisedJmxMBean
+        expect(opInfo.opByString).toBeDefined()
+        expect(opInfo.opByString).not.toEqual({})
       }
-    });
-    expect(Object.keys(result.cache)).toContain('activemq.artemis:address');
-    expect(Object.keys(result.cache)).toContain('activemq.artemis:queue');
+    })
+    expect(Object.keys(result.cache)).toContain('activemq.artemis:address')
+    expect(Object.keys(result.cache)).toContain('activemq.artemis:queue')
 
     // domains
-    expect(result.domains).toBeDefined();
-    expect(result.domains).not.toEqual({});
+    expect(result.domains).toBeDefined()
+    expect(result.domains).not.toEqual({})
     Object.entries(result.domains).forEach(domain => {
       Object.entries(domain[1]).forEach(info => {
         if (typeof info[1] === 'string') {
-          expect(result.cache[info[1]]).toBeDefined();
+          expect(result.cache[info[1]]).toBeDefined()
         } else {
-          expect(info[1].canInvoke).toBe(true);
+          expect(info[1].canInvoke).toBe(true)
         }
         if (info[1].op) {
           Object.entries(info[1].op).forEach(op => {
-            var sigs = Array.isArray(op[1]) ? op[1] : [op[1]];
+            var sigs = Array.isArray(op[1]) ? op[1] : [op[1]]
             sigs.forEach(sig => {
-              expect(sig.canInvoke).toBe(true);
-            });
-          });
-          expect(info[1].opByString).toBeDefined();
-          expect(info[1].opByString).not.toEqual({});
+              expect(sig.canInvoke).toBe(true)
+            })
+          })
+
+          const opInfo = info[1] as OptimisedJmxMBean
+          expect(opInfo.opByString).toBeDefined()
+          expect(opInfo.opByString).not.toEqual({})
         }
 
         // Artemis-specific checks
         if (domain[0] === 'org.apache.activemq.artemis') {
           // key order:
           //   broker > component > name | address > subcomponent > routing-type > queue
-          const order = {
+          const order: Record<string, number> = {
             'broker': 1,
             'component': 2,
             'name': 3,
@@ -210,23 +226,26 @@ describe('optimisedMBeans', function () {
             'subcomponent': 4,
             'routing-type': 5,
             'queue': 6
-          };
-          const regexp = /([^,]+)=([^,]+)+/g;
-          let match;
-          let previous = 0;
+          }
+
+
+          const regexp = /([^,]+)=([^,]+)+/g
+          let match
+          let previous = ''
+
           while ((match = regexp.exec(info[0])) !== null) {
-            const current = match[1];
+            const current = match[1]
             if ((order[previous] || 0) > order[current]) {
-              fail(`${previous} < ${current} in ${info[0]}`);
+              fail(`${previous} < ${current} in ${info[0]}`)
             }
-            previous = current;
+            previous = current
           }
         }
-      });
-    });
+      })
+    })
 
-  });
-});
+  })
+})
 
 describe('parseProperties', function () {
   it('should parse properties as object', function () {
@@ -234,13 +253,13 @@ describe('parseProperties', function () {
       context: 'MyCamel',
       name: '\"simple-route\"',
       type: 'routes',
-    });
+    })
     expect(rbac.testing.parseProperties('name=PS Old Gen,type=MemoryPool')).toEqual({
       name: 'PS Old Gen',
       type: 'MemoryPool',
-    });
+    })
     expect(rbac.testing.parseProperties('type=Memory')).toEqual({
       type: 'Memory'
-    });
-  });
-});
+    })
+  })
+})
