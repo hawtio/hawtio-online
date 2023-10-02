@@ -2161,6 +2161,7 @@ __metadata:
     eslint-config-prettier: ^8.8.0
     eslint-config-react-app: ^7.0.1
     eslint-plugin-react-hooks: ^4.6.0
+    jasmine: ^5.1.0
     prettier: 3.0.0
   languageName: unknown
   linkType: soft
@@ -8902,6 +8903,25 @@ __metadata:
     "@pkgjs/parseargs":
       optional: true
   checksum: 57d43ad11eadc98cdfe7496612f6bbb5255ea69fe51ea431162db302c2a11011642f50cfad57288bd0aea78384a0612b16e131944ad8ecd09d619041c8531b54
+  languageName: node
+  linkType: hard
+
+"jasmine-core@npm:~5.1.0":
+  version: 5.1.1
+  resolution: "jasmine-core@npm:5.1.1"
+  checksum: 84f1b3a0af7769c9bd514cdde1e366e7798a0b1110efa5a09157c653c53cdad77e1c84bffd5cafe07649c9dba7141cd602c444ac37813f111f8f5b5e3f8f6c99
+  languageName: node
+  linkType: hard
+
+"jasmine@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "jasmine@npm:5.1.0"
+  dependencies:
+    glob: ^10.2.2
+    jasmine-core: ~5.1.0
+  bin:
+    jasmine: bin/jasmine.js
+  checksum: 68ca655f05d66fb80d541d2d3305a9a683b76efc21adc5b99a748938881d16dccc3bfe3d091fff802e8c85a9bfce7f825c8ab28ee1656faf268b2ed8cb3b7c4c
   languageName: node
   linkType: hard
 

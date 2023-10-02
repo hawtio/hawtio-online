@@ -38,6 +38,7 @@
     "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml -o=docker/licenses",
     "gen:proxying": "./scripts/generate-proxying.sh",
     "gen:serving": "./scripts/generate-serving.sh",
+    "test": "yarn test:docker && yarn test:nginx",
     "test:docker": "jasmine docker/*.spec.js",
     "test:nginx": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js",
     "deploy:k8s:namespace": "kubectl apply --kustomize deploy/k8s/namespace/",
@@ -64,5 +65,8 @@
   "engines": {
     "yarn": ">=3.6.0",
     "node": ">=16"
+  },
+  "dependencies": {
+    "jasmine": "^5.1.0"
   }
 }
