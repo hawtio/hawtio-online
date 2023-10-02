@@ -28,8 +28,6 @@ function proxyJolokiaAgent(req) {
   var path = parts[5];
 
   function response(res) {
-    req.log(`response: status=${res.status}`);
-
     for (var header in res.headersOut) {
       req.headersOut[header] = res.headersOut[header];
     }
@@ -91,7 +89,6 @@ function proxyJolokiaAgent(req) {
       };
     }
     var json = JSON.stringify(body);
-    req.log(`selfLocalSubjectAccessReview(${verb}): ${api} - ${json}`);
 
     // Work-around same-location sub-requests caching issue
     var suffix = verb === 'get' ? '2' : '';
@@ -103,8 +100,6 @@ function proxyJolokiaAgent(req) {
 
   function getPodIP() {
     return req.subrequest(`/podIP/${namespace}/${pod}`, { method: 'GET' }).then(res => {
-      req.log(`getPodIP(${namespace}/${pod}): status=${res.status}`);
-
       if (res.status !== 200) {
         return Promise.reject(res);
       }
@@ -124,7 +119,6 @@ function proxyJolokiaAgent(req) {
 
   function callJolokiaAgent(podIP, request) {
     var encodedPath = encodeURI(path);
-    req.log(`callJolokiaAgent: ${req.method} /proxy/${protocol}:${podIP}:${port}/${encodedPath}`);
     if (req.method === 'GET') {
       return req.subrequest(`/proxy/${protocol}:${podIP}:${port}/${encodedPath}`);
     } else {
@@ -137,8 +131,6 @@ function proxyJolokiaAgent(req) {
     // hosting the Jolokia endpoint is authorized
     return selfLocalSubjectAccessReview('update')
       .then(res => {
-        req.log(`proxyJolokiaAgentWithoutRbac(update): status=${res.status}`);
-
         if (res.status !== 201) {
           return Promise.reject(res);
         }
@@ -148,7 +140,6 @@ function proxyJolokiaAgent(req) {
           return reject(403, JSON.stringify(sar));
         }
         return getPodIP().then(podIP => {
-          req.log(`proxyJolokiaAgentWithoutRbac(podIP): podIP=${podIP}`);
           return callJolokiaAgent(podIP, req.requestBody);
         });
       });
@@ -157,8 +148,6 @@ function proxyJolokiaAgent(req) {
   function proxyJolokiaAgentWithRbac() {
     return selfLocalSubjectAccessReview('update')
       .then(res => {
-        req.log(`proxyJolokiaAgentWithRbac(update): status=${res.status}`);
-
         if (res.status !== 201) {
           return Promise.reject(res);
         }
@@ -170,8 +159,6 @@ function proxyJolokiaAgent(req) {
         }
         return selfLocalSubjectAccessReview('get')
           .then(res => {
-            req.log(`proxyJolokiaAgentWithRbac(get): status=${res.status}`);
-
             if (res.status !== 201) {
               return Promise.reject(res);
             }
@@ -195,7 +182,6 @@ function proxyJolokiaAgent(req) {
     // GET method
     // path: ...jolokia/<type>/<arg1>/<arg2>/...
     // https://jolokia.org/reference/html/protocol.html#get-request
-    req.log(`parseRequest: ${req.method} path=${path}`);
     // path is already decoded; no need for decodeURIComponent()
     var match = path.split('?')[0].match(/.*jolokia\/(read|write|exec|search|list|version)\/?(.*)/);
     var type = match[1];
@@ -242,9 +228,6 @@ function proxyJolokiaAgent(req) {
 
   function handleRequestWithRole(role) {
     var request = parseRequest();
-    if (req.method === 'GET') {
-      req.log(`handleRequestWithRole: ${req.method} request=${JSON.stringify(request)}`);
-    }
     var mbeanListRequired;
     if (Array.isArray(request)) {
       mbeanListRequired = request.find(r => RBAC.isMBeanListRequired(r));
