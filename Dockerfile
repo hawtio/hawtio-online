@@ -20,8 +20,9 @@ RUN microdnf -y install gettext
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.8
 
-ENV NGINX_VERSION 1.24.0-1.el8
-ENV NGINX_MODULE_NJS_VERSION 1.24.0+0.8.1-1.el8
+# njs >= 0.5.x fails to run nginx.js
+ENV NGINX_VERSION 1.18.0-2.el8
+ENV NGINX_MODULE_NJS_VERSION 1.18.0.0.4.4-2.el8
 
 LABEL name="nginxinc/nginx" \
     vendor="NGINX Inc." \
