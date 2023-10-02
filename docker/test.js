@@ -1,53 +1,34 @@
 // This test file can be run using the NJS CLI.
 // The test result depends on the HAWTIO_ONLINE_RBAC_ACL environment variable.
 // To test with RBAC enabled:
-//   yarn njs:test
+// HAWTIO_ONLINE_RBAC_ACL= njs test.js
 
-import gateway from '../dist/nginx.js';
+import gateway from 'nginx.js';
 
 var fs = require('fs');
 
-var listMBeans = fs.readFileSync('./test-resources/test.listMBeans.json');
-
-function report(code, message) {
-  console.log('code:', code);
-  console.log('message:', message, "\n");
-}
-
-function callGateway(input) {
-  var options = {
-    return: (code, message) => {
-      report(code, message);
-    },
-    log: (message) => {
-      console.log(message);
-    }
-  }
-
-  var payload = Object.assign(input, options);
-  return gateway.proxyJolokiaAgent(payload);
-}
+var listMBeans = fs.readFileSync('test.listMBeans.json');
 
 function requestWithViewerRoleTest() {
-  console.log("== requestWithViewerRoleTest ==");
-  return callGateway({
-    uri: '/management/namespaces/test/pods/https:pod:443/jolokia',
-    requestText: JSON.stringify({
+  return gateway.proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
       type: 'exec',
       mbean: 'org.apache.camel:type=context',
       operation: 'dumpRoutesAsXml()',
     }),
     headersOut: {},
     subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
   });
 }
 
 function bulkRequestWithViewerRoleTest() {
-  console.log("== bulkRequestWithViewerRoleTest ==");
-  return callGateway({
-    method: 'POST',
-    uri: '/management/namespaces/test/pods/https:pod:443/jolokia',
-    requestText: JSON.stringify([
+  return gateway.proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify([
       {
         type: 'exec',
         mbean: 'org.apache.camel:type=context',
@@ -60,16 +41,17 @@ function bulkRequestWithViewerRoleTest() {
       },
     ]),
     headersOut: {},
-    subrequest: doWithViewerRole
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
   });
 }
 
 function requestOperationWithArgumentsAndNoRoleTest() {
-  console.log("== requestOperationWithArgumentsAndNoRoleTest ==");
-  return callGateway({
-    method: 'POST',
-    uri: '/management/namespaces/test/pods/https:pod:443/jolokia',
-    requestText: JSON.stringify({
+  return gateway.proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
       type: 'exec',
       mbean: 'org.apache.karaf:type=bundle',
       operation: 'uninstall(java.lang.String)',
@@ -78,16 +60,17 @@ function requestOperationWithArgumentsAndNoRoleTest() {
       ],
     }),
     headersOut: {},
-    subrequest: doWithViewerRole
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
   });
 }
 
 function requestOperationWithArgumentsAndViewerRoleTest() {
-  console.log("== requestOperationWithArgumentsAndViewerRoleTest ==");
-  return callGateway({
-    method: 'POST',
-    uri: '/management/namespaces/test/pods/https:pod:443/jolokia',
-    requestText: JSON.stringify({
+  return gateway.proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
       type: 'exec',
       mbean: 'org.apache.karaf:type=bundle',
       operation: 'update(java.lang.String,java.lang.String)',
@@ -97,44 +80,47 @@ function requestOperationWithArgumentsAndViewerRoleTest() {
       ],
     }),
     headersOut: {},
-    subrequest: doWithViewerRole
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
   });
 }
 
 function searchCamelRoutesTest() {
-  console.log("== searchCamelRoutesTest ==");
-  return callGateway({
-    method: 'POST',
-    uri: '/management/namespaces/test/pods/https:pod:443/jolokia',
-    requestText: JSON.stringify({
+  return gateway.proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
       type: 'search',
       mbean: 'org.apache.camel:context=*,type=routes,*',
     }),
     headersOut: {},
-    subrequest: doWithViewerRole
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
   });
 }
 
 function searchRbacMBeanTest() {
-  console.log("== searchRbacMBeanTest ==");
-  return callGateway({
-    method: 'POST',
-    uri: '/management/namespaces/test/pods/https:pod:443/jolokia',
-    requestText: JSON.stringify({
+  return gateway.proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
       type: 'search',
       mbean: '*:type=security,area=jmx,*',
     }),
     headersOut: {},
-    subrequest: doWithViewerRole
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
   });
 }
 
 function bulkRequestWithInterceptionTest() {
-  console.log("== bulkRequestWithInterceptionTest ==");
-  return callGateway({
-    method: 'POST',
-    uri: '/management/namespaces/test/pods/https:pod:443/jolokia',
-    requestText: JSON.stringify([
+  return gateway.proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify([
       {
         type: 'search',
         mbean: '*:type=security,area=jmx,*',
@@ -150,16 +136,17 @@ function bulkRequestWithInterceptionTest() {
       },
     ]),
     headersOut: {},
-    subrequest: doWithViewerRole
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
   });
 }
 
 function canInvokeSingleOperationTest() {
-  console.log("== canInvokeSingleOperationTest ==");
-  return callGateway({
-    method: 'POST',
-    uri: '/management/namespaces/test/pods/https:pod:443/jolokia',
-    requestText: JSON.stringify({
+  return gateway.proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
       'type': 'exec',
       'mbean': 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC',
       'operation': 'canInvoke(java.lang.String)',
@@ -169,16 +156,17 @@ function canInvokeSingleOperationTest() {
       ]
     }),
     headersOut: {},
-    subrequest: doWithViewerRole
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
   });
 }
 
 function canInvokeSingleAttributeTest() {
-  console.log("== canInvokeSingleAttributeTest ==");
-  return callGateway({
-    method: 'POST',
-    uri: '/management/namespaces/test/pods/https:pod:443/jolokia',
-    requestText: JSON.stringify({
+  return gateway.proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
       'type': 'exec',
       'mbean': 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC',
       'operation': 'canInvoke(java.lang.String)',
@@ -188,16 +176,17 @@ function canInvokeSingleAttributeTest() {
       ]
     }),
     headersOut: {},
-    subrequest: doWithViewerRole
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
   });
 }
 
 function canInvokeMapTest() {
-  console.log("== canInvokeMapTest ==");
-  return callGateway({
-    method: 'POST',
-    uri: '/management/namespaces/test/pods/https:pod:443/jolokia',
-    requestText: JSON.stringify({
+  return gateway.proxyJolokiaAgent({
+    uri: '/management/namespaces/test/pods/https:pod:443/remaining',
+    requestBody: JSON.stringify({
       'type': 'exec',
       'mbean': 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC',
       'operation': 'canInvoke(java.util.Map)',
@@ -218,18 +207,20 @@ function canInvokeMapTest() {
       ]
     }),
     headersOut: {},
-    subrequest: doWithViewerRole
+    subrequest: doWithViewerRole,
+    return: (code, message) => {
+      console.log('code:', code, 'message:', message);
+    },
   });
 }
 
 function doWithViewerRole(uri, options) {
-  console.log("== doWithViewerRole ==");
   var body = JSON.parse(options.body || '{}');
   var res;
   if (uri.startsWith('/authorization') && body.verb === 'update') {
     res = {
       status: 201,
-      responseText: JSON.stringify({
+      responseBody: JSON.stringify({
         allowed: false,
       }),
     };
@@ -237,7 +228,7 @@ function doWithViewerRole(uri, options) {
   if (uri.startsWith('/authorization') && body.verb === 'get') {
     res = {
       status: 201,
-      responseText: JSON.stringify({
+      responseBody: JSON.stringify({
         allowed: true,
       }),
     };
@@ -245,7 +236,7 @@ function doWithViewerRole(uri, options) {
   if (uri.startsWith('/podIP')) {
     res = {
       status: 200,
-      responseText: JSON.stringify({
+      responseBody: JSON.stringify({
         status: {
           podIP: '0.0.0.0',
         },
@@ -256,12 +247,12 @@ function doWithViewerRole(uri, options) {
     if (body.type === 'list') {
       res = {
         status: 200,
-        responseText: listMBeans,
+        responseBody: listMBeans,
       };
     } else {
       res = {
         status: 200,
-        responseText: JSON.stringify(Array.isArray(body)
+        responseBody: JSON.stringify(Array.isArray(body)
           ? body.map(b => ({ request: b, status: 200, value: 'VALUE' }))
           : { request: body, status: 200, value: 'VALUE' },
         ),

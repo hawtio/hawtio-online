@@ -66,9 +66,5 @@
   "engines": {
     "yarn": ">=3.6.0",
     "node": ">=16"
-  },
-  "resolutions": {
-    "js-yaml@^4.1.0": "patch:js-yaml@npm%3A4.1.0#./.yarn/patches/js-yaml-npm-4.1.0-3606f32312.patch",
-    "js-yaml@^3.13.1": "patch:js-yaml@npm%3A4.1.0#./.yarn/patches/js-yaml-npm-4.1.0-3606f32312.patch"
   }
 }
