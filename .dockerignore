@@ -8,7 +8,6 @@
 !.yarnrc.yml
 !.yarn/plugins
 !.yarn/releases
-!.yarn/patches
 
 **/node_modules/
 **/site/
