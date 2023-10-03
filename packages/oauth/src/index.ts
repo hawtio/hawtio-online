@@ -1,7 +1,7 @@
 import { HawtioPlugin, configManager } from '@hawtio/react'
 import { log } from './globals'
 import { getActiveProfile } from './api'
-import { osOAuthService } from './osoauth'
+import { oAuthService } from './oauth-service'
 
 let initialised = false
 
@@ -11,7 +11,7 @@ export const oAuthRegister = async (): Promise<void> => {
   log.info('Initialising the active profile')
   try {
     await getActiveProfile()
-    osOAuthService.registerUserHooks()
+    oAuthService.registerUserHooks()
     log.info('All OAuth plugins have been executed.')
     initialised = true
   } catch (error) {

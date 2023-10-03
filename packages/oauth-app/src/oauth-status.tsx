@@ -26,7 +26,8 @@ import { userService } from '@hawtio/react'
 
 class DefaultProfile extends UserProfile {
   constructor() {
-    super('default-profile')
+    super()
+    this.setOAuthType('default-profile')
   }
 
   hasError() {

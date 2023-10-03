@@ -1,12 +1,12 @@
 import { log, UserProfile } from './globals'
-import { osOAuthService } from './osoauth/osoauth-service'
+import { oAuthService } from './oauth-service'
 
 let userProfile: UserProfile | null = null
 
 async function findUserProfile(): Promise<UserProfile> {
-  if (await osOAuthService.isActive()) {
-    log.debug('Active OAuth plugin:', osOAuthService.getUserProfile().getOAuthType())
-    return osOAuthService.getUserProfile()
+  if (await oAuthService.isActive()) {
+    log.debug('Active Auth plugin:', oAuthService.getUserProfile().getOAuthType())
+    return oAuthService.getUserProfile()
   } else {
     return Promise.reject('No user profile can be found')
   }

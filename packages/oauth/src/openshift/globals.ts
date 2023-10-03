@@ -1,6 +1,10 @@
 export const moduleName = 'hawtio-oauth-openshift'
 
-export const PATH_OSCONSOLE_CLIENT_CONFIG = 'osconsole/config.json'
+export const EXPIRES_IN_KEY = 'expires_in'
+export const TOKEN_TYPE_KEY = 'token_type'
+export const OBTAINED_AT_KEY = 'obtainedAt'
+export const CLUSTER_VERSION_KEY = 'cluster-version'
+export const DEFAULT_CLUSTER_VERSION = '<unknown>'
 
 export interface OpenShiftOAuthConfig {
   oauth_metadata_uri?: string
@@ -10,18 +14,6 @@ export interface OpenShiftOAuthConfig {
   scope: string
   cluster_version?: string
   web_console_url?: string
-}
-
-export interface Hawtio {
-  mode: string
-  namespace?: string
-}
-
-export interface OpenShiftConfig {
-  master_uri?: string
-  hawtio?: Hawtio
-  token?: string
-  openshift?: OpenShiftOAuthConfig
 }
 
 export interface TokenMetadata {
