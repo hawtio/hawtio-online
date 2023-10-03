@@ -1,6 +1,6 @@
-import { log } from '../globals'
-import { OpenShiftConfig, TokenMetadata } from './globals'
-import { OSOAuthUserProfile } from './osoauth-service'
+import { relToAbsUrl } from '../utils/utils'
+import { log, UserProfile } from '../globals'
+import { EXPIRES_IN_KEY, OBTAINED_AT_KEY, OpenShiftOAuthConfig, TokenMetadata } from './globals'
 
 const OS_TOKEN_STORAGE_KEY = 'osAuthCreds'
 
@@ -8,27 +8,23 @@ export function currentTimeSeconds(): number {
   return Math.floor(new Date().getTime() / 1000)
 }
 
-export function relToAbsUrl(relativeUrl: string): string {
-  return new URL(relativeUrl, window.location.origin).href
-}
-
-export function buildUserInfoUri(config: OpenShiftConfig): string {
+export function buildUserInfoUri(masterUri: string, config: OpenShiftOAuthConfig): string {
   let uri: URL
-  if (config.master_uri) {
-    uri = new URL(relToAbsUrl(config.master_uri) + '/apis/user.openshift.io/v1/users/~')
+  if (masterUri) {
+    uri = new URL(relToAbsUrl(masterUri) + '/apis/user.openshift.io/v1/users/~')
   } else {
-    uri = new URL(`${config.openshift?.oauth_authorize_uri}/apis/user.openshift.io/v1/users/~`)
+    uri = new URL(`${config.oauth_authorize_uri}/apis/user.openshift.io/v1/users/~`)
   }
 
   return uri.toString()
 }
 
-function forceRelogin(url: URL, config: OpenShiftConfig) {
+function forceRelogin(url: URL, config: OpenShiftOAuthConfig) {
   clearTokenStorage()
   doLogin(config, { uri: url.toString() })
 }
 
-export function doLogout(config: OpenShiftConfig): void {
+export function doLogout(config: OpenShiftOAuthConfig): void {
   const currentURI = new URL(window.location.href)
   // The following request returns 403 when delegated authentication with an
   // OAuthClient is used, as possible scopes do not grant permissions to access the OAuth API:
@@ -39,15 +35,15 @@ export function doLogout(config: OpenShiftConfig): void {
   forceRelogin(currentURI, config)
 }
 
-export function doLogin(config: OpenShiftConfig, options: { uri: string }): void {
-  if (!config || !config.openshift) {
+export function doLogin(config: OpenShiftOAuthConfig, options: { uri: string }): void {
+  if (!config) {
     log.debug('Cannot login due to config now being properly defined')
     return
   }
 
-  const clientId = config.openshift.oauth_client_id
-  const targetURI = config.openshift.oauth_authorize_uri
-  const scope = config.openshift.scope
+  const clientId = config.oauth_client_id
+  const targetURI = config.oauth_authorize_uri
+  const scope = config.scope
 
   const uri = new URL(targetURI as string)
 
@@ -121,15 +117,15 @@ export function clearTokenStorage(): void {
   localStorage.removeItem(OS_TOKEN_STORAGE_KEY)
 }
 
-export function tokenHasExpired(profile: OSOAuthUserProfile): boolean {
+export function tokenHasExpired(profile: UserProfile): boolean {
   // if no token metadata then remaining will end up as (-1 - now())
   let remaining = -1
   if (!profile) return true // no profile so no oken
 
   if (!profile.getToken()) return true // no token then must have expired!
 
-  const obtainedAt = profile.obtainedAt || 0
-  const expiry = profile.expires_in || 0
+  const obtainedAt = profile.metadataValue<number>(OBTAINED_AT_KEY) || 0
+  const expiry = profile.metadataValue<number>(EXPIRES_IN_KEY) || 0
   if (obtainedAt) {
     remaining = obtainedAt + expiry - currentTimeSeconds()
   }

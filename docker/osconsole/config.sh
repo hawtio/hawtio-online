@@ -42,12 +42,12 @@ EOF
 form_config_cluster() {
   cat << EOF
 {
-  "master_uri": "new URI().query('').path('/master').toString()",
+  "master_uri": "/master",
   "hawtio": {
     "mode": "${HAWTIO_ONLINE_MODE}"
   },
   "form": {
-    "uri": "new URI().query('').path('${FORM_URI}').toString()"
+    "uri": "${FORM_URI}"
   }
 }
 EOF
@@ -56,13 +56,13 @@ EOF
 form_config_namespace() {
   cat << EOF
 {
-  "master_uri": "new URI().query('').path('/master').toString()",
+  "master_uri": "/master",
   "hawtio": {
     "mode": "${HAWTIO_ONLINE_MODE}",
     "namespace": "${HAWTIO_ONLINE_NAMESPACE}"
   },
   "form": {
-    "uri": "new URI().query('').path('${FORM_URI}').toString()"
+    "uri": "${FORM_URI}"
   }
 }
 EOF

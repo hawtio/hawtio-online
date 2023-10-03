@@ -1,21 +1,43 @@
 import { Logger } from '@hawtio/react'
+import { FormConfig } from './form'
+import { OpenShiftOAuthConfig } from './openshift'
 
 export const moduleName = 'hawtio-oauth'
 export const log = Logger.get(moduleName)
+export const PATH_OSCONSOLE_CLIENT_CONFIG = 'osconsole/config.json'
+
+export interface OAuthConfig {
+  master_uri?: string
+  hawtio?: Hawtio
+  form?: FormConfig
+  openshift?: OpenShiftOAuthConfig
+  token?: string
+}
+
+export interface Hawtio {
+  mode: string
+  namespace?: string
+}
+
+export interface OAuthProtoService {
+  isActive(): Promise<boolean>
+  registerUserHooks(): void
+}
 
 export class UserProfile {
-  private oauthType: string // which type of oauth is the profile, eg. google, openshift, github
+  // Type of oauth is the profile, eg. openshift, form
+  private oAuthType: string = 'unknown'
   private masterUri?: string
   private token?: string
   private error: Error | null = null
-  private metadata: Record<string, string> = {}
-
-  constructor(oauthType: string) {
-    this.oauthType = oauthType
-  }
+  private metadata: Record<string, unknown> = {}
 
   getOAuthType() {
-    return this.oauthType
+    return this.oAuthType
+  }
+
+  setOAuthType(oAuthType: string) {
+    this.oAuthType = oAuthType
   }
 
   isActive(): boolean {
@@ -55,15 +77,15 @@ export class UserProfile {
     log.error(error)
   }
 
-  addMetadata(key: string, value: string) {
+  addMetadata<T>(key: string, value: T) {
     this.metadata[key] = value
   }
 
-  getMetadata(): Record<string, string> {
+  getMetadata(): Record<string, unknown> {
     return this.metadata
   }
 
-  metadataValue(key: string) {
-    return this.metadata[key]
+  metadataValue<T>(key: string) {
+    return this.metadata[key] as T
   }
 }
