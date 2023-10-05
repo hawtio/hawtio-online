@@ -20,7 +20,7 @@ export interface Hawtio {
 }
 
 export interface OAuthProtoService {
-  isActive(): Promise<boolean>
+  isLoggedIn(): Promise<boolean>
   registerUserHooks(): void
 }
 

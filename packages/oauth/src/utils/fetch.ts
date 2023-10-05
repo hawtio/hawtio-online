@@ -5,9 +5,17 @@ export type FetchPathCallback<T> = {
   error: (err: Error) => T
 }
 
-export async function fetchPath<T>(path: string, callback: FetchPathCallback<T>): Promise<T> {
+export type FetchOptions = {
+  headers: Record<string, string>
+}
+
+export async function fetchPath<T>(path: string, callback: FetchPathCallback<T>, options?: FetchOptions): Promise<T> {
   try {
-    const res = await fetch(path)
+    const init: RequestInit = {}
+    if (options)
+      init.headers = options.headers
+
+    const res = await fetch(path, init)
     if (!res.ok) {
       const msg = `Failed to fetch ${path} : ${res.status}, ${res.statusText}`
       log.error(msg)
