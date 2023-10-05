@@ -9,19 +9,18 @@ import {
 import { OAuthConfig, PATH_OSCONSOLE_CLIENT_CONFIG } from './globals'
 import { OSOAuthService } from './openshift'
 import { relToAbsUrl } from './utils/utils'
+import { FormService } from './form'
 
 class OAuthService {
   private userProfile: UserProfile = new UserProfile()
 
   private readonly config: Promise<OAuthConfig | null>
   private readonly protoService: Promise<OAuthProtoService | null>
-  private readonly active: Promise<boolean>
 
   constructor() {
     log.debug('Initialising OAuth Service')
     this.config = this.loadOAuthConfig()
     this.protoService = this.processConfig()
-    this.active = this.isProtoServiceActive()
   }
 
   private async loadOAuthConfig(): Promise<OAuthConfig | null> {
@@ -56,19 +55,19 @@ class OAuthService {
 
     let protoService: OAuthProtoService | null = null
     if (config.form) {
-      // return new FormService(config.form)
-      log.debug("*** FORM SERVICE TO BE IMPLEMENTED")
-      protoService = null
+      protoService = new FormService(config.form, this.userProfile)
     } else if (config.openshift) {
       protoService = new OSOAuthService(config.openshift, this.userProfile)
-    } else {
-      this.userProfile.setError(new Error('Cannot initialise service due to no protocol configuration'))
+    }
+
+    if (! protoService) {
+      this.userProfile.setError(new Error('Cannot initialise service as no protocol service can be initialised'))
     }
 
     return protoService
   }
 
-  private async isProtoServiceActive(): Promise<boolean> {
+  private async isProtoServiceLoggedIn(): Promise<boolean> {
     const protoService = await this.protoService
     if (!protoService) {
       return false
@@ -79,12 +78,25 @@ class OAuthService {
       return false
     }
 
-    return await protoService.isActive()
+    return await protoService.isLoggedIn()
   }
 
+  /**
+   * Service has a working protocol service delegate
+   * but not necessarily logged in yet
+   */
   async isActive(): Promise<boolean> {
-    await this.active
-    return this.userProfile.isActive()
+    const protoService = await this.protoService
+    return protoService !== null
+  }
+
+  /**
+   * Service has a working protocol service and
+   * fully logged-in
+   */
+  async isLoggedIn(): Promise<boolean> {
+    const protoServiceActive = await this.isProtoServiceLoggedIn()
+    return protoServiceActive && this.userProfile.isActive()
   }
 
   getUserProfile(): UserProfile {
@@ -95,9 +107,9 @@ class OAuthService {
     log.debug('Registering oAuth user hooks')
 
     const protoService = await this.protoService
-    const active = protoService?.isActive ?? false
-    if (!active) {
-      log.debug('Cannot register user hooks as OAuth Protocol Service is not active')
+    const loggedIn = protoService?.isLoggedIn() ?? false
+    if (!loggedIn) {
+      log.debug('Cannot register user hooks as OAuth Protocol Service is not logged-in')
       return
     }
 

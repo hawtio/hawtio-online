@@ -4,11 +4,12 @@ import { oAuthService } from './oauth-service'
 let userProfile: UserProfile | null = null
 
 async function findUserProfile(): Promise<UserProfile> {
-  if (await oAuthService.isActive()) {
+  const loggedIn = await oAuthService.isLoggedIn()
+  if (loggedIn) {
     log.debug('Active Auth plugin:', oAuthService.getUserProfile().getOAuthType())
     return oAuthService.getUserProfile()
   } else {
-    return Promise.reject('No user profile can be found')
+    return Promise.reject('No user profile is yet available')
   }
 }
 
@@ -19,4 +20,11 @@ export async function getActiveProfile(): Promise<UserProfile> {
   }
 
   return userProfile
+}
+
+export function getOAuthType(): string | null {
+  const profile: UserProfile = ! userProfile ? oAuthService.getUserProfile() : userProfile
+  if (!profile) return null
+
+  return profile.getOAuthType()
 }

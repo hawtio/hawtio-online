@@ -5,4 +5,10 @@ export default defineConfig({
   target: 'es2015',
   dts: true,
   sourcemap: true,
+  loader: {
+    '.svg': 'dataurl',
+    '.jpg': 'dataurl',
+    '.png': 'dataurl',
+    '.md': 'text',
+  },
 })

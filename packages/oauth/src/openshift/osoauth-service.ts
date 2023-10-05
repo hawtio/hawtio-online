@@ -8,9 +8,9 @@ import {
   OBTAINED_AT_KEY,
   TOKEN_TYPE_KEY,
   CLUSTER_VERSION_KEY,
+  OAUTH_OS_PROTOCOL_MODULE,
   OpenShiftOAuthConfig,
   ResolveUser,
-  moduleName,
 } from './globals'
 import { buildUserInfoUri, checkToken, currentTimeSeconds, doLogout, tokenHasExpired } from './support'
 import { userService } from '@hawtio/react'
@@ -38,7 +38,7 @@ export class OSOAuthService implements OAuthProtoService {
   constructor(openShiftConfig: OpenShiftOAuthConfig, userProfile: UserProfile) {
     log.debug('Initialising Openshift OAuth Service')
     this.userProfile = userProfile
-    this.userProfile.setOAuthType(moduleName)
+    this.userProfile.setOAuthType(OAUTH_OS_PROTOCOL_MODULE)
     this.adaptedConfig = this.processConfig(openShiftConfig)
     this.login = this.createLogin()
   }
@@ -221,7 +221,7 @@ export class OSOAuthService implements OAuthProtoService {
     }
 
     if (this.userProfile.hasError()) {
-      log.debug('Cannot login as user profile has error: ', this.userProfile.getError())
+      log.debug('Cannot login as user profile has an error: ', this.userProfile.getError())
       return false
     }
 
@@ -263,7 +263,7 @@ export class OSOAuthService implements OAuthProtoService {
     }
   }
 
-  async isActive(): Promise<boolean> {
+  async isLoggedIn(): Promise<boolean> {
     return await this.login
   }
 
@@ -296,7 +296,7 @@ export class OSOAuthService implements OAuthProtoService {
 
       return true
     }
-    userService.addFetchUserHook(moduleName, fetchUser)
+    userService.addFetchUserHook(OAUTH_OS_PROTOCOL_MODULE, fetchUser)
 
     const logout = async () => {
       log.debug('Running oAuth logout hook')
@@ -314,6 +314,6 @@ export class OSOAuthService implements OAuthProtoService {
       }
       return true
     }
-    userService.addLogoutHook(moduleName, logout)
+    userService.addLogoutHook(OAUTH_OS_PROTOCOL_MODULE, logout)
   }
 }
