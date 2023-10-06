@@ -1,22 +1,26 @@
 import { isMgmtApiRegistered, mgmtService, ManagedPod, MgmtActions } from '@hawtio/online-management-api'
-import { k8Api, k8Service } from '@hawtio/online-kubernetes-api'
 import React, { useRef, useEffect, useState } from 'react'
 import {
   Alert,
+  Bullseye,
+  Button,
   Card,
-  CardTitle,
   CardBody,
+  CardTitle,
   Divider,
+  Label,
+  Masthead,
+  MastheadContent,
   Panel,
   PanelHeader,
   PanelMain,
   PanelMainBody,
   Skeleton,
-  Title,
-  Masthead,
-  MastheadContent,
-  Label,
-  Button,
+  Spinner,
+  Text,
+  TextContent,
+  TextVariants,
+  Title
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
 import { userService } from '@hawtio/react'
@@ -40,13 +44,9 @@ export const Management: React.FunctionComponent = () => {
 
       setIsLoading(false)
 
-      if (k8Api.hasError()) {
-        setError(k8Api.error)
+      if (mgmtService.hasError()) {
+        setError(mgmtService.error)
         return
-      }
-
-      if (k8Service.hasError()) {
-        setError(k8Service.error)
       }
 
       await userService.fetchUser()
@@ -123,15 +123,35 @@ export const Management: React.FunctionComponent = () => {
           </MastheadContent>
         </Masthead>
 
-        <Panel>
-          <PanelHeader>API Properties</PanelHeader>
-          <Divider />
-          <PanelMain>
-            <PanelMainBody>
-              <ManagementPods pods={pods} />
-            </PanelMainBody>
-          </PanelMain>
-        </Panel>
+        {pods.length === 0 && (
+          <Panel>
+            <Divider />
+
+            <Bullseye>
+              <div style={{ justifyContent: 'center' }}>
+                <Spinner diameter='60px' isSVG aria-label='Loading Hawtio' />
+
+                <TextContent>
+                  <Text className={'--pf-global--Color--200'} component={TextVariants.h3}>
+                    Fetching Pods ...
+                  </Text>
+                </TextContent>
+              </div>
+            </Bullseye>
+          </Panel>
+        )}
+
+        {pods.length > 0 && (
+          <Panel>
+            <PanelHeader>API Properties</PanelHeader>
+            <Divider />
+            <PanelMain>
+              <PanelMainBody>
+                <ManagementPods pods={pods} />
+              </PanelMainBody>
+            </PanelMain>
+          </Panel>
+        )}
 
         <Divider />
       </CardBody>

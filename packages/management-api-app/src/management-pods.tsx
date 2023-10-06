@@ -15,6 +15,13 @@ type ManagedPodsProps = {
   pods: ManagedPod[]
 }
 
+const podDetailStyle = (pod: ManagedPod) => {
+  return {
+    color: (pod.management.status.error) ? 'red' : 'blue',
+    fontWeight: 'bold'
+  }
+}
+
 export const ManagementPods: React.FunctionComponent<ManagedPodsProps> = (props: ManagedPodsProps) => {
   return (
     <Panel isScrollable>
@@ -62,9 +69,29 @@ export const ManagementPods: React.FunctionComponent<ManagedPodsProps> = (props:
                   </Td>
                   <Td dataLabel='Status'>{k8Service.podStatus(pod.pod)}</Td>
                   <Td dataLabel='Management'>
-                    <div>
-                      <pre>{JSON.stringify(pod.management, null, 2)}</pre>
+                    <div style={podDetailStyle(pod)}>
+                      <pre>
+                        {JSON.stringify(pod.management, null, 2)}
+                      </pre>
                     </div>
+                    {pod.management.status.error && (
+                      <div>
+                        <p>
+                          Jolokia connections are not succeeding. Possible reasons:
+                        </p>
+                        <ol>
+                          <li>404: the address is incorrect or the proxy is not setup correctly</li>
+                          <li>401: the connection is not trusted. Disable certifcate validation using
+                                 the environment variables:
+                            <ul>
+                              <li>AB_JOLOKIA_AUTH_OPENSHIFT: false</li>
+                              <li>AB_JOLOKIA_PASSWORD_RANDOM: false</li>
+                              <li>AB_JOLOKIA_OPTS: useSslClientAuthentication=false,protocol=https</li>
+                            </ul>
+                          </li>
+                        </ol>
+                      </div>
+                    )}
                   </Td>
                 </Tr>
               ))}

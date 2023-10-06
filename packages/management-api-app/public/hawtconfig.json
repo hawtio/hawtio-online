@@ -1,7 +1,7 @@
 {
   "branding": {
     "appName": "hawtio-management-api",
-    "appLogoUrl": "node_modules/@hawtio/core/dist/img/hawtio-logo.svg",
+    "appLogoUrl": "/hawtio-logo.svg",
     "css": "branding-example.css",
     "favicon": "favicon.ico"
   },
@@ -10,6 +10,9 @@
     "description": "Test the hawtio management API",
     "imgSrc": "hawtio-logo.svg",
     "copyright": "© Hawtio project"
+  },
+  "login": {
+    "title": "Log in with your token"
   },
   "disabledRoutes": ["disabled"]
 }

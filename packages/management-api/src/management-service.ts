@@ -27,32 +27,34 @@ export class ManagementService extends EventEmitter {
       await k8Service.initialize()
     }
 
-    const kPods: KubePod[] = k8Service.getPods()
+    if (! this.hasError()) {
+      const kPods: KubePod[] = k8Service.getPods()
 
-    kPods.forEach(kPod => {
-      const uid = kPod.metadata?.uid
-      if (!uid) {
-        log.error('Cannot access uid from pod')
-        return
-      }
-
-      const mPod = this._pods[uid]
-      if (!mPod) {
-        this._pods[uid] = new ManagedPod(kPod)
-      } else {
-        kPod.management = mPod.pod.management
-        mPod.pod = kPod
-      }
-
-      for (const uid in this._pods) {
-        if (!kPods.some(kPod => kPod.metadata?.uid === uid)) {
-          delete this._pods[uid]
+      kPods.forEach(kPod => {
+        const uid = kPod.metadata?.uid
+        if (!uid) {
+          log.error('Cannot access uid from pod')
+          return
         }
-      }
-    })
 
-    // let's kick a polling cycle
-    this.pollManagementData()
+        const mPod = this._pods[uid]
+        if (!mPod) {
+          this._pods[uid] = new ManagedPod(kPod)
+        } else {
+          kPod.management = mPod.pod.management
+          mPod.pod = kPod
+        }
+
+        for (const uid in this._pods) {
+          if (!kPods.some(kPod => kPod.metadata?.uid === uid)) {
+            delete this._pods[uid]
+          }
+        }
+      })
+
+      // let's kick a polling cycle
+      this.pollManagementData()
+    }
 
     // At least first pass of the pods has been completed
     this._initialized = true
@@ -140,6 +142,18 @@ export class ManagementService extends EventEmitter {
 
   get initialized(): boolean {
     return this._initialized
+  }
+
+  hasError() {
+    return k8Api.hasError() || k8Service.hasError()
+  }
+
+  get error(): Error | null {
+    if (k8Api.hasError()) return k8Api.error
+
+    if (k8Service.hasError()) return k8Service.error
+
+    return null
   }
 
   get pods(): ManagedPod[] {
