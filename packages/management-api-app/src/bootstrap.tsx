@@ -4,7 +4,10 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
 import { Management } from './management'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { AuthLoginPage } from './login'
 
+// To be removed post-development / pre-production
 Logger.setLevel(Logger.DEBUG)
 console.log('Logging Level set to ', Logger.getLevel())
 
@@ -22,7 +25,12 @@ isMgmtApiRegistered()
     const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
     root.render(
       <React.StrictMode>
-        <Management />
+        <BrowserRouter>
+          <Routes>
+            <Route path='/login' element={<AuthLoginPage />} />
+            <Route path='/*' element={<Management />} />
+          </Routes>
+        </BrowserRouter>
       </React.StrictMode>,
     )
 

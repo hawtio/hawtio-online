@@ -21,10 +21,12 @@
     "mini-css-extract-plugin": "2.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.16.0",
     "typescript": "^4.9.5",
     "web-vitals": "^3.4.0"
   },
   "devDependencies": {
+    "connect-history-api-fallback": "^2.0.0",
     "css-loader": "^6.8.1",
     "dotenv-webpack": "^8.0.1",
     "html-webpack-plugin": "^5.5.3",
