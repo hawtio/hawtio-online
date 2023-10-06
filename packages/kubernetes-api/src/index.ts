@@ -1,5 +1,5 @@
 import { configManager } from '@hawtio/react'
-import { oAuthRegister } from '@hawtio/online-oauth'
+import { oAuthInit } from '@hawtio/online-oauth'
 import { k8Init } from './init'
 import { log } from './globals'
 
@@ -13,7 +13,7 @@ const registerK8Api = async (): Promise<boolean> => {
   }
 
   log.debug('Awaiting registering of OAuth')
-  await oAuthRegister()
+  oAuthInit()
 
   log.debug('OAuth registered -  getting active profile')
   return await k8Init()

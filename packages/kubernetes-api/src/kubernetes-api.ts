@@ -36,7 +36,7 @@ export class KubernetesAPI {
       return null
     }
 
-    const consoleUri = profile.metadataValue(CLUSTER_CONSOLE_KEY)
+    const consoleUri = profile.metadataValue<string>(CLUSTER_CONSOLE_KEY)
     if (consoleUri) {
       log.debug(`Console URI specified: ${consoleUri}`)
       return consoleUri
