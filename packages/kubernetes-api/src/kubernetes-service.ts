@@ -63,7 +63,7 @@ export class KubernetesService extends EventEmitter {
   private initNamespaceConfig(profile: UserProfile) {
     log.debug('Initialising Namespace Config')
     this._loading++
-    let namespace = profile.metadataValue(HAWTIO_NAMESPACE_KEY)
+    let namespace = profile.metadataValue<string>(HAWTIO_NAMESPACE_KEY)
     if (!namespace) {
       log.warn("No namespace can be found - defaulting to 'default'")
       namespace = 'default'

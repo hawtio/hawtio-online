@@ -4,7 +4,10 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
 import { Kubernetes } from './kubernetes'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { AuthLoginPage } from './login'
 
+// To be removed post-development / pre-production
 Logger.setLevel(Logger.DEBUG)
 console.log('Logging Level set to ', Logger.getLevel())
 
@@ -22,7 +25,12 @@ isK8ApiRegistered()
     const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
     root.render(
       <React.StrictMode>
-        <Kubernetes />
+        <BrowserRouter>
+          <Routes>
+            <Route path='/login' element={<AuthLoginPage />} />
+            <Route path='/*' element={<Kubernetes />} />
+          </Routes>
+        </BrowserRouter>
       </React.StrictMode>,
     )
 

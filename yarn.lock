@@ -1962,6 +1962,7 @@ __metadata:
     "@types/node": ^18.17.18
     "@types/react": ^18.2.21
     "@types/react-dom": ^18.2.7
+    connect-history-api-fallback: ^2.0.0
     css-loader: ^6.8.1
     dotenv-webpack: ^8.0.1
     html-webpack-plugin: ^5.5.3
@@ -1972,6 +1973,7 @@ __metadata:
     path-browserify: ^1.0.1
     react: ^18.2.0
     react-dom: ^18.2.0
+    react-router-dom: ^6.16.0
     source-map-loader: ^4.0.1
     style-loader: ^3.3.3
     ts-loader: ^9.4.4
