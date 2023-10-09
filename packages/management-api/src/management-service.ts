@@ -123,7 +123,7 @@ export class ManagementService extends EventEmitter {
       }
 
       mPod.jolokia.search('org.apache.camel:context=*,type=routes,*', {
-        method: 'POST',
+        method: 'post',
         success: (routes: string[]) => {
           mPod.management.status.error = false
           mPod.management.camel.routes_count = routes.length

@@ -1,80 +1,15 @@
-import Jolokia, { IJolokia, IListOptions, IOptions, ISearchOptions, ISimpleOptions, IVersion, IVersionOptions } from 'jolokia.js'
+import Jolokia, { BaseRequestOptions } from 'jolokia.js'
 import $ from 'jquery'
 import { log } from './globals'
 import jsonpath from 'jsonpath'
-import { func, is, object } from 'superstruct'
-import { k8Api, KubePod, k8Service, ObjectMeta, PodStatus, joinPaths, PodSpec, isString, isObject } from '@hawtio/online-kubernetes-api'
+import { k8Api, KubePod, k8Service, ObjectMeta, PodStatus, joinPaths, PodSpec} from '@hawtio/online-kubernetes-api'
 
-const DEFAULT_JOLOKIA_OPTIONS: IOptions = {
-  method: 'POST',
+const DEFAULT_JOLOKIA_OPTIONS: BaseRequestOptions = {
+  method: 'post',
   mimeType: 'application/json',
   canonicalNaming: false,
-  canonicalProperties: false,
   ignoreErrors: true,
 } as const
-
-/**
- * Dummy Jolokia implementation that does nothing.
- */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-class DummyJolokia implements IJolokia {
-  isDummy = true
-  private running = false
-
-  request(...args: unknown[]) {
-    return null
-  }
-
-  getAttribute(mbean: string, attribute: string, path?: string | ISimpleOptions, opts?: ISimpleOptions) {
-    opts?.success?.({})
-    return null
-  }
-  setAttribute(
-    mbean: string,
-    attribute: string,
-    value: unknown,
-    path?: string | ISimpleOptions,
-    opts?: ISimpleOptions,
-  ) {
-    opts?.success?.({})
-  }
-
-  execute(mbean: string, operation: string, ...args: unknown[]) {
-    args?.forEach(arg => is(arg, object({ success: func() })) && arg.success?.(null))
-    return null
-  }
-  search(mBeanPattern: string, opts?: ISearchOptions) {
-    opts?.success?.([])
-    return null
-  }
-  list(path: string, opts?: IListOptions) {
-    opts?.success?.({})
-    return null
-  }
-  version(opts?: IVersionOptions) {
-    opts?.success?.({} as IVersion)
-    return {} as IVersion
-  }
-
-  register(params: unknown, ...request: unknown[]) {
-    return 0
-  }
-  unregister(handle: number) {
-    /* no-op */
-  }
-  jobs() {
-    return []
-  }
-  start(period: number) {
-    this.running = true
-  }
-  stop() {
-    this.running = false
-  }
-  isRunning() {
-    return this.running
-  }
-}
 
 export type Management = {
   status: {
@@ -91,7 +26,7 @@ export class ManagedPod {
 
   readonly jolokiaPort: number
   readonly jolokiaPath: string
-  readonly jolokia: IJolokia
+  readonly jolokia: Jolokia
 
   private _management: Management = {
     status: {
@@ -106,7 +41,7 @@ export class ManagedPod {
   constructor(public pod: KubePod) {
     this.jolokiaPort = this.extractPort(pod)
     this.jolokiaPath = ManagedPod.getJolokiaPath(pod, this.jolokiaPort) || ''
-    this.jolokia = this.createJolokia() || new DummyJolokia()
+    this.jolokia = this.createJolokia()
   }
 
   static getAnnotation(pod: KubePod, name: string, defaultValue: string): string {
@@ -142,8 +77,7 @@ export class ManagedPod {
 
   private createJolokia() {
     if (! this.jolokiaPath || this.jolokiaPath.length === 0) {
-      log.error(`Failed to find jolokia path for pod ${this.pod.metadata?.uid}`)
-      return
+      throw new Error(`Failed to find jolokia path for pod ${this.pod.metadata?.uid}`)
     }
 
     const options = { ...DEFAULT_JOLOKIA_OPTIONS }
