@@ -2,6 +2,7 @@ const webpack = require('webpack')
 const { merge } = require('webpack-merge')
 const WebpackDevServer = require('webpack-dev-server')
 const DotenvPlugin = require('dotenv-webpack')
+const historyApiFallback = require('connect-history-api-fallback')
 const path = require('path')
 const dotenv = require('dotenv')
 const { common } = require('./webpack.config.common.js')
@@ -10,6 +11,8 @@ const { common } = require('./webpack.config.common.js')
 dotenv.config( { path: path.join(__dirname, '.env') } )
 
 module.exports = () => {
+
+  const clusterAuthType = process.env.CLUSTER_AUTH_TYPE || 'oauth'
 
   const master_uri = process.env.CLUSTER_MASTER
   if (!master_uri) {
@@ -24,6 +27,10 @@ module.exports = () => {
     console.error("The OAUTH_CLIENT_ID must be set!")
     process.exit(1)
   }
+
+  const clusterAuthFormUri = process.env.CLUSTER_AUTH_FORM || '/login'
+  if (clusterAuthFormUri)
+    console.log('Using Cluster Auth Form URL:', clusterAuthFormUri)
 
   console.log('Using Cluster URL:', master_uri)
   console.log('Using Cluster Namespace:', namespace)
@@ -54,9 +61,6 @@ module.exports = () => {
       liveReload: true,
       port: devPort,
 
-      // Pushes any 404 page responses back to showing index.html
-      historyApiFallback: true,
-
       /*
        * Proxy to bring the cluster into the app as a redirect.
        * Avoids issues with CORS
@@ -70,7 +74,7 @@ module.exports = () => {
           pathRewrite: { '^/master': '' },
           secure: false,
           ws: true,
-        }
+        },
       },
 
       static: {
@@ -90,9 +94,15 @@ module.exports = () => {
             },
           }
 
+          if (clusterAuthType === 'form') {
+            oscConfig.form = {
+              uri: clusterAuthFormUri
+            }
+          }
+
           /*
-           * The oauth_client_id *must* be the same as the name of an
-           * OAuthClient resource added to the cluster, eg.
+           * In cluster mode, the oauth_client_id *must* be the same as
+           * the name of an OAuthClient resource added to the cluster, eg.
            *
            * apiVersion: oauth.openshift.io/v1
            * grantMethod: auto
@@ -110,19 +120,23 @@ module.exports = () => {
           switch (mode) {
             case 'namespace':
               oscConfig.hawtio.namespace = namespace
-              oscConfig.openshift = {
-                oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
-                oauth_client_id: clientId,
-                scope: `user:info user:check-access user:full`,
-                cluster_version: '4.11.0',
+              if (!oscConfig.form) {
+                oscConfig.openshift = {
+                  oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
+                  oauth_client_id: clientId,
+                      scope: `user:info user:check-access role:edit:${namespace}`,
+                  cluster_version: '4.11.0',
+                }
               }
               break
             case 'cluster':
-              oscConfig.openshift = {
-                oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
-                oauth_client_id: clientId,
-                scope: `user:info user:check-access user:full`,
-                cluster_version: '4.11.0',
+              if (!oscConfig.form) {
+                oscConfig.openshift = {
+                  oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
+                  oauth_client_id: clientId,
+                  scope: `user:info user:check-access user:full`,
+                  cluster_version: '4.11.0',
+                }
               }
               break
             default:
@@ -175,6 +189,15 @@ module.exports = () => {
         devServer.app.get('/hawtio/keycloak/validate-subject-matches', (_, res) => res.send('true'))
         devServer.app.get('/hawtio/auth/logout', (_, res) => res.redirect('/hawtio/login'))
         devServer.app.post('/hawtio/auth/login', (_, res) => res.send(String(login)))
+
+        //
+        // Use historyApiFallback to plug-in to the react router
+        // for accessing /login from the app. Having it here allows
+        // the paths above to remain external to the app
+        //
+        const history = historyApiFallback()
+        devServer.app.get('/', history)
+        devServer.app.get('/login', history)
 
         return middlewares
       }

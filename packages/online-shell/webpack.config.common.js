@@ -43,7 +43,7 @@ const common = (mode) => {
           use: 'babel-loader',
         },
         {
-          test: /\.svg$/,
+          test: /\.(png|jpe?g|gif|svg)$/i,
           use: 'file-loader'
         }
       ]
