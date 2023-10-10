@@ -21,7 +21,7 @@ import {
   Label,
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
-import { UserProfile, oAuthRegister, getActiveProfile } from '@hawtio/online-oauth'
+import { UserProfile, oAuthInit, getActiveProfile } from '@hawtio/online-oauth'
 import { userService } from '@hawtio/react'
 
 class DefaultProfile extends UserProfile {
@@ -62,7 +62,7 @@ export const OAuthStatus: React.FunctionComponent = () => {
 
     const checkLoading = async () => {
       try {
-        await oAuthRegister()
+        await oAuthInit()
         const userProfile = await getActiveProfile()
 
         if (userProfile.hasError()) setError(userProfile.getError())

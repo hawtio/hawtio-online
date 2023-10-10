@@ -1,9 +1,13 @@
-import { configManager, hawtio } from '@hawtio/react'
+import { configManager, hawtio, Logger } from '@hawtio/react'
 import { oAuthInit } from '@hawtio/online-oauth'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
-import { OAuthStatus } from './oauth-status'
+import { OAuth } from './OAuth'
+
+// To be removed post-development / pre-production
+Logger.setLevel(Logger.DEBUG)
+console.log('Logging Level set to ', Logger.getLevel())
 
 // Configure the test app
 const configure = () => {
@@ -19,7 +23,7 @@ hawtio.bootstrap()
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <OAuthStatus />
+    <OAuth />
   </React.StrictMode>,
 )
 
