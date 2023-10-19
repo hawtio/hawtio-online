@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
-import { Container } from '@hawtio/online-kubernetes-api'
 import { mgmtService } from '@hawtio/online-management-api'
 import { DiscoverPod } from './globals'
 import './Discover.css'
@@ -17,12 +16,12 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
 
   const onToggle = (isOpen: boolean) => {
     setIsOpen(isOpen)
-  };
+  }
 
   const onFocus = () => {
     const element = document.getElementById('toggle-initial-selection')
     element?.focus()
-  };
+  }
 
   const onSelect = () => {
     setIsOpen(false)

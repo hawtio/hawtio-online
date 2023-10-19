@@ -13,7 +13,7 @@ interface LabelsProps {
 
 export const Labels: React.FunctionComponent<LabelsProps> = (props: LabelsProps) => {
 
-  const [limit, setLimit] = useState(props.limit)
+  const [limit] = useState(props.limit)
 
   if (! props.labels || Object.getOwnPropertyNames(props.labels).length === 0) {
     return null

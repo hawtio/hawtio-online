@@ -18,12 +18,12 @@ class InvalidCharacterError extends Error {
 
 function polyfill(input: string) {
   const str = String(input).replace(/=+$/, "")
-  if (str.length % 4 == 1) {
+  if (str.length % 4 === 1) {
     throw new InvalidCharacterError(
       "'atob' failed: The string to be decoded is not correctly encoded."
     )
   }
-  let output: string = ''
+  let output = ''
   for (
     // initialize result and counters
     let bc = 0, bs = 0, buffer, idx = 0;
@@ -77,7 +77,7 @@ function base64_url_decode(str: string): string | undefined {
       output += "="
       break
     default:
-      throw "Illegal base64url string!"
+      throw new Error('Illegal base64url string!')
   }
 
   try {
@@ -96,7 +96,11 @@ class TokenError extends Error {
   name = "TokenError"
 }
 
-export function jwtDecode(token: string, options: any = {}): Record<string, string> {
+export interface DecodeOptions {
+  header?: boolean
+}
+
+export function jwtDecode(token: string, options: DecodeOptions = {}): Record<string, string> {
   if (typeof token !== "string") {
     throw new TokenError("Invalid token specified")
   }

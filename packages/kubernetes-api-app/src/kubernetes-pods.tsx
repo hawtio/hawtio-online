@@ -1,4 +1,4 @@
-import { k8Service, KubeObject, KubePod } from '@hawtio/online-kubernetes-api'
+import { k8Service, KubePod } from '@hawtio/online-kubernetes-api'
 import {
   DescriptionList,
   DescriptionListDescription,

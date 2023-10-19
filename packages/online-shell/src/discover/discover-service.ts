@@ -101,9 +101,10 @@ function groupPodsByDeployment(pods: ManagedPod[], exDiscoverGroups: DiscoverGro
     const replicas = podsWithOwner(remainingPods, ownerRef)
 
     const theExDiscoverGroups = exDiscoverGroups.filter(group => {
-      group.uid === pod.metadata?.uid &&
-      group.namespace === pod.metadata.namespace &&
-      group.name === ownerRef?.name
+      return (
+        group.uid === pod.metadata?.uid &&
+        group.namespace === pod.metadata.namespace &&
+        group.name === ownerRef?.name)
     })
 
     // Determine if group previously expanded

@@ -26,7 +26,7 @@ export interface OAuthProtoService {
 
 export class UserProfile {
   // Type of oauth is the profile, eg. openshift, form
-  private oAuthType: string = 'unknown'
+  private oAuthType = 'unknown'
   private masterUri?: string
   private token?: string
   private error: Error | null = null

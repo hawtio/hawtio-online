@@ -1,5 +1,5 @@
 import { Logger, configManager, hawtio } from '@hawtio/react'
-import { isMgmtApiRegistered } from '@hawtio/online-management-api'
+import { isMgmtApiRegistered, log } from '@hawtio/online-management-api'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
@@ -9,7 +9,7 @@ import { AuthLoginPage } from './login'
 
 // To be removed post-development / pre-production
 Logger.setLevel(Logger.DEBUG)
-console.log('Logging Level set to ', Logger.getLevel())
+log.log('Logging Level set to', Logger.getLevel())
 
 // Configure the console
 const configure = () => {

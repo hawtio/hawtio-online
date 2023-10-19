@@ -239,7 +239,8 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
         resourceVersion = current?.metadata?.resourceVersion
         if (item.metadata?.resourceVersion) {
           // TODO
-          // Necessary since resourceVersion has the readonly modified
+          // Necessary since resourceVersion has the readonly modifier
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           item.metadata.resourceVersion = resourceVersion
         }
@@ -308,7 +309,7 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
             const response = JSON.parse(data)
             cb(response)
           } catch (err) {
-            console.error(err)
+            log.error(err)
             if (error && err instanceof Error) {
               error(err as Error)
             }

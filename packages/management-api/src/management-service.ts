@@ -217,20 +217,19 @@ export class ManagementService extends EventEmitter {
       for (const containerStatus of containerStatuses) {
         const containerReason = containerStatus.state?.waiting?.reason ||
                                 containerStatus.state?.terminated?.reason
-        let signal, exitCode
 
         if (containerReason) {
           reason = containerReason
           break
         }
 
-        signal = containerStatus.state?.terminated?.signal
+        const signal = containerStatus.state?.terminated?.signal
         if (signal) {
           reason = `Signal: ${signal}`
           break
         }
 
-        exitCode = containerStatus.state?.terminated?.exitCode
+        const exitCode = containerStatus.state?.terminated?.exitCode
         if (exitCode) {
           reason = `Exit Code: ${exitCode}`
           break

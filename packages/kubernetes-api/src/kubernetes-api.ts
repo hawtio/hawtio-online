@@ -60,7 +60,7 @@ export class KubernetesAPI {
         }
       }
     } catch (error) {
-      console.warn('Error probing for openshift console. Alternative is to specify the web_console_url property in the config.json.', { cause: error })
+      log.warn('Error probing for openshift console. Alternative is to specify the web_console_url property in the config.json.', { cause: error })
     }
 
     return null
@@ -90,7 +90,7 @@ export class KubernetesAPI {
         }
       }
     } catch (error) {
-      console.warn('Error probing for openshift. Assuming backend is not an openshift instance.', { cause: error })
+      log.warn('Error probing for openshift. Assuming backend is not an openshift instance.', { cause: error })
       this._isOS = false
     }
 
