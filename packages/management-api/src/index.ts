@@ -24,5 +24,5 @@ export async function isMgmtApiRegistered(): Promise<boolean> {
   return await registerManagementApi()
 }
 
-export { MgmtActions } from './globals'
+export { MgmtActions, log } from './globals'
 export { ManagedPod } from './managed-pod'

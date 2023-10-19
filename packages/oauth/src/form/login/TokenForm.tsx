@@ -6,7 +6,6 @@ import {
   FormHelperText,
   TextInput,
   Button,
-  Checkbox,
   ValidatedOptions,
   InputGroup } from '@patternfly/react-core'
 import { EyeSlashIcon } from '@patternfly/react-icons'
@@ -43,12 +42,6 @@ export interface TokenFormProps extends Omit<React.HTMLProps<HTMLFormElement>, '
   isLoginButtonDisabled?: boolean
   /** Function that is called when the login button is clicked */
   onLoginButtonClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-  /** Label for the remember me checkbox that indicates the user should be kept logged in.  If the label is not provided, the checkbox will not show. */
-  rememberMeLabel?: string
-  /** Flag indicating if the remember me checkbox is checked. */
-  isRememberMeChecked?: boolean
-  /** Function that handles the onChange event for the remember me checkbox */
-  onChangeRememberMe?: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void
 }
 
 export const TokenForm: React.FunctionComponent<TokenFormProps> = ({
@@ -59,17 +52,14 @@ export const TokenForm: React.FunctionComponent<TokenFormProps> = ({
   helperTextIcon = null,
   tokenLabel = 'Token',
   tokenValue = '',
-  onChangeToken = () => undefined as any,
+  onChangeToken = () => { /* no-op */ },
   isShowTokenEnabled = false,
   hideTokenAriaLabel = 'Hide token',
   showTokenAriaLabel = 'Show token',
   isValidToken = true,
   loginButtonLabel = 'Log In',
   isLoginButtonDisabled = false,
-  onLoginButtonClick = () => undefined as any,
-  rememberMeLabel = '',
-  isRememberMeChecked = false,
-  onChangeRememberMe = () => undefined as any,
+  onLoginButtonClick = () => { /* no-op */ },
   ...props
 }: TokenFormProps) => {
   const [tokenHidden, setTokenHidden] = React.useState(true)
@@ -111,16 +101,6 @@ export const TokenForm: React.FunctionComponent<TokenFormProps> = ({
         )}
         {!isShowTokenEnabled && tokenInput}
       </FormGroup>
-      {rememberMeLabel.length > 0 && (
-        <FormGroup fieldId="pf-login-remember-me-id">
-          <Checkbox
-            id="pf-login-remember-me-id"
-            label={rememberMeLabel}
-            isChecked={isRememberMeChecked}
-            onChange={onChangeRememberMe}
-          />
-        </FormGroup>
-      )}
       <ActionGroup>
         <Button variant="primary" type="submit" onClick={onLoginButtonClick} isBlock isDisabled={isLoginButtonDisabled}>
           {loginButtonLabel}

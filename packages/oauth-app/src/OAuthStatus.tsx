@@ -128,7 +128,6 @@ export const OAuthStatus: React.FunctionComponent = () => {
                 variant='danger'
                 ouiaId='Logout'
                 onClick={() => {
-                  console.log('Logout')
                   userService.logout()
                 }}
               >

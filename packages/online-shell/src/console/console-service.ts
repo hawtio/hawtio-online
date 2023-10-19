@@ -36,10 +36,11 @@ export function osLink(config: OSLinkConfig): URL | null {
       return new URL(k8Api.consoleUri)
     case ConsoleType.namespace:
       return new URL(joinPaths(k8Api.consoleUri, linkPath, config.namespace || 'default'))
-    case ConsoleType.search:
+    case ConsoleType.search: {
       const url: URL = new URL(joinPaths(k8Api.consoleUri, linkPath, config.namespace || 'default'))
       url.search = `kind=${config.kind}&q=${encodeURI(config.selector || '')}`
       return url
+    }
     case ConsoleType.node:
       return new URL(joinPaths(k8Api.consoleUri, linkPath, config.selector || ''))
     case ConsoleType.resource:

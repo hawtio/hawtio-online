@@ -194,9 +194,9 @@ export class FormService implements OAuthProtoService {
         subject = this.getSubjectFromToken(this.userProfile.getToken())
       } catch (err) {
         if (err instanceof Error)
-          console.warn(err.message)
+          log.warn(err.message)
         else
-          console.error(err)
+          log.error(err)
       }
 
       resolve({ username: subject, isLogin: true })

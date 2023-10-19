@@ -115,7 +115,6 @@ export class ManagedPod {
         })
         .done((data: string, textStatus: string, xhr: JQueryXHR) => {
           if (xhr.status !== 200) {
-            console.log("Status is not 200: " + xhr.status)
             reject()
             return
           }

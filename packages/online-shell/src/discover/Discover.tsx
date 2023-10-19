@@ -74,13 +74,13 @@ export const Discover: React.FunctionComponent = () => {
 
         <DiscoverToolbar />
 
-        { discoverGroups.length > 0 && ( <DiscoverGroupList groups={discoverGroups} updateGroups={setDiscoverGroups}/>)}
+        { discoverGroups.length > 0 && ( <DiscoverGroupList />)}
 
         { discoverPods.length > 0 && (
           <List isBordered={true} iconSize='large'>
           {
             discoverPods.map(pod => {
-              return ( <DiscoverPodItem pod={pod}/> )
+              return ( <DiscoverPodItem pod={pod} key={pod.uid} /> )
             })
           }
           </List>

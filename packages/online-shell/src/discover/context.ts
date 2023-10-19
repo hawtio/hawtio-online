@@ -4,6 +4,8 @@ import { MgmtActions, isMgmtApiRegistered, mgmtService } from "@hawtio/online-ma
 import { filterAndGroupPods } from './discover-service'
 import { DiscoverGroup, DiscoverPod, TypeFilter } from './globals'
 
+type UpdateListener = () => void
+
 /**
  * Custom React hook for using filters.
  */
@@ -16,6 +18,13 @@ export function useDisplayItems() {
 
   // Set of filters created by filter control and displayed as chips
   const [filters, setFilters] = useState<TypeFilter[]>([])
+  const updateListener = useRef<UpdateListener>()
+
+  const organisePods = (discoverGroups: DiscoverGroup[], filters: TypeFilter[]) => {
+    const [newDiscoverGroups, newDiscoverPods] = filterAndGroupPods(filters, [...discoverGroups])
+    setDiscoverGroups([...newDiscoverGroups])
+    setDiscoverPods([...newDiscoverPods])
+  }
 
   useEffect(() => {
     setIsLoading(true)
@@ -37,17 +46,10 @@ export function useDisplayItems() {
         return
       }
 
-      const organisePods = () => {
-        const [newDiscoverGroups, newDiscoverPods] = filterAndGroupPods(filters, [...discoverGroups])
-        setDiscoverGroups([...newDiscoverGroups])
-        setDiscoverPods([...newDiscoverPods])
-      }
-
-      organisePods()
-
-      mgmtService.on(MgmtActions.UPDATED, () => {
-        organisePods()
-      })
+      //
+      // First-time update pod organisation
+      //
+      organisePods([], [])
     }
 
     checkLoading()
@@ -57,7 +59,27 @@ export function useDisplayItems() {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
     }
-  }, [])
+  }, []) // One time set-up on mounting
+
+  /*
+   * Hook-up the pod organisation to the UPDATED listener
+   * event of the ManagementService
+   *
+   * Ensures that the number of registered listeners is
+   * managed properly and stale listeners are not left registered
+   */
+  useEffect(() => {
+    const mgmtListener = () => {
+      organisePods(discoverGroups, filters)
+    }
+
+    mgmtService.on(MgmtActions.UPDATED, mgmtListener)
+    updateListener.current = mgmtListener
+
+    return () => {
+      if (updateListener.current) mgmtService.off(MgmtActions.UPDATED, updateListener.current)
+    }
+  }, [isLoading, filters, discoverGroups])
 
   return { error, isLoading, discoverGroups, setDiscoverGroups, discoverPods, setDiscoverPods, filters, setFilters }
 }
@@ -73,9 +95,15 @@ type DiscoverContext = {
 
 export const DiscoverContext = createContext<DiscoverContext>({
   discoverGroups: [],
-  setDiscoverGroups: (groups: DiscoverGroup[]) => {},
+  setDiscoverGroups: () => {
+    // no-op
+  },
   discoverPods: [],
-  setDiscoverPods: (pod: DiscoverPod[]) => {},
+  setDiscoverPods: () => {
+    // no-op
+  },
   filters: [],
-  setFilters: (filters: TypeFilter[]) => {}
+  setFilters: () => {
+    // no-op
+  }
 })

@@ -1,7 +1,7 @@
 import EventEmitter from 'eventemitter3'
 import { Logger } from '@hawtio/react'
 import { KubeObject } from '../globals'
-import { equals, getName, getNamespace, toKindName } from '../helpers'
+import { getName, getNamespace, toKindName } from '../helpers'
 import { WatchActions } from '../model'
 import { debounce } from '../utils'
 import { log, ObjectList, ProcessDataCallback } from './globals'

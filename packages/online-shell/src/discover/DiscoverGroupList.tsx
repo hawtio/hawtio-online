@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   Accordion,
   AccordionContent,
@@ -10,30 +10,29 @@ import { DiscoverGroup } from './globals'
 import { DiscoverGroupLabel } from './DiscoverGroupLabel'
 import { DiscoverPodItem } from './DiscoverPodItem'
 import './Discover.css'
+import { DiscoverContext } from './context'
 
-interface DiscoverGroupListProps {
-  groups: DiscoverGroup[],
-  updateGroups: (groups: DiscoverGroup[]) => void
-}
-
-export const DiscoverGroupList: React.FunctionComponent<DiscoverGroupListProps> = (props: DiscoverGroupListProps) => {
+export const DiscoverGroupList: React.FunctionComponent = () => {
+  const { discoverGroups, setDiscoverGroups } = useContext(DiscoverContext)
 
   const onToggle = (group: DiscoverGroup) => {
-
-    const groups = [...props.groups]
+    const groups = [...discoverGroups]
 
     groups.forEach(g => {
       if (g.uid === group.uid)
         g.expanded = !g.expanded
     })
 
-    props.updateGroups(groups)
+    setDiscoverGroups(groups)
   }
+
+  if (discoverGroups.length === 0)
+    return (<></>)
 
   return (
     <Accordion asDefinitionList>
     {
-      props.groups.map(group => {
+      discoverGroups.map(group => {
           return (
             <AccordionItem key={'item-' + group.name}>
               <AccordionToggle
