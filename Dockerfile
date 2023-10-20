@@ -73,6 +73,10 @@ RUN mkdir -p /usr/share/nginx/html/online/osconsole && \
 COPY docker/nginx.js docker/rbac.js docker/js-yaml.js docker/jwt-decode.js /etc/nginx/conf.d/
 COPY docker/nginx.conf docker/nginx-gateway.conf.template docker/nginx-gateway-k8s.conf.template docker/osconsole/config.sh docker/nginx.sh docker/ACL.yaml /
 
+# Copy licenses
+RUN mkdir -p /opt/hawtio/licenses
+COPY docker/licenses /opt/hawtio/licenses
+
 COPY --from=builder /hawtio-online/packages/online-shell/build /usr/share/nginx/html/online/
 COPY --from=envsubst /usr/bin/envsubst /usr/local/bin/
 

@@ -14,7 +14,7 @@
     "docker"
   ],
   "scripts": {
-    "build": "yarn build:online",
+    "build": "yarn build:online && yarn license",
     "start:online": "yarn build:mgmt && yarn start:shell",
     "build:online": "yarn build:mgmt && yarn build:shell",
     "start:shell": "yarn workspace @hawtio/online-shell start",
@@ -35,7 +35,7 @@
     "format:check": "yarn prettier --check packages/",
     "format:fix": "yarn prettier --write packages/",
     "image": "docker build -t docker.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest} .",
-    "license": "license-reporter merge --mpn='hawtio-online' --mlx='./packages/online/licenses/licenses.xml,./packages/integration/licenses/licenses.xml' --mo=licenses.xml -o=docker/licenses",
+    "license": "yarn licenses generate-disclaimer -R > docker/licenses/licenses.txt",
     "gen:proxying": "./scripts/generate-proxying.sh",
     "gen:serving": "./scripts/generate-serving.sh",
     "test": "yarn test:docker && yarn test:nginx",
