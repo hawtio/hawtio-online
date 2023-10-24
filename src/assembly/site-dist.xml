@@ -29,5 +29,13 @@
             </includes>
             <fileMode>0644</fileMode>
         </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/docker/licenses</directory>
+            <outputDirectory>/licenses</outputDirectory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <fileMode>0644</fileMode>
+        </fileSet>
     </fileSets>
 </assembly>
