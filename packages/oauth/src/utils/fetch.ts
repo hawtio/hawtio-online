@@ -12,8 +12,7 @@ export type FetchOptions = {
 export async function fetchPath<T>(path: string, callback: FetchPathCallback<T>, options?: FetchOptions): Promise<T> {
   try {
     const init: RequestInit = {}
-    if (options)
-      init.headers = options.headers
+    if (options) init.headers = options.headers
 
     const res = await fetch(path, init)
     if (!res.ok) {

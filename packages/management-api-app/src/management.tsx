@@ -20,7 +20,7 @@ import {
   Text,
   TextContent,
   TextVariants,
-  Title
+  Title,
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
 import { userService } from '@hawtio/react'

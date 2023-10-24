@@ -1,6 +1,6 @@
-import { createContext, useEffect, useRef, useState } from "react"
-import { k8Api, k8Service } from "@hawtio/online-kubernetes-api"
-import { MgmtActions, isMgmtApiRegistered, mgmtService } from "@hawtio/online-management-api"
+import { createContext, useEffect, useRef, useState } from 'react'
+import { k8Api, k8Service } from '@hawtio/online-kubernetes-api'
+import { MgmtActions, isMgmtApiRegistered, mgmtService } from '@hawtio/online-management-api'
 import { filterAndGroupPods } from './discover-service'
 import { DiscoverGroup, DiscoverPod, TypeFilter } from './globals'
 
@@ -85,11 +85,11 @@ export function useDisplayItems() {
 }
 
 type DiscoverContext = {
-  discoverGroups: DiscoverGroup[],
-  setDiscoverGroups: (items: DiscoverGroup[]) => void,
-  discoverPods: DiscoverPod[],
-  setDiscoverPods: (items: DiscoverPod[]) => void,
-  filters: TypeFilter[],
+  discoverGroups: DiscoverGroup[]
+  setDiscoverGroups: (items: DiscoverGroup[]) => void
+  discoverPods: DiscoverPod[]
+  setDiscoverPods: (items: DiscoverPod[]) => void
+  filters: TypeFilter[]
   setFilters: (filters: TypeFilter[]) => void
 }
 
@@ -105,5 +105,5 @@ export const DiscoverContext = createContext<DiscoverContext>({
   filters: [],
   setFilters: () => {
     // no-op
-  }
+  },
 })

@@ -8,8 +8,9 @@ interface DiscoverPodConnectProps {
   pod: DiscoverPod
 }
 
-export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps> = (props: DiscoverPodConnectProps) => {
-
+export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps> = (
+  props: DiscoverPodConnectProps,
+) => {
   const connectionNames: string[] = mgmtService.refreshConnections(props.pod.mPod)
 
   const [isOpen, setIsOpen] = React.useState(false)
@@ -38,47 +39,41 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
 
   return (
     <React.Fragment>
-      { connectionNames.length <= 1 && (
+      {connectionNames.length <= 1 && (
         <Button
           variant='primary'
           component='button'
           className='connect-button'
           onClick={() => onConnect(connectionNames[0])}
-          isDisabled={disableContainerButton()} >
+          isDisabled={disableContainerButton()}
+        >
           Connect
         </Button>
       )}
 
-      { connectionNames.length > 1 && (
+      {connectionNames.length > 1 && (
         <Dropdown
           className='connect-button-dropdown'
           onSelect={onSelect}
           toggle={
-            <DropdownToggle
-              id='toggle-initial-selection'
-              toggleVariant='primary'
-              onToggle={onToggle}
-            >
+            <DropdownToggle id='toggle-initial-selection' toggleVariant='primary' onToggle={onToggle}>
               Connect
             </DropdownToggle>
           }
           isOpen={isOpen}
-          dropdownItems={
-            connectionNames.map((connectionName, index) => {
-              return (
-                <DropdownItem
-                  key={`${props.pod.uid}-container-${index}`}
-                  component='button'
-                  onClick={() => onConnect(connectionName)}
-                >
-                  {connectionName.replace(`${props.pod.name}-`, '')}
-                </DropdownItem>
-              )
-            })
-          }
+          dropdownItems={connectionNames.map((connectionName, index) => {
+            return (
+              <DropdownItem
+                key={`${props.pod.uid}-container-${index}`}
+                component='button'
+                onClick={() => onConnect(connectionName)}
+              >
+                {connectionName.replace(`${props.pod.name}-`, '')}
+              </DropdownItem>
+            )
+          })}
         />
       )}
-
     </React.Fragment>
   )
 }

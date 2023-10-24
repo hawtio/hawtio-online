@@ -8,18 +8,31 @@ interface DiscoverGroupLabelProps {
   group: DiscoverGroup
 }
 
-export const DiscoverGroupLabel: React.FunctionComponent<DiscoverGroupLabelProps> = (props: DiscoverGroupLabelProps) => {
-
+export const DiscoverGroupLabel: React.FunctionComponent<DiscoverGroupLabelProps> = (
+  props: DiscoverGroupLabelProps,
+) => {
   const configContent = (): React.ReactNode => {
     return (
       <React.Fragment>
-        <ConsoleLink type={ConsoleType.resource} selector={props.group.config as string} namespace={props.group.namespace} resource='dc' inline={true}>
+        <ConsoleLink
+          type={ConsoleType.resource}
+          selector={props.group.config as string}
+          namespace={props.group.namespace}
+          resource='dc'
+          inline={true}
+        >
           {props.group.config}
         </ConsoleLink>
 
         <span>, </span>
 
-        <ConsoleLink type={ConsoleType.resource} selector={props.group.name as string} namespace={props.group.namespace} resource='rc' inline={true}>
+        <ConsoleLink
+          type={ConsoleType.resource}
+          selector={props.group.name as string}
+          namespace={props.group.namespace}
+          resource='rc'
+          inline={true}
+        >
           #{props.group.version}
         </ConsoleLink>
       </React.Fragment>
@@ -28,7 +41,12 @@ export const DiscoverGroupLabel: React.FunctionComponent<DiscoverGroupLabelProps
 
   const statefulSetContent = () => {
     return (
-      <ConsoleLink type={ConsoleType.resource} selector={props.group.name as string} namespace={props.group.namespace} resource='sts'>
+      <ConsoleLink
+        type={ConsoleType.resource}
+        selector={props.group.name as string}
+        namespace={props.group.namespace}
+        resource='sts'
+      >
         {props.group.name}
       </ConsoleLink>
     )
@@ -36,7 +54,12 @@ export const DiscoverGroupLabel: React.FunctionComponent<DiscoverGroupLabelProps
 
   const deploymentContent = () => {
     return (
-      <ConsoleLink type={ConsoleType.resource} selector={props.group.name as string} namespace={props.group.namespace} resource='rs'>
+      <ConsoleLink
+        type={ConsoleType.resource}
+        selector={props.group.name as string}
+        namespace={props.group.namespace}
+        resource='rs'
+      >
         {props.group.name}
       </ConsoleLink>
     )
@@ -57,7 +80,9 @@ export const DiscoverGroupLabel: React.FunctionComponent<DiscoverGroupLabelProps
 
   return (
     <React.Fragment>
-      <Title className='discover-group-label' headingLevel='h3'>{title}</Title>
+      <Title className='discover-group-label' headingLevel='h3'>
+        {title}
+      </Title>
       {content}
     </React.Fragment>
   )

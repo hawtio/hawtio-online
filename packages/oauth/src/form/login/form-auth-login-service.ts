@@ -1,8 +1,8 @@
-import { hawtio } from "@hawtio/react"
-import { log } from "../../globals"
-import { oAuthService } from "../../oauth-service"
-import { FetchOptions, fetchPath, joinPaths } from "../../utils"
-import { FORM_TOKEN_STORAGE_KEY } from "../globals"
+import { hawtio } from '@hawtio/react'
+import { log } from '../../globals'
+import { oAuthService } from '../../oauth-service'
+import { FetchOptions, fetchPath, joinPaths } from '../../utils'
+import { FORM_TOKEN_STORAGE_KEY } from '../globals'
 
 export type ValidationCallback = {
   success: () => void
@@ -10,7 +10,6 @@ export type ValidationCallback = {
 }
 
 class FormAuthLoginService {
-
   login(token: string, callback: ValidationCallback) {
     if (!token || token.trim() === '') {
       callback.error(new Error('Token is empty'))
@@ -28,27 +27,31 @@ class FormAuthLoginService {
     }
 
     const fetchOptions: FetchOptions = {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     }
 
-    fetchPath<void>(joinPaths(masterUri, 'api'), {
-      success: (_: string) => {
-        log.debug('Connected to master uri api')
-        callback.success()
-        this.saveTokenAndRedirect(token)
-        return
+    fetchPath<void>(
+      joinPaths(masterUri, 'api'),
+      {
+        success: (_: string) => {
+          log.debug('Connected to master uri api')
+          callback.success()
+          this.saveTokenAndRedirect(token)
+          return
+        },
+        error: err => {
+          callback.error(new Error('Cannot validate token', { cause: err }))
+          return
+        },
       },
-      error: err => {
-        callback.error(new Error('Cannot validate token', { cause: err }))
-        return
-      },
-    }, fetchOptions)
+      fetchOptions,
+    )
   }
 
   private saveTokenAndRedirect(token: string): void {
     localStorage.setItem(FORM_TOKEN_STORAGE_KEY, token)
     const uri = this.redirectUri()
-    log.debug("Redirecting:", uri)
+    log.debug('Redirecting:', uri)
     window.location.href = uri
   }
 

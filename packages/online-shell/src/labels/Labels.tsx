@@ -12,17 +12,21 @@ interface LabelsProps {
 }
 
 export const Labels: React.FunctionComponent<LabelsProps> = (props: LabelsProps) => {
-
   const [limit] = useState(props.limit)
 
-  if (! props.labels || Object.getOwnPropertyNames(props.labels).length === 0) {
+  if (!props.labels || Object.getOwnPropertyNames(props.labels).length === 0) {
     return null
   }
 
   const clickableLabel = (key: string, value: string): ReactNode => {
     return (
-      <Label color="blue" className='k8s-clickable-label' key={key + '-' + value}>
-        <ConsoleLink type={ConsoleType.search} namespace={props.namespace} kind='core~v1~Pod' selector={`${key}=${value}`}>
+      <Label color='blue' className='k8s-clickable-label' key={key + '-' + value}>
+        <ConsoleLink
+          type={ConsoleType.search}
+          namespace={props.namespace}
+          kind='core~v1~Pod'
+          selector={`${key}=${value}`}
+        >
           <span className='k8s-label-key'>{key}</span>
           <span>=</span>
           <span className='k8s-label-value'>{value}</span>
@@ -43,14 +47,11 @@ export const Labels: React.FunctionComponent<LabelsProps> = (props: LabelsProps)
 
   return (
     <LabelGroup numLabels={limit}>
-      {
-        Object.entries(props.labels).map(([key, value]) => {
-          if (props.clickable)
-            return clickableLabel(key, value)
+      {Object.entries(props.labels).map(([key, value]) => {
+        if (props.clickable) return clickableLabel(key, value)
 
-          return textLabel(key, value)
-        })
-      }
+        return textLabel(key, value)
+      })}
     </LabelGroup>
   )
 }

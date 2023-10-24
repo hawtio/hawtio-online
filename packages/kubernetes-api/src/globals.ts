@@ -47,5 +47,15 @@ export enum K8Actions {
   CHANGED = 'CHANGED',
 }
 
-export type { NamespaceSpec, NamespaceStatus, Pod, PodCondition, PodSpec, PodStatus, Container, ContainerPort, ContainerStatus } from 'kubernetes-types/core/v1'
+export type {
+  NamespaceSpec,
+  NamespaceStatus,
+  Pod,
+  PodCondition,
+  PodSpec,
+  PodStatus,
+  Container,
+  ContainerPort,
+  ContainerStatus,
+} from 'kubernetes-types/core/v1'
 export type { ObjectMeta, OwnerReference } from 'kubernetes-types/meta/v1'

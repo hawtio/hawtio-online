@@ -5,7 +5,6 @@ import { k8Service, k8Api, KubePod, K8Actions, Container, ContainerPort, debounc
 import { MgmtActions, log } from './globals'
 
 export class ManagementService extends EventEmitter {
-
   private _initialized = false
   private _pods: { [key: string]: ManagedPod } = {}
   private pollManagementData = debounce(() => this.mgmtUpdate(), 1000)
@@ -19,15 +18,15 @@ export class ManagementService extends EventEmitter {
   }
 
   async initialize(): Promise<boolean> {
-    if (! k8Api.initialized) {
+    if (!k8Api.initialized) {
       await k8Api.initialize()
     }
 
-    if (! k8Service.initialized) {
+    if (!k8Service.initialized) {
       await k8Service.initialize()
     }
 
-    if (! this.hasError()) {
+    if (!this.hasError()) {
       const kPods: KubePod[] = k8Service.getPods()
 
       kPods.forEach(kPod => {
@@ -62,12 +61,10 @@ export class ManagementService extends EventEmitter {
   }
 
   private hash(s: string): number {
-    return s.split("")
-      .reduce(
-        function(a, b) {
-          a = ((a << 5) - a) + b.charCodeAt(0)
-          return a & a
-        }, 0)
+    return s.split('').reduce(function (a, b) {
+      a = (a << 5) - a + b.charCodeAt(0)
+      return a & a
+    }, 0)
   }
 
   private fingerprint(management: Management): number {
@@ -99,7 +96,7 @@ export class ManagementService extends EventEmitter {
 
       mPod.management.status.running = this.podStatus(mPod) === 'Running'
 
-      if (! mPod.management.status.running) {
+      if (!mPod.management.status.running) {
         /*
          * No point in trying to fire a jolokia request
          * against a non-running pod.
@@ -181,8 +178,7 @@ export class ManagementService extends EventEmitter {
     const initContainerStatuses = pod.status?.initContainerStatuses || []
     for (const initContainerStatus of initContainerStatuses) {
       const initContainerState = initContainerStatus['state']
-      if (!initContainerState)
-        continue
+      if (!initContainerState) continue
 
       if (initContainerState.terminated && initContainerState.terminated.exitCode === 0) {
         // initialization is complete
@@ -204,7 +200,11 @@ export class ManagementService extends EventEmitter {
         break
       }
 
-      if (initContainerState.waiting && initContainerState.waiting.reason && initContainerState.waiting.reason !== 'PodInitializing') {
+      if (
+        initContainerState.waiting &&
+        initContainerState.waiting.reason &&
+        initContainerState.waiting.reason !== 'PodInitializing'
+      ) {
         reason = 'Init ' + initContainerState.waiting.reason
         initializing = true
       }
@@ -215,8 +215,7 @@ export class ManagementService extends EventEmitter {
 
       const containerStatuses = pod.status?.containerStatuses || []
       for (const containerStatus of containerStatuses) {
-        const containerReason = containerStatus.state?.waiting?.reason ||
-                                containerStatus.state?.terminated?.reason
+        const containerReason = containerStatus.state?.waiting?.reason || containerStatus.state?.terminated?.reason
 
         if (containerReason) {
           reason = containerReason
@@ -247,8 +246,7 @@ export class ManagementService extends EventEmitter {
   }
 
   jolokiaContainers(pod: ManagedPod): Array<Container> {
-    if (!pod)
-      return []
+    if (!pod) return []
 
     const containers: Array<Container> = pod.spec?.containers || []
     return containers.filter(container => {
@@ -282,7 +280,7 @@ export class ManagementService extends EventEmitter {
         scheme: url.protocol,
         host: url.hostname,
         port: Number(url.port),
-        path: url.pathname
+        path: url.pathname,
       }
 
       const connName = this.connectionKeyName(pod, container)
@@ -300,7 +298,7 @@ export class ManagementService extends EventEmitter {
     const connections: Connections = connectService.loadConnections()
 
     const connection: Connection = connections[connectName]
-    if (! connection) {
+    if (!connection) {
       log.error(`There is no connection configured with name ${connectName}`)
       return
     }

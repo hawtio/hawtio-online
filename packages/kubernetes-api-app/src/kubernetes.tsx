@@ -136,7 +136,9 @@ export const Kubernetes: React.FunctionComponent = () => {
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Cluster Console</DescriptionListTerm>
-                  <DescriptionListDescription>{k8Api.consoleUri ? <a href={k8Api.consoleUri}>{k8Api.consoleUri}</a> : '<not found>'}</DescriptionListDescription>
+                  <DescriptionListDescription>
+                    {k8Api.consoleUri ? <a href={k8Api.consoleUri}>{k8Api.consoleUri}</a> : '<not found>'}
+                  </DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Kubernetes Config</DescriptionListTerm>

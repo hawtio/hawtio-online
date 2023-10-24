@@ -1,33 +1,31 @@
-import { k8Api, joinPaths } from "@hawtio/online-kubernetes-api"
-import { ConsoleType } from "./globals"
+import { k8Api, joinPaths } from '@hawtio/online-kubernetes-api'
+import { ConsoleType } from './globals'
 
 enum LinkPath {
-  console ='',
+  console = '',
   search = 'search/ns',
   namespace = 'k8s/cluster/projects',
   node = 'k8s/cluster/nodes',
-  resource = 'k8s/ns'
+  resource = 'k8s/ns',
 }
 
 enum OS4 {
   'dc' = 'deploymentconfigs',
   'rc' = 'replicationcontrollers',
   'rs' = 'replicasets',
-  'sts' = 'statefulsets'
+  'sts' = 'statefulsets',
 }
 
 export interface OSLinkConfig {
-  type: ConsoleType,
-  namespace?: string,
-  selector?: string,
-  resource?: string,
+  type: ConsoleType
+  namespace?: string
+  selector?: string
+  resource?: string
   kind?: string
 }
 
-
 export function osLink(config: OSLinkConfig): URL | null {
-  if (! k8Api.consoleUri)
-    return null
+  if (!k8Api.consoleUri) return null
 
   const linkPath = LinkPath[config.type]
 
@@ -45,8 +43,14 @@ export function osLink(config: OSLinkConfig): URL | null {
       return new URL(joinPaths(k8Api.consoleUri, linkPath, config.selector || ''))
     case ConsoleType.resource:
       return new URL(
-        joinPaths(k8Api.consoleUri, linkPath, config.namespace || 'default',
-          (OS4[config.resource as keyof typeof OS4] || config.resource), config.selector || ''))
+        joinPaths(
+          k8Api.consoleUri,
+          linkPath,
+          config.namespace || 'default',
+          OS4[config.resource as keyof typeof OS4] || config.resource,
+          config.selector || '',
+        ),
+      )
     default:
       return null
   }

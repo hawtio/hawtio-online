@@ -73,7 +73,9 @@ function extractToken(uri: URL): TokenMetadata | null {
   //
   const searchParams = new URLSearchParams(uri.search)
   if (searchParams.has('error')) {
-    throw new Error(searchParams.get('error_description') || searchParams.get('error_description') || 'unknown login error occurred')
+    throw new Error(
+      searchParams.get('error_description') || searchParams.get('error_description') || 'unknown login error occurred',
+    )
   }
 
   const fragmentParams = new URLSearchParams(uri.hash.substring(1))

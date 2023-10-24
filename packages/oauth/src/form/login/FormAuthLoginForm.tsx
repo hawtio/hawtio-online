@@ -9,7 +9,6 @@ import { formAuthLoginService } from './form-auth-login-service'
  * by providing its config in hawtconfig.json
  */
 export const FormAuthLoginForm: React.FunctionComponent = () => {
-
   const [loginFailed, setLoginFailed] = useState(false)
   const [token, setToken] = React.useState('')
   const [isValidToken, setIsValidToken] = React.useState(true)
@@ -32,18 +31,17 @@ export const FormAuthLoginForm: React.FunctionComponent = () => {
       invalid = true
     }
 
-    if (invalid)
-      return
+    if (invalid) return
 
     formAuthLoginService.login(token, {
-      success: function(): void {
+      success: function (): void {
         log.info('Login succeeded')
       },
-      error: function(err: Error): void {
+      error: function (err: Error): void {
         log.error(err)
         setIsValidToken(false)
         setLoginFailed(true)
-      }
+      },
     })
   }
 
@@ -56,7 +54,7 @@ export const FormAuthLoginForm: React.FunctionComponent = () => {
       onChangeToken={setToken}
       isValidToken={isValidToken}
       onLoginButtonClick={onLoginButtonClick}
-      loginButtonLabel="Log in"
+      loginButtonLabel='Log in'
     />
   )
 }

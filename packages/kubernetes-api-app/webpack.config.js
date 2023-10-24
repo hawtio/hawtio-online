@@ -11,10 +11,9 @@ const dotenv = require('dotenv')
 const { dependencies } = require('./package.json')
 
 // this will update the process.env with environment variables in .env file
-dotenv.config( { path: path.join(__dirname, '.env') } )
+dotenv.config({ path: path.join(__dirname, '.env') })
 
 module.exports = () => {
-
   const clusterAuthType = process.env.CLUSTER_AUTH_TYPE || 'oauth'
 
   const master_uri = process.env.CLUSTER_MASTER
@@ -27,13 +26,12 @@ module.exports = () => {
   const mode = process.env.HAWTIO_MODE || 'cluster'
   const clientId = process.env.OAUTH_CLIENT_ID
   if (!clientId) {
-    console.error("The OAUTH_CLIENT_ID must be set!")
+    console.error('The OAUTH_CLIENT_ID must be set!')
     process.exit(1)
   }
 
   const clusterAuthFormUri = process.env.CLUSTER_AUTH_FORM || '/login'
-  if (clusterAuthFormUri)
-    console.log('Using Cluster Auth Form URL:', clusterAuthFormUri)
+  if (clusterAuthFormUri) console.log('Using Cluster Auth Form URL:', clusterAuthFormUri)
 
   console.log('Using Cluster URL:', master_uri)
   console.log('Using Cluster Namespace:', namespace)
@@ -49,15 +47,15 @@ module.exports = () => {
     mode: 'development',
     devtool: 'eval-source-map',
     module: {
-      rules:[
+      rules: [
         {
           test: /\.css$/,
-          use: [ 'style-loader', 'css-loader' ]
+          use: ['style-loader', 'css-loader'],
         },
         {
           test: /\.js$/,
-          enforce: "pre",
-          use: ["source-map-loader"],
+          enforce: 'pre',
+          use: ['source-map-loader'],
         },
         {
           test: /\.tsx?$/,
@@ -67,7 +65,7 @@ module.exports = () => {
               compilerOptions: {
                 noEmit: false, // this option will solve the issue
               },
-            }
+            },
           },
           exclude: /node_modules|\.d\.ts$/, // this line as well
         },
@@ -78,22 +76,22 @@ module.exports = () => {
         },
         {
           test: /\.(png|jpe?g|gif|svg)$/i,
-          use: 'file-loader'
-        }
-      ]
+          use: 'file-loader',
+        },
+      ],
     },
     plugins: [
       new MiniCssExtractPlugin({
         // MiniCssExtractPlugin - Ignore order as otherwise conflicting order warning is raised
-        ignoreOrder: true
+        ignoreOrder: true,
       }),
       new DotenvPlugin({
-          safe: true,
-          allowEmptyValues: true,
-          defaults: true,
-          systemvars: true,
-          ignoreStub: true,
-        }),
+        safe: true,
+        allowEmptyValues: true,
+        defaults: true,
+        systemvars: true,
+        ignoreStub: true,
+      }),
       new webpack.container.ModuleFederationPlugin({
         name: 'app',
         filename: 'remoteEntry.js',
@@ -130,30 +128,30 @@ module.exports = () => {
       new InterpolateHtmlPlugin({
         NODE_ENV: 'development',
         PUBLIC_URL: '',
-        FAST_REFRESH: true
+        FAST_REFRESH: true,
       }),
       new webpack.DefinePlugin({
-       'process.env': JSON.stringify(process.env)
-      })
+        'process.env': JSON.stringify(process.env),
+      }),
     ],
-    output : {
+    output: {
       path: path.resolve(__dirname, 'build'),
       publicPath: 'auto',
       pathinfo: true,
       filename: 'static/js/bundle.js',
       chunkFilename: 'static/js/[name].chunk.js',
-      assetModuleFilename: 'static/media/[name].[hash][ext]'
+      assetModuleFilename: 'static/media/[name].[hash][ext]',
     },
     ignoreWarnings: [
       // For suppressing sourcemap warnings coming from some dependencies
-      /Failed to parse source map/
+      /Failed to parse source map/,
     ],
     resolve: {
       modules: [path.resolve(__dirname, 'node_modules'), path.resolve(__dirname, '../../node_modules')],
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
       alias: {
         'react-native': 'react-native-web',
-        src: path.resolve(__dirname, 'src')
+        src: path.resolve(__dirname, 'src'),
       },
       plugins: [
         new TsconfigPathsPlugin({
@@ -167,7 +165,7 @@ module.exports = () => {
         path: require.resolve('path-browserify'),
         process: require.resolve('process/browser'),
         url: require.resolve('url/'),
-      }
+      },
     },
     devServer: {
       compress: true,
@@ -194,7 +192,7 @@ module.exports = () => {
         directory: path.join(__dirname, 'public'),
       },
 
-      onBeforeSetupMiddleware: (devServer) => {
+      onBeforeSetupMiddleware: devServer => {
         /*
          * Function to construct the config.json file
          * and make it available for authentication
@@ -209,7 +207,7 @@ module.exports = () => {
 
           if (clusterAuthType === 'form') {
             oscConfig.form = {
-              uri: clusterAuthFormUri
+              uri: clusterAuthFormUri,
             }
           }
 
@@ -237,7 +235,7 @@ module.exports = () => {
                 oscConfig.openshift = {
                   oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
                   oauth_client_id: clientId,
-                    scope: `user:info user:check-access role:edit:${namespace}`,
+                  scope: `user:info user:check-access role:edit:${namespace}`,
                   cluster_version: '4.11.0',
                 }
               }
@@ -246,7 +244,7 @@ module.exports = () => {
               if (!oscConfig.form) {
                 oscConfig.openshift = {
                   oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
-                    oauth_client_id: clientId,
+                  oauth_client_id: clientId,
                   scope: `user:info user:check-access user:full`,
                   cluster_version: '4.11.0',
                 }
@@ -285,7 +283,7 @@ module.exports = () => {
         const history = historyApiFallback()
         devServer.app.get('/', history)
         devServer.app.get('/login', history)
-      }
-    }
+      },
+    },
   }
 }

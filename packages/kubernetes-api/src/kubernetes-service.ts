@@ -20,7 +20,6 @@ export interface Client<T extends KubeObject> {
   watch: ProcessDataCallback<T>
 }
 
-
 export class KubernetesService extends EventEmitter {
   private readonly _jolokiaPortQuery = '$.spec.containers[*].ports[?(@.name=="jolokia")]'
   private _loading = 0
@@ -230,8 +229,7 @@ export class KubernetesService extends EventEmitter {
     const initContainerStatuses = pod.status?.initContainerStatuses || []
     for (const initContainerStatus of initContainerStatuses) {
       const initContainerState = initContainerStatus['state']
-      if (!initContainerState)
-        continue
+      if (!initContainerState) continue
 
       if (initContainerState.terminated && initContainerState.terminated.exitCode === 0) {
         // initialization is complete
@@ -253,7 +251,11 @@ export class KubernetesService extends EventEmitter {
         break
       }
 
-      if (initContainerState.waiting && initContainerState.waiting.reason && initContainerState.waiting.reason !== 'PodInitializing') {
+      if (
+        initContainerState.waiting &&
+        initContainerState.waiting.reason &&
+        initContainerState.waiting.reason !== 'PodInitializing'
+      ) {
         reason = 'Init ' + initContainerState.waiting.reason
         initializing = true
       }
@@ -264,8 +266,7 @@ export class KubernetesService extends EventEmitter {
 
       const containerStatuses = pod.status?.containerStatuses || []
       for (const containerStatus of containerStatuses) {
-        const containerReason = containerStatus.state?.waiting?.reason ||
-                                containerStatus.state?.terminated?.reason
+        const containerReason = containerStatus.state?.waiting?.reason || containerStatus.state?.terminated?.reason
 
         if (containerReason) {
           reason = containerReason

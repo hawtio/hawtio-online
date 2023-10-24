@@ -4,7 +4,6 @@ import { AuthLoginPage } from './login'
 import { OAuthStatus } from './OAuthStatus'
 
 export const OAuth: React.FunctionComponent = () => {
-
   return (
     <BrowserRouter>
       <Routes>

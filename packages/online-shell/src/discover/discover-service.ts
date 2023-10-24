@@ -1,6 +1,6 @@
-import { OwnerReference } from "@hawtio/online-kubernetes-api"
-import { ManagedPod, mgmtService } from "@hawtio/online-management-api"
-import { DiscoverGroup, DiscoverPod, DiscoverType, TypeFilter } from "./globals"
+import { OwnerReference } from '@hawtio/online-kubernetes-api'
+import { ManagedPod, mgmtService } from '@hawtio/online-management-api'
+import { DiscoverGroup, DiscoverPod, DiscoverType, TypeFilter } from './globals'
 
 export function unwrap(error: Error): string {
   if (!error) return 'unknown error'
@@ -11,7 +11,7 @@ export function unwrap(error: Error): string {
 }
 
 function applyFilter(filter: TypeFilter, pod: ManagedPod): boolean {
-  if (! pod.metadata) return false
+  if (!pod.metadata) return false
 
   type KubeObjKey = keyof typeof pod.metadata
 
@@ -24,13 +24,17 @@ function applyFilter(filter: TypeFilter, pod: ManagedPod): boolean {
   return podProp.toLowerCase().includes(filter.value.toLowerCase())
 }
 
-
-function recordValue(values: Record<string, string>|undefined, key: string): string | undefined {
+function recordValue(values: Record<string, string> | undefined, key: string): string | undefined {
   if (!values) return undefined
   return values[key]
 }
 
-function toDiscoverGroup(pod: ManagedPod, owner: OwnerReference, replicas: ManagedPod[], expanded: boolean): DiscoverGroup {
+function toDiscoverGroup(
+  pod: ManagedPod,
+  owner: OwnerReference,
+  replicas: ManagedPod[],
+  expanded: boolean,
+): DiscoverGroup {
   const discoverReplicas = [pod, ...replicas].map(replica => createDiscoverPod(replica))
 
   return {
@@ -54,22 +58,20 @@ function createDiscoverPod(pod: ManagedPod): DiscoverPod {
     namespace: pod.metadata?.namespace || '<unknown>',
     labels: pod.metadata?.labels || {},
     annotations: pod.metadata?.annotations || {},
-    mPod: pod
+    mPod: pod,
   }
 }
 
-function podOwner(pod: ManagedPod): OwnerReference|null {
-  if (!pod.metadata || !pod.metadata?.ownerReferences)
-  return null
+function podOwner(pod: ManagedPod): OwnerReference | null {
+  if (!pod.metadata || !pod.metadata?.ownerReferences) return null
 
-  if (pod.metadata.ownerReferences.length === 0)
-  return null
+  if (pod.metadata.ownerReferences.length === 0) return null
 
   return pod.metadata.ownerReferences[0]
 }
 
 function podsWithOwner(remainingPods: ManagedPod[], ownerRef: OwnerReference): ManagedPod[] {
-  if (! remainingPods) return []
+  if (!remainingPods) return []
 
   return remainingPods.filter(pod => {
     const oRef = podOwner(pod)
@@ -77,38 +79,39 @@ function podsWithOwner(remainingPods: ManagedPod[], ownerRef: OwnerReference): M
   })
 }
 
-function groupPodsByDeployment(pods: ManagedPod[], exDiscoverGroups: DiscoverGroup[]): [DiscoverGroup[], DiscoverPod[]] {
+function groupPodsByDeployment(
+  pods: ManagedPod[],
+  exDiscoverGroups: DiscoverGroup[],
+): [DiscoverGroup[], DiscoverPod[]] {
   const discoverPods: DiscoverPod[] = []
   const discoverGroups: DiscoverGroup[] = []
 
   pods.forEach((pod, index) => {
     const ownerRef = podOwner(pod)
-    if (! ownerRef || ! ownerRef?.uid) {
+    if (!ownerRef || !ownerRef?.uid) {
       discoverPods.push(createDiscoverPod(pod))
       return
     }
 
     const groups = discoverGroups.filter(group => group.uid === ownerRef.uid)
-    if (groups.length > 0)
-      return // pod already processed into a display group
+    if (groups.length > 0) return // pod already processed into a display group
 
     /*
      * Pod has an owner uid but not yet processed
      */
 
     // find pods with same owner uid as this one
-    const remainingPods = (index < (pods.length - 1)) ? pods.slice((index + 1)) : []
+    const remainingPods = index < pods.length - 1 ? pods.slice(index + 1) : []
     const replicas = podsWithOwner(remainingPods, ownerRef)
 
     const theExDiscoverGroups = exDiscoverGroups.filter(group => {
       return (
-        group.uid === pod.metadata?.uid &&
-        group.namespace === pod.metadata.namespace &&
-        group.name === ownerRef?.name)
+        group.uid === pod.metadata?.uid && group.namespace === pod.metadata.namespace && group.name === ownerRef?.name
+      )
     })
 
     // Determine if group previously expanded
-    const expanded = (theExDiscoverGroups.length > 0) ? theExDiscoverGroups[0].expanded : true
+    const expanded = theExDiscoverGroups.length > 0 ? theExDiscoverGroups[0].expanded : true
 
     discoverGroups.push(toDiscoverGroup(pod, ownerRef, replicas, expanded))
   })
@@ -116,11 +119,13 @@ function groupPodsByDeployment(pods: ManagedPod[], exDiscoverGroups: DiscoverGro
   return [discoverGroups, discoverPods]
 }
 
-export function filterAndGroupPods(theFilters: TypeFilter[], currentGroups: DiscoverGroup[]): [DiscoverGroup[], DiscoverPod[]] {
+export function filterAndGroupPods(
+  theFilters: TypeFilter[],
+  currentGroups: DiscoverGroup[],
+): [DiscoverGroup[], DiscoverPod[]] {
   const pods: ManagedPod[] = mgmtService.pods || []
 
-  if (!theFilters || theFilters.length === 0)
-    return groupPodsByDeployment(pods, currentGroups)
+  if (!theFilters || theFilters.length === 0) return groupPodsByDeployment(pods, currentGroups)
 
   const filtered = pods.filter(pod => {
     let status = true

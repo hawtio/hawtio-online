@@ -113,11 +113,9 @@ export class ObjectListImpl<T extends KubeObject> extends EventEmitter implement
   }
 
   added(object: T): boolean {
-    if (!this.belongs(object))
-      return false
+    if (!this.belongs(object)) return false
 
-    if (!object.kind)
-      object.kind = toKindName(this.kind) || undefined
+    if (!object.kind) object.kind = toKindName(this.kind) || undefined
 
     const objIdx = this.objects.findIndex(obj => obj.metadata?.uid === object.metadata?.uid)
     if (objIdx >= 0) return this.modified(object)
@@ -129,11 +127,9 @@ export class ObjectListImpl<T extends KubeObject> extends EventEmitter implement
   }
 
   modified(object: T): boolean {
-    if (!this.belongs(object))
-      return false
+    if (!this.belongs(object)) return false
 
-    if (!object.kind)
-      object.kind = toKindName(this.kind) || undefined
+    if (!object.kind) object.kind = toKindName(this.kind) || undefined
 
     const objIdx = this.objects.findIndex(obj => obj.metadata?.uid === object.metadata?.uid)
     if (objIdx < 0) return this.added(object)

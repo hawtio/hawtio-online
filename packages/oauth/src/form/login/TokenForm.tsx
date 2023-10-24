@@ -7,7 +7,8 @@ import {
   TextInput,
   Button,
   ValidatedOptions,
-  InputGroup } from '@patternfly/react-core'
+  InputGroup,
+} from '@patternfly/react-core'
 import { EyeSlashIcon } from '@patternfly/react-icons'
 import { EyeIcon } from '@patternfly/react-icons'
 
@@ -52,14 +53,18 @@ export const TokenForm: React.FunctionComponent<TokenFormProps> = ({
   helperTextIcon = null,
   tokenLabel = 'Token',
   tokenValue = '',
-  onChangeToken = () => { /* no-op */ },
+  onChangeToken = () => {
+    /* no-op */
+  },
   isShowTokenEnabled = false,
   hideTokenAriaLabel = 'Hide token',
   showTokenAriaLabel = 'Show token',
   isValidToken = true,
   loginButtonLabel = 'Log In',
   isLoginButtonDisabled = false,
-  onLoginButtonClick = () => { /* no-op */ },
+  onLoginButtonClick = () => {
+    /* no-op */
+  },
   ...props
 }: TokenFormProps) => {
   const [tokenHidden, setTokenHidden] = React.useState(true)
@@ -68,8 +73,8 @@ export const TokenForm: React.FunctionComponent<TokenFormProps> = ({
     <TextInput
       isRequired
       type={tokenHidden ? 'password' : 'text'}
-      id="pf-login-token-id"
-      name="pf-login-token-id"
+      id='pf-login-token-id'
+      name='pf-login-token-id'
       validated={isValidToken ? ValidatedOptions.default : ValidatedOptions.error}
       value={tokenValue}
       onChange={onChangeToken}
@@ -85,13 +90,13 @@ export const TokenForm: React.FunctionComponent<TokenFormProps> = ({
         label={tokenLabel}
         isRequired
         validated={isValidToken ? ValidatedOptions.default : ValidatedOptions.error}
-        fieldId="pf-login-token-id"
+        fieldId='pf-login-token-id'
       >
         {isShowTokenEnabled && (
           <InputGroup>
             {tokenInput}
             <Button
-              variant="control"
+              variant='control'
               onClick={() => setTokenHidden(!tokenHidden)}
               aria-label={tokenHidden ? showTokenAriaLabel : hideTokenAriaLabel}
             >
@@ -102,7 +107,7 @@ export const TokenForm: React.FunctionComponent<TokenFormProps> = ({
         {!isShowTokenEnabled && tokenInput}
       </FormGroup>
       <ActionGroup>
-        <Button variant="primary" type="submit" onClick={onLoginButtonClick} isBlock isDisabled={isLoginButtonDisabled}>
+        <Button variant='primary' type='submit' onClick={onLoginButtonClick} isBlock isDisabled={isLoginButtonDisabled}>
           {loginButtonLabel}
         </Button>
       </ActionGroup>
