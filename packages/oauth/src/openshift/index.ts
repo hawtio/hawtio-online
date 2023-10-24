@@ -5,6 +5,6 @@ export {
   OBTAINED_AT_KEY,
   CLUSTER_VERSION_KEY,
   DEFAULT_CLUSTER_VERSION,
-  OAUTH_OS_PROTOCOL_MODULE
+  OAUTH_OS_PROTOCOL_MODULE,
 } from './globals'
 export { OSOAuthService } from './osoauth-service'

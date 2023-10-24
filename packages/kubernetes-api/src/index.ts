@@ -6,7 +6,7 @@ import { log } from './globals'
 let configAdded = false
 
 const registerK8Api = async (): Promise<boolean> => {
-  if (! configAdded) {
+  if (!configAdded) {
     // Add Product Info
     configManager.addProductInfo('Hawtio Kubernetes API', 'PACKAGE_VERSION_PLACEHOLDER')
     configAdded = true
@@ -24,5 +24,5 @@ export async function isK8ApiRegistered(): Promise<boolean> {
 }
 
 export * from './globals'
-export {k8Api, k8Service} from './init'
+export { k8Api, k8Service } from './init'
 export * from './utils'

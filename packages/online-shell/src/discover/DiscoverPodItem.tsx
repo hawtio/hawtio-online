@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { Label, LabelGroup, ListItem, Title } from '@patternfly/react-core'
-import { DatabaseIcon, HomeIcon, OutlinedHddIcon} from '@patternfly/react-icons'
+import { DatabaseIcon, HomeIcon, OutlinedHddIcon } from '@patternfly/react-icons'
 import { ConsoleLink, ConsoleType } from '../console'
 import { Labels } from '../labels'
 import { DiscoverPod } from './globals'
@@ -14,7 +14,6 @@ interface DiscoverPodItemProps {
 }
 
 export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (props: DiscoverPodItemProps) => {
-
   const nodeLabel = (): ReactNode => {
     if (props.pod.mPod.spec?.nodeName) {
       return (
@@ -38,15 +37,20 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
   }
 
   return (
-    <ListItem icon={<StatusIcon pod={props.pod}/>} key={'item-' + props.pod.uid}>
+    <ListItem icon={<StatusIcon pod={props.pod} />} key={'item-' + props.pod.uid}>
       <div className='pod-item-name-with-labels'>
-        <Title headingLevel="h3">
-          <ConsoleLink type={ConsoleType.resource} selector={props.pod.name} namespace={props.pod.namespace} resource='pods'>
+        <Title headingLevel='h3'>
+          <ConsoleLink
+            type={ConsoleType.resource}
+            selector={props.pod.name}
+            namespace={props.pod.namespace}
+            resource='pods'
+          >
             {props.pod.name}
           </ConsoleLink>
         </Title>
 
-        <Labels labels={props.pod.labels} namespace={props.pod.namespace} limit={3} clickable={true}/>
+        <Labels labels={props.pod.labels} namespace={props.pod.namespace} limit={3} clickable={true} />
       </div>
 
       <LabelGroup numLabels={4} className='pod-item-label-group'>
@@ -70,9 +74,8 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
       </LabelGroup>
 
       <div className='pod-item-connect-button'>
-        <DiscoverPodConnect key={props.pod.uid} pod={props.pod}/>
+        <DiscoverPodConnect key={props.pod.uid} pod={props.pod} />
       </div>
-
     </ListItem>
   )
 }

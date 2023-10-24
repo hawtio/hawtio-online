@@ -6,8 +6,7 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const path = require('path')
 const { dependencies } = require('./package.json')
 
-const common = (mode) => {
-
+const common = mode => {
   console.log(`Compilation Mode: ${mode}`)
 
   const publicPath = mode === 'production' ? '/online' : ''
@@ -15,15 +14,15 @@ const common = (mode) => {
   return {
     mode: mode,
     module: {
-      rules:[
+      rules: [
         {
           test: /\.css$/,
-          use: [ 'style-loader', 'css-loader' ]
+          use: ['style-loader', 'css-loader'],
         },
         {
           test: /\.js$/,
-          enforce: "pre",
-          use: ["source-map-loader"],
+          enforce: 'pre',
+          use: ['source-map-loader'],
         },
         {
           test: /\.tsx?$/,
@@ -33,7 +32,7 @@ const common = (mode) => {
               compilerOptions: {
                 noEmit: false, // this option will solve the issue
               },
-            }
+            },
           },
           exclude: /node_modules|\.d\.ts$/, // this line as well
         },
@@ -44,14 +43,14 @@ const common = (mode) => {
         },
         {
           test: /\.(png|jpe?g|gif|svg)$/i,
-          use: 'file-loader'
-        }
-      ]
+          use: 'file-loader',
+        },
+      ],
     },
     plugins: [
       new MiniCssExtractPlugin({
         // MiniCssExtractPlugin - Ignore order as otherwise conflicting order warning is raised
-        ignoreOrder: true
+        ignoreOrder: true,
       }),
       new webpack.container.ModuleFederationPlugin({
         name: 'app',
@@ -91,13 +90,13 @@ const common = (mode) => {
         inject: true,
         template: path.resolve(__dirname, 'public', 'index.html'),
         favicon: path.resolve(__dirname, 'public', 'favicon.ico'),
-        publicPath: publicPath
+        publicPath: publicPath,
       }),
       new webpack.DefinePlugin({
-       'process.env': JSON.stringify(process.env)
-      })
+        'process.env': JSON.stringify(process.env),
+      }),
     ],
-    output : {
+    output: {
       path: path.resolve(__dirname, 'build'),
 
       // Set base path to /
@@ -106,18 +105,18 @@ const common = (mode) => {
       pathinfo: true,
       filename: 'static/js/bundle.js',
       chunkFilename: 'static/js/[name].chunk.js',
-      assetModuleFilename: 'static/media/[name].[hash][ext]'
+      assetModuleFilename: 'static/media/[name].[hash][ext]',
     },
     ignoreWarnings: [
       // For suppressing sourcemap warnings coming from some dependencies
-      /Failed to parse source map/
+      /Failed to parse source map/,
     ],
     resolve: {
       modules: [path.resolve(__dirname, 'node_modules'), path.resolve(__dirname, '../../node_modules')],
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
       alias: {
         'react-native': 'react-native-web',
-        src: path.resolve(__dirname, 'src')
+        src: path.resolve(__dirname, 'src'),
       },
       plugins: [
         new TsconfigPathsPlugin({
@@ -131,8 +130,8 @@ const common = (mode) => {
         path: require.resolve('path-browserify'),
         process: require.resolve('process/browser'),
         url: require.resolve('url/'),
-      }
-    }
+      },
+    },
   }
 }
 

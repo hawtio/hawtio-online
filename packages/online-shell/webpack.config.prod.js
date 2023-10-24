@@ -10,11 +10,8 @@ module.exports = () => {
 
     plugins: [
       new CopyWebpackPlugin({
-        patterns: [
-          { from: 'public/manifest.json' },
-          { from: 'public/hawtio-logo.svg'}
-        ]
-      })
-    ]
+        patterns: [{ from: 'public/manifest.json' }, { from: 'public/hawtio-logo.svg' }],
+      }),
+    ],
   })
 }

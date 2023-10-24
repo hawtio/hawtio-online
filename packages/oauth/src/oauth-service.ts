@@ -1,11 +1,6 @@
 import { log, OAuthProtoService, UserProfile } from './globals'
 import { fetchPath } from './utils'
-import {
-  DEFAULT_HAWTIO_MODE,
-  DEFAULT_HAWTIO_NAMESPACE,
-  HAWTIO_MODE_KEY,
-  HAWTIO_NAMESPACE_KEY,
-} from './metadata'
+import { DEFAULT_HAWTIO_MODE, DEFAULT_HAWTIO_NAMESPACE, HAWTIO_MODE_KEY, HAWTIO_NAMESPACE_KEY } from './metadata'
 import { OAuthConfig, PATH_OSCONSOLE_CLIENT_CONFIG } from './globals'
 import { OSOAuthService } from './openshift'
 import { relToAbsUrl } from './utils/utils'
@@ -60,7 +55,7 @@ class OAuthService {
       protoService = new OSOAuthService(config.openshift, this.userProfile)
     }
 
-    if (! protoService) {
+    if (!protoService) {
       this.userProfile.setError(new Error('Cannot initialise service as no protocol service can be initialised'))
     }
 

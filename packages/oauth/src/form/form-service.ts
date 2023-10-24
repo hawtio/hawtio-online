@@ -1,13 +1,13 @@
 import $ from 'jquery'
 import { getCookie } from '../utils'
-import { log, OAuthProtoService, UserProfile } from "../globals"
-import { FormConfig, FORM_TOKEN_STORAGE_KEY, FORM_AUTH_PROTOCOL_MODULE, ResolveUser } from "./globals"
+import { log, OAuthProtoService, UserProfile } from '../globals'
+import { FormConfig, FORM_TOKEN_STORAGE_KEY, FORM_AUTH_PROTOCOL_MODULE, ResolveUser } from './globals'
 import { relToAbsUrl } from 'src/utils/utils'
 import { jwtDecode } from './jwt-decode'
 import { PUBLIC_USER, userService } from '@hawtio/react'
 
 type LoginOptions = {
-  uri: URL;
+  uri: URL
 }
 
 export class FormService implements OAuthProtoService {
@@ -15,7 +15,7 @@ export class FormService implements OAuthProtoService {
   private formConfig: FormConfig | null
   private loggedIn: boolean
 
-  constructor(formConfig: FormConfig|null, userProfile: UserProfile) {
+  constructor(formConfig: FormConfig | null, userProfile: UserProfile) {
     log.debug('Initialising Form Auth Service')
     this.userProfile = userProfile
     this.userProfile.setOAuthType(FORM_AUTH_PROTOCOL_MODULE)
@@ -25,12 +25,12 @@ export class FormService implements OAuthProtoService {
 
   private initLogin(): boolean {
     if (!this.formConfig) {
-      log.debug("Form auth disabled")
+      log.debug('Form auth disabled')
       return false
     }
 
     if (!this.formConfig.uri) {
-      log.debug("Invalid config, disabled form auth:", this.formConfig)
+      log.debug('Invalid config, disabled form auth:', this.formConfig)
       return false
     }
 
@@ -39,7 +39,7 @@ export class FormService implements OAuthProtoService {
       return false
     }
 
-    if (! this.userProfile.getMasterUri()) {
+    if (!this.userProfile.getMasterUri()) {
       log.debug('Cannot initialise form authentication as master uri not specified')
       return false
     }
@@ -56,7 +56,7 @@ export class FormService implements OAuthProtoService {
     const token = this.checkToken()
     if (!token) {
       this.clearTokenStorage()
-      this.tryLogin({uri: currentUri})
+      this.tryLogin({ uri: currentUri })
       return false
     }
 
@@ -74,8 +74,7 @@ export class FormService implements OAuthProtoService {
     let token: string | null = null
 
     // Token has to be provided in local storage
-    if (FORM_TOKEN_STORAGE_KEY in localStorage)
-      token = localStorage.getItem(FORM_TOKEN_STORAGE_KEY) ?? null
+    if (FORM_TOKEN_STORAGE_KEY in localStorage) token = localStorage.getItem(FORM_TOKEN_STORAGE_KEY) ?? null
 
     return token
   }
@@ -85,8 +84,7 @@ export class FormService implements OAuthProtoService {
   }
 
   private tryLogin(options: LoginOptions) {
-    if (! this.formConfig)
-      throw new Error('Cannot initiate login as form configuration cannot be derived')
+    if (!this.formConfig) throw new Error('Cannot initiate login as form configuration cannot be derived')
 
     const target = relToAbsUrl(this.formConfig.uri)
     const targetUri = new URL(target)
@@ -95,7 +93,7 @@ export class FormService implements OAuthProtoService {
     log.debug('Login - redirect URI:', options.uri)
     if (targetUri.pathname === options.uri.pathname) {
       // We are already in the login form
-      log.debug("Login - Already in", this.formConfig.uri)
+      log.debug('Login - Already in', this.formConfig.uri)
       return
     }
 
@@ -103,7 +101,7 @@ export class FormService implements OAuthProtoService {
     searchParams.set('redirectUri', options.uri.toString())
     targetUri.search = searchParams.toString()
 
-    log.debug("Redirecting to URI:", targetUri.toString())
+    log.debug('Redirecting to URI:', targetUri.toString())
     window.location.href = targetUri.toString()
   }
 
@@ -144,7 +142,6 @@ export class FormService implements OAuthProtoService {
 
     log.debug('Set authorization header to Openshift auth token for AJAX requests')
     const beforeSend = (xhr: JQueryXHR, settings: JQueryAjaxSettings) => {
-
       // Set bearer token is used
       xhr.setRequestHeader('Authorization', `Bearer ${this.userProfile.getToken()}`)
 
@@ -184,7 +181,7 @@ export class FormService implements OAuthProtoService {
     log.debug('Registering oAuth user hooks')
     const fetchUser = async (resolve: ResolveUser) => {
       this.login()
-      if (! this.userProfile.hasToken() || this.userProfile.hasError()) {
+      if (!this.userProfile.hasToken() || this.userProfile.hasError()) {
         resolve({ username: PUBLIC_USER, isLogin: false })
         return false
       }
@@ -193,10 +190,8 @@ export class FormService implements OAuthProtoService {
       try {
         subject = this.getSubjectFromToken(this.userProfile.getToken())
       } catch (err) {
-        if (err instanceof Error)
-          log.warn(err.message)
-        else
-          log.error(err)
+        if (err instanceof Error) log.warn(err.message)
+        else log.error(err)
       }
 
       resolve({ username: subject, isLogin: true })
@@ -209,8 +204,7 @@ export class FormService implements OAuthProtoService {
     const logout = async () => {
       log.debug('Running oAuth logout hook')
       this.login()
-      if (! this.userProfile.hasToken() || this.userProfile.hasError())
-        return false
+      if (!this.userProfile.hasToken() || this.userProfile.hasError()) return false
 
       log.info('Log out')
       try {

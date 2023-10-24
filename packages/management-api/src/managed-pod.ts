@@ -2,7 +2,7 @@ import Jolokia, { BaseRequestOptions } from 'jolokia.js'
 import $ from 'jquery'
 import { log } from './globals'
 import jsonpath from 'jsonpath'
-import { k8Api, KubePod, k8Service, ObjectMeta, PodStatus, joinPaths, PodSpec} from '@hawtio/online-kubernetes-api'
+import { k8Api, KubePod, k8Service, ObjectMeta, PodStatus, joinPaths, PodSpec } from '@hawtio/online-kubernetes-api'
 
 const DEFAULT_JOLOKIA_OPTIONS: BaseRequestOptions = {
   method: 'post',
@@ -13,9 +13,9 @@ const DEFAULT_JOLOKIA_OPTIONS: BaseRequestOptions = {
 
 export type Management = {
   status: {
-    running: boolean,
+    running: boolean
     error: boolean
-  },
+  }
   camel: {
     routes_count: number
   }
@@ -31,11 +31,11 @@ export class ManagedPod {
   private _management: Management = {
     status: {
       running: false,
-      error: false
+      error: false,
     },
     camel: {
-      routes_count: 0
-    }
+      routes_count: 0,
+    },
   }
 
   constructor(public pod: KubePod) {
@@ -52,12 +52,12 @@ export class ManagedPod {
   }
 
   static getJolokiaPath(pod: KubePod, port: number): string | null {
-    if (! k8Api.masterUri()) {
+    if (!k8Api.masterUri()) {
       return null
     }
 
     if (!pod.metadata) {
-      log.error("Cannot get jolokia path for pod as it does not contain any metadata properties")
+      log.error('Cannot get jolokia path for pod as it does not contain any metadata properties')
       return null
     }
 
@@ -76,7 +76,7 @@ export class ManagedPod {
   }
 
   private createJolokia() {
-    if (! this.jolokiaPath || this.jolokiaPath.length === 0) {
+    if (!this.jolokiaPath || this.jolokiaPath.length === 0) {
       throw new Error(`Failed to find jolokia path for pod ${this.pod.metadata?.uid}`)
     }
 
@@ -109,10 +109,10 @@ export class ManagedPod {
   async probeJolokiaUrl(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       $.ajax({
-          url: `${this.jolokiaPath}version`,
-          method: 'GET',
-          dataType: 'text'
-        })
+        url: `${this.jolokiaPath}version`,
+        method: 'GET',
+        dataType: 'text',
+      })
         .done((data: string, textStatus: string, xhr: JQueryXHR) => {
           if (xhr.status !== 200) {
             reject()
@@ -132,7 +132,6 @@ export class ManagedPod {
             } else {
               throw new Error('Detected jolokia but cannot determine agent or version')
             }
-
           } catch (e) {
             // Parse error should mean redirect to html
             reject(e)

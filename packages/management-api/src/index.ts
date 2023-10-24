@@ -8,7 +8,7 @@ export const mgmtService = new ManagementService()
 let configAdded = false
 
 const registerManagementApi = async (): Promise<boolean> => {
-  if (! configAdded) {
+  if (!configAdded) {
     // Add Product Info
     configManager.addProductInfo('Hawtio Management API', 'PACKAGE_VERSION_PLACEHOLDER')
     configAdded = true

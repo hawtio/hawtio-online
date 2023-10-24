@@ -8,10 +8,9 @@ const dotenv = require('dotenv')
 const { common } = require('./webpack.config.common.js')
 
 // this will update the process.env with environment variables in .env file
-dotenv.config( { path: path.join(__dirname, '.env') } )
+dotenv.config({ path: path.join(__dirname, '.env') })
 
 module.exports = () => {
-
   const clusterAuthType = process.env.CLUSTER_AUTH_TYPE || 'oauth'
 
   const master_uri = process.env.CLUSTER_MASTER
@@ -24,13 +23,12 @@ module.exports = () => {
   const mode = process.env.HAWTIO_MODE || 'cluster'
   const clientId = process.env.OAUTH_CLIENT_ID
   if (!clientId) {
-    console.error("The OAUTH_CLIENT_ID must be set!")
+    console.error('The OAUTH_CLIENT_ID must be set!')
     process.exit(1)
   }
 
   const clusterAuthFormUri = process.env.CLUSTER_AUTH_FORM || '/login'
-  if (clusterAuthFormUri)
-    console.log('Using Cluster Auth Form URL:', clusterAuthFormUri)
+  if (clusterAuthFormUri) console.log('Using Cluster Auth Form URL:', clusterAuthFormUri)
 
   console.log('Using Cluster URL:', master_uri)
   console.log('Using Cluster Namespace:', namespace)
@@ -53,7 +51,7 @@ module.exports = () => {
         defaults: true,
         systemvars: true,
         ignoreStub: true,
-      })
+      }),
     ],
 
     devServer: {
@@ -96,7 +94,7 @@ module.exports = () => {
 
           if (clusterAuthType === 'form') {
             oscConfig.form = {
-              uri: clusterAuthFormUri
+              uri: clusterAuthFormUri,
             }
           }
 
@@ -124,7 +122,7 @@ module.exports = () => {
                 oscConfig.openshift = {
                   oauth_metadata_uri: `${proxiedMaster}/.well-known/oauth-authorization-server`,
                   oauth_client_id: clientId,
-                      scope: `user:info user:check-access role:edit:${namespace}`,
+                  scope: `user:info user:check-access role:edit:${namespace}`,
                   cluster_version: '4.11.0',
                 }
               }
@@ -200,7 +198,7 @@ module.exports = () => {
         devServer.app.get('/login', history)
 
         return middlewares
-      }
-    }
+      },
+    },
   })
 }

@@ -23,7 +23,7 @@ export async function getActiveProfile(): Promise<UserProfile> {
 }
 
 export function getOAuthType(): string | null {
-  const profile: UserProfile = ! userProfile ? oAuthService.getUserProfile() : userProfile
+  const profile: UserProfile = !userProfile ? oAuthService.getUserProfile() : userProfile
   if (!profile) return null
 
   return profile.getOAuthType()

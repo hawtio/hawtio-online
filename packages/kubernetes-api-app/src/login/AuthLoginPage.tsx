@@ -19,7 +19,7 @@ export const AuthLoginPage: React.FunctionComponent = () => {
   if (loginPlugins.length > 0) {
     const loginPlugin = loginPlugins[0]
     const component = loginPlugin?.component
-    if (! component) {
+    if (!component) {
       log.info('Custom login component not defined: ', loginPlugin?.id)
     } else {
       loginForm = React.createElement(component)

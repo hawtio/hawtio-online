@@ -6,22 +6,20 @@
  * https://github.com/davidchambers/Base64.js
  */
 
-const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
 
 class InvalidCharacterError extends Error {
   constructor(public message: string) {
     super(message)
   }
 
-  name = "InvalidCharacterError"
+  name = 'InvalidCharacterError'
 }
 
 function polyfill(input: string) {
-  const str = String(input).replace(/=+$/, "")
+  const str = String(input).replace(/=+$/, '')
   if (str.length % 4 === 1) {
-    throw new InvalidCharacterError(
-      "'atob' failed: The string to be decoded is not correctly encoded."
-    )
+    throw new InvalidCharacterError("'atob' failed: The string to be decoded is not correctly encoded.")
   }
   let output = ''
   for (
@@ -31,12 +29,12 @@ function polyfill(input: string) {
     (buffer = str.charAt(idx++));
     // character found in table? initialize bit storage and add its ascii value
     ~buffer &&
-      ((bs = bc % 4 ? bs * 64 + buffer : buffer),
-        // and if not first of each 4 characters,
-        // convert the first 8 bits to one ascii character
-        bc++ % 4) ?
-      (output += String.fromCharCode(255 & (bs >> ((-2 * bc) & 6)))) :
-      0
+    ((bs = bc % 4 ? bs * 64 + buffer : buffer),
+    // and if not first of each 4 characters,
+    // convert the first 8 bits to one ascii character
+    bc++ % 4)
+      ? (output += String.fromCharCode(255 & (bs >> ((-2 * bc) & 6))))
+      : 0
   ) {
     // try to find character in table (0-63, not found => -1)
     buffer = chars.indexOf(buffer)
@@ -44,37 +42,33 @@ function polyfill(input: string) {
   return output
 }
 
-const atob = (typeof window !== "undefined" &&
-  window.atob &&
-  window.atob.bind(window)) ||
-  polyfill
+const atob = (typeof window !== 'undefined' && window.atob && window.atob.bind(window)) || polyfill
 
 function b64DecodeUnicode(str: string) {
   return decodeURIComponent(
     atob(str).replace(/(.)/g, function (m, p) {
       let code = p.charCodeAt(0).toString(16).toUpperCase()
       if (code.length < 2) {
-        code = "0" + code
+        code = '0' + code
       }
-      return "%" + code
-    })
+      return '%' + code
+    }),
   )
 }
 
 function base64_url_decode(str: string): string | undefined {
-  if (!str || str.length === 0)
-    return undefined
+  if (!str || str.length === 0) return undefined
 
-  let output = str.replace(/-/g, "+").replace(/_/g, "/")
+  let output = str.replace(/-/g, '+').replace(/_/g, '/')
 
   switch (output.length % 4) {
     case 0:
       break
     case 2:
-      output += "=="
+      output += '=='
       break
     case 3:
-      output += "="
+      output += '='
       break
     default:
       throw new Error('Illegal base64url string!')
@@ -93,7 +87,7 @@ class TokenError extends Error {
     this.message = message
   }
 
-  name = "TokenError"
+  name = 'TokenError'
 }
 
 export interface DecodeOptions {
@@ -101,23 +95,20 @@ export interface DecodeOptions {
 }
 
 export function jwtDecode(token: string, options: DecodeOptions = {}): Record<string, string> {
-  if (typeof token !== "string") {
-    throw new TokenError("Invalid token specified")
+  if (typeof token !== 'string') {
+    throw new TokenError('Invalid token specified')
   }
 
   options = options || {}
   const pos = options.header === true ? 0 : 1
   try {
-    if (! token.includes('.'))
-      throw new Error('Token is not JWT')
+    if (!token.includes('.')) throw new Error('Token is not JWT')
 
-    const base64 = base64_url_decode(token.split(".")[pos])
+    const base64 = base64_url_decode(token.split('.')[pos])
     if (!base64) throw new Error('Token cannot be decoded')
     return JSON.parse(base64)
   } catch (e) {
-    if (e instanceof Error)
-      throw new TokenError('JWT token decoding: ' + e.message)
-    else
-      throw new TokenError('JWT token decoding. Cannot be decoded')
+    if (e instanceof Error) throw new TokenError('JWT token decoding: ' + e.message)
+    else throw new TokenError('JWT token decoding. Cannot be decoded')
   }
 }

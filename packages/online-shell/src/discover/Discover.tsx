@@ -9,9 +9,9 @@ import {
   List,
   PageSection,
   PageSectionVariants,
-  Title
+  Title,
 } from '@patternfly/react-core'
-import { CubesIcon} from '@patternfly/react-icons'
+import { CubesIcon } from '@patternfly/react-icons'
 import { HawtioLoadingCard } from '@hawtio/react'
 import * as discoverService from './discover-service'
 import { DiscoverToolbar } from './DiscoverToolbar'
@@ -20,13 +20,8 @@ import { DiscoverGroupList } from './DiscoverGroupList'
 import { DiscoverPodItem } from './DiscoverPodItem'
 
 export const Discover: React.FunctionComponent = () => {
-
-  const {
-    error, isLoading,
-    discoverGroups, setDiscoverGroups,
-    discoverPods, setDiscoverPods,
-    filters, setFilters
-  } = useDisplayItems()
+  const { error, isLoading, discoverGroups, setDiscoverGroups, discoverPods, setDiscoverPods, filters, setFilters } =
+    useDisplayItems()
 
   if (isLoading) {
     return <HawtioLoadingCard />
@@ -46,11 +41,11 @@ export const Discover: React.FunctionComponent = () => {
     )
   }
 
-  if ((discoverGroups.length + discoverPods.length) === 0) {
+  if (discoverGroups.length + discoverPods.length === 0) {
     return (
       <EmptyState>
         <EmptyStateIcon icon={CubesIcon} />
-        <Title headingLevel="h1" size="lg">
+        <Title headingLevel='h1' size='lg'>
           No Hawtio Containers
         </Title>
         <EmptyStateBody>
@@ -62,30 +57,29 @@ export const Discover: React.FunctionComponent = () => {
 
   return (
     <PageSection variant={PageSectionVariants.light}>
-      <Title headingLevel="h1">Pods</Title>
+      <Title headingLevel='h1'>Pods</Title>
 
       <DiscoverContext.Provider
-        value={
-          {
-            discoverGroups, setDiscoverGroups,
-            discoverPods, setDiscoverPods, filters, setFilters
-          }
-        }>
-
+        value={{
+          discoverGroups,
+          setDiscoverGroups,
+          discoverPods,
+          setDiscoverPods,
+          filters,
+          setFilters,
+        }}
+      >
         <DiscoverToolbar />
 
-        { discoverGroups.length > 0 && ( <DiscoverGroupList />)}
+        {discoverGroups.length > 0 && <DiscoverGroupList />}
 
-        { discoverPods.length > 0 && (
+        {discoverPods.length > 0 && (
           <List isBordered={true} iconSize='large'>
-          {
-            discoverPods.map(pod => {
-              return ( <DiscoverPodItem pod={pod} key={pod.uid} /> )
-            })
-          }
+            {discoverPods.map(pod => {
+              return <DiscoverPodItem pod={pod} key={pod.uid} />
+            })}
           </List>
         )}
-
       </DiscoverContext.Provider>
     </PageSection>
   )

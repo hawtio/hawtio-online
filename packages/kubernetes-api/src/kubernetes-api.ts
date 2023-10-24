@@ -18,9 +18,7 @@ export class KubernetesAPI {
 
       this._isOS = await this.queryOpenshift(this._oAuthProfile)
 
-      if (this._isOS)
-        this._consoleUri = await this.queryConsoleUri(this._oAuthProfile)
-
+      if (this._isOS) this._consoleUri = await this.queryConsoleUri(this._oAuthProfile)
     } catch (error) {
       log.error('k8 Api produced an error: ', error)
       if (error instanceof Error) this._error = error
@@ -31,7 +29,7 @@ export class KubernetesAPI {
     return this._initialized
   }
 
-  private async queryConsoleUri(profile: UserProfile): Promise<string|null> {
+  private async queryConsoleUri(profile: UserProfile): Promise<string | null> {
     if (this.hasError()) {
       return null
     }
@@ -60,7 +58,10 @@ export class KubernetesAPI {
         }
       }
     } catch (error) {
-      log.warn('Error probing for openshift console. Alternative is to specify the web_console_url property in the config.json.', { cause: error })
+      log.warn(
+        'Error probing for openshift console. Alternative is to specify the web_console_url property in the config.json.',
+        { cause: error },
+      )
     }
 
     return null

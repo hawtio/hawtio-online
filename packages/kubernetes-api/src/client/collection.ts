@@ -1,11 +1,20 @@
 import { ServiceSpec } from 'kubernetes-types/core/v1'
 import { K8S_EXT_PREFIX, KubeObject } from '../globals'
-import {  } from '../kubernetes-service'
+import {} from '../kubernetes-service'
 import { fetchPath, FetchPathCallback, isFunction, joinPaths } from '../utils'
 import { getClusterIP, getName, getNamespace, namespaced, prefixForKind, toCollectionName, wsUrl } from '../helpers'
 import { WatchActions, WatchTypes } from '../model'
 import { k8Api } from '../init'
-import { log, UNKNOWN_VALUE, Collection, KOptions, ObjectList, WSHandler, ProcessDataCallback, ErrorDataCallback } from './globals'
+import {
+  log,
+  UNKNOWN_VALUE,
+  Collection,
+  KOptions,
+  ObjectList,
+  WSHandler,
+  ProcessDataCallback,
+  ErrorDataCallback,
+} from './globals'
 import { ObjectListImpl } from './object-list'
 import { WSHandlerImpl } from './ws-handler'
 import { getKey } from './support'
@@ -211,7 +220,7 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
     }
     log.debug(this.kind, 'adding watch callback:', cb)
 
-    this.list.doOn(WatchActions.ANY, (data:T[]) => {
+    this.list.doOn(WatchActions.ANY, (data: T[]) => {
       log.debug(this.kind, 'got data:', data)
       cb(data)
     })

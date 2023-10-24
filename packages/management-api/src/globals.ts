@@ -1,4 +1,4 @@
-import Logger from "js-logger"
+import Logger from 'js-logger'
 
 export const pluginName = 'KubernetesAPI'
 export const log = Logger.get('hawtio-management-api')

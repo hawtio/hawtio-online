@@ -116,10 +116,8 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
     const eventType: keyof ObjectList<T> = data.type.toLowerCase()
     if (eventType !== 'added' && eventType !== 'modified' && eventType !== 'deleted') return
 
-    if (isFunction(this.list[eventType]))
-      this.list[eventType](data.object)
-    else
-      log.debug(`Property ${data.object} is not a function`)
+    if (isFunction(this.list[eventType])) this.list[eventType](data.object)
+    else log.debug(`Property ${data.object} is not a function`)
   }
 
   onOpen(event: Event) {

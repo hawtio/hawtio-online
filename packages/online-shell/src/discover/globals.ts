@@ -12,7 +12,7 @@ export interface TypeFilter {
 
 export enum DiscoverType {
   Group = 0,
-  Pod = 1
+  Pod = 1,
 }
 
 export interface DiscoverItem {
