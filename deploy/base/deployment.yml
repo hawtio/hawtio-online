@@ -55,17 +55,11 @@ spec:
               cpu: "1.0"
               memory: 500Mi
           volumeMounts:
-            - name: hawtio-online
-              mountPath: /usr/share/nginx/html/online/hawtconfig.json
-              subPath: hawtconfig.json
             - name: hawtio-rbac
               mountPath: /etc/hawtio/rbac
             - name: hawtio-online-tls-serving
               mountPath: /etc/tls/private/serving
       volumes:
-        - name: hawtio-online
-          configMap:
-            name: hawtio-online
         - name: hawtio-rbac
           configMap:
             name: hawtio-rbac
