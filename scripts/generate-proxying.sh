@@ -31,6 +31,15 @@ EOT
   exit
 }
 
+kube_binary() {
+  local k=$(command -v ${1} 2> /dev/null)
+  if [ $? != 0 ]; then
+    return
+  fi
+
+  echo ${k}
+}
+
 while getopts h OPT; do
   case $OPT in
     h)
@@ -41,16 +50,41 @@ while getopts h OPT; do
   esac
 done
 
+if [ -n "${KUBECLI}" ]; then
+  KUBECLI=$(kube_binary ${KUBECLI})
+else
+  # try finding oc
+  KUBECLI=$(kube_binary oc)
+  if [ -z "${KUBECLI}" ]; then
+    # try finding kubectl
+    KUBECLI=$(kube_binary kubectl)
+  fi
+fi
+
+if [ -z "${KUBECLI}" ]; then
+  echo "Error: Cannot find kube cluster client command, eg. oc or kubectl"
+  exit 1
+fi
+
+if [ -z "${NAMESPACE}" ]; then
+  NAMESPACE=$(${KUBECLI} config view --minify -o jsonpath='{..namespace}')
+
+  if [ -z "${NAMESPACE}" ]; then
+    echo "Error: Cannot determine the target namespace for the new secret"
+    exit 1
+  fi
+fi
+
 SECRET_NAME=${1:-hawtio-online-tls-proxying}
 CN=${2:-hawtio-online.hawtio.svc}
 
 cd "$TEMP_DIR"
 
 # The CA private key
-oc get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.key']}" | base64 --decode > ca.key
+${KUBECLI} get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.key']}" | base64 --decode > ca.key
 
 # The CA certificate
-oc get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.crt']}" | base64 --decode > ca.crt
+${KUBECLI} get secrets/signing-key -n openshift-service-ca -o "jsonpath={.data['tls\.crt']}" | base64 --decode > ca.crt
 
 # Generate the private key
 openssl genrsa -out server.key 2048
@@ -64,7 +98,7 @@ default_md = sha256
 distinguished_name = dn
 
 [ dn ]
-CN = $CN
+CN = ${CN}
 
 [ v3_ext ]
 authorityKeyIdentifier=keyid,issuer:always
@@ -78,5 +112,11 @@ openssl req -new -key server.key -out server.csr -config csr.conf
 # Issue the signed certificate
 openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 10000 -extensions v3_ext -extfile csr.conf
 
+${KUBECLI} get secret ${SECRET_NAME} -n ${NAMESPACE} > /dev/null
+if [ $? == 0 ]; then
+  echo "The secret ${SECRET_NAME} in ${NAMESPACE} already exists"
+  exit 0
+fi
+
 # Create the secret for Hawtio Online
-oc create secret tls $SECRET_NAME --cert server.crt --key server.key
+${KUBECLI} create secret tls ${SECRET_NAME} --cert server.crt --key server.key -n ${NAMESPACE}
