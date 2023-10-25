@@ -96,7 +96,7 @@ define add-remove-kind-patch
 		$(KUSTOMIZE) edit $(2) patch --path $(3) --kind $(4) &> /dev/null
 endef
 
-.PHONY: check_admin kubectl kustomize install
+.PHONY: check_admin kubectl kustomize install generate-proxying
 
 #
 # Checks if the cluster user has the necessary privileges to be a cluster-admin
@@ -157,6 +157,26 @@ else
 	@$(KUSTOMIZE) build $(KOPTIONS) $(CLUSTER_TYPE)/$(MODE) | \
 		sed 's/$(PLACEHOLDER)/$(NAMESPACE)/'
 endif
+
+#---
+#
+#@ generate-proxying
+#
+#== Generate a client certificate and TLS secret for Hawtio proxying
+#
+#=== Calls check-admin
+#=== Calls kubectl
+#
+#* PARAMETERS:
+#** CLUSTER_TYPE:        Set the cluster type - must be openshift as not applicable to kubernetes
+#** NAMESPACE:           Set the namespace for the secret
+#
+#---
+generate-proxying: check-admin
+ifneq ($(CLUSTER_TYPE), openshift)
+	$(error "Only applicable to cluster-type of Openshift")
+endif
+	NAMESPACE=$(NAMESPACE) ./script/generate-proxying.sh
 
 .PHONY: uninstall
 
