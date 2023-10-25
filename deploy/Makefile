@@ -47,16 +47,20 @@ NAMESPACE ?= hawtio-online
 CLUSTER_TYPE ?= k8s
 # The mode of installation [ cluster | namespace ]
 MODE ?= namespace
+# Use configmap as hawtconfig file
+HAWTCONFIG ?= true
 # The URL to use for access to the openshift console
 OPENSHIFT_CONSOLE_URL ?= ""
 
 # Uninstall all hawtio-onlineresources: [true|false]
 UNINSTALL_ALL ?=false
 
+BASE := base
 PATCHES := patches
 PLACEHOLDER := placeholder
 
 OS_CONSOLE_URL_PATCH := $(PATCHES)/patch-os-console-url.yml
+HAWTCONFIG_PATCH := $(PATCHES)/patch-hawtconfig-configmap.yml
 
 #
 # Macro for editing kustomization to define
@@ -96,6 +100,14 @@ define add-remove-kind-patch
 		$(KUSTOMIZE) edit $(2) patch --path $(3) --kind $(4) &> /dev/null
 endef
 
+#
+# Macro for adding / removing the prometheus resources for monitoring
+#
+define add-remove-hawtconfig-configmap
+	cd $(1) || exit 1 && \
+		$(KUSTOMIZE) edit $(2) resource configmap-hawtio-online.yml &> /dev/null
+endef
+
 .PHONY: check_admin kubectl kustomize install generate-proxying
 
 #
@@ -116,6 +128,18 @@ else
 	@$(call add-remove-kind-patch,$(CLUSTER_TYPE)/$(MODE),add,../../$(OS_CONSOLE_URL_PATCH),Deployment)
 endif
 
+#
+# Handle whether to use hawtconfig configmap
+#
+.hawtconfig:
+ifeq ($(HAWTCONFIG), true)
+	@$(call add-remove-kind-patch,$(BASE),add,../$(HAWTCONFIG_PATCH),Deployment)
+	@$(call add-remove-hawtconfig-configmap,$(BASE),add)
+else
+	@$(call add-remove-kind-patch,$(BASE),remove,../$(HAWTCONFIG_PATCH),Deployment)
+	@$(call add-remove-hawtconfig-configmap,$(BASE),remove)
+endif
+
 #---
 #
 #@ install
@@ -129,6 +153,7 @@ endif
 #** CLUSTER_TYPE:        Set the cluster type to install on [ openshift | k8s ]
 #** MODE:                Set the mode of installation [ cluster | namespace ]
 #** NAMESPACE:           Set the namespace for the resources
+#** HAWTCONFIG:          Set whether to use configmap as hawtconfig.json [ true | false ] (true by default)
 #** CUSTOM_IMAGE:        Set a custom image to install from
 #** CUSTOM_VERSION:      Set a custom version to install from
 #** DRY_RUN:             Print the resources to be applied instead of applying them [ true | false ]
@@ -139,6 +164,8 @@ install: kustomize kubectl
 	@$(call set-kustomize-namespace, $(CLUSTER_TYPE)/$(MODE))
 # Set the image reference of the kustomization
 	@$(call set-kustomize-image,$(CLUSTER_TYPE)/$(MODE))
+# Configure use of hawtconfig configmap
+	@$(MAKE) -s .hawtconfig
 # Set the console url on openshift, if specified
 ifeq ($(CLUSTER_TYPE), openshift)
 	@$(MAKE) -s .openshift-console-url

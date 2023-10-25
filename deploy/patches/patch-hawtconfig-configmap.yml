@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hawtio-online
+spec:
+  template:
+    spec:
+      containers:
+        - name: hawtio-online
+          volumeMounts:
+            - name: hawtio-online
+              mountPath: /usr/share/nginx/html/online/hawtconfig.json
+              subPath: hawtconfig.json
+      volumes:
+        - name: hawtio-online
+          configMap:
+            name: hawtio-online
