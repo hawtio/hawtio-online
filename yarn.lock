@@ -1994,7 +1994,7 @@ __metadata:
     "@hawtio/online-oauth": "workspace:*"
     "@hawtio/react": ^0.6.1
     "@types/jest": ^29.5.3
-    "@types/jquery": ^3.5.16
+    "@types/jquery": ^3.5.25
     "@types/jsonpath": ^0.2.0
     "@types/node": ^18.17.18
     babel-jest: ^29.6.1
@@ -2065,7 +2065,7 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": ^0.6.1
     "@types/jest": ^29.5.3
-    "@types/jquery": ^3.5.16
+    "@types/jquery": ^3.5.25
     "@types/jsonpath": ^0.2.0
     babel-jest: ^29.6.1
     eslint-config-react-app: ^7.0.1
@@ -2137,7 +2137,7 @@ __metadata:
   dependencies:
     "@hawtio/react": ^0.6.1
     "@types/jest": ^29.5.3
-    "@types/jquery": ^3.5.16
+    "@types/jquery": ^3.5.25
     babel-jest: ^29.6.1
     jest: ^29.6.1
     jest-environment-jsdom: ^29.6.1
@@ -3619,12 +3619,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jquery@npm:^3.5.16, @types/jquery@npm:^3.5.22":
+"@types/jquery@npm:^3.5.22":
   version: 3.5.23
   resolution: "@types/jquery@npm:3.5.23"
   dependencies:
     "@types/sizzle": "*"
   checksum: 9231af0b80efe63257d898d41c4ee03bbe2152654e0d4709a9fd27eba255622f837315ad7529865ad9796312812dacfa4fc2d11dd4559ff13585c642ffd989b4
+  languageName: node
+  linkType: hard
+
+"@types/jquery@npm:^3.5.25":
+  version: 3.5.25
+  resolution: "@types/jquery@npm:3.5.25"
+  dependencies:
+    "@types/sizzle": "*"
+  checksum: 912ce4212447a7c640147345c6b46bde5b12bafc2c97e1abc76939174c3109e3dbb361a534af717be2da4e907bc257558a6bc631971fcc47f7e5f044d315183e
   languageName: node
   linkType: hard
 
