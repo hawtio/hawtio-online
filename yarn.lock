@@ -1957,7 +1957,7 @@ __metadata:
     "@hawtio/react": ^0.6.1
     "@patternfly/react-core": ^4.276.8
     "@patternfly/react-styles": ^4.92.6
-    "@patternfly/react-table": ^4.113.0
+    "@patternfly/react-table": ^5.1.1
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
     "@types/react": ^18.2.21
@@ -2028,7 +2028,7 @@ __metadata:
     "@hawtio/react": ^0.6.1
     "@patternfly/react-core": ^4.276.8
     "@patternfly/react-styles": ^4.92.6
-    "@patternfly/react-table": ^4.113.0
+    "@patternfly/react-table": ^5.1.1
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
     "@types/react": ^18.2.21
@@ -2099,7 +2099,7 @@ __metadata:
     "@hawtio/react": ^0.6.1
     "@patternfly/react-core": ^4.276.8
     "@patternfly/react-styles": ^4.92.6
-    "@patternfly/react-table": ^4.113.0
+    "@patternfly/react-table": ^5.1.1
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
     "@types/react": ^18.2.21
@@ -2185,7 +2185,7 @@ __metadata:
     "@hawtio/react": ^0.6.1
     "@patternfly/react-core": ^4.276.8
     "@patternfly/react-styles": ^4.92.6
-    "@patternfly/react-table": ^4.113.0
+    "@patternfly/react-table": ^5.1.1
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
     "@types/react": ^18.2.21
@@ -2820,7 +2820,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-table@npm:^4.113.0, @patternfly/react-table@npm:^4.113.6":
+"@patternfly/react-table@npm:^4.113.6":
   version: 4.113.6
   resolution: "@patternfly/react-table@npm:4.113.6"
   dependencies:
@@ -2834,6 +2834,23 @@ __metadata:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
   checksum: fc611828f9b11606b1c8d080854d363db26c889c26d9efcf1556fec48513cddf4d0e33c835b40fa0fab1fe1cfda094bb8ff7e0fae0105ce2edfe425f3e560f35
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-table@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "@patternfly/react-table@npm:5.1.1"
+  dependencies:
+    "@patternfly/react-core": ^5.1.1
+    "@patternfly/react-icons": ^5.1.1
+    "@patternfly/react-styles": ^5.1.1
+    "@patternfly/react-tokens": ^5.1.1
+    lodash: ^4.17.19
+    tslib: ^2.5.0
+  peerDependencies:
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
+  checksum: 76aff8220a237744c27a7996d0910360b0045a120df72e878feaf6fc59a9455254a73df2a716e34a4c7d0bf7de14a317c9853060c43368b937f1b8cdd3082178
   languageName: node
   linkType: hard
 
