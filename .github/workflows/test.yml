@@ -20,7 +20,7 @@ jobs:
         node: [ '16', '18' ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install NJS
         run: |
           # https://nginx.org/en/linux_packages.html#Ubuntu
