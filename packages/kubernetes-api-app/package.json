@@ -12,7 +12,7 @@
     "@hawtio/online-kubernetes-api": "workspace:*",
     "@hawtio/react": "^0.6.1",
     "@patternfly/react-core": "^4.276.8",
-    "@patternfly/react-styles": "^4.92.6",
+    "@patternfly/react-styles": "^5.1.1",
     "@patternfly/react-table": "^4.113.0",
     "@patternfly/react-tokens": "^4.94.6",
     "@types/node": "^18.17.18",

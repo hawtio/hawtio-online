@@ -1956,7 +1956,7 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": ^0.6.1
     "@patternfly/react-core": ^4.276.8
-    "@patternfly/react-styles": ^4.92.6
+    "@patternfly/react-styles": ^5.1.1
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
@@ -2027,7 +2027,7 @@ __metadata:
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/react": ^0.6.1
     "@patternfly/react-core": ^4.276.8
-    "@patternfly/react-styles": ^4.92.6
+    "@patternfly/react-styles": ^5.1.1
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
@@ -2098,7 +2098,7 @@ __metadata:
     "@hawtio/online-oauth": "workspace:*"
     "@hawtio/react": ^0.6.1
     "@patternfly/react-core": ^4.276.8
-    "@patternfly/react-styles": ^4.92.6
+    "@patternfly/react-styles": ^5.1.1
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
@@ -2184,7 +2184,7 @@ __metadata:
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/react": ^0.6.1
     "@patternfly/react-core": ^4.276.8
-    "@patternfly/react-styles": ^4.92.6
+    "@patternfly/react-styles": ^5.1.1
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
@@ -2806,7 +2806,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-styles@npm:^4.92.6, @patternfly/react-styles@npm:^4.92.8":
+"@patternfly/react-styles@npm:^4.92.8":
   version: 4.92.8
   resolution: "@patternfly/react-styles@npm:4.92.8"
   checksum: ab4cd3d57c96bb1988a3d635388108aeac1fb310be2678f06ea9c3ce47517c005ae47cbc93b7f90fa6208356282104dfbaa4a04980b7024b4c8129cd8c838687
