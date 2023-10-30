@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FORM_URI=/online/login.html
+FORM_URI=/online/login
 
 openshift_config_cluster() {
   cat << EOF
