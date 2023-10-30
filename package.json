@@ -289,6 +289,7 @@
     "process-nextick-args": "2.0.1",
     "readable-stream": "2.3.7",
     "@types/jquery": "2.0.53",
-    "uglify-js": "3.14.4"
+    "uglify-js": "3.14.4",
+    "function-bind": "1.1.2"
   }
 }
