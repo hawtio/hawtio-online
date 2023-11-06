@@ -1960,7 +1960,7 @@ __metadata:
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
-    "@types/react": ^18.2.21
+    "@types/react": ^18.2.35
     "@types/react-dom": ^18.2.7
     connect-history-api-fallback: ^2.0.0
     css-loader: ^6.8.1
@@ -2031,7 +2031,7 @@ __metadata:
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
-    "@types/react": ^18.2.21
+    "@types/react": ^18.2.35
     "@types/react-dom": ^18.2.7
     connect-history-api-fallback: ^2.0.0
     css-loader: ^6.8.1
@@ -2102,7 +2102,7 @@ __metadata:
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
-    "@types/react": ^18.2.21
+    "@types/react": ^18.2.35
     "@types/react-dom": ^18.2.7
     connect-history-api-fallback: ^2.0.0
     css-loader: ^6.8.1
@@ -2188,7 +2188,7 @@ __metadata:
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
-    "@types/react": ^18.2.21
+    "@types/react": ^18.2.35
     "@types/react-dom": ^18.2.7
     babel-loader: ^9.1.3
     connect-history-api-fallback: ^2.0.0
@@ -3780,7 +3780,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^18.2.21, @types/react@npm:^18.2.23":
+"@types/react@npm:*, @types/react@npm:^18.2.23":
   version: 18.2.29
   resolution: "@types/react@npm:18.2.29"
   dependencies:
@@ -3788,6 +3788,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 3d09ac61a683fa976512a28ac175b9d823f0368adc5fb2abf53f64ab030e8ad866a201a8029f92ff48246c8e326f7517ebe165f976ecb412627c65c6f9a7c9d3
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^18.2.35":
+  version: 18.2.35
+  resolution: "@types/react@npm:18.2.35"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: d3f1c39116c82e3a504f3332b9198f94f34a33d8535604434b1e387ecabd41ec995961775e2e1c08feefdde878a5b86220879350900137980d681ae3983db462
   languageName: node
   linkType: hard
 
