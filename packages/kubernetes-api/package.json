@@ -32,7 +32,7 @@
     "@hawtio/react": "^0.6.1",
     "@types/jquery": "^3.5.25",
     "@types/jsonpath": "^0.2.0",
-    "@types/node": "^18.17.18",
+    "@types/node": "^18.18.8",
     "eventemitter3": "^5.0.1",
     "jquery": "^3.7.0",
     "js-logger": "^1.6.1",
