@@ -295,6 +295,7 @@
     "readable-stream": "2.3.7",
     "@types/jquery": "2.0.53",
     "uglify-js": "3.14.4",
-    "urijs": "1.19.11"
+    "urijs": "1.19.11",
+    "function-bind": "1.1.2"
   }
 }
