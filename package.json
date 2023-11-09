@@ -58,7 +58,8 @@
   },
   "config": {
     "commitizen": {
-      "path": "cz-conventional-changelog"
+      "path": "cz-conventional-changelog",
+      "maxLineWidth": 80
     }
   },
   "packageManager": "yarn@3.6.1",
