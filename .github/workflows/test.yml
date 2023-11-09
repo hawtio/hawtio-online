@@ -5,19 +5,19 @@ on:
     branches:
       - main
     paths-ignore:
-      - "**.md"
+      - '**.md'
   push:
     branches:
       - main
     paths-ignore:
-      - "**.md"
+      - '**.md'
 
 jobs:
   build:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node: [ '16', '18' ]
+        node: ['18', '20']
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,11 +32,26 @@ jobs:
           sudo apt-get install -y nginx=1.18.0-2~focal nginx-module-njs=1.18.0.0.4.4-2~focal
       - name: Show NJS versions for debugging
         run: sudo apt-cache showpkg nginx-module-njs
-      - name: Set up node/yarn
+
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'yarn'
+      - name: Enable yarn v4
+        run: |
+          corepack enable
+          yarn -v
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
       - name: Audit
         run: yarn npm audit --all
       - name: Install
