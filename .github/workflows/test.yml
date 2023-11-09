@@ -37,6 +37,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'yarn'
+      - name: Audit
+        run: yarn npm audit --all
       - name: Install
         run: yarn install
       - name: Build
