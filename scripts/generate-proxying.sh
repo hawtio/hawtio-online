@@ -9,7 +9,7 @@ TEMP_DIR=$(mktemp --tmpdir -d generate-proxying.XXXXXX)
 exithandler() {
   exitcode=$?
   if [ "$exitcode" != "0" ]; then
-    echo "WARNING: unsuccessful exit code: $?" >&2
+    echo "WARNING: unsuccessful exit code: $exitcode" >&2
   fi
 
   rm -rf "$TEMP_DIR"
@@ -112,8 +112,7 @@ openssl req -new -key server.key -out server.csr -config csr.conf
 # Issue the signed certificate
 openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 10000 -extensions v3_ext -extfile csr.conf
 
-${KUBECLI} get secret ${SECRET_NAME} -n ${NAMESPACE} > /dev/null
-if [ $? == 0 ]; then
+if ${KUBECLI} get secret ${SECRET_NAME} -n ${NAMESPACE} 1> /dev/null 2>& 1; then
   echo "The secret ${SECRET_NAME} in ${NAMESPACE} already exists"
   exit 0
 fi
