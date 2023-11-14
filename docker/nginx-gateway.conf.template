@@ -36,6 +36,16 @@ server {
         rewrite ^ $new redirect;
     }
 
+    error_page 404 /hawtio-404.html;
+    location = /hawtio-404.html {
+        internal;
+    }
+
+    error_page 500 502 503 504 /hawtio-50x.html;
+    location = /hawtio-50x.html {
+        internal;
+    }
+
     # Static content serving
     location /online {
         add_header location-rule ONLINE always;
