@@ -32,7 +32,7 @@ export const Management: React.FunctionComponent = () => {
   const [error, setError] = useState<Error | null>()
   const [username, setUsername] = useState('')
 
-  const [pods, setPods] = useState<ManagedPod[]>([])
+  const [pods, setPods] = useState<ManagedPod[] | null>(null)
 
   useEffect(() => {
     setIsLoading(true)
@@ -48,6 +48,10 @@ export const Management: React.FunctionComponent = () => {
         setError(mgmtService.error)
         return
       }
+
+      // Make pods empty rather than null to
+      // show management loaded
+      setPods([])
 
       await userService.fetchUser()
       const username = await userService.getUsername()
@@ -123,7 +127,7 @@ export const Management: React.FunctionComponent = () => {
           </MastheadContent>
         </Masthead>
 
-        {pods.length === 0 && (
+        {pods === null && (
           <Panel>
             <Divider />
 
@@ -141,7 +145,22 @@ export const Management: React.FunctionComponent = () => {
           </Panel>
         )}
 
-        {pods.length > 0 && (
+        {pods !== null && pods.length === 0 && (
+          <Panel>
+            <Divider />
+            <Bullseye>
+              <div style={{ justifyContent: 'center' }}>
+                <TextContent>
+                  <Text className={'--pf-global--Color--200'} component={TextVariants.h3}>
+                    No Pods available
+                  </Text>
+                </TextContent>
+              </div>
+            </Bullseye>
+          </Panel>
+        )}
+
+        {pods !== null && pods.length > 0 && (
           <Panel>
             <PanelHeader>API Properties</PanelHeader>
             <Divider />

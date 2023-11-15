@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import * as fetchIntercept from 'fetch-intercept'
 import { log, OAuthProtoService, UserProfile } from '../globals'
 import { fetchPath, isBlank, getCookie } from '../utils'
 import { CLUSTER_CONSOLE_KEY } from '../metadata'
@@ -12,7 +13,7 @@ import {
   OpenShiftOAuthConfig,
   ResolveUser,
 } from './globals'
-import { buildUserInfoUri, checkToken, currentTimeSeconds, doLogout, tokenHasExpired } from './support'
+import { buildUserInfoUri, checkToken, currentTimeSeconds, forceRelogin, tokenHasExpired } from './support'
 import { userService } from '@hawtio/react'
 
 interface UserObject {
@@ -26,6 +27,11 @@ interface UserObject {
   groups: string[]
 }
 
+interface Headers {
+  Authorization: string
+  'X-XSRF-TOKEN'?: string
+}
+
 export class OSOAuthService implements OAuthProtoService {
   private userInfoUri = ''
   private keepaliveInterval = 10
@@ -34,6 +40,7 @@ export class OSOAuthService implements OAuthProtoService {
   private userProfile: UserProfile
   private readonly adaptedConfig: Promise<OpenShiftOAuthConfig | null>
   private readonly login: Promise<boolean>
+  private fetchUnregister: (() => void) | null
 
   constructor(openShiftConfig: OpenShiftOAuthConfig, userProfile: UserProfile) {
     log.debug('Initialising Openshift OAuth Service')
@@ -41,6 +48,7 @@ export class OSOAuthService implements OAuthProtoService {
     this.userProfile.setOAuthType(OAUTH_OS_PROTOCOL_MODULE)
     this.adaptedConfig = this.processConfig(openShiftConfig)
     this.login = this.createLogin()
+    this.fetchUnregister = null
   }
 
   private async processConfig(config: OpenShiftOAuthConfig): Promise<OpenShiftOAuthConfig | null> {
@@ -95,37 +103,37 @@ export class OSOAuthService implements OAuthProtoService {
     }
 
     log.debug('Intercept Fetch API to attach Openshift auth token to authorization header')
-    const { fetch: originalFetch } = window
-    window.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-      log.debug('Fetch intercepted for oAuth authentication')
+    const unregister = fetchIntercept.register({
+      request: (url, config) => {
+        log.debug('Fetch intercepted for oAuth authentication')
 
-      if (tokenHasExpired(this.userProfile)) {
-        return new Promise((resolve, _) => {
-          const reason = `Cannot navigate to ${input} as token expired so need to logout`
+        if (tokenHasExpired(this.userProfile)) {
+          const reason = `Cannot navigate to ${url} as token expired so need to logout`
           log.debug(reason)
-          doLogout(config)
-          resolve(Response.error())
-        })
-      }
 
-      init = { ...init }
-      init.headers = {
-        ...init.headers,
-        Authorization: `Bearer ${this.userProfile.getToken()}`,
-      }
+          // Unregister this fetch handler before logging out
+          unregister()
 
-      // For CSRF protection with Spring Security
-      const token = getCookie('XSRF-TOKEN')
-      if (token) {
-        log.debug('Set XSRF token header from cookies')
-        init.headers = {
-          ...init.headers,
-          'X-XSRF-TOKEN': token,
+          this.doLogout(config)
         }
-      }
 
-      return originalFetch(input, init)
-    }
+        let headers: Headers = {
+          Authorization: `Bearer ${this.userProfile.getToken()}`,
+        }
+
+        // For CSRF protection with Spring Security
+        const token = getCookie('XSRF-TOKEN')
+        if (token) {
+          log.debug('Set XSRF token header from cookies')
+          headers = {
+            ...headers,
+            'X-XSRF-TOKEN': token,
+          }
+        }
+
+        return [url, { headers, ...config }]
+      },
+    })
   }
 
   private setupJQueryAjax(config: OpenShiftOAuthConfig) {
@@ -137,7 +145,7 @@ export class OSOAuthService implements OAuthProtoService {
     const beforeSend = (xhr: JQueryXHR, settings: JQueryAjaxSettings) => {
       if (tokenHasExpired(this.userProfile)) {
         log.debug(`Cannot navigate to ${settings.url} as token expired so need to logout`)
-        doLogout(config)
+        this.doLogout(config)
         return
       }
 
@@ -187,7 +195,7 @@ export class OSOAuthService implements OAuthProtoService {
         // In that case, let's just skip the error and go through another refresh cycle.
         // See http://stackoverflow.com/questions/2000609/jquery-ajax-status-code-0 for more details.
         log.error('Failed to fetch user info, status: ', response.statusText)
-        doLogout(config)
+        this.doLogout(config)
       }
     }
 
@@ -206,7 +214,7 @@ export class OSOAuthService implements OAuthProtoService {
 
     if (tokenHasExpired(this.userProfile)) {
       log.debug('Token has expired so logging out')
-      doLogout(config)
+      this.doLogout(config)
       return true
     }
 
@@ -233,7 +241,7 @@ export class OSOAuthService implements OAuthProtoService {
       const tokenParams = checkToken(currentURI)
       if (!tokenParams) {
         log.debug('No Token so initiating new login')
-        doLogout(config)
+        this.doLogout(config)
         return false
       }
 
@@ -261,6 +269,19 @@ export class OSOAuthService implements OAuthProtoService {
       this.userProfile.setError(error instanceof Error ? error : new Error('Error from checking token'))
       return false
     }
+  }
+
+  private doLogout(config: OpenShiftOAuthConfig): void {
+    if (this.fetchUnregister) this.fetchUnregister()
+
+    const currentURI = new URL(window.location.href)
+    // The following request returns 403 when delegated authentication with an
+    // OAuthClient is used, as possible scopes do not grant permissions to access the OAuth API:
+    // See https://github.com/openshift/origin/issues/7011
+    //
+    // So little point in trying to delete the token. Lets do in client-side only
+    //
+    forceRelogin(currentURI, config)
   }
 
   async isLoggedIn(): Promise<boolean> {
@@ -308,7 +329,7 @@ export class OSOAuthService implements OAuthProtoService {
 
       log.info('Log out Openshift')
       try {
-        doLogout(config)
+        this.doLogout(config)
       } catch (error) {
         log.error('Error logging out Openshift:', error)
       }
