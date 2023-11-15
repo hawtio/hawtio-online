@@ -1955,9 +1955,9 @@ __metadata:
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": ^0.6.1
-    "@patternfly/react-core": ^4.276.8
+    "@patternfly/react-core": ^4.278.0
     "@patternfly/react-styles": ^4.92.6
-    "@patternfly/react-table": ^4.113.0
+    "@patternfly/react-table": ^4.113.6
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
     "@types/react": ^18.2.21
@@ -2026,9 +2026,9 @@ __metadata:
   dependencies:
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/react": ^0.6.1
-    "@patternfly/react-core": ^4.276.8
+    "@patternfly/react-core": ^4.278.0
     "@patternfly/react-styles": ^4.92.6
-    "@patternfly/react-table": ^4.113.0
+    "@patternfly/react-table": ^4.113.6
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
     "@types/react": ^18.2.21
@@ -2097,9 +2097,9 @@ __metadata:
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
     "@hawtio/react": ^0.6.1
-    "@patternfly/react-core": ^4.276.8
+    "@patternfly/react-core": ^4.278.0
     "@patternfly/react-styles": ^4.92.6
-    "@patternfly/react-table": ^4.113.0
+    "@patternfly/react-table": ^4.113.6
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
     "@types/react": ^18.2.21
@@ -2183,9 +2183,9 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/react": ^0.6.1
-    "@patternfly/react-core": ^4.276.8
+    "@patternfly/react-core": ^4.278.0
     "@patternfly/react-styles": ^4.92.6
-    "@patternfly/react-table": ^4.113.0
+    "@patternfly/react-table": ^4.113.6
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.17.18
     "@types/react": ^18.2.21
@@ -2751,7 +2751,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:^4.276.8, @patternfly/react-core@npm:^4.278.0":
+"@patternfly/react-core@npm:^4.278.0":
   version: 4.278.0
   resolution: "@patternfly/react-core@npm:4.278.0"
   dependencies:
@@ -2820,7 +2820,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-table@npm:^4.113.0, @patternfly/react-table@npm:^4.113.6":
+"@patternfly/react-table@npm:^4.113.6":
   version: 4.113.6
   resolution: "@patternfly/react-table@npm:4.113.6"
   dependencies:
