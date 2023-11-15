@@ -65,7 +65,7 @@
   "packageManager": "yarn@3.6.1",
   "engines": {
     "yarn": ">=3.6.0",
-    "node": ">=16"
+    "node": ">=18"
   },
   "dependencies": {
     "jasmine": "^5.1.0"
