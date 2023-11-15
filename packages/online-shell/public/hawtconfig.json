@@ -15,5 +15,5 @@
   "login": {
     "title": "Log in with your token"
   },
-  "disabledRoutes": ["connect"]
+  "disabledRoutes": ["/connect"]
 }
