@@ -1,27 +1,38 @@
 import React from 'react'
-import { usePlugins, DEFAULT_APP_NAME, useHawtconfig } from '@hawtio/react'
+import { usePlugins, DEFAULT_APP_NAME, useHawtconfig, useUser } from '@hawtio/react'
 import { backgroundImages, hawtioLogo } from './img'
 import { ListItem, ListVariant, LoginFooterItem, LoginPage } from '@patternfly/react-core'
 import { log } from '@hawtio/online-oauth'
 import { AuthLoadingPage } from './AuthLoadingPage'
+import { useNavigate } from 'react-router-dom'
 
 export const AuthLoginPage: React.FunctionComponent = () => {
+  const navigate = useNavigate()
+
+  const { isLogin, userLoaded } = useUser()
   const { hawtconfig, hawtconfigLoaded } = useHawtconfig()
   const { plugins, pluginsLoaded } = usePlugins()
 
-  if (!hawtconfigLoaded && !pluginsLoaded) {
+  if (!userLoaded || !hawtconfigLoaded || !pluginsLoaded) {
     log.debug('Loading:, hawtconfig =', hawtconfigLoaded, ', plugins =', pluginsLoaded)
     return <AuthLoadingPage />
   }
 
+  if (isLogin) {
+    navigate('/')
+  }
+
   let loginForm = null
   const loginPlugins = plugins.filter(plugin => plugin.isLogin)
+  log.debug('Discovered Login Plugins:', loginPlugins.length)
+
   if (loginPlugins.length > 0) {
+    log.debug('Found Login Plugins ... Customising the Login Page')
+
     const loginPlugin = loginPlugins[0]
     const component = loginPlugin?.component
-    if (!component) {
-      log.info('Custom login component not defined: ', loginPlugin?.id)
-    } else {
+    if (component) {
+      log.debug('Building with customised login form component')
       loginForm = React.createElement(component)
     }
   }
