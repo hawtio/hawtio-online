@@ -152,7 +152,6 @@ module.exports = () => {
       /Failed to parse source map/,
     ],
     resolve: {
-      modules: [path.resolve(__dirname, 'node_modules'), path.resolve(__dirname, '../../node_modules')],
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
       alias: {
         'react-native': 'react-native-web',
