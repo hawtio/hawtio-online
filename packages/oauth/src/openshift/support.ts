@@ -19,20 +19,9 @@ export function buildUserInfoUri(masterUri: string, config: OpenShiftOAuthConfig
   return uri.toString()
 }
 
-function forceRelogin(url: URL, config: OpenShiftOAuthConfig) {
+export function forceRelogin(url: URL, config: OpenShiftOAuthConfig) {
   clearTokenStorage()
   doLogin(config, { uri: url.toString() })
-}
-
-export function doLogout(config: OpenShiftOAuthConfig): void {
-  const currentURI = new URL(window.location.href)
-  // The following request returns 403 when delegated authentication with an
-  // OAuthClient is used, as possible scopes do not grant permissions to access the OAuth API:
-  // See https://github.com/openshift/origin/issues/7011
-  //
-  // So little point in trying to delete the token. Lets do in client-side only
-  //
-  forceRelogin(currentURI, config)
 }
 
 export function doLogin(config: OpenShiftOAuthConfig, options: { uri: string }): void {

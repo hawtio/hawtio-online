@@ -1959,7 +1959,7 @@ __metadata:
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
-    "@types/node": ^18.17.18
+    "@types/node": ^18.18.9
     "@types/react": ^18.2.21
     "@types/react-dom": ^18.2.7
     connect-history-api-fallback: ^2.0.0
@@ -1996,7 +1996,7 @@ __metadata:
     "@types/jest": ^29.5.8
     "@types/jquery": ^3.5.25
     "@types/jsonpath": ^0.2.0
-    "@types/node": ^18.17.18
+    "@types/node": ^18.18.9
     babel-jest: ^29.6.1
     eslint-config-react-app: ^7.0.1
     eventemitter3: ^5.0.1
@@ -2030,7 +2030,7 @@ __metadata:
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
-    "@types/node": ^18.17.18
+    "@types/node": ^18.18.9
     "@types/react": ^18.2.21
     "@types/react-dom": ^18.2.7
     connect-history-api-fallback: ^2.0.0
@@ -2101,7 +2101,7 @@ __metadata:
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
-    "@types/node": ^18.17.18
+    "@types/node": ^18.18.9
     "@types/react": ^18.2.21
     "@types/react-dom": ^18.2.7
     connect-history-api-fallback: ^2.0.0
@@ -2139,6 +2139,7 @@ __metadata:
     "@types/jest": ^29.5.8
     "@types/jquery": ^3.5.25
     babel-jest: ^29.6.1
+    fetch-intercept: ^2.4.0
     jest: ^29.6.1
     jest-environment-jsdom: ^29.6.1
     jest-extended: ^4.0.0
@@ -2151,6 +2152,7 @@ __metadata:
     ts-node: ^10.9.1
     tsup: ^7.1.0
     typescript: ^5.2.2
+    whatwg-fetch: ^3.6.19
   peerDependencies:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
@@ -2187,7 +2189,7 @@ __metadata:
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.0
     "@patternfly/react-tokens": ^4.94.6
-    "@types/node": ^18.17.18
+    "@types/node": ^18.18.9
     "@types/react": ^18.2.21
     "@types/react-dom": ^18.2.7
     babel-loader: ^9.1.3
@@ -2954,17 +2956,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.10.0":
-  version: 1.10.0
-  resolution: "@remix-run/router@npm:1.10.0"
-  checksum: f8f9fcd5f08465a7e0a05378398ff6df2c5c5ef5766df3490a134d64260b3b16f1bd490bb0c3f5925c2671a0c1d8d1fa01dfbdc7ecc3b2447dc6eafe6b73bcc2
-  languageName: node
-  linkType: hard
-
 "@remix-run/router@npm:1.11.0":
   version: 1.11.0
   resolution: "@remix-run/router@npm:1.11.0"
   checksum: 1966436ab3ab982862195e4871790644ce21e01511aa3f4350436296224e4dec2e6ee35f1f4cb83db69f7aa0e8ad4a0a01928b05359ae654edc8e2aa82bf754b
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.12.0":
+  version: 1.12.0
+  resolution: "@remix-run/router@npm:1.12.0"
+  checksum: 0528a5c9dac443f90aef30b65fed39c6654b5c2db1d01d700b212d783958935b4d800250530430d78eacf03f3baa104edeae75a29cfb13b3180cbfca3352e645
   languageName: node
   linkType: hard
 
@@ -3616,17 +3618,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^29.5.5":
-  version: 29.5.6
-  resolution: "@types/jest@npm:29.5.6"
-  dependencies:
-    expect: ^29.0.0
-    pretty-format: ^29.0.0
-  checksum: fa13a27bd1c8efd0381a419478769d0d6d3a8e93e1952d7ac3a16274e8440af6f73ed6f96ac1ff00761198badf2ee226b5ab5583a5d87a78d609ea78da5c5a24
-  languageName: node
-  linkType: hard
-
-"@types/jest@npm:^29.5.8":
+"@types/jest@npm:^29.5.5, @types/jest@npm:^29.5.8":
   version: 29.5.8
   resolution: "@types/jest@npm:29.5.8"
   dependencies:
@@ -3732,10 +3724,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.17.18, @types/node@npm:^18.18.5":
+"@types/node@npm:^18.18.5":
   version: 18.18.6
   resolution: "@types/node@npm:18.18.6"
   checksum: a847639b8455fd3dfa6dbc2917274c82c9db789f1d41aaf69f94ac6c9e54c3c1dd29be6e1e1ccd7c17e54db3d78d7011bc4e70544c6447ceca253dccc0a187e1
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^18.18.9":
+  version: 18.18.9
+  resolution: "@types/node@npm:18.18.9"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: 629ce20357586144031cb43d601617eef45e59460dea6b1e123f708e6885664f44d54f65e5b72b2614af5b8613f3652ced832649c0b991accbc6a85139befa51
   languageName: node
   linkType: hard
 
@@ -7390,6 +7391,13 @@ __metadata:
   dependencies:
     bser: 2.1.1
   checksum: b15a124cef28916fe07b400eb87cbc73ca082c142abf7ca8e8de6af43eca79ca7bd13eb4d4d48240b3bd3136eaac40d16e42d6edf87a8e5d1dd8070626860c78
+  languageName: node
+  linkType: hard
+
+"fetch-intercept@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "fetch-intercept@npm:2.4.0"
+  checksum: f89c9b40fdc4695e065b55c27f1f93dacb1a1dcdb36d19267d6b1671304598d144c407a22d33d96e82a05df3f0578020a57760a8dd57f0b851715e0fa1c965c5
   languageName: node
   linkType: hard
 
@@ -11728,15 +11736,15 @@ __metadata:
   linkType: hard
 
 "react-router-dom@npm:^6.17.0":
-  version: 6.17.0
-  resolution: "react-router-dom@npm:6.17.0"
+  version: 6.19.0
+  resolution: "react-router-dom@npm:6.19.0"
   dependencies:
-    "@remix-run/router": 1.10.0
-    react-router: 6.17.0
+    "@remix-run/router": 1.12.0
+    react-router: 6.19.0
   peerDependencies:
     react: ">=16.8"
     react-dom: ">=16.8"
-  checksum: e0ba4f4c507681e2ffdecdf2e67edf7ec0e2bf4be35222e29d013afdb03866a5e6ecacc8b452bd55797b9672785d02f81bd6dbf6b05ac93a59e48e774b0060de
+  checksum: 04453ca48eb900a4a6aa8b8e48368fa78d4ce8a9b69df108d9f53071a904349b18672a66c94252eb847ae4369e30bbe4ec7244bb6529b10fd474774e48f03669
   languageName: node
   linkType: hard
 
@@ -11753,17 +11761,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:6.17.0":
-  version: 6.17.0
-  resolution: "react-router@npm:6.17.0"
-  dependencies:
-    "@remix-run/router": 1.10.0
-  peerDependencies:
-    react: ">=16.8"
-  checksum: 99c30d94fbb34657e4c8c3ef1aaae33b143167d3869b442e06c83b4006f35200fde810029180e209654bef2f47f0b27a928f77cc2d859a358a2722cc9d494f03
-  languageName: node
-  linkType: hard
-
 "react-router@npm:6.18.0":
   version: 6.18.0
   resolution: "react-router@npm:6.18.0"
@@ -11772,6 +11769,17 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 03e9a23c5b75d8813720745e2952bb9e62ec310d238cde4f19e0ce73582701fa5e04cf609ff9ced978e9e6c531b5e333b9aee35371e6c4743afc2829e32e926a
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.19.0":
+  version: 6.19.0
+  resolution: "react-router@npm:6.19.0"
+  dependencies:
+    "@remix-run/router": 1.12.0
+  peerDependencies:
+    react: ">=16.8"
+  checksum: f7e3396b8f4299638029dc726cb02d9c05c8906dc5277e5f9d899ef113d8cec49dfab7d34cd496826f8c1a95666141f3eede446c4438ef56720fdb72c66473fb
   languageName: node
   linkType: hard
 
@@ -13570,6 +13578,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici-types@npm:~5.26.4":
+  version: 5.26.5
+  resolution: "undici-types@npm:5.26.5"
+  checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
+  languageName: node
+  linkType: hard
+
 "unicode-canonical-property-names-ecmascript@npm:^2.0.0":
   version: 2.0.0
   resolution: "unicode-canonical-property-names-ecmascript@npm:2.0.0"
@@ -14428,6 +14443,13 @@ __metadata:
   dependencies:
     iconv-lite: 0.6.3
   checksum: 7087810c410aa9b689cbd6af8773341a53cdc1f3aae2a882c163bd5522ec8ca4cdfc269aef417a5792f411807d5d77d50df4c24e3abb00bb60192858a40cc675
+  languageName: node
+  linkType: hard
+
+"whatwg-fetch@npm:^3.6.19":
+  version: 3.6.19
+  resolution: "whatwg-fetch@npm:3.6.19"
+  checksum: 2896bc9ca867ea514392c73e2a272f65d5c4916248fe0837a9df5b1b92f247047bc76cf7c29c28a01ac6c5fb4314021d2718958c8a08292a96d56f72b2f56806
   languageName: node
   linkType: hard
 

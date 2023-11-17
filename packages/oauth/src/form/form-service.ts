@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import * as fetchIntercept from 'fetch-intercept'
 import { getCookie } from '../utils'
 import { log, OAuthProtoService, UserProfile } from '../globals'
 import { FormConfig, FORM_TOKEN_STORAGE_KEY, FORM_AUTH_PROTOCOL_MODULE, ResolveUser } from './globals'
@@ -10,10 +11,16 @@ type LoginOptions = {
   uri: URL
 }
 
+interface Headers {
+  Authorization: string
+  'X-XSRF-TOKEN'?: string
+}
+
 export class FormService implements OAuthProtoService {
   private userProfile: UserProfile
   private formConfig: FormConfig | null
   private loggedIn: boolean
+  private fetchUnregister: (() => void) | null
 
   constructor(formConfig: FormConfig | null, userProfile: UserProfile) {
     log.debug('Initialising Form Auth Service')
@@ -21,6 +28,7 @@ export class FormService implements OAuthProtoService {
     this.userProfile.setOAuthType(FORM_AUTH_PROTOCOL_MODULE)
     this.formConfig = formConfig
     this.loggedIn = this.initLogin()
+    this.fetchUnregister = null
   }
 
   private initLogin(): boolean {
@@ -111,28 +119,27 @@ export class FormService implements OAuthProtoService {
     }
 
     log.debug('Intercept Fetch API to attach auth token to authorization header')
-    const { fetch: originalFetch } = window
-    window.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-      log.debug('Fetch intercepted for oAuth authentication')
+    this.fetchUnregister = fetchIntercept.register({
+      request: (url, config) => {
+        log.debug('Fetch intercepted for oAuth authentication')
 
-      init = { ...init }
-      init.headers = {
-        ...init.headers,
-        Authorization: `Bearer ${this.userProfile.getToken()}`,
-      }
-
-      // For CSRF protection with Spring Security
-      const token = getCookie('XSRF-TOKEN')
-      if (token) {
-        log.debug('Set XSRF token header from cookies')
-        init.headers = {
-          ...init.headers,
-          'X-XSRF-TOKEN': token,
+        let headers: Headers = {
+          Authorization: `Bearer ${this.userProfile.getToken()}`,
         }
-      }
 
-      return originalFetch(input, init)
-    }
+        // For CSRF protection with Spring Security
+        const token = getCookie('XSRF-TOKEN')
+        if (token) {
+          log.debug('Set XSRF token header from cookies')
+          headers = {
+            ...headers,
+            'X-XSRF-TOKEN': token,
+          }
+        }
+
+        return [url, { headers, ...config }]
+      },
+    })
   }
 
   private setupJQueryAjax() {
@@ -163,6 +170,8 @@ export class FormService implements OAuthProtoService {
   }
 
   doLogout(): void {
+    if (this.fetchUnregister) this.fetchUnregister()
+
     const currentURI = new URL(window.location.href)
     this.forceRelogin(currentURI)
   }
