@@ -23,13 +23,13 @@ import {
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
 import { KubernetesClient } from './KubernetesClient'
-import { userService } from '@hawtio/react'
+import { useUser, userService } from '@hawtio/react'
 
 export const Kubernetes: React.FunctionComponent = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>()
-  const [username, setUsername] = useState('')
+  const { username, userLoaded } = useUser()
 
   useEffect(() => {
     setIsLoading(true)
@@ -38,6 +38,8 @@ export const Kubernetes: React.FunctionComponent = () => {
       const k8Loaded = await isK8ApiRegistered()
 
       if (!k8Loaded) return
+
+      if (!userLoaded) return
 
       setIsLoading(false)
 
@@ -49,10 +51,6 @@ export const Kubernetes: React.FunctionComponent = () => {
       if (k8Service.hasError()) {
         setError(k8Service.error)
       }
-
-      await userService.fetchUser()
-      const username = await userService.getUsername()
-      setUsername(username)
     }
 
     checkLoading()
@@ -62,7 +60,7 @@ export const Kubernetes: React.FunctionComponent = () => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
     }
-  }, [])
+  }, [userLoaded])
 
   if (isLoading) {
     return (

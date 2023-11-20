@@ -30,7 +30,8 @@ export const Management: React.FunctionComponent = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>()
-  const [username, setUsername] = useState('')
+  const { username, userLoaded } = useUser()
+
   const [pods, setPods] = useState<ManagedPod[]>([])
 
   useEffect(() => {
@@ -41,16 +42,14 @@ export const Management: React.FunctionComponent = () => {
 
       if (!mgmtLoaded) return
 
+      if (!userLoaded) return
+
       setIsLoading(false)
 
       if (mgmtService.hasError()) {
         setError(mgmtService.error)
         return
       }
-
-      await userService.fetchUser()
-      const username = await userService.getUsername()
-      setUsername(username)
 
       mgmtService.on(MgmtActions.UPDATED, () => {
         setPods([...mgmtService.pods]) // Use spread to ensure react updates the state
@@ -64,7 +63,7 @@ export const Management: React.FunctionComponent = () => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
     }
-  }, [])
+  }, [userLoaded])
 
   if (isLoading) {
     return (
