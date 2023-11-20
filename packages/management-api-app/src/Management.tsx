@@ -23,15 +23,14 @@ import {
   Title,
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
-import { userService } from '@hawtio/react'
-import { ManagementPods } from './management-pods'
+import { useUser, userService } from '@hawtio/react'
+import { ManagementPods } from './ManagementPods'
 
 export const Management: React.FunctionComponent = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>()
   const [username, setUsername] = useState('')
-
   const [pods, setPods] = useState<ManagedPod[]>([])
 
   useEffect(() => {

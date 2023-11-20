@@ -3,7 +3,7 @@ import { isMgmtApiRegistered, log } from '@hawtio/online-management-api'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
-import { Management } from './management'
+import { Management } from './Management'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthLoginPage } from './login'
 

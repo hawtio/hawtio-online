@@ -22,7 +22,7 @@ import {
   Button,
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
-import { KubernetesClient } from './kubernetes-client'
+import { KubernetesClient } from './KubernetesClient'
 import { userService } from '@hawtio/react'
 
 export const Kubernetes: React.FunctionComponent = () => {
