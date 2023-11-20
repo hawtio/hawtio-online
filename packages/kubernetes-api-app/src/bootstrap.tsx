@@ -3,7 +3,7 @@ import { isK8ApiRegistered, log } from '@hawtio/online-kubernetes-api'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
-import { Kubernetes } from './kubernetes'
+import { Kubernetes } from './Kubernetes'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthLoginPage } from './login'
 
