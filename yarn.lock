@@ -1929,17 +1929,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hawtio/camel-model-v3@npm:@hawtio/camel-model@^3.21.0":
-  version: 3.21.0
-  resolution: "@hawtio/camel-model@npm:3.21.0"
-  checksum: 6e4f02eda269a0e53966fdfc126b6467ed965edb34a56a749c81fcacdb68c28644d1970e45ee0b4df1c912f664c5be99afe4ca7e3d9c7f3758b0c571d55400a2
+"@hawtio/camel-model-v3@npm:@hawtio/camel-model@^3.21.1":
+  version: 3.21.1
+  resolution: "@hawtio/camel-model@npm:3.21.1"
+  checksum: ae920bd9c3b75286c31f0a0b5168e09b982c61cfbeeca000201a175490afa6060b5b7900fd01be156db92020aab505cd6dc6a812fc0e181db6ae5cb178b729e1
   languageName: node
   linkType: hard
 
-"@hawtio/camel-model-v4@npm:@hawtio/camel-model@^4.0.0":
-  version: 4.0.0
-  resolution: "@hawtio/camel-model@npm:4.0.0"
-  checksum: d02d19170ef9ff2ccdbceae6a2f9848dc88be80878e1b13de426ef0cf876b80c3c40570d9193585e74251d9bb45da9ad5bdaf0be7efa051189657e3a53d6491e
+"@hawtio/camel-model-v4@npm:@hawtio/camel-model@^4.0.1":
+  version: 4.0.1
+  resolution: "@hawtio/camel-model@npm:4.0.1"
+  checksum: d203615c4fae515fbfc56d735fcb0f853c79cadb56e0f7020c6e192a67c185c0a25d511dd623f34786e5e5fdbc7f6a006743093df24e402576c5baf399c349f3
   languageName: node
   linkType: hard
 
@@ -1954,7 +1954,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api-app@workspace:packages/kubernetes-api-app"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": ^0.6.1
+    "@hawtio/react": ^0.9.2
     "@patternfly/react-core": ^4.276.8
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.0
@@ -1992,7 +1992,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api@workspace:packages/kubernetes-api"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": ^0.6.1
+    "@hawtio/react": ^0.9.2
     "@types/jest": ^29.5.8
     "@types/jquery": ^3.5.25
     "@types/jsonpath": ^0.2.0
@@ -2025,7 +2025,7 @@ __metadata:
   resolution: "@hawtio/online-management-api-app@workspace:packages/management-api-app"
   dependencies:
     "@hawtio/online-management-api": "workspace:*"
-    "@hawtio/react": ^0.6.1
+    "@hawtio/react": ^0.9.2
     "@patternfly/react-core": ^4.276.8
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.0
@@ -2063,7 +2063,7 @@ __metadata:
   resolution: "@hawtio/online-management-api@workspace:packages/management-api"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": ^0.6.1
+    "@hawtio/react": ^0.9.2
     "@types/jest": ^29.5.8
     "@types/jquery": ^3.5.25
     "@types/jsonpath": ^0.2.0
@@ -2096,7 +2096,7 @@ __metadata:
   resolution: "@hawtio/online-oauth-app@workspace:packages/oauth-app"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": ^0.6.1
+    "@hawtio/react": ^0.9.2
     "@patternfly/react-core": ^4.276.8
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.0
@@ -2135,7 +2135,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hawtio/online-oauth@workspace:packages/oauth"
   dependencies:
-    "@hawtio/react": ^0.6.1
+    "@hawtio/react": ^0.9.2
     "@types/jest": ^29.5.8
     "@types/jquery": ^3.5.25
     babel-jest: ^29.6.1
@@ -2184,7 +2184,7 @@ __metadata:
     "@fortawesome/react-fontawesome": ^0.2.0
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/online-management-api": "workspace:*"
-    "@hawtio/react": ^0.6.1
+    "@hawtio/react": ^0.9.2
     "@patternfly/react-core": ^4.276.8
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.0
@@ -2230,45 +2230,45 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:^0.6.1":
-  version: 0.6.1
-  resolution: "@hawtio/react@npm:0.6.1"
+"@hawtio/react@npm:^0.9.2":
+  version: 0.9.2
+  resolution: "@hawtio/react@npm:0.9.2"
   dependencies:
-    "@hawtio/camel-model-v3": "npm:@hawtio/camel-model@^3.21.0"
-    "@hawtio/camel-model-v4": "npm:@hawtio/camel-model@^4.0.0"
+    "@hawtio/camel-model-v3": "npm:@hawtio/camel-model@^3.21.1"
+    "@hawtio/camel-model-v4": "npm:@hawtio/camel-model@^4.0.1"
     "@module-federation/utilities": ^3.0.0
     "@patternfly/react-charts": ^7.1.1
     "@patternfly/react-code-editor": ^5.1.1
     "@patternfly/react-core": ^4.278.0
     "@patternfly/react-table": ^4.113.6
     "@testing-library/jest-dom": ^6.1.4
-    "@testing-library/react": ^14.0.0
+    "@testing-library/react": ^14.1.0
     "@testing-library/user-event": ^14.5.1
-    "@types/dagre": ^0.7.50
-    "@types/dagre-layout": ^0.8.3
-    "@types/jest": ^29.5.5
-    "@types/jquery": ^3.5.22
-    "@types/node": ^18.18.5
+    "@types/dagre": ^0.7.52
+    "@types/dagre-layout": ^0.8.5
+    "@types/jest": ^29.5.8
+    "@types/jquery": ^3.5.27
+    "@types/node": ^18.18.6
     "@types/react": ^18.2.23
-    "@types/react-dom": ^18.2.13
+    "@types/react-dom": ^18.2.15
     "@types/react-router-dom": ^5.3.3
     dagre: ^0.8.5
     eventemitter3: ^5.0.1
     jolokia.js: ^2.0.0-m4.0
     jquery: ^3.7.1
     js-logger: ^1.6.1
-    keycloak-js: ^22.0.4
+    keycloak-js: ^22.0.5
     monaco-editor: ^0.44.0
     react: ^18.2.0
     react-dom: ^18.2.0
     react-markdown: ^8.0.7
     react-monaco-editor: ^0.54.0
-    react-router-dom: ^6.17.0
+    react-router-dom: ^6.18.0
     react-split: ^2.0.14
-    reactflow: ^11.9.4
+    reactflow: ^11.10.1
     superstruct: ^1.0.3
-    typescript: ^4.9.5
-    xml-formatter: ^3.5.0
+    typescript: ^5.2.2
+    xml-formatter: ^3.6.0
   peerDependencies:
     "@patternfly/react-core": ^4.278.0
     keycloak-js: ^21
@@ -2277,7 +2277,7 @@ __metadata:
   peerDependenciesMeta:
     keycloak-js:
       optional: true
-  checksum: 99c840d046402451b03c4821932742c48219dc4f817292dc59f4f46d7e7865b75dd61e48b9c0addaf0843797178e06e8bdb74959a15b4f60b41816aa3efc1526
+  checksum: e22497aebcc0f2a31d173c32db5d7d1cadbcbbce61d220734f9c0ea280f873d1f805343b48cf9b192e0594c81138c983c8615bd4d87bc38a4037b64f762c5e25
   languageName: node
   linkType: hard
 
@@ -2860,37 +2860,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reactflow/background@npm:11.3.4":
-  version: 11.3.4
-  resolution: "@reactflow/background@npm:11.3.4"
+"@reactflow/background@npm:11.3.6":
+  version: 11.3.6
+  resolution: "@reactflow/background@npm:11.3.6"
   dependencies:
-    "@reactflow/core": 11.9.4
+    "@reactflow/core": 11.10.1
     classcat: ^5.0.3
     zustand: ^4.4.1
   peerDependencies:
     react: ">=17"
     react-dom: ">=17"
-  checksum: 2e3e79311b960ab5d0c56410d6daafacb908b7e749292cf1b551dca9ca601245d6c5da703aeec4a0d63fe7667bfa13eac919e6f27fc2e1344e49cad21bd56669
+  checksum: c5dafd7d10540a13ea4b4309d400254d97b16be0c43f36ae099de8557b2ac8104d456bcb963e83763970474f8661fadee8f81a56d92c47116c823717bb039089
   languageName: node
   linkType: hard
 
-"@reactflow/controls@npm:11.2.4":
-  version: 11.2.4
-  resolution: "@reactflow/controls@npm:11.2.4"
+"@reactflow/controls@npm:11.2.6":
+  version: 11.2.6
+  resolution: "@reactflow/controls@npm:11.2.6"
   dependencies:
-    "@reactflow/core": 11.9.4
+    "@reactflow/core": 11.10.1
     classcat: ^5.0.3
     zustand: ^4.4.1
   peerDependencies:
     react: ">=17"
     react-dom: ">=17"
-  checksum: 08fe105861ca84d2c9157ec6927653342b7be01502f31d0506d36192ea5c5719a1f74c36bd18f61a61fcd25c80ae9cad7c4fdbe81f4c71b91cc591106b47bbc8
+  checksum: b0e1766f44a4592dd6b743b4ff86376360faa4cc14c9b0e874d027f8b3f6321cc0ff080d54b807eee0af8e85edb8c405a86fd6f6178d1b71264c6b453644e655
   languageName: node
   linkType: hard
 
-"@reactflow/core@npm:11.9.4":
-  version: 11.9.4
-  resolution: "@reactflow/core@npm:11.9.4"
+"@reactflow/core@npm:11.10.1":
+  version: 11.10.1
+  resolution: "@reactflow/core@npm:11.10.1"
   dependencies:
     "@types/d3": ^7.4.0
     "@types/d3-drag": ^3.0.1
@@ -2904,15 +2904,15 @@ __metadata:
   peerDependencies:
     react: ">=17"
     react-dom: ">=17"
-  checksum: a28cf741c4c92e0c6507d0c2168e5fd0e799a194a7824d1db50a1126f624ceab2815ef303399858b70210751a9f1d7ca8e9534aed2b3909a86f0fade80f7ff5b
+  checksum: 5ba2087474320ffff1257a5dcaf9b613e0e06a3ca5ffed582d55dd71af8a9acf6782de9258ea8f6b410e3a1c0627cb9e52808ef7497a81bff891ca7f14ccfb81
   languageName: node
   linkType: hard
 
-"@reactflow/minimap@npm:11.7.4":
-  version: 11.7.4
-  resolution: "@reactflow/minimap@npm:11.7.4"
+"@reactflow/minimap@npm:11.7.6":
+  version: 11.7.6
+  resolution: "@reactflow/minimap@npm:11.7.6"
   dependencies:
-    "@reactflow/core": 11.9.4
+    "@reactflow/core": 11.10.1
     "@types/d3-selection": ^3.0.3
     "@types/d3-zoom": ^3.0.1
     classcat: ^5.0.3
@@ -2922,15 +2922,15 @@ __metadata:
   peerDependencies:
     react: ">=17"
     react-dom: ">=17"
-  checksum: 3186def42c72bddbac29d206d79d246cf8ed867b1d327756fabd641f735b89457c8a26e34ac32ac659b1c6bbe3486b79f42160889204687596215a9e322986f0
+  checksum: 9b622dbfc92be50d0c4ce1deb0670f9c41b32198b31ff2ac6948b58e36db2034d656f55f460966206c68fc558fc46603bf26ea066beeb691c466f55d4612dabc
   languageName: node
   linkType: hard
 
-"@reactflow/node-resizer@npm:2.2.4":
-  version: 2.2.4
-  resolution: "@reactflow/node-resizer@npm:2.2.4"
+"@reactflow/node-resizer@npm:2.2.6":
+  version: 2.2.6
+  resolution: "@reactflow/node-resizer@npm:2.2.6"
   dependencies:
-    "@reactflow/core": 11.9.4
+    "@reactflow/core": 11.10.1
     classcat: ^5.0.4
     d3-drag: ^3.0.0
     d3-selection: ^3.0.0
@@ -2938,21 +2938,21 @@ __metadata:
   peerDependencies:
     react: ">=17"
     react-dom: ">=17"
-  checksum: 4581f935f94ac6a6d9b81b3812b1bb34b3b006ca8758e95e8ad5e49a803d36a39bb2dac624d2b2fd08a37b983cc4a2177dc9af89444ed824bb77c26a0e427e82
+  checksum: cac448bf8e376c886991be8a920e59cb7471fe1898220ffad09aff3a81011f76d1b0f335c204027f924ad19b63599ff3a392cab60e67ac145b585664c4461400
   languageName: node
   linkType: hard
 
-"@reactflow/node-toolbar@npm:1.3.4":
-  version: 1.3.4
-  resolution: "@reactflow/node-toolbar@npm:1.3.4"
+"@reactflow/node-toolbar@npm:1.3.6":
+  version: 1.3.6
+  resolution: "@reactflow/node-toolbar@npm:1.3.6"
   dependencies:
-    "@reactflow/core": 11.9.4
+    "@reactflow/core": 11.10.1
     classcat: ^5.0.3
     zustand: ^4.4.1
   peerDependencies:
     react: ">=17"
     react-dom: ">=17"
-  checksum: cd98ccf2a9155fb556ab352ea58fae2dbf0d76a8ba4e91932d40f29348aac0634fd86ced9e867437e27c8efeb8467aebf1ded938882918d111ecba84e2d6342b
+  checksum: 08d8e05f4befe5d69dd8c30d50d0b60ff0d1b3fcfd227a291d595dad1fb584e08579e0a3f6710436c550bda84fa07d2027da12059aa63fbd494b832ea176c833
   languageName: node
   linkType: hard
 
@@ -2960,13 +2960,6 @@ __metadata:
   version: 1.11.0
   resolution: "@remix-run/router@npm:1.11.0"
   checksum: 1966436ab3ab982862195e4871790644ce21e01511aa3f4350436296224e4dec2e6ee35f1f4cb83db69f7aa0e8ad4a0a01928b05359ae654edc8e2aa82bf754b
-  languageName: node
-  linkType: hard
-
-"@remix-run/router@npm:1.12.0":
-  version: 1.12.0
-  resolution: "@remix-run/router@npm:1.12.0"
-  checksum: 0528a5c9dac443f90aef30b65fed39c6654b5c2db1d01d700b212d783958935b4d800250530430d78eacf03f3baa104edeae75a29cfb13b3180cbfca3352e645
   languageName: node
   linkType: hard
 
@@ -3048,9 +3041,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "@testing-library/react@npm:14.0.0"
+"@testing-library/react@npm:^14.1.0":
+  version: 14.1.0
+  resolution: "@testing-library/react@npm:14.1.0"
   dependencies:
     "@babel/runtime": ^7.12.5
     "@testing-library/dom": ^9.0.0
@@ -3058,7 +3051,7 @@ __metadata:
   peerDependencies:
     react: ^18.0.0
     react-dom: ^18.0.0
-  checksum: 4a54c8f56cc4a39b50803205f84f06280bb76521d6d5d4b3b36651d760c7c7752ef142d857d52aaf4fad4848ed7a8be49afc793a5dda105955d2f8bef24901ac
+  checksum: e76681911947f0981a1a72802ea01abeacdc4973c62deaf19c206cb9ff8d23eff5e3888c572303614686f029ee8a2a2dad6d0f0a9fb222944dbd9e0ea573b248
   languageName: node
   linkType: hard
 
@@ -3464,17 +3457,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/dagre-layout@npm:^0.8.3":
-  version: 0.8.4
-  resolution: "@types/dagre-layout@npm:0.8.4"
-  checksum: 6357034b7cf4302b9480cc8e2e92db0a279de7801c04e941fa2c72a8b8d27bc1002e240a28aecbcd8c2921cdc5ef93be75aee395f5fad438e66179d32f14fef8
+"@types/dagre-layout@npm:^0.8.5":
+  version: 0.8.5
+  resolution: "@types/dagre-layout@npm:0.8.5"
+  checksum: edc267d13beedaf738d03809d07bc7c6fbab2d9ea2bacee002aaeee33174069691d4b46c32ab3a0b15ef0a2d40a15c0d75b1badc6194559276f5a3fee2ac38b4
   languageName: node
   linkType: hard
 
-"@types/dagre@npm:^0.7.50":
-  version: 0.7.51
-  resolution: "@types/dagre@npm:0.7.51"
-  checksum: 6a23cc406082fe867dc0be0a117ae0c493bcfb6e08b83ea55a09b4f43e6eb5efc34a102d1a039fa82d2df700d55ee5481c0c3febdf710b972bb345c8a7f6c316
+"@types/dagre@npm:^0.7.52":
+  version: 0.7.52
+  resolution: "@types/dagre@npm:0.7.52"
+  checksum: 89e046e73f9f83855fcecc0f79838e0e3e0e42d88b6cc42bb573249364a606909ff7ded5b6a0377246eb0648047b330b5003c8dd975358de3135635ddae0f589
   languageName: node
   linkType: hard
 
@@ -3488,12 +3481,12 @@ __metadata:
   linkType: hard
 
 "@types/eslint-scope@npm:^3.7.3":
-  version: 3.7.6
-  resolution: "@types/eslint-scope@npm:3.7.6"
+  version: 3.7.7
+  resolution: "@types/eslint-scope@npm:3.7.7"
   dependencies:
     "@types/eslint": "*"
     "@types/estree": "*"
-  checksum: a2339e312949ae7f96bca52cde89a3d2218d4505746a78a0ba1aa56573e43b3d52ce9662b86ab785663a62fa8f2bd2fb61b990398785b40f2efc91be3fd246f8
+  checksum: e2889a124aaab0b89af1bab5959847c5bec09809209255de0e63b9f54c629a94781daa04adb66bffcdd742f5e25a17614fb933965093c0eea64aacda4309380e
   languageName: node
   linkType: hard
 
@@ -3507,10 +3500,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/estree@npm:*, @types/estree@npm:^1.0.0":
+"@types/estree@npm:*":
   version: 1.0.3
   resolution: "@types/estree@npm:1.0.3"
   checksum: f21a5448995f8aa61ab2248d10590d275666b11d26c27fe75b3c23420b07b469d5ce820deefcf7399671faa09d56eb7ce012322948e484d94686fda154be5221
+  languageName: node
+  linkType: hard
+
+"@types/estree@npm:^1.0.0":
+  version: 1.0.5
+  resolution: "@types/estree@npm:1.0.5"
+  checksum: dd8b5bed28e6213b7acd0fb665a84e693554d850b0df423ac8076cc3ad5823a6bc26b0251d080bdc545af83179ede51dd3f6fa78cad2c46ed1f29624ddf3e41a
   languageName: node
   linkType: hard
 
@@ -3618,7 +3618,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^29.5.5, @types/jest@npm:^29.5.8":
+"@types/jest@npm:^29.5.8":
   version: 29.5.8
   resolution: "@types/jest@npm:29.5.8"
   dependencies:
@@ -3628,21 +3628,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jquery@npm:^3.5.22":
-  version: 3.5.23
-  resolution: "@types/jquery@npm:3.5.23"
-  dependencies:
-    "@types/sizzle": "*"
-  checksum: 9231af0b80efe63257d898d41c4ee03bbe2152654e0d4709a9fd27eba255622f837315ad7529865ad9796312812dacfa4fc2d11dd4559ff13585c642ffd989b4
-  languageName: node
-  linkType: hard
-
 "@types/jquery@npm:^3.5.25":
   version: 3.5.25
   resolution: "@types/jquery@npm:3.5.25"
   dependencies:
     "@types/sizzle": "*"
   checksum: 912ce4212447a7c640147345c6b46bde5b12bafc2c97e1abc76939174c3109e3dbb361a534af717be2da4e907bc257558a6bc631971fcc47f7e5f044d315183e
+  languageName: node
+  linkType: hard
+
+"@types/jquery@npm:^3.5.27":
+  version: 3.5.27
+  resolution: "@types/jquery@npm:3.5.27"
+  dependencies:
+    "@types/sizzle": "*"
+  checksum: a217d3dbf134134e1b1e10bb0a197523eb362d8e2aa2ae2ad909ae8db0d625f5784203a0794a498b7a09e495ae7822512b3112440cc96b8374eda4afc33b0d6e
   languageName: node
   linkType: hard
 
@@ -3724,14 +3724,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.18.5":
-  version: 18.18.6
-  resolution: "@types/node@npm:18.18.6"
-  checksum: a847639b8455fd3dfa6dbc2917274c82c9db789f1d41aaf69f94ac6c9e54c3c1dd29be6e1e1ccd7c17e54db3d78d7011bc4e70544c6447ceca253dccc0a187e1
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.18.9":
+"@types/node@npm:^18.18.6, @types/node@npm:^18.18.9":
   version: 18.18.9
   resolution: "@types/node@npm:18.18.9"
   dependencies:
@@ -3768,12 +3761,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.0.0, @types/react-dom@npm:^18.2.13, @types/react-dom@npm:^18.2.7":
+"@types/react-dom@npm:^18.0.0, @types/react-dom@npm:^18.2.7":
   version: 18.2.13
   resolution: "@types/react-dom@npm:18.2.13"
   dependencies:
     "@types/react": "*"
   checksum: 22ba066b141dca5a5a9227fae0afc7c94b470fff8e8a38ade72649da57a8ea04d0cb2ba3e22005e7d8e772d49bddd28855b1dd98e6defd033bba6afb6edff883
+  languageName: node
+  linkType: hard
+
+"@types/react-dom@npm:^18.2.15":
+  version: 18.2.15
+  resolution: "@types/react-dom@npm:18.2.15"
+  dependencies:
+    "@types/react": "*"
+  checksum: 8e9631600c21ff561328e38a951d1991b3b3b20f538af4c0efbd1327c883a5573a63f50e1b945c34fa51b114b30e1ca5e62317bd54f21e063d6697b4be843a03
   languageName: node
   linkType: hard
 
@@ -4318,12 +4320,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^8.1.0, acorn@npm:^8.4.1, acorn@npm:^8.7.1, acorn@npm:^8.8.1, acorn@npm:^8.8.2, acorn@npm:^8.9.0":
+"acorn@npm:^8.1.0, acorn@npm:^8.4.1, acorn@npm:^8.8.1, acorn@npm:^8.8.2, acorn@npm:^8.9.0":
   version: 8.10.0
   resolution: "acorn@npm:8.10.0"
   bin:
     acorn: bin/acorn
   checksum: 538ba38af0cc9e5ef983aee196c4b8b4d87c0c94532334fa7e065b2c8a1f85863467bb774231aae91613fcda5e68740c15d97b1967ae3394d20faddddd8af61d
+  languageName: node
+  linkType: hard
+
+"acorn@npm:^8.7.1":
+  version: 8.11.2
+  resolution: "acorn@npm:8.11.2"
+  bin:
+    acorn: bin/acorn
+  checksum: 818450408684da89423e3daae24e4dc9b68692db8ab49ea4569c7c5abb7a3f23669438bf129cc81dfdada95e1c9b944ee1bfca2c57a05a4dc73834a612fbf6a7
   languageName: node
   linkType: hard
 
@@ -6662,9 +6673,9 @@ __metadata:
   linkType: hard
 
 "es-module-lexer@npm:^1.2.1":
-  version: 1.3.1
-  resolution: "es-module-lexer@npm:1.3.1"
-  checksum: 3beafa7e171eb1e8cc45695edf8d51638488dddf65294d7911f8d6a96249da6a9838c87529262cc6ea53988d8272cec0f4bff93f476ed031a54ba3afb51a0ed3
+  version: 1.4.1
+  resolution: "es-module-lexer@npm:1.4.1"
+  checksum: a11b5a256d4e8e9c7d94c2fd87415ccd1591617b6edd847e064503f8eaece2d25e2e9078a02c5ce3ed5e83bb748f5b4820efbe78072c8beb07ac619c2edec35d
   languageName: node
   linkType: hard
 
@@ -9714,13 +9725,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"keycloak-js@npm:^22.0.4":
-  version: 22.0.4
-  resolution: "keycloak-js@npm:22.0.4"
+"keycloak-js@npm:^22.0.5":
+  version: 22.0.5
+  resolution: "keycloak-js@npm:22.0.5"
   dependencies:
     base64-js: ^1.5.1
     js-sha256: ^0.9.0
-  checksum: 60703ccbc06ffd485392fa5384b5fbe1ea716f97519a4b5e5b0057ce48a3310d691292d2faf452be1755be5253695c2024701a8125aeb39d154ab8610879be35
+  checksum: e3790656f5cfd25b2e89e508d7d96d47c4557f4125ecef131905a7c1f3177a89ed7d38163a1af7d6a739ba7af0397dba726ca337254eb675a22d8a9340710313
   languageName: node
   linkType: hard
 
@@ -11735,19 +11746,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^6.17.0":
-  version: 6.19.0
-  resolution: "react-router-dom@npm:6.19.0"
-  dependencies:
-    "@remix-run/router": 1.12.0
-    react-router: 6.19.0
-  peerDependencies:
-    react: ">=16.8"
-    react-dom: ">=16.8"
-  checksum: 04453ca48eb900a4a6aa8b8e48368fa78d4ce8a9b69df108d9f53071a904349b18672a66c94252eb847ae4369e30bbe4ec7244bb6529b10fd474774e48f03669
-  languageName: node
-  linkType: hard
-
 "react-router-dom@npm:^6.18.0":
   version: 6.18.0
   resolution: "react-router-dom@npm:6.18.0"
@@ -11772,17 +11770,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:6.19.0":
-  version: 6.19.0
-  resolution: "react-router@npm:6.19.0"
-  dependencies:
-    "@remix-run/router": 1.12.0
-  peerDependencies:
-    react: ">=16.8"
-  checksum: f7e3396b8f4299638029dc726cb02d9c05c8906dc5277e5f9d899ef113d8cec49dfab7d34cd496826f8c1a95666141f3eede446c4438ef56720fdb72c66473fb
-  languageName: node
-  linkType: hard
-
 "react-split@npm:^2.0.14":
   version: 2.0.14
   resolution: "react-split@npm:2.0.14"
@@ -11804,20 +11791,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reactflow@npm:^11.9.4":
-  version: 11.9.4
-  resolution: "reactflow@npm:11.9.4"
+"reactflow@npm:^11.10.1":
+  version: 11.10.1
+  resolution: "reactflow@npm:11.10.1"
   dependencies:
-    "@reactflow/background": 11.3.4
-    "@reactflow/controls": 11.2.4
-    "@reactflow/core": 11.9.4
-    "@reactflow/minimap": 11.7.4
-    "@reactflow/node-resizer": 2.2.4
-    "@reactflow/node-toolbar": 1.3.4
+    "@reactflow/background": 11.3.6
+    "@reactflow/controls": 11.2.6
+    "@reactflow/core": 11.10.1
+    "@reactflow/minimap": 11.7.6
+    "@reactflow/node-resizer": 2.2.6
+    "@reactflow/node-toolbar": 1.3.6
   peerDependencies:
     react: ">=17"
     react-dom: ">=17"
-  checksum: dc678993ed4a0732a6b107ef43f2ddcbb6e2d8d466f47ab9afdf71292fa69fcd84f1d010ccaab57418de255ec3ff9ee265bf716b47db561d1ecb93f9d3c590b5
+  checksum: 58a8c75266fd6c385cf13c4d87ce877632eecf2ce0c1f8c106a1e9874d3a252367bc6525fa0fb2acb369d2f00585db4df67dcdd048043752a42812419e836713
   languageName: node
   linkType: hard
 
@@ -13522,16 +13509,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.9.5":
-  version: 4.9.5
-  resolution: "typescript@npm:4.9.5"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: ee000bc26848147ad423b581bd250075662a354d84f0e06eb76d3b892328d8d4440b7487b5a83e851b12b255f55d71835b008a66cbf8f255a11e4400159237db
-  languageName: node
-  linkType: hard
-
 "typescript@patch:typescript@^4.6.4 || ^5.0.0#~builtin<compat/typescript>, typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
   version: 5.2.2
   resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=14eedb"
@@ -13539,16 +13516,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 07106822b4305de3f22835cbba949a2b35451cad50888759b6818421290ff95d522b38ef7919e70fb381c5fe9c1c643d7dea22c8b31652a717ddbd57b7f4d554
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@^4.9.5#~builtin<compat/typescript>":
-  version: 4.9.5
-  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=289587"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 1f8f3b6aaea19f0f67cba79057674ba580438a7db55057eb89cc06950483c5d632115c14077f6663ea76fd09fce3c190e6414bb98582ec80aa5a4eaf345d5b68
   languageName: node
   linkType: hard
 
@@ -14666,12 +14633,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xml-formatter@npm:^3.5.0":
-  version: 3.5.0
-  resolution: "xml-formatter@npm:3.5.0"
+"xml-formatter@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "xml-formatter@npm:3.6.0"
   dependencies:
     xml-parser-xo: ^4.1.0
-  checksum: 25a4ef21f5d7c1002f9441641260f755880c923902ec1b22afc32b1c1cea3e3bb66f7c390a124b14da5f6ae2141e36cffe2048518f0fbb774bd12f736fdc25f7
+  checksum: 36b7fca38eeef6b0a1f27960b43c43723263de26d5b27996199de3284c43d8cb52f30035307594f9b0971cf139b4650ec29581ef0293f122a8232f579f0dc16d
   languageName: node
   linkType: hard
 
