@@ -2,7 +2,7 @@
 
 [![Test](https://github.com/hawtio/hawtio-online/actions/workflows/test.yml/badge.svg)](https://github.com/hawtio/hawtio-online/actions/workflows/test.yml)
 
-An Hawtio console that eases the discovery and management of _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed on OpenShift and Kubernetes.
+An Hawtio console that eases the discovery and management of [_hawtio-enabled_ applications](#hawtio-enabled-application-examples) deployed on OpenShift and Kubernetes.
 
 <p align="center">
   <img align="center" src="docs/overview.gif">
@@ -10,7 +10,9 @@ An Hawtio console that eases the discovery and management of _hawtio-enabled_ <s
 
 ## Hawtio-enabled application examples
 
-Look at the separate examples project for understanding how you can write a _hawtio-enabled_ application for Hawtio Online.
+A _hawtio-enabled_ application is an application that is composed of containers with a configured port named `jolokia` and that exposes the [Jolokia](https://jolokia.org) API.
+
+Look at the separate examples project for understanding how you can set up a _hawtio-enabled_ application for Hawtio Online.
 
 - [Hawtio-Enabled Application Examples for Hawtio Online](https://github.com/hawtio/hawtio-online-examples)
 
@@ -260,7 +262,3 @@ The following script lets you apply the above environment variables to all the d
 ```sh
 ./scripts/disable-jolokia-auth.sh
 ```
-
----
-
-<a name="f1">1</a>. Containers with a configured port named `jolokia` and that exposes the [Jolokia](https://jolokia.org) API.
