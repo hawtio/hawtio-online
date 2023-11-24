@@ -4,6 +4,11 @@ import { Connection, Connections, connectService } from '@hawtio/react'
 import { k8Service, k8Api, KubePod, K8Actions, Container, ContainerPort, debounce } from '@hawtio/online-kubernetes-api'
 import { MgmtActions, log } from './globals'
 
+interface UpdateEmitter {
+  uid?: string
+  fireUpdate: boolean
+}
+
 export class ManagementService extends EventEmitter {
   private _initialized = false
   private _pods: { [key: string]: ManagedPod } = {}
@@ -79,10 +84,12 @@ export class ManagementService extends EventEmitter {
     Object.keys(this._pods).forEach(uid => this.uidQueue.add(uid))
   }
 
-  private emitUpdate(uid: string, fireUpdate: boolean) {
-    this.uidQueue.delete(uid)
+  private emitUpdate(emitter: UpdateEmitter) {
+    if (emitter.uid) {
+      this.uidQueue.delete(emitter.uid)
+    }
 
-    if (fireUpdate && this.uidQueue.size === 0) {
+    if (emitter.fireUpdate && this.uidQueue.size === 0) {
       this.emit(MgmtActions.UPDATED)
     }
   }
@@ -90,9 +97,22 @@ export class ManagementService extends EventEmitter {
   private async mgmtUpdate() {
     this.preMgmtUpdate()
 
+    if (Object.keys(this._pods).length === 0) {
+      /*
+       * If there are no pods, we still want an update to fire
+       * to let 3rd parties know that updates are happening but
+       * currently there are no pods to report on
+       */
+      this.emitUpdate({ fireUpdate: true })
+      return
+    }
+
     for (const uid of Object.keys(this._pods)) {
       const mPod: ManagedPod = this._pods[uid]
       const fingerprint = this.fingerprint(mPod.management)
+
+      // Flag that the pod is now under management
+      mPod.management.status.managed = true
 
       mPod.management.status.running = this.podStatus(mPod) === 'Running'
 
@@ -102,7 +122,7 @@ export class ManagementService extends EventEmitter {
          * against a non-running pod.
          * Emit an update but only if the status has in fact changed
          */
-        this.emitUpdate(uid, fingerprint === this.fingerprint(mPod.management))
+        this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
         continue
       }
 
@@ -112,12 +132,12 @@ export class ManagementService extends EventEmitter {
       try {
         const url = await mPod.probeJolokiaUrl()
         if (!url) {
-          this.emitUpdate(uid, fingerprint === this.fingerprint(mPod.management))
+          this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
         }
       } catch (error) {
         log.error(new Error(`Cannot access jolokia url at ${mPod.jolokiaPath}`, { cause: error }))
         mPod.management.status.error = true
-        this.emitUpdate(uid, fingerprint === this.fingerprint(mPod.management))
+        this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
         continue
       }
 
@@ -126,12 +146,12 @@ export class ManagementService extends EventEmitter {
         success: (routes: string[]) => {
           mPod.management.status.error = false
           mPod.management.camel.routes_count = routes.length
-          this.emitUpdate(uid, fingerprint === this.fingerprint(mPod.management))
+          this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
         },
         error: error => {
           log.error(error)
           mPod.management.status.error = true
-          this.emitUpdate(uid, fingerprint === this.fingerprint(mPod.management))
+          this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
         },
       })
     }

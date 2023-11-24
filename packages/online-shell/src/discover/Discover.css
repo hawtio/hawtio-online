@@ -23,6 +23,16 @@
   display: none;
 }
 
+.discover-loading {
+  width: 85%;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2em;
+  background-color: transparent;
+  font-style: italic;
+}
+
 .discover-group-label {
   text-align: left;
   color: rgb(117, 117, 117);

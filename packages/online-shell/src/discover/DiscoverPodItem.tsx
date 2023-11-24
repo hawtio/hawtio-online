@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react'
 import { Label, LabelGroup, ListItem, Title } from '@patternfly/react-core'
 import { DatabaseIcon, HomeIcon, OutlinedHddIcon } from '@patternfly/react-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { ConsoleLink, ConsoleType } from '../console'
 import { Labels } from '../labels'
 import { DiscoverPod } from './globals'
@@ -32,8 +34,20 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
   }
 
   const routesLabel = (): ReactNode => {
+    if (!props.pod.mPod.management.status.managed) {
+      return (
+        <Label color='grey' icon={<FontAwesomeIcon icon={faSpinner} spin />} className='pod-item-routes'>
+          {`querying routes ...`}
+        </Label>
+      )
+    }
+
     const total = props.pod.mPod.management.camel.routes_count
-    return `${total} route${total !== 1 ? 's' : ''}`
+    return (
+      <Label color='gold' icon={<CamelRouteIcon />} className='pod-item-routes'>
+        {`${total} route${total !== 1 ? 's' : ''}`}
+      </Label>
+    )
   }
 
   return (
@@ -68,9 +82,7 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
           {containersLabel()}
         </Label>
 
-        <Label color='gold' icon={<CamelRouteIcon />} className='pod-item-routes'>
-          {routesLabel()}
-        </Label>
+        {routesLabel()}
       </LabelGroup>
 
       <div className='pod-item-connect-button'>
