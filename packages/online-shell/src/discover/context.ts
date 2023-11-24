@@ -11,6 +11,7 @@ type UpdateListener = () => void
  */
 export function useDisplayItems() {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const [isMounting, setIsMounting] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>()
   const [discoverGroups, setDiscoverGroups] = useState<DiscoverGroup[]>([])
@@ -27,22 +28,22 @@ export function useDisplayItems() {
   }
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsMounting(true)
 
     const checkLoading = async () => {
       const mgmtLoaded = await isMgmtApiRegistered()
 
       if (!mgmtLoaded) return
 
-      setIsLoading(false)
-
       if (k8Api.hasError()) {
         setError(k8Api.error)
+        setIsMounting(false)
         return
       }
 
       if (k8Service.hasError()) {
         setError(k8Service.error)
+        setIsMounting(false)
         return
       }
 
@@ -50,6 +51,7 @@ export function useDisplayItems() {
       // First-time update pod organisation
       //
       organisePods([], [])
+      setIsMounting(false)
     }
 
     checkLoading()
@@ -71,6 +73,8 @@ export function useDisplayItems() {
   useEffect(() => {
     const mgmtListener = () => {
       organisePods(discoverGroups, filters)
+      // Listener inited so loading now complete
+      setIsLoading(false)
     }
 
     mgmtService.on(MgmtActions.UPDATED, mgmtListener)
@@ -79,7 +83,7 @@ export function useDisplayItems() {
     return () => {
       if (updateListener.current) mgmtService.off(MgmtActions.UPDATED, updateListener.current)
     }
-  }, [isLoading, filters, discoverGroups])
+  }, [isMounting, filters, discoverGroups])
 
   return { error, isLoading, discoverGroups, setDiscoverGroups, discoverPods, setDiscoverPods, filters, setFilters }
 }

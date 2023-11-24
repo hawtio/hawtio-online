@@ -13,6 +13,7 @@ const DEFAULT_JOLOKIA_OPTIONS: BaseRequestOptions = {
 
 export type Management = {
   status: {
+    managed: boolean
     running: boolean
     error: boolean
   }
@@ -30,6 +31,7 @@ export class ManagedPod {
 
   private _management: Management = {
     status: {
+      managed: false,
       running: false,
       error: false,
     },

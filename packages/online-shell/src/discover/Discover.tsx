@@ -9,6 +9,10 @@ import {
   List,
   PageSection,
   PageSectionVariants,
+  Panel,
+  PanelHeader,
+  PanelMain,
+  PanelMainBody,
   Title,
 } from '@patternfly/react-core'
 import { CubesIcon } from '@patternfly/react-icons'
@@ -24,7 +28,18 @@ export const Discover: React.FunctionComponent = () => {
     useDisplayItems()
 
   if (isLoading) {
-    return <HawtioLoadingCard />
+    return (
+      <PageSection variant={PageSectionVariants.light}>
+        <Panel className='discover-loading'>
+          <PanelHeader>Waiting for Hawtio Containers ...</PanelHeader>
+          <PanelMain>
+            <PanelMainBody>
+              <HawtioLoadingCard />
+            </PanelMainBody>
+          </PanelMain>
+        </Panel>
+      </PageSection>
+    )
   }
 
   if (error) {
@@ -43,15 +58,17 @@ export const Discover: React.FunctionComponent = () => {
 
   if (discoverGroups.length + discoverPods.length === 0) {
     return (
-      <EmptyState>
-        <EmptyStateIcon icon={CubesIcon} />
-        <Title headingLevel='h1' size='lg'>
-          No Hawtio Containers
-        </Title>
-        <EmptyStateBody>
-          There are no containers running with a port configured whose name is <code>jolokia</code>.
-        </EmptyStateBody>
-      </EmptyState>
+      <PageSection variant={PageSectionVariants.light}>
+        <EmptyState>
+          <EmptyStateIcon icon={CubesIcon} />
+          <Title headingLevel='h1' size='lg'>
+            No Hawtio Containers
+          </Title>
+          <EmptyStateBody>
+            There are no containers running with a port configured whose name is <code>jolokia</code>.
+          </EmptyStateBody>
+        </EmptyState>
+      </PageSection>
     )
   }
 
