@@ -133,17 +133,6 @@ format-fix: setup
 check-licenses:
 	./script/check_licenses.sh
 
-# TODO
-# Pod keep crashing on OS
-# 10.217.0.1 - - [19/Sep/2023:19:53:24 +0000] "GET /online HTTP/1.1" 500 177 "-" "kube-probe/1.26" "-"
-# 2023/09/19 19:53:29 [error] 17#17: *13 rewrite or internal redirection cycle while internally redirecting to "/online/index.html", client: 10.217.0.1, server: localhost, request: "GET /online HTTP/1.1", host: "10.217.1.238:8443"
-# 10.217.0.1 - - [19/Sep/2023:19:53:29 +0000] "GET /online HTTP/1.1" 500 177 "-" "kube-probe/1.26" "-"
-# 2023/09/19 19:53:34 [error] 17#17: *14 rewrite or internal redirection cycle while internally redirecting to "/online/index.html", client: 10.217.0.1, server: localhost, request: "GET /online HTTP/1.1", host: "10.217.1.238:8443"
-# 10.217.0.1 - - [19/Sep/2023:19:53:34 +0000] "GET /online HTTP/1.1" 500 177 "-" "kube-probe/1.26" "-"
-# 2023/09/19 19:53:39 [error] 17#17: *15 rewrite or internal redirection cycle while internally redirecting to "/online/index.html", client: 10.217.0.1, server: localhost, request: "GET /online HTTP/1.1", host: "10.217.1.238:8443"
-# 10.217.0.1 - - [19/Sep/2023:19:53:39 +0000] "GET /online HTTP/1.1" 500 177 "-" "kube-probe/1.26" "-"
-
-
 image:
 	@echo "####### Building Hawtio Online container image..."
 	docker build -t $(CUSTOM_IMAGE):$(CUSTOM_VERSION) -f Dockerfile .

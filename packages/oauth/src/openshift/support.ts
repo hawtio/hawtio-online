@@ -26,7 +26,7 @@ export function forceRelogin(url: URL, config: OpenShiftOAuthConfig) {
 
 export function doLogin(config: OpenShiftOAuthConfig, options: { uri: string }): void {
   if (!config) {
-    log.debug('Cannot login due to config now being properly defined')
+    log.debug('Cannot login due to config not being properly defined')
     return
   }
 
