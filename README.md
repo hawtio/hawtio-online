@@ -8,6 +8,12 @@ An Hawtio console that eases the discovery and management of _hawtio-enabled_ <s
   <img align="center" src="docs/overview.gif">
 </p>
 
+## Hawtio-enabled application examples
+
+Look at the separate examples project for understanding how you can write a _hawtio-enabled_ application for Hawtio Online.
+
+- [Hawtio-Enabled Application Examples for Hawtio Online](https://github.com/hawtio/hawtio-online-examples)
+
 ## Preparation
 
 Prior to the deployment, depending on the cluster types you need to generate either of the _proxying_ or _serving_ certificates.
@@ -28,13 +34,13 @@ For OpenShift, a client certificate must be generated using the [service signing
 Run the following script to generate and set up a client certificate for Hawtio Online:
 
 ```sh
-$ ./scripts/generate-proxying.sh
+./scripts/generate-proxying.sh
 ```
 
 or if you have Yarn installed, this will also do the same thing:
 
 ```sh
-$ yarn gen:proxying
+yarn gen:proxying
 ```
 
 #### Serving certificates
@@ -56,13 +62,13 @@ For Kubernetes, proxing certificates are disabled by default and you don't need 
 For Kubernetes, a serving certificate must be generated manually. Run the following script to generate and set up a certificate for Hawtio Online:
 
 ```sh
-$ ./scripts/generate-serving.sh [-k tls.key] [-c tls.crt] [SECRET_NAME] [CN]
+./scripts/generate-serving.sh [-k tls.key] [-c tls.crt] [SECRET_NAME] [CN]
 ```
 
 or:
 
 ```sh
-$ yarn gen:serving [-k tls.key] [-c tls.crt] [SECRET_NAME] [CN]
+yarn gen:serving [-k tls.key] [-c tls.crt] [SECRET_NAME] [CN]
 ```
 
 You can provide an existing TLS key and certificate by passing parameters `-k tls.key` and `-c tls.crt` respectively. Otherwise, a self-signed `tls.key` and `tls.crt` will be generated automatically in the working directory and used for creating the serving certificate secret.
@@ -97,14 +103,14 @@ To deploy the Hawtio Online console on OpenShift, follow the steps below.
 If you have Yarn installed:
 
 ```sh
-$ yarn deploy:openshift:cluster
+yarn deploy:openshift:cluster
 ```
 
 otherwise (two commands):
 
 ```sh
-$ oc apply -k deploy/openshift/cluster/
-$ ./deploy/openshift/cluster/oauthclient.sh
+oc apply -k deploy/openshift/cluster/
+./deploy/openshift/cluster/oauthclient.sh
 ```
 
 #### Namespace mode
@@ -112,13 +118,13 @@ $ ./deploy/openshift/cluster/oauthclient.sh
 If you have Yarn installed:
 
 ```sh
-$ yarn deploy:openshift:namespace
+yarn deploy:openshift:namespace
 ```
 
 otherwise:
 
 ```sh
-$ oc apply -k deploy/openshift/namespace/
+oc apply -k deploy/openshift/namespace/
 ```
 
 You can obtain the status of your deployment, by running:
@@ -145,13 +151,13 @@ To deploy the Hawtio Online console on Kubernetes, follow the steps below.
 If you have Yarn installed:
 
 ```sh
-$ yarn deploy:k8s:cluster
+yarn deploy:k8s:cluster
 ```
 
 otherwise:
 
 ```sh
-$ kubectl apply -k deploy/k8s/cluster/
+kubectl apply -k deploy/k8s/cluster/
 ```
 
 #### Namespace mode
@@ -159,13 +165,13 @@ $ kubectl apply -k deploy/k8s/cluster/
 If you have Yarn installed:
 
 ```sh
-$ yarn deploy:k8s:namespace
+yarn deploy:k8s:namespace
 ```
 
 otherwise:
 
 ```sh
-$ kubectl apply -k deploy/k8s/namespace/
+kubectl apply -k deploy/k8s/namespace/
 ```
 
 ## Authentication
@@ -193,14 +199,14 @@ See [RBAC](docs/rbac.md).
 
 You must have the following tools installed:
 
-* [Node.js](http://nodejs.org)
-* [Yarn](https://yarnpkg.com) (version `1.5.1` or higher)
-* [gulp](http://gulpjs.com/) (version `4.x`)
+- [Node.js](http://nodejs.org)
+- [Yarn](https://yarnpkg.com) (version `1.5.1` or higher)
+- [gulp](http://gulpjs.com/) (version `4.x`)
 
 ### Build
 
 ```
-$ yarn install
+yarn install
 ```
 
 ### Install
@@ -210,7 +216,7 @@ In order to authenticate and obtain OAuth access tokens for the Hawtio console b
 ##### Cluster mode
 
 ```sh
-$ oc create -f oauthclient.yml
+oc create -f oauthclient.yml
 ```
 
 See [OAuth Clients](https://docs.openshift.com/container-platform/latest/authentication/configuring-oauth-clients.html#oauth-default-clients_configuring-oauth-clients) for more information.
@@ -218,7 +224,7 @@ See [OAuth Clients](https://docs.openshift.com/container-platform/latest/authent
 ##### Namespace mode
 
 ```sh
-$ oc create -f serviceaccount.yml
+oc create -f serviceaccount.yml
 ```
 
 See [Service Accounts as OAuth Clients](https://docs.openshift.com/container-platform/latest/authentication/using-service-accounts-as-oauth-client.html) for more information.
@@ -228,13 +234,13 @@ See [Service Accounts as OAuth Clients](https://docs.openshift.com/container-pla
 ##### Cluster mode
 
 ```
-$ yarn start --master=`oc whoami --show-server` --mode=cluster
+yarn start --master=`oc whoami --show-server` --mode=cluster
 ```
 
 ##### Namespace mode
 
 ```
-$ yarn start --master=`oc whoami --show-server` --mode=namespace --namespace=`oc project -q`
+yarn start --master=`oc whoami --show-server` --mode=namespace --namespace=`oc project -q`
 ```
 
 You can access the console at <http://localhost:2772/>.
@@ -252,7 +258,7 @@ AB_JOLOKIA_OPTS=useSslClientAuthentication=false,protocol=https
 The following script lets you apply the above environment variables to all the deployments with a label `provider=fabric8` in a batch:
 
 ```sh
-$ ./scripts/disable-jolokia-auth.sh
+./scripts/disable-jolokia-auth.sh
 ```
 
 ---
