@@ -1993,7 +1993,7 @@ __metadata:
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
     "@hawtio/react": ^0.9.2
-    "@types/jest": ^29.5.8
+    "@types/jest": ^29.5.10
     "@types/jquery": ^3.5.29
     "@types/jsonpath": ^0.2.0
     "@types/node": ^18.18.13
@@ -2064,7 +2064,7 @@ __metadata:
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": ^0.9.2
-    "@types/jest": ^29.5.8
+    "@types/jest": ^29.5.10
     "@types/jquery": ^3.5.29
     "@types/jsonpath": ^0.2.0
     babel-jest: ^29.6.1
@@ -2136,7 +2136,7 @@ __metadata:
   resolution: "@hawtio/online-oauth@workspace:packages/oauth"
   dependencies:
     "@hawtio/react": ^0.9.2
-    "@types/jest": ^29.5.8
+    "@types/jest": ^29.5.10
     "@types/jquery": ^3.5.29
     babel-jest: ^29.6.1
     fetch-intercept: ^2.4.0
@@ -3750,6 +3750,16 @@ __metadata:
   dependencies:
     "@types/istanbul-lib-report": "*"
   checksum: 21d007be7dd09165ed24f5cc9947319ad435fc3b3e568f3eec0a42ee80fd2adccdeb929bc1311efb2cf7597835638cde865d3630d8b4c15d1390c9527bcad1a9
+  languageName: node
+  linkType: hard
+
+"@types/jest@npm:^29.5.10":
+  version: 29.5.10
+  resolution: "@types/jest@npm:29.5.10"
+  dependencies:
+    expect: ^29.0.0
+    pretty-format: ^29.0.0
+  checksum: ef385905787db528de9b6beb2688865c0bb276e64256ed60b9a1a6ffc0b75737456cb5e27e952a3241c5845b6a1da487470010dd30f3ca59c8581624c564a823
   languageName: node
   linkType: hard
 
