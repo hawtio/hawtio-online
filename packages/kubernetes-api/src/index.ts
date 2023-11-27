@@ -1,17 +1,8 @@
-import { configManager } from '@hawtio/react'
 import { oAuthInit } from '@hawtio/online-oauth'
 import { k8Init } from './init'
 import { log } from './globals'
 
-let configAdded = false
-
 const registerK8Api = async (): Promise<boolean> => {
-  if (!configAdded) {
-    // Add Product Info
-    configManager.addProductInfo('Hawtio Kubernetes API', 'PACKAGE_VERSION_PLACEHOLDER')
-    configAdded = true
-  }
-
   log.debug('Awaiting registering of OAuth')
   oAuthInit()
 
