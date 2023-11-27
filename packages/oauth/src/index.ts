@@ -1,4 +1,4 @@
-import { hawtio, HawtioPlugin, configManager } from '@hawtio/react'
+import { hawtio, HawtioPlugin } from '@hawtio/react'
 import { log } from './globals'
 import { getActiveProfile } from './api'
 import { oAuthService } from './oauth-service'
@@ -26,9 +26,6 @@ export function oAuthInitialised(): boolean {
 }
 
 export const oAuthInit: HawtioPlugin = async () => {
-  // Add Product Info
-  configManager.addProductInfo('Hawtio OAuth', 'PACKAGE_VERSION_PLACEHOLDER')
-
   if (hawtio.getPlugins().filter(plugin => plugin.id === FORM_AUTH_PROTOCOL_MODULE).length === 0) {
     hawtio.addPlugin({
       id: FORM_AUTH_PROTOCOL_MODULE,
