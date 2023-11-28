@@ -1,14 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { Logger, configManager, hawtio, Hawtio, registerPlugins } from '@hawtio/react'
-import { log } from '@hawtio/online-kubernetes-api'
+import { configManager, hawtio, Hawtio, registerPlugins } from '@hawtio/react'
 import { isMgmtApiRegistered } from '@hawtio/online-management-api'
 import { reportWebVitals } from './reportWebVitals'
 import { discover } from './discover'
-
-// To be removed post-development / pre-production
-Logger.setLevel(Logger.DEBUG)
-log.log('Logging Level set to', Logger.getLevel())
 
 configManager.addProductInfo('Hawtio Online', '__PACKAGE_VERSION_PLACEHOLDER__')
 
