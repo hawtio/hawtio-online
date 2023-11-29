@@ -19,55 +19,32 @@
 #
 SHELL := /bin/bash
 
-VERSION ?= 2.0.0-SNAPSHOT
+VERSION := 2.0.0-SNAPSHOT
 LAST_RELEASED_IMAGE_NAME := hawtio/online
 LAST_RELEASED_VERSION ?= 1.12.0
 CONTROLLER_GEN_VERSION := v0.6.1
 OPERATOR_SDK_VERSION := v1.26.1
 KUSTOMIZE_VERSION := v4.5.4
 OPM_VERSION := v1.24.0
-IMAGE_NAME ?= hawtio/online
+IMAGE_NAME ?= quay.io/hawtio/online
+
+# Replace SNAPSHOT with the current timestamp
+DATETIMESTAMP=$(shell date -u '+%Y%m%d-%H%M%S')
+VERSION := $(subst -SNAPSHOT,-$(DATETIMESTAMP),$(VERSION))
 
 #
 # Situations when user wants to override
 # the image name and version
 # - used in kustomize install
-# - used in making bundle
 # - need to preserve original image and version as used in other files
 #
 CUSTOM_IMAGE ?= $(IMAGE_NAME)
 CUSTOM_VERSION ?= $(VERSION)
 
-METADATA_IMAGE_NAME := $(CUSTOM_IMAGE)-metadata
-BUNDLE_IMAGE_NAME ?= $(CUSTOM_IMAGE)-bundle
 RELEASE_GIT_REMOTE := origin
 GIT_COMMIT := $(shell if [ -d .git ]; then git rev-list -1 HEAD; else echo "$(CUSTOM_VERSION)"; fi)
 LINT_GOGC := 10
 LINT_DEADLINE := 10m
-
-
-# olm bundle vars
-MANAGER := config/manager
-MANIFESTS := config/manifests
-CHANNELS ?= $(shell v=$(OPERATOR_VERSION) && echo "stable-$${v%\.[0-9]}"),candidate,latest
-DEFAULT_CHANNEL ?= $(shell v=$(OPERATOR_VERSION) && echo "stable-$${v%\.[0-9]}")
-PACKAGE := hawtio
-CSV_VERSION := $(CUSTOM_VERSION)
-CSV_NAME := $(PACKAGE).v$(CSV_VERSION)
-# Final CSV name that replaces the name required by the operator-sdk
-# Has to be replaced after the bundle has been generated
-CSV_PRODUCTION_NAME := $(LAST_RELEASED_IMAGE_NAME).v$(CSV_VERSION)
-CSV_DISPLAY_NAME := Hawtio Online
-CSV_SUPPORT := Hawtio
-CSV_REPLACES := $(LAST_RELEASED_IMAGE_NAME).v$(LAST_RELEASED_VERSION)
-CSV_FILENAME := $(PACKAGE).clusterserviceversion.yaml
-CSV_PATH := $(MANIFESTS)/bases/$(CSV_FILENAME)
-CSV_PRODUCTION_PATH := bundle/manifests/$(CSV_FILENAME)
-
-# Test Bundle Index
-BUNDLE_INDEX := quay.io/operatorhubio/catalog:latest
-INDEX_DIR := index
-OPM := opm
 
 define LICENSE_HEADER
 Licensed to the Apache Software Foundation (ASF) under one or more

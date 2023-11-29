@@ -23,7 +23,7 @@ spec:
         deployment: hawtio-online
     spec:
       containers:
-        - image: hawtio/online
+        - image: quay.io/hawtio/online
           imagePullPolicy: Always
           name: hawtio-online
           ports:
