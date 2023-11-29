@@ -34,7 +34,7 @@
     "lint:fix": "yarn eslint packages/ --fix",
     "format:check": "yarn prettier --check packages/",
     "format:fix": "yarn prettier --write packages/",
-    "image": "docker build -t docker.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest} .",
+    "image": "docker build -t quay.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest} .",
     "license": "mkdir -p docker/licenses && yarn licenses generate-disclaimer -R > docker/licenses/licenses.txt",
     "gen:proxying": "./scripts/generate-proxying.sh",
     "gen:serving": "./scripts/generate-serving.sh",
@@ -45,7 +45,7 @@
     "deploy:k8s:cluster": "./scripts/kube-apply.sh deploy/k8s/cluster/",
     "deploy:openshift:namespace": "./scripts/kube-apply.sh deploy/openshift/namespace/",
     "deploy:openshift:cluster": "./scripts/kube-apply.sh deploy/openshift/cluster/ && ./deploy/openshift/cluster/oauthclient.sh $ROUTE_HOSTNAME",
-    "kustomize:image": "cd deploy/base && kustomize edit set image hawtio/online=docker.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
+    "kustomize:image": "cd deploy/base && kustomize edit set image hawtio/online=quay.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
