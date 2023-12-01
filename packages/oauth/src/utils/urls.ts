@@ -1,4 +1,6 @@
+import { log } from '../globals'
 import { isBlank } from './strings'
+import { relToAbsUrl } from './utils'
 
 /**
  * Join the supplied strings together using '/', stripping any leading/ending '/'
@@ -25,4 +27,31 @@ export function joinPaths(...paths: string[]): string {
     }
   })
   return tmp.join('/')
+}
+
+export async function logoutRedirectAvailable(): Promise<boolean> {
+  const response = await fetch('/logout')
+  if (!response || response.status !== 200) {
+    log.debug('Warning: Server does not have a logout page. Redirecting to login provider directly ...')
+    return false
+  }
+
+  return true
+}
+
+export function logoutRedirect(redirectUri: URL): void {
+  // Have a logout page so append redirect uri to its url
+  const logoutUrl = new URL(relToAbsUrl('/logout'))
+  logoutUrl.searchParams.append('redirect_uri', redirectUri.toString())
+
+  logoutRedirectAvailable().then(exists => {
+    if (exists) redirect(logoutUrl)
+    else redirect(redirectUri)
+  })
+}
+
+export function redirect(target: URL) {
+  log.debug('Redirecting to URI:', target)
+  // Redirect to the target URI
+  window.location.href = target.toString()
 }

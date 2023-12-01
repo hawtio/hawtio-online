@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import * as fetchIntercept from 'fetch-intercept'
-import { getCookie } from '../utils'
+import { getCookie, logoutRedirect, redirect } from '../utils'
 import { log, OAuthProtoService, UserProfile } from '../globals'
 import { FormConfig, FORM_TOKEN_STORAGE_KEY, FORM_AUTH_PROTOCOL_MODULE, ResolveUser } from './globals'
 import { relToAbsUrl } from 'src/utils/utils'
@@ -18,8 +18,8 @@ interface Headers {
 
 export class FormService implements OAuthProtoService {
   private userProfile: UserProfile
+  private readonly login: Promise<boolean>
   private formConfig: FormConfig | null
-  private loggedIn: boolean
   private fetchUnregister: (() => void) | null
 
   constructor(formConfig: FormConfig | null, userProfile: UserProfile) {
@@ -27,11 +27,11 @@ export class FormService implements OAuthProtoService {
     this.userProfile = userProfile
     this.userProfile.setOAuthType(FORM_AUTH_PROTOCOL_MODULE)
     this.formConfig = formConfig
-    this.loggedIn = this.initLogin()
+    this.login = this.createLogin()
     this.fetchUnregister = null
   }
 
-  private initLogin(): boolean {
+  private async createLogin(): Promise<boolean> {
     if (!this.formConfig) {
       log.debug('Form auth disabled')
       return false
@@ -52,19 +52,13 @@ export class FormService implements OAuthProtoService {
       return false
     }
 
-    return this.login()
-  }
-
-  login(): boolean {
     if (this.userProfile.hasToken()) {
       return true // already logged in
     }
 
-    const currentUri = new URL(window.location.href)
     const token = this.checkToken()
     if (!token) {
-      this.clearTokenStorage()
-      this.tryLogin({ uri: currentUri })
+      this.tryLogin({ uri: new URL(window.location.href) })
       return false
     }
 
@@ -87,11 +81,7 @@ export class FormService implements OAuthProtoService {
     return token
   }
 
-  private clearTokenStorage(): void {
-    localStorage.removeItem(FORM_TOKEN_STORAGE_KEY)
-  }
-
-  private tryLogin(options: LoginOptions) {
+  private buildLoginUrl(options: LoginOptions): URL {
     if (!this.formConfig) throw new Error('Cannot initiate login as form configuration cannot be derived')
 
     const target = relToAbsUrl(this.formConfig.uri)
@@ -99,18 +89,24 @@ export class FormService implements OAuthProtoService {
 
     log.debug('Login - form URI:    ', target)
     log.debug('Login - redirect URI:', options.uri)
-    if (targetUri.pathname === options.uri.pathname) {
-      // We are already in the login form
-      log.debug('Login - Already in', this.formConfig.uri)
-      return
-    }
 
     const searchParams = new URLSearchParams()
     searchParams.set('redirectUri', options.uri.toString())
     targetUri.search = searchParams.toString()
 
-    log.debug('Redirecting to URI:', targetUri.toString())
-    window.location.href = targetUri.toString()
+    return targetUri
+  }
+
+  private tryLogin(options: LoginOptions) {
+    const targetUri = this.buildLoginUrl(options)
+
+    if (targetUri.pathname === options.uri.pathname) {
+      // We are already in the login form
+      log.debug('Login - Already in', targetUri)
+      return
+    }
+
+    redirect(targetUri)
   }
 
   private setupFetch() {
@@ -164,21 +160,23 @@ export class FormService implements OAuthProtoService {
     $.ajaxSetup({ beforeSend })
   }
 
-  forceRelogin(url: URL) {
-    this.clearTokenStorage()
-    this.tryLogin({ uri: url })
+  private clearTokenStorage(): void {
+    localStorage.removeItem(FORM_TOKEN_STORAGE_KEY)
   }
 
-  doLogout(): void {
+  private doLogout(): void {
     if (this.fetchUnregister) this.fetchUnregister()
 
     const currentURI = new URL(window.location.href)
-    this.forceRelogin(currentURI)
+    this.clearTokenStorage()
+
+    // Redirect to /logout endpoint if possible
+    const targetUri = this.buildLoginUrl({ uri: currentURI })
+    logoutRedirect(targetUri)
   }
 
   async isLoggedIn(): Promise<boolean> {
-    this.loggedIn = this.login()
-    return this.loggedIn
+    return await this.login
   }
 
   private getSubjectFromToken(token: string): string {
@@ -189,7 +187,7 @@ export class FormService implements OAuthProtoService {
   registerUserHooks(): void {
     log.debug('Registering oAuth user hooks')
     const fetchUser = async (resolve: ResolveUser) => {
-      this.login()
+      await this.login
       if (!this.userProfile.hasToken() || this.userProfile.hasError()) {
         resolve({ username: PUBLIC_USER, isLogin: false })
         return false
@@ -211,9 +209,9 @@ export class FormService implements OAuthProtoService {
     userService.addFetchUserHook(FORM_AUTH_PROTOCOL_MODULE, fetchUser)
 
     const logout = async () => {
+      const login = await this.login
       log.debug('Running oAuth logout hook')
-      this.login()
-      if (!this.userProfile.hasToken() || this.userProfile.hasError()) return false
+      if (!login || !this.userProfile.hasToken() || this.userProfile.hasError()) return false
 
       log.info('Log out')
       try {
