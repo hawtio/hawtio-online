@@ -1,7 +1,7 @@
 import $ from 'jquery'
 import * as fetchIntercept from 'fetch-intercept'
 import { log, OAuthProtoService, UserProfile } from '../globals'
-import { fetchPath, isBlank, getCookie } from '../utils'
+import { fetchPath, isBlank, getCookie, redirect } from '../utils'
 import { CLUSTER_CONSOLE_KEY } from '../metadata'
 import {
   DEFAULT_CLUSTER_VERSION,
@@ -13,7 +13,7 @@ import {
   OpenShiftOAuthConfig,
   ResolveUser,
 } from './globals'
-import { buildUserInfoUri, checkToken, currentTimeSeconds, forceRelogin, tokenHasExpired } from './support'
+import { buildLoginUrl, buildUserInfoUri, checkToken, currentTimeSeconds, forceRelogin, tokenHasExpired } from './support'
 import { userService } from '@hawtio/react'
 
 interface UserObject {
@@ -241,7 +241,7 @@ export class OSOAuthService implements OAuthProtoService {
       const tokenParams = checkToken(currentURI)
       if (!tokenParams) {
         log.debug('No Token so initiating new login')
-        this.doLogout(config)
+        this.tryLogin(config, currentURI)
         return false
       }
 
@@ -269,6 +269,11 @@ export class OSOAuthService implements OAuthProtoService {
       this.userProfile.setError(error instanceof Error ? error : new Error('Error from checking token'))
       return false
     }
+  }
+
+  private tryLogin(config: OpenShiftOAuthConfig, uri: URL) {
+    const targetUri = buildLoginUrl(config, {uri: uri.toString()})
+    redirect(targetUri)
   }
 
   private doLogout(config: OpenShiftOAuthConfig): void {

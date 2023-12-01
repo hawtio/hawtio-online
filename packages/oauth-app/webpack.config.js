@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const historyApiFallback = require('connect-history-api-fallback')
 const path = require('path')
+const url = require('url')
 const dotenv = require('dotenv')
 const { dependencies } = require('./package.json')
 
@@ -273,6 +274,20 @@ module.exports = () => {
         devServer.app.get('/hawtio/proxy/enabled', (_, res) => res.send(String(proxyEnabled)))
         devServer.app.get('/hawtio/keycloak/enabled', (_, res) => res.send(String(keycloakEnabled)))
         devServer.app.get('/keycloak/enabled', (_, res) => res.redirect('/hawtio/keycloak/enabled'))
+
+        /*
+         * Provide a server-side implementation of /logout page to
+         * allow use of the Clear-Site-Data header that will clear
+         * all entries from the cache and storage relating to the app
+         */
+        devServer.app.get('/logout', (req, res) => {
+          // Ensure we pass along any query parameters of the request
+          var r = url.format({ pathname: '/redirectlogin.html', query: req.query });
+
+          // Adds the Clear-Site-Data header
+          res.header('Clear-Site-Data', '"cache", "cookies", "storage", "executionContexts"');
+          res.redirect(r);
+        })
 
         //
         // Use historyApiFallback to plug-in to the react router
