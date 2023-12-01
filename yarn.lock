@@ -2075,7 +2075,7 @@ __metadata:
     jest-extended: ^4.0.0
     jest-fetch-mock: ^3.0.3
     jest-watch-typeahead: ^2.2.2
-    jolokia.js: ^2.0.0-dev.10
+    jolokia.js: ^2.0.0-m4.0
     jquery: ^3.7.0
     js-logger: ^1.6.1
     jsonpath: ^1.1.1
@@ -9721,7 +9721,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jolokia.js@npm:^2.0.0-dev.10, jolokia.js@npm:^2.0.0-m4.0":
+"jolokia.js@npm:^2.0.0-m4.0":
   version: 2.0.0-m4.0
   resolution: "jolokia.js@npm:2.0.0-m4.0"
   dependencies:
