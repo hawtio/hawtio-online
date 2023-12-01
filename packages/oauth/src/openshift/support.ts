@@ -1,4 +1,4 @@
-import { relToAbsUrl } from '../utils/utils'
+import { relToAbsUrl, redirect, logoutRedirect } from '../utils'
 import { log, UserProfile } from '../globals'
 import { EXPIRES_IN_KEY, OBTAINED_AT_KEY, OpenShiftOAuthConfig, TokenMetadata } from './globals'
 
@@ -21,13 +21,15 @@ export function buildUserInfoUri(masterUri: string, config: OpenShiftOAuthConfig
 
 export function forceRelogin(url: URL, config: OpenShiftOAuthConfig) {
   clearTokenStorage()
-  doLogin(config, { uri: url.toString() })
+
+  const targetUri = buildLoginUrl(config, { uri: url.toString() })
+  logoutRedirect(targetUri)
 }
 
-export function doLogin(config: OpenShiftOAuthConfig, options: { uri: string }): void {
+export function buildLoginUrl(config: OpenShiftOAuthConfig, options: { uri: string }): URL {
   if (!config) {
     log.debug('Cannot login due to config not being properly defined')
-    return
+    throw new Error('Cannot complete login process due to incorrect configuration profile')
   }
 
   const clientId = config.oauth_client_id
@@ -47,11 +49,7 @@ export function doLogin(config: OpenShiftOAuthConfig, options: { uri: string }):
   uri.searchParams.append('redirect_uri', options.uri)
   uri.searchParams.append('scope', scope)
 
-  const target = uri.toString()
-  log.debug('Redirecting to URI:', target)
-
-  // Redirect to the target URI
-  window.location.href = target
+  return uri
 }
 
 function extractToken(uri: URL): TokenMetadata | null {
@@ -95,11 +93,8 @@ function extractToken(uri: URL): TokenMetadata | null {
 
   uri.hash = fragmentParams.toString()
 
-  const target = uri.toString()
-  log.debug('redirecting to:', target)
-
   // Redirect to new location
-  window.location.href = target
+  redirect(uri)
 
   return credentials
 }
