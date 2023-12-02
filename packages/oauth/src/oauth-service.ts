@@ -102,7 +102,7 @@ class OAuthService {
     log.debug('Registering oAuth user hooks')
 
     const protoService = await this.protoService
-    const loggedIn = protoService?.isLoggedIn() ?? false
+    const loggedIn = await protoService?.isLoggedIn() ?? false
     if (!loggedIn) {
       log.debug('Cannot register user hooks as OAuth Protocol Service is not logged-in')
       return
