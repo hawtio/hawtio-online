@@ -1,7 +1,7 @@
 import { hawtio } from '@hawtio/react'
 import { log } from '../../globals'
 import { oAuthService } from '../../oauth-service'
-import { FetchOptions, fetchPath, joinPaths } from '../../utils'
+import { FetchOptions, fetchPath, joinPaths, redirect, relToAbsUrl } from '../../utils'
 import { FORM_TOKEN_STORAGE_KEY } from '../globals'
 
 export type ValidationCallback = {
@@ -51,8 +51,7 @@ class FormAuthLoginService {
   private saveTokenAndRedirect(token: string): void {
     localStorage.setItem(FORM_TOKEN_STORAGE_KEY, token)
     const uri = this.redirectUri()
-    log.debug('Redirecting:', uri)
-    window.location.href = uri
+    redirect(new URL(uri))
   }
 
   private redirectUri(): string {
@@ -62,7 +61,7 @@ class FormAuthLoginService {
       return searchParams.get('redirect_uri') as string
     }
 
-    return hawtio.getBasePath() || window.location.origin
+    return relToAbsUrl(hawtio.getBasePath() || window.location.origin)
   }
 }
 
