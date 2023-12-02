@@ -4,6 +4,7 @@ const WebpackDevServer = require('webpack-dev-server')
 const DotenvPlugin = require('dotenv-webpack')
 const historyApiFallback = require('connect-history-api-fallback')
 const path = require('path')
+const url = require('url')
 const dotenv = require('dotenv')
 const { common } = require('./webpack.config.common.js')
 
@@ -187,6 +188,22 @@ module.exports = () => {
         devServer.app.get('/hawtio/keycloak/validate-subject-matches', (_, res) => res.send('true'))
         devServer.app.get('/hawtio/auth/logout', (_, res) => res.redirect('/hawtio/login'))
         devServer.app.post('/hawtio/auth/login', (_, res) => res.send(String(login)))
+
+        /*
+         * Provide a server-side implementation of /logout page to
+         * allow use of the Clear-Site-Data header that will clear
+         * all entries from the cache and storage relating to the app
+         */
+        devServer.app.get('/logout', (req, res) => {
+          // Ensure we pass along any query parameters of the request
+          var r = url.format({ pathname: '/redirectlogin.html', query: req.query })
+
+          // Do not cache this response
+          res.header('Cache-Control: no-store')
+          // Adds the Clear-Site-Data header
+          res.header('Clear-Site-Data', '"cache", "cookies", "storage", "executionContexts"')
+          res.redirect(r)
+        })
 
         //
         // Use historyApiFallback to plug-in to the react router
