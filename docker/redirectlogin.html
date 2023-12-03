@@ -1,0 +1,74 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/online/favicon.ico" />
+  </head>
+
+  <body style="background-color: black; color: white">
+
+    <!-- Redirection Counter -->
+    <script type="text/javascript">
+      var count = 5;
+
+      var redirectTarget = ''; // destination target
+
+      /*
+       * Get the redirect_uri param from the current url
+       */
+      var current = new URL(window.location.href);
+      var searchParams = new URLSearchParams(current.search);
+      if (searchParams.has('redirect_uri')) {
+        redirectTarget = searchParams.get('redirect_uri');
+      }
+
+      function redirect() {
+        window.location.replace(new URL(redirectTarget));
+      }
+
+      function countDown() {
+        var timer = document.getElementById("timer"); // Timer ID
+        if (redirectTarget.length == 0) {
+          // No redirect target
+          timer.innerHTML = '<p style="color: red; font-weight: bold;">Error: no redirect_uri parameter specified</p>';
+          return
+        }
+
+        if (count > 0) {
+          count--;
+
+          var timerMsg =`<p>
+            This page will redirect in ${count} seconds.
+          </p>
+          <p>
+            <a id="clickNow" title="Click Now" href="#"
+              onclick="redirect(); return false;">
+              Click here to redirect immediately
+            </a>
+          </p>`;
+
+          timer.innerHTML = timerMsg;
+          setTimeout("countDown()", 1000);
+        } else {
+          redirect();
+        }
+      }
+    </script>
+
+    <div style="margin-top: 2em; margin-left: 2em">
+      <div style="width: 50%;">
+        <span style="box-sizing:border-box;display:inline-block;overflow:hidden;width:initial;height:initial;background:none;opacity:1;border:0;margin:0;padding:0;position:relative;max-width:100%">
+          <img alt="Hawtio Logo" src="/online/hawtio-logo.svg">
+        </span>
+      </div>
+
+      <h1>Redirecting to login provider page ...</h1>
+
+      <p id="timer">
+        <script type="text/javascript">
+          countDown();
+        </script>
+      </p>
+
+    </div>
+  </body>
+</html>
