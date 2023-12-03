@@ -75,6 +75,7 @@ COPY docker/nginx.conf docker/nginx-gateway.conf.template docker/nginx-gateway-k
 
 COPY docker/hawtio-50x.html /usr/share/nginx/html
 COPY docker/hawtio-404.html /usr/share/nginx/html
+COPY docker/redirectlogin.html /usr/share/nginx/html/online
 
 # Copy licenses
 RUN mkdir -p /opt/hawtio/licenses
