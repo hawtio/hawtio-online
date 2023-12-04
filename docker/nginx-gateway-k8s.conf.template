@@ -1,5 +1,6 @@
 # vim: set filetype=nginx:
 js_import gateway from conf.d/nginx.js;
+js_set    $decodeRedirectUri gateway.decodeRedirectUri;
 
 proxy_cache_path /var/cache/nginx/pods levels=1:2 keys_zone=pods:2m max_size=4m inactive=60m use_temp_path=off;
 proxy_cache_path /var/cache/nginx/rbac levels=1:2 keys_zone=rbac:256k max_size=3m inactive=60m use_temp_path=off;
@@ -70,11 +71,14 @@ server {
         internal;
     }
 
-    location = /logout {
+    location /auth/logout {
+        if ( $arg_redirect_uri = '') {
+          return 200 "Acknowledge logout but nothing further to do";
+        }
+
         add_header Clear-Site-Data "\"*\"";
         add_header Cache-Control "no-store";
-        alias      /usr/share/nginx/html/online;
-        try_files  /redirectlogin.html /online/redirectlogin.html =504;
+        return 307 $decodeRedirectUri;
     }
 
     # Static content serving
