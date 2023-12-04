@@ -1,4 +1,4 @@
-import { log } from '../globals'
+import { LOGOUT_ENDPOINT, log } from '../globals'
 import { isBlank } from './strings'
 import { relToAbsUrl } from './utils'
 
@@ -29,9 +29,9 @@ export function joinPaths(...paths: string[]): string {
   return tmp.join('/')
 }
 
-export async function logoutRedirectAvailable(): Promise<boolean> {
-  const response = await fetch('/logout')
-  if (!response || response.status !== 200) {
+async function logoutRedirectAvailable(): Promise<boolean> {
+  const response = await fetch(LOGOUT_ENDPOINT)
+  if (!response || response.status >= 400) {
     log.debug('Warning: Server does not have a logout page. Redirecting to login provider directly ...')
     return false
   }
@@ -41,11 +41,11 @@ export async function logoutRedirectAvailable(): Promise<boolean> {
 
 export function logoutRedirect(redirectUri: URL): void {
   // Have a logout page so append redirect uri to its url
-  const logoutUrl = new URL(relToAbsUrl('/logout'))
-  logoutUrl.searchParams.append('redirect_uri', redirectUri.toString())
+  const logoutUri = new URL(relToAbsUrl(LOGOUT_ENDPOINT))
+  logoutUri.searchParams.append('redirect_uri', redirectUri.toString())
 
   logoutRedirectAvailable().then(exists => {
-    if (exists) redirect(logoutUrl)
+    if (exists) redirect(logoutUri)
     else redirect(redirectUri)
   })
 }

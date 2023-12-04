@@ -5,6 +5,7 @@ import { OpenShiftOAuthConfig } from './openshift'
 export const moduleName = 'hawtio-oauth'
 export const log = Logger.get(moduleName)
 export const PATH_OSCONSOLE_CLIENT_CONFIG = 'osconsole/config.json'
+export const LOGOUT_ENDPOINT = '/auth/logout'
 
 export interface OAuthConfig {
   master_uri?: string

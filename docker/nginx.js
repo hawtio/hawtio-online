@@ -13,7 +13,11 @@ RBAC.initACL(jsyaml.safeLoad(fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL
 var isRbacEnabled = typeof process.env['HAWTIO_ONLINE_RBAC_ACL'] !== 'undefined';
 var useForm = process.env['HAWTIO_ONLINE_AUTH'] === 'form';
 
-export default { proxyJolokiaAgent };
+export default { decodeRedirectUri, proxyJolokiaAgent };
+
+function decodeRedirectUri(r) {
+  return decodeURIComponent(r.args.redirect_uri);
+}
 
 function proxyJolokiaAgent(req) {
   var parts = req.uri.match(/\/management\/namespaces\/(.+)\/pods\/(http|https):(.+):(\d+)\/(.*)/);

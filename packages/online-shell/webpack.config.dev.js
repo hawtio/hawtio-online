@@ -190,19 +190,23 @@ module.exports = () => {
         devServer.app.post('/hawtio/auth/login', (_, res) => res.send(String(login)))
 
         /*
-         * Provide a server-side implementation of /logout page to
+         * Provide a server-side implementation of /auth/logout page to
          * allow use of the Clear-Site-Data header that will clear
          * all entries from the cache and storage relating to the app
          */
-        devServer.app.get('/logout', (req, res) => {
-          // Ensure we pass along any query parameters of the request
-          var r = url.format({ pathname: '/redirectlogin.html', query: req.query })
+        devServer.app.get('/auth/logout', (req, res) => {
+          let redirectUri = req.query.redirect_uri
 
-          // Do not cache this response
-          res.header('Cache-Control: no-store')
-          // Adds the Clear-Site-Data header
-          res.header('Clear-Site-Data', '"cache", "cookies", "storage", "executionContexts"')
-          res.redirect(r)
+          if (!redirectUri) {
+            // If no url then simply acknowledge
+            res.sendStatus(200)
+          } else {
+            var r = url.format(redirectUri)
+
+            // Adds the Clear-Site-Data header
+            res.header('Clear-Site-Data', '"*"')
+            res.redirect(r)
+          }
         })
 
         //

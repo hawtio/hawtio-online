@@ -170,7 +170,7 @@ export class FormService implements OAuthProtoService {
     const currentURI = new URL(window.location.href)
     this.clearTokenStorage()
 
-    // Redirect to /logout endpoint if possible
+    // Redirect to /auth/logout endpoint if possible
     const targetUri = this.buildLoginUrl({ uri: currentURI })
     logoutRedirect(targetUri)
   }
