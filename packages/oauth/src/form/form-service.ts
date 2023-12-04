@@ -18,7 +18,7 @@ interface Headers {
 
 export class FormService implements OAuthProtoService {
   private userProfile: UserProfile
-  private readonly login: Promise<boolean>
+  private readonly login: boolean
   private formConfig: FormConfig | null
   private fetchUnregister: (() => void) | null
 
@@ -31,7 +31,7 @@ export class FormService implements OAuthProtoService {
     this.fetchUnregister = null
   }
 
-  private async createLogin(): Promise<boolean> {
+  private createLogin(): boolean {
     if (!this.formConfig) {
       log.debug('Form auth disabled')
       return false
@@ -176,7 +176,7 @@ export class FormService implements OAuthProtoService {
   }
 
   async isLoggedIn(): Promise<boolean> {
-    return await this.login
+    return this.login
   }
 
   private getSubjectFromToken(token: string): string {
@@ -187,8 +187,7 @@ export class FormService implements OAuthProtoService {
   registerUserHooks(): void {
     log.debug('Registering oAuth user hooks')
     const fetchUser = async (resolve: ResolveUser) => {
-      await this.login
-      if (!this.userProfile.hasToken() || this.userProfile.hasError()) {
+      if (!this.login || !this.userProfile.hasToken() || this.userProfile.hasError()) {
         resolve({ username: PUBLIC_USER, isLogin: false })
         return false
       }
@@ -209,9 +208,8 @@ export class FormService implements OAuthProtoService {
     userService.addFetchUserHook(FORM_AUTH_PROTOCOL_MODULE, fetchUser)
 
     const logout = async () => {
-      const login = await this.login
       log.debug('Running oAuth logout hook')
-      if (!login || !this.userProfile.hasToken() || this.userProfile.hasError()) return false
+      if (!this.login || !this.userProfile.hasToken() || this.userProfile.hasError()) return false
 
       log.info('Log out')
       try {
