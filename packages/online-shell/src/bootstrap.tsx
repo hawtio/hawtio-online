@@ -4,6 +4,7 @@ import { configManager, hawtio, Hawtio, registerPlugins } from '@hawtio/react'
 import { isMgmtApiRegistered } from '@hawtio/online-management-api'
 import { reportWebVitals } from './reportWebVitals'
 import { discover } from './discover'
+import { log } from './discover/globals'
 
 configManager.addProductInfo('Hawtio Online', '__PACKAGE_VERSION_PLACEHOLDER__')
 
@@ -11,6 +12,16 @@ configManager.addProductInfo('Hawtio Online', '__PACKAGE_VERSION_PLACEHOLDER__')
 isMgmtApiRegistered().then(() => {
   // Register hawtio plugins
   registerPlugins()
+
+  // Disable the connect plugin
+  for (const plugin of hawtio.getPlugins()) {
+    if (plugin.id === 'connect') {
+      log.debug('Disabling connect plugin')
+      plugin.isActive = async () => {
+        return false
+      }
+    }
+  }
 
   // Register discover plugin
   discover()
