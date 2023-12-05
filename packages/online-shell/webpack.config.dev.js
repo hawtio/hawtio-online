@@ -40,6 +40,7 @@ module.exports = () => {
   const kube = new URL(kubeBase)
   const devPort = process.env.PORT || 2772
   const proxiedMaster = `http://localhost:${devPort}/master`
+  const publicPath = '/online'
 
   return merge(common('development'), {
     devtool: 'eval-source-map',
@@ -54,6 +55,11 @@ module.exports = () => {
         ignoreStub: true,
       }),
     ],
+
+    output: {
+      // Set base path to /
+      publicPath: publicPath,
+    },
 
     devServer: {
       compress: true,
@@ -78,6 +84,7 @@ module.exports = () => {
 
       static: {
         directory: path.join(__dirname, 'public'),
+        publicPath: publicPath,
       },
 
       setupMiddlewares: (middlewares, devServer) => {
@@ -174,7 +181,10 @@ module.exports = () => {
           pkceMethod: 'S256',
         }
 
-        devServer.app.get('/osconsole/config.json', osconsole)
+        // This path has been coded as relative to documentBase
+        // Therefore need to add publicPath to the front of it
+        devServer.app.get(`${publicPath}/osconsole/config.json`, osconsole)
+
         devServer.app.get('/management/*', management)
         devServer.app.post('/management/*', management)
 
@@ -216,6 +226,7 @@ module.exports = () => {
         //
         const history = historyApiFallback()
         devServer.app.get('/', history)
+        devServer.app.get('/discover', history)
         devServer.app.get('/login', history)
 
         return middlewares
