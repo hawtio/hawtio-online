@@ -175,8 +175,9 @@ export class FormService implements OAuthProtoService {
     logoutRedirect(targetUri)
   }
 
-  async isLoggedIn(): Promise<boolean> {
-    return this.login
+  isLoggedIn(): Promise<boolean> {
+    // Use Promise to conform with interface
+    return Promise.resolve(this.login)
   }
 
   private getSubjectFromToken(token: string): string {
