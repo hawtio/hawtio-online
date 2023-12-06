@@ -170,6 +170,20 @@ install: kustomize kubectl
 ifeq ($(CLUSTER_TYPE), openshift)
 	@$(MAKE) -s .openshift-console-url
 endif
+# Add the tls proxying on openshift, if specified
+ifeq ($(CLUSTER_TYPE), openshift)
+	@$(MAKE) -s generate-proxying
+endif
+# Add the oauth client on openshift, if specified
+ifeq ($(CLUSTER_TYPE), openshift)
+ifeq ($(MODE), cluster)
+	@$(MAKE) -s cluster-auth-client
+endif
+endif
+# Add the tls serving on k8s, if specified
+ifeq ($(CLUSTER_TYPE), k8s)
+@$(MAKE) -s generate-serving
+endif
 #
 # Build the resources
 # Either apply to the cluster or output to CLI
@@ -189,13 +203,12 @@ endif
 #
 #@ generate-proxying
 #
-#== Generate a client certificate and TLS secret for Hawtio proxying
+#== Generate a client certificate and TLS secret for Hawtio proxying on Openshift
 #
 #=== Calls check-admin
-#=== Calls kubectl
 #
 #* PARAMETERS:
-#** CLUSTER_TYPE:        Set the cluster type - must be openshift as not applicable to kubernetes
+#** CLUSTER_TYPE:        Set the cluster type to install on [ openshift | k8s ] - must be openshift as not applicable to kubernetes
 #** NAMESPACE:           Set the namespace for the secret
 #
 #---
@@ -204,6 +217,47 @@ ifneq ($(CLUSTER_TYPE), openshift)
 	$(error "Only applicable to cluster-type of Openshift")
 endif
 	NAMESPACE=$(NAMESPACE) ./script/generate-proxying.sh
+
+#---
+#
+#@ generate-serving
+#
+#== Generate a client certificate and TLS secret for Hawtio on kubernetes
+#
+#=== Calls check-admin
+#
+#* PARAMETERS:
+#** CLUSTER_TYPE:        Set the cluster type to install on [ openshift | k8s ] - must be kubernetes as not applicable to openshift
+#** NAMESPACE:           Set the namespace for the secret
+#
+#---
+generate-serving: check-admin
+ifneq ($(CLUSTER_TYPE), k8s)
+	$(error "Only applicable to cluster-type of k8s")
+endif
+	NAMESPACE=$(NAMESPACE) ./script/generate-serving.sh
+
+#---
+#
+#@ cluster-auth-client
+#
+#== Register hawtio as an additional oauth client allowing it to watch across the cluster
+#
+#=== Calls check-admin
+#
+#* PARAMETERS:
+#** CLUSTER_TYPE:        Set the cluster type - must be openshift as not applicable to kubernetes
+#** MODE:                Set the mode of installation [ cluster | namespace ]
+#
+#---
+cluster-auth-client: check-admin
+ifneq ($(CLUSTER_TYPE), openshift)
+	$(error "Only applicable to cluster-type of Openshift")
+endif
+ifneq ($(MODE), cluster)
+	$(error "Only applicable to cluster mode")
+endif
+	./$(CLUSTER_TYPE)/$(MODE)/oauthclient.sh
 
 .PHONY: uninstall
 
