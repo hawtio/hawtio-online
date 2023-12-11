@@ -201,9 +201,8 @@ See [RBAC](docs/rbac.md).
 
 You must have the following tools installed:
 
-- [Node.js](http://nodejs.org)
-- [Yarn](https://yarnpkg.com) (version `1.5.1` or higher)
-- [gulp](http://gulpjs.com/) (version `4.x`)
+- [Node.js](http://nodejs.org) (version `18` or higher)
+- [Yarn](https://yarnpkg.com) (version `3.6.0` or higher)
 
 ### Build
 
