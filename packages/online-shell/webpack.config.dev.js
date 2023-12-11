@@ -181,6 +181,9 @@ module.exports = () => {
           pkceMethod: 'S256',
         }
 
+        // Redirect root to /online base path
+        devServer.app.get('/', (_, res) => res.redirect('/online/'))
+
         // This path has been coded as relative to documentBase
         // Therefore need to add publicPath to the front of it
         devServer.app.get(`${publicPath}/osconsole/config.json`, osconsole)
