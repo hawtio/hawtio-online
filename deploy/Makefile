@@ -182,7 +182,7 @@ endif
 endif
 # Add the tls serving on k8s, if specified
 ifeq ($(CLUSTER_TYPE), k8s)
-@$(MAKE) -s generate-serving
+	@$(MAKE) -s generate-serving
 endif
 #
 # Build the resources
