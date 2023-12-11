@@ -36,7 +36,7 @@
     "jquery": "^3.7.0",
     "js-logger": "^1.6.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.2",
+    "typescript": "^5.3.3",
     "whatwg-fetch": "^3.6.19"
   },
   "devDependencies": {
