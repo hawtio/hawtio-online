@@ -1,8 +1,6 @@
-FROM quay.io/jitesoft/node:16 as builder
+FROM docker.io/node:18 as builder
 
 WORKDIR /hawtio-online
-
-RUN npm install -g yarn
 
 COPY package.json yarn.lock ./
 COPY .yarnrc.yml ./
