@@ -29,18 +29,18 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/react": "^0.9.2",
+    "@hawtio/react": "^1.0.0-rc.0",
     "babel-jest": "^29.6.1",
     "fetch-intercept": "^2.4.0",
     "jest-extended": "^4.0.0",
     "jquery": "^3.7.0",
     "js-logger": "^1.6.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.3.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
     "whatwg-fetch": "^3.6.19"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.10",
+    "@types/jest": "^29.5.11",
     "@types/jquery": "^3.5.29",
     "jest": "^29.6.1",
     "jest-environment-jsdom": "^29.6.1",
