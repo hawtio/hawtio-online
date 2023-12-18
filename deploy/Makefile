@@ -50,7 +50,7 @@ MODE ?= namespace
 # Use configmap as hawtconfig file
 HAWTCONFIG ?= true
 # The URL to use for access to the openshift console
-OS_CONSOLE_URL ?= ""
+OS_CONSOLE_URL ?=
 
 # Uninstall all hawtio-onlineresources: [true|false]
 UNINSTALL_ALL ?=false
@@ -121,7 +121,7 @@ check-admin: kubectl
 # Handle if console url has been specified for openshift
 #
 .openshift-console-url:
-ifeq ($(OS_CONSOLE_URL), '')
+ifeq ($(OS_CONSOLE_URL),)
 	@$(call add-remove-kind-patch,$(CLUSTER_TYPE)/$(MODE),remove,../../$(OS_CONSOLE_URL_PATCH),Deployment)
 else
 	@sed -i 's~.*value:.*~              value: "$(OS_CONSOLE_URL)"~' $(OS_CONSOLE_URL_PATCH)
