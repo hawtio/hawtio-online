@@ -50,7 +50,7 @@ MODE ?= namespace
 # Use configmap as hawtconfig file
 HAWTCONFIG ?= true
 # The URL to use for access to the openshift console
-OPENSHIFT_CONSOLE_URL ?= ""
+OS_CONSOLE_URL ?= ""
 
 # Uninstall all hawtio-onlineresources: [true|false]
 UNINSTALL_ALL ?=false
@@ -121,10 +121,10 @@ check-admin: kubectl
 # Handle if console url has been specified for openshift
 #
 .openshift-console-url:
-ifeq ($(CONSOLE_URL), '')
+ifeq ($(OS_CONSOLE_URL), '')
 	@$(call add-remove-kind-patch,$(CLUSTER_TYPE)/$(MODE),remove,../../$(OS_CONSOLE_URL_PATCH),Deployment)
 else
-	@sed -i 's~.*value:.*~              value: "$(CONSOLE_URL)"~' $(OS_CONSOLE_URL_PATCH)
+	@sed -i 's~.*value:.*~              value: "$(OS_CONSOLE_URL)"~' $(OS_CONSOLE_URL_PATCH)
 	@$(call add-remove-kind-patch,$(CLUSTER_TYPE)/$(MODE),add,../../$(OS_CONSOLE_URL_PATCH),Deployment)
 endif
 
@@ -156,6 +156,7 @@ endif
 #** HAWTCONFIG:          Set whether to use configmap as hawtconfig.json [ true | false ] (true by default)
 #** CUSTOM_IMAGE:        Set a custom image to install from
 #** CUSTOM_VERSION:      Set a custom version to install from
+#** OS_CONSOLE_URL:      Set the location URL of the openshift console (only used in 'openshift' mode)
 #** DRY_RUN:             Print the resources to be applied instead of applying them [ true | false ]
 #
 #---
