@@ -1954,7 +1954,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api-app@workspace:packages/kubernetes-api-app"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": ^1.0.1
+    "@hawtio/react": ^1.0.2
     "@patternfly/react-core": ^4.278.1
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.7
@@ -1992,7 +1992,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api@workspace:packages/kubernetes-api"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": ^1.0.1
+    "@hawtio/react": ^1.0.2
     "@types/jest": ^29.5.11
     "@types/jquery": ^3.5.29
     "@types/jsonpath": ^0.2.4
@@ -2025,7 +2025,7 @@ __metadata:
   resolution: "@hawtio/online-management-api-app@workspace:packages/management-api-app"
   dependencies:
     "@hawtio/online-management-api": "workspace:*"
-    "@hawtio/react": ^1.0.1
+    "@hawtio/react": ^1.0.2
     "@patternfly/react-core": ^4.278.1
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.7
@@ -2063,7 +2063,7 @@ __metadata:
   resolution: "@hawtio/online-management-api@workspace:packages/management-api"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": ^1.0.1
+    "@hawtio/react": ^1.0.2
     "@types/jest": ^29.5.11
     "@types/jquery": ^3.5.29
     "@types/jsonpath": ^0.2.4
@@ -2075,7 +2075,7 @@ __metadata:
     jest-extended: ^4.0.0
     jest-fetch-mock: ^3.0.3
     jest-watch-typeahead: ^2.2.2
-    jolokia.js: ^2.0.0-m4.0
+    jolokia.js: ^2.0.0
     jquery: ^3.7.0
     js-logger: ^1.6.1
     jsonpath: ^1.1.1
@@ -2096,7 +2096,7 @@ __metadata:
   resolution: "@hawtio/online-oauth-app@workspace:packages/oauth-app"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": ^1.0.1
+    "@hawtio/react": ^1.0.2
     "@patternfly/react-core": ^4.278.1
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.7
@@ -2135,7 +2135,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hawtio/online-oauth@workspace:packages/oauth"
   dependencies:
-    "@hawtio/react": ^1.0.1
+    "@hawtio/react": ^1.0.2
     "@types/jest": ^29.5.11
     "@types/jquery": ^3.5.29
     babel-jest: ^29.6.1
@@ -2184,7 +2184,7 @@ __metadata:
     "@fortawesome/react-fontawesome": ^0.2.0
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/online-management-api": "workspace:*"
-    "@hawtio/react": ^1.0.1
+    "@hawtio/react": ^1.0.2
     "@patternfly/react-core": ^4.278.1
     "@patternfly/react-styles": ^4.92.6
     "@patternfly/react-table": ^4.113.7
@@ -2231,9 +2231,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@hawtio/react@npm:1.0.1"
+"@hawtio/react@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@hawtio/react@npm:1.0.2"
   dependencies:
     "@hawtio/camel-model-v3": "npm:@hawtio/camel-model@^3.21.2"
     "@hawtio/camel-model-v4": "npm:@hawtio/camel-model@~4.0.3"
@@ -2251,14 +2251,14 @@ __metadata:
     "@types/jquery": ^3.5.29
     "@types/node": ^18.19.3
     "@types/react": ^18.2.23
-    "@types/react-dom": ^18.2.17
+    "@types/react-dom": ^18.2.18
     "@types/react-router-dom": ^5.3.3
     dagre: ^0.8.5
     eventemitter3: ^5.0.1
-    jolokia.js: ^2.0.0-m4.0
+    jolokia.js: ^2.0.0
     jquery: ^3.7.1
     js-logger: ^1.6.1
-    keycloak-js: ^23.0.1
+    keycloak-js: ^23.0.3
     monaco-editor: ^0.45.0
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -2278,7 +2278,7 @@ __metadata:
   peerDependenciesMeta:
     keycloak-js:
       optional: true
-  checksum: 56481bc6d12aca54606bd5253de4e5b452736c4aab1d1196339e1bf124267ddafe3e8415e43337745c5087f6fe2793b5e26a5aea0c3fe808fa5e22b9f8d0a76d
+  checksum: 698fd85bc41072141cf3a53651a84604a15bb4648be99275cbd2a63384eb5de39bd9b112ceb67e48141ef765cbda8fea431abfe7f83ebfe9c1940adaeeed9cd3
   languageName: node
   linkType: hard
 
@@ -3868,15 +3868,6 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: 22ba066b141dca5a5a9227fae0afc7c94b470fff8e8a38ade72649da57a8ea04d0cb2ba3e22005e7d8e772d49bddd28855b1dd98e6defd033bba6afb6edff883
-  languageName: node
-  linkType: hard
-
-"@types/react-dom@npm:^18.2.17":
-  version: 18.2.17
-  resolution: "@types/react-dom@npm:18.2.17"
-  dependencies:
-    "@types/react": "*"
-  checksum: 7a4e704ed4be6e0c3ccd8a22ff69386fe548304bf4db090513f42e059ff4c65f7a427790320051524d6578a2e4c9667bb7a80a4c989b72361c019fbe851d9385
   languageName: node
   linkType: hard
 
@@ -9658,9 +9649,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jolokia.js@npm:^2.0.0-m4.0":
-  version: 2.0.0-m4.0
-  resolution: "jolokia.js@npm:2.0.0-m4.0"
+"jolokia.js@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "jolokia.js@npm:2.0.0"
   dependencies:
     jquery: ^3.7.1
   peerDependencies:
@@ -9671,7 +9662,7 @@ __metadata:
       optional: true
     jsdom:
       optional: true
-  checksum: 730335678783e656626e055959e83b87af9067ee14c900247c61ec929cdd32166f6963933009247b6470edd5d6fe0e6b77744da528669b8243b842066fd86856
+  checksum: 4b99c7de9bc948761c1f0b2bce924bfae2b1b12bbb9148ceee7227ae498fcfc49f70a272e02853439196298e69fec94b9d8611f75fc527326d388a5e87dd87a9
   languageName: node
   linkType: hard
 
@@ -9902,14 +9893,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"keycloak-js@npm:^23.0.1":
-  version: 23.0.2
-  resolution: "keycloak-js@npm:23.0.2"
+"keycloak-js@npm:^23.0.3":
+  version: 23.0.3
+  resolution: "keycloak-js@npm:23.0.3"
   dependencies:
     base64-js: ^1.5.1
     js-sha256: ^0.10.1
     jwt-decode: ^4.0.0
-  checksum: 7f3697aa33000d77f06e4ea2619bf2ceb852217b0563989839d129c55c701e22008d5eaf9b39060d3e40eaa0c0b01b45917423eecdad1da7699b70462b676ccc
+  checksum: 1c7f9eb4f3f165cfd1575c911122cb6c7e4b64ab6a92384fe656bafc8c29af9905a7dff1eb9b07108b2ecdef412c7d426fa8d341509662c056c289aca8765515
   languageName: node
   linkType: hard
 
