@@ -2,7 +2,7 @@
 
 You can generate _proxying_ and _serving_ certificates manually.
 
-## Proxing
+## Proxying
 
 For OpenShift, here are the steps to be performed:
 
@@ -25,10 +25,10 @@ For OpenShift, here are the steps to be performed:
     prompt = no
     default_md = sha256
     distinguished_name = dn
-    
+
     [ dn ]
     CN = hawtio-online.hawtio.svc
-    
+
     [ v3_ext ]
     authorityKeyIdentifier=keyid,issuer:always
     keyUsage=keyEncipherment,dataEncipherment,digitalSignature
