@@ -6,11 +6,6 @@ proxy_cache_path /var/cache/nginx/pods levels=1:2 keys_zone=pods:2m max_size=4m 
 proxy_cache_path /var/cache/nginx/rbac levels=1:2 keys_zone=rbac:256k max_size=3m inactive=60m use_temp_path=off;
 proxy_cache_path /var/cache/nginx/rbac2 levels=1:2 keys_zone=rbac2:256k max_size=3m inactive=60m use_temp_path=off;
 
-# Setup a connection zone to control number of connections
-limit_conn_zone $binary_remote_addr zone=limitconnbyaddr:20m;
-# Return status code for too many connections
-limit_conn_status 429;
-
 map $uri $new {
     / /online/;
     /online /online/;
@@ -29,9 +24,6 @@ server {
     absolute_redirect   off;
     gzip                on;
     root                /usr/share/nginx/html/;
-
-    # Limit a single IP to 75 connections
-    limit_conn   limitconnbyaddr  75;
 
     # Limit the keepalive of connections (60s default)
     keepalive_timeout 60s;
