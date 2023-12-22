@@ -50,6 +50,28 @@ export function logoutRedirect(redirectUri: URL): void {
   })
 }
 
+export function validateRedirectURI(redirectUri: URL) {
+  const currentUrl = new URL(window.location.href)
+  const { hostname, port, protocol } = redirectUri
+  return (
+    hostname === currentUrl.hostname &&
+    port === currentUrl.port &&
+    protocol === currentUrl.protocol &&
+    ['http:', 'https:'].includes(protocol)
+  )
+}
+
+export function sanitizeUri(url: URL) {
+  const searchParams = url.searchParams
+
+  if (searchParams.toString() !== '') {
+    searchParams.forEach((value, key) => {
+      searchParams.set(key, encodeURIComponent(value))
+    })
+  }
+  return url.href
+}
+
 export function redirect(target: URL) {
   log.debug('Redirecting to URI:', target)
   // Redirect to the target URI
