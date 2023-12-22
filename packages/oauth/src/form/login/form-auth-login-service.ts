@@ -1,7 +1,15 @@
 import { hawtio } from '@hawtio/react'
 import { log } from '../../globals'
 import { oAuthService } from '../../oauth-service'
-import { FetchOptions, fetchPath, joinPaths, redirect, relToAbsUrl } from '../../utils'
+import {
+  FetchOptions,
+  fetchPath,
+  joinPaths,
+  redirect,
+  relToAbsUrl,
+  sanitizeUri,
+  validateRedirectURI,
+} from '../../utils'
 import { FORM_TOKEN_STORAGE_KEY } from '../globals'
 
 export type ValidationCallback = {
@@ -58,7 +66,12 @@ class FormAuthLoginService {
     const currentUri = new URL(window.location.href)
     const searchParams: URLSearchParams = currentUri.searchParams
     if (searchParams.has('redirect_uri')) {
-      return searchParams.get('redirect_uri') as string
+      const uri = new URL(searchParams.get('redirect_uri') as string)
+      if (validateRedirectURI(uri)) {
+        return sanitizeUri(uri)
+      } else {
+        log.error('invalid redirect_uri', uri.toString())
+      }
     }
 
     return relToAbsUrl(hawtio.getBasePath() || window.location.origin)
