@@ -43,7 +43,7 @@
     "@types/react-dom": "^18.2.18",
     "jquery-match-height": "^0.7.2",
     "jsonpath": "^1.1.1",
-    "moment": "^2.29.4",
+    "moment": "^2.30.1",
     "openshift-logos-icon": "^1.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
