@@ -1974,7 +1974,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-router-dom: ^6.21.1
-    source-map-loader: ^4.0.1
+    source-map-loader: ^4.0.2
     style-loader: ^3.3.3
     ts-loader: ^9.5.1
     tsconfig-paths-webpack-plugin: ^4.1.0
@@ -2045,7 +2045,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-router-dom: ^6.21.1
-    source-map-loader: ^4.0.1
+    source-map-loader: ^4.0.2
     style-loader: ^3.3.3
     ts-loader: ^9.5.1
     tsconfig-paths-webpack-plugin: ^4.1.0
@@ -2117,7 +2117,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-router-dom: ^6.21.1
-    source-map-loader: ^4.0.1
+    source-map-loader: ^4.0.2
     style-loader: ^3.3.3
     ts-loader: ^9.5.1
     tsconfig-paths-webpack-plugin: ^4.1.0
@@ -2214,7 +2214,7 @@ __metadata:
     react-markdown: ^9.0.1
     react-router-dom: ^6.21.1
     replace: ^1.2.2
-    source-map-loader: ^4.0.1
+    source-map-loader: ^4.0.2
     style-loader: ^3.3.3
     ts-loader: ^9.5.1
     tsconfig-paths-webpack-plugin: ^4.1.0
@@ -13123,16 +13123,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-loader@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "source-map-loader@npm:4.0.1"
+"source-map-loader@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "source-map-loader@npm:4.0.2"
   dependencies:
-    abab: ^2.0.6
     iconv-lite: ^0.6.3
     source-map-js: ^1.0.2
   peerDependencies:
     webpack: ^5.72.1
-  checksum: 4ddca8b03dc61f406effd4bffe70de4b87fef48bae6f737017b2dabcbc7d609133325be1e73838e9265331de28039111d729fcbb8bce88a6018a816bef510eb1
+  checksum: a7d890b2c553709c002f918d1685191884a24de050beab5809b9fac1cbc10fa0efab33ac5ebde43a6eb513b0f6be785e93dd385ea534bbe469c4410a10d8f604
   languageName: node
   linkType: hard
 
