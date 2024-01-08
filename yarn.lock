@@ -1960,7 +1960,7 @@ __metadata:
     "@patternfly/react-table": ^4.113.7
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.19.3
-    "@types/react": ^18.2.45
+    "@types/react": ^18.2.47
     "@types/react-dom": ^18.2.18
     connect-history-api-fallback: ^2.0.0
     css-loader: ^6.8.1
@@ -2031,7 +2031,7 @@ __metadata:
     "@patternfly/react-table": ^4.113.7
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.19.3
-    "@types/react": ^18.2.45
+    "@types/react": ^18.2.47
     "@types/react-dom": ^18.2.18
     connect-history-api-fallback: ^2.0.0
     css-loader: ^6.8.1
@@ -2102,7 +2102,7 @@ __metadata:
     "@patternfly/react-table": ^4.113.7
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.19.3
-    "@types/react": ^18.2.45
+    "@types/react": ^18.2.47
     "@types/react-dom": ^18.2.18
     connect-history-api-fallback: ^2.0.0
     css-loader: ^6.8.1
@@ -2190,7 +2190,7 @@ __metadata:
     "@patternfly/react-table": ^4.113.7
     "@patternfly/react-tokens": ^4.94.6
     "@types/node": ^18.19.3
-    "@types/react": ^18.2.45
+    "@types/react": ^18.2.47
     "@types/react-dom": ^18.2.18
     babel-loader: ^9.1.3
     connect-history-api-fallback: ^2.0.0
@@ -3912,14 +3912,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.2.45":
-  version: 18.2.45
-  resolution: "@types/react@npm:18.2.45"
+"@types/react@npm:^18.2.47":
+  version: 18.2.47
+  resolution: "@types/react@npm:18.2.47"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 40b256bdce67b026348022b4f8616a693afdad88cf493b77f7b4e6c5f4b0e4ba13a6068e690b9b94572920840ff30d501ea3d8518e1f21cc8fb8204d4b140c8a
+  checksum: 49608f07f73374e535b21f99fee28e6cfd5801d887c6ed88c41b4dc701dbcee9f0c4d289d9af7b2b23114f76dbf203ffe2c9191bfb4958cf18dae5a25daedbd0
   languageName: node
   linkType: hard
 
