@@ -196,7 +196,6 @@ module.exports = () => {
 
         // Hawtio backend API mock
         devServer.app.get('/hawtio/user', (_, res) => res.send(`"${username}"`))
-        devServer.app.get('/hawtio/plugin', (_, res) => res.send(JSON.stringify(plugin)))
         devServer.app.get('/hawtio/keycloak/client-config', (_, res) => res.send(JSON.stringify(keycloakClientConfig)))
         devServer.app.get('/hawtio/keycloak/validate-subject-matches', (_, res) => res.send('true'))
         devServer.app.get('/hawtio/auth/logout', (_, res) => res.redirect('/hawtio/login'))
