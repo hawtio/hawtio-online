@@ -40,7 +40,6 @@ module.exports = () => {
   const kube = new URL(kubeBase)
   const devPort = process.env.PORT || 2772
   const proxiedMaster = `http://localhost:${devPort}/master`
-  const publicPath = '/online'
 
   return merge(common('development'), {
     devtool: 'eval-source-map',
@@ -55,11 +54,6 @@ module.exports = () => {
         ignoreStub: true,
       }),
     ],
-
-    output: {
-      // Set base path to /
-      publicPath: publicPath,
-    },
 
     devServer: {
       compress: true,
@@ -84,7 +78,6 @@ module.exports = () => {
 
       static: {
         directory: path.join(__dirname, 'public'),
-        publicPath: publicPath,
       },
 
       setupMiddlewares: (middlewares, devServer) => {
@@ -181,12 +174,7 @@ module.exports = () => {
           pkceMethod: 'S256',
         }
 
-        // Redirect root to /online base path
-        devServer.app.get('/', (_, res) => res.redirect('/online/'))
-
-        // This path has been coded as relative to documentBase
-        // Therefore need to add publicPath to the front of it
-        devServer.app.get(`${publicPath}/osconsole/config.json`, osconsole)
+        devServer.app.get('/osconsole/config.json', osconsole)
 
         devServer.app.get('/management/*', management)
         devServer.app.post('/management/*', management)
@@ -226,7 +214,11 @@ module.exports = () => {
         // for accessing /login from the app. Having it here allows
         // the paths above to remain external to the app
         //
-        const history = historyApiFallback()
+        const history = historyApiFallback({
+          verbose: true,
+          index: '/',
+        })
+
         devServer.app.get('/', history)
         devServer.app.get('/discover', history)
         devServer.app.get('/login', history)
