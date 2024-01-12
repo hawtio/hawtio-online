@@ -175,12 +175,6 @@ endif
 ifeq ($(CLUSTER_TYPE), openshift)
 	@$(MAKE) -s generate-proxying
 endif
-# Add the oauth client on openshift, if specified
-ifeq ($(CLUSTER_TYPE), openshift)
-ifeq ($(MODE), cluster)
-	@$(MAKE) -s cluster-auth-client
-endif
-endif
 # Add the tls serving on k8s, if specified
 ifeq ($(CLUSTER_TYPE), k8s)
 	@$(MAKE) -s generate-serving
@@ -195,6 +189,12 @@ ifeq ($(DRY_RUN), false)
 	@$(KUSTOMIZE) build $(KOPTIONS) $(CLUSTER_TYPE)/$(MODE) | \
 		sed 's/$(PLACEHOLDER)/$(NAMESPACE)/' | \
 		kubectl apply -f -
+# Add the oauth client on openshift, if specified
+ifeq ($(CLUSTER_TYPE), openshift)
+ifeq ($(MODE), cluster)
+	@$(MAKE) -s cluster-auth-client
+endif
+endif
 else
 	@$(KUSTOMIZE) build $(KOPTIONS) $(CLUSTER_TYPE)/$(MODE) | \
 		sed 's/$(PLACEHOLDER)/$(NAMESPACE)/'
