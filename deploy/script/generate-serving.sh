@@ -18,7 +18,8 @@ EOT
 }
 
 kube_binary() {
-  local k=$(command -v ${1} 2> /dev/null)
+  local k
+  k=$(command -v ${1} 2> /dev/null)
   if [ $? != 0 ]; then
     return
   fi
