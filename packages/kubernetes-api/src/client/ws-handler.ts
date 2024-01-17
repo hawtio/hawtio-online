@@ -65,7 +65,25 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
     ws.addEventListener('open', (event: Event) => self.onOpen(event))
 
     log.debug("Adding WebSocket event handler for 'message'")
-    ws.addEventListener('message', (event: MessageEvent) => self.onMessage(event))
+    ws.addEventListener('message', (event: MessageEvent) => {
+      if (!event.origin || event.origin.length === 0) {
+        log.warn('Ignoring WebSocket message as origin is not defined')
+        return
+      }
+
+      try {
+        const originUrl = new URL(event.origin)
+        if (!window.location || window.location.hostname !== originUrl.hostname) {
+          log.warn('The origin of the WebSocket message is not recognized')
+          return
+        }
+      } catch (error) {
+        log.warn('The origin of the WebSocket message is invalid', error)
+        return
+      }
+
+      self.onMessage(event)
+    })
 
     log.debug("Adding WebSocket event handler for 'close'")
     ws.addEventListener('close', (event: CloseEvent) => self.onClose(event))

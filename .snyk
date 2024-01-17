@@ -1,0 +1,5 @@
+exclude:
+    global:
+        # Exclude all development webpack build config files
+            - "webpack.config.dev.js"
+						- "webpack.config.js"

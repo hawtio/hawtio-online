@@ -291,6 +291,9 @@ module.exports = () => {
 
             // Adds the Clear-Site-Data header
             res.header('Clear-Site-Data', '"*"')
+
+            // False-positive for coverity SAST scan
+            // Ignored since this is just the dev server
             res.redirect(r)
           }
         })

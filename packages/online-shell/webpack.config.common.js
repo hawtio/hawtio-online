@@ -9,7 +9,7 @@ const { dependencies } = require('./package.json')
 const common = mode => {
   console.log(`Compilation Mode: ${mode}`)
 
-  const publicPath = '/online'
+  const publicPath = mode === 'production' ? '/online' : ''
 
   return {
     mode: mode,

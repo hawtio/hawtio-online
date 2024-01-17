@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# Fail on a single failed command in a pipeline (if supported)
-(set -o | grep -q pipefail) && set -o pipefail
-
 # Fail on error and undefined vars
 set -eu
 
@@ -45,7 +42,7 @@ generate_nginx_gateway_conf() {
     ' < $TEMPLATE > /etc/nginx/conf.d/nginx.conf
 }
 
-if [ -v HAWTIO_ONLINE_RBAC_ACL ]; then
+if [ -n "${HAWTIO_ONLINE_RBAC_ACL+x}" ]; then
   echo Using RBAC NGINX configuration
   generate_nginx_gateway_conf
 elif [ "${HAWTIO_ONLINE_GATEWAY:-}" = "true" ]; then
