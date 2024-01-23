@@ -3,6 +3,7 @@ const { merge } = require('webpack-merge')
 const WebpackDevServer = require('webpack-dev-server')
 const DotenvPlugin = require('dotenv-webpack')
 const historyApiFallback = require('connect-history-api-fallback')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const path = require('path')
 const url = require('url')
 const dotenv = require('dotenv')
@@ -53,6 +54,7 @@ module.exports = () => {
         systemvars: true,
         ignoreStub: true,
       }),
+      new BundleAnalyzerPlugin(),
     ],
 
     devServer: {
