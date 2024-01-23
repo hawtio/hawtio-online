@@ -24,7 +24,9 @@
     "build:webpack": "webpack --mode production --progress --config webpack.config.prod.js --output-public-path='/online/'",
     "replace-version": "replace __PACKAGE_VERSION_PLACEHOLDER__ $npm_package_version ./build -r",
     "test": "jest --watchAll=false --passWithNoTests src/**/*.test.ts*",
-    "test:coverage": "yarn test --coverage"
+    "test:coverage": "yarn test --coverage",
+    "analyze:webpack:dev": "webpack --mode development --progress --config webpack.config.dev.js --output-public-path='/online/'",
+    "analyze:webpack:prod": "webpack --mode production --progress --config webpack.config.dev.js --output-public-path='/online/'"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
@@ -73,6 +75,7 @@
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "url": "^0.11.3",
     "webpack": "^5.88.1",
+    "webpack-bundle-analyzer": "^4.10.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
