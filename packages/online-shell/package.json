@@ -67,7 +67,7 @@
     "path-browserify": "^1.0.1",
     "process": "^0.11.10",
     "replace": "^1.2.2",
-    "source-map-loader": "^4.0.2",
+    "source-map-loader": "^5.0.0",
     "style-loader": "^3.3.4",
     "ts-loader": "^9.5.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
