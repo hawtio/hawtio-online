@@ -16,7 +16,7 @@
     "@patternfly/react-styles": "^4.92.6",
     "@patternfly/react-table": "^4.113.7",
     "@patternfly/react-tokens": "^4.94.6",
-    "@types/node": "^18.19.10",
+    "@types/node": "^18.19.15",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "mini-css-extract-plugin": "2.8.0",
