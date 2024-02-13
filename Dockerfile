@@ -4,9 +4,9 @@ WORKDIR /hawtio-online
 
 COPY package.json yarn.lock ./
 COPY .yarnrc.yml ./
-ADD packages/ packages/
-ADD .yarn/plugins .yarn/plugins
-ADD .yarn/releases .yarn/releases
+COPY packages/ packages/
+COPY .yarn/plugins .yarn/plugins
+COPY .yarn/releases .yarn/releases
 
 RUN yarn install
 RUN yarn build
@@ -34,7 +34,7 @@ LABEL url="https://www.nginx.com/" \
     io.openshift.expose-services="8443:https" \
     io.openshift.tags="nginx,nginxinc"
 
-ADD docker/nginx.repo /etc/yum.repos.d/nginx.repo
+COPY docker/nginx.repo /etc/yum.repos.d/nginx.repo
 
 RUN curl -sO http://nginx.org/keys/nginx_signing.key && \
     rpm --import ./nginx_signing.key && \
