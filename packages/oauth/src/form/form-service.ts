@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import * as fetchIntercept from 'fetch-intercept'
-import { getCookie, logoutRedirect, redirect } from '../utils'
+import { getCookie, logoutRedirect, redirect, secureDispose, secureRetrieve } from '../utils'
 import { log, OAuthProtoService, UserProfile } from '../globals'
 import { FormConfig, FORM_TOKEN_STORAGE_KEY, FORM_AUTH_PROTOCOL_MODULE, ResolveUser } from './globals'
 import { relToAbsUrl } from 'src/utils/utils'
@@ -18,7 +18,7 @@ interface Headers {
 
 export class FormService implements OAuthProtoService {
   private userProfile: UserProfile
-  private readonly login: boolean
+  private readonly login: Promise<boolean>
   private formConfig: FormConfig | null
   private fetchUnregister: (() => void) | null
 
@@ -31,7 +31,7 @@ export class FormService implements OAuthProtoService {
     this.fetchUnregister = null
   }
 
-  private createLogin(): boolean {
+  private async createLogin(): Promise<boolean> {
     if (!this.formConfig) {
       log.debug('Form auth disabled')
       return false
@@ -56,7 +56,7 @@ export class FormService implements OAuthProtoService {
       return true // already logged in
     }
 
-    const token = this.checkToken()
+    const token = await this.checkToken()
     if (!token) {
       this.tryLogin({ uri: new URL(window.location.href) })
       return false
@@ -72,13 +72,9 @@ export class FormService implements OAuthProtoService {
     return true
   }
 
-  private checkToken(): string | null {
-    let token: string | null = null
-
+  private async checkToken(): Promise<string | null> {
     // Token has to be provided in local storage
-    if (FORM_TOKEN_STORAGE_KEY in localStorage) token = localStorage.getItem(FORM_TOKEN_STORAGE_KEY) ?? null
-
-    return token
+    return await secureRetrieve(FORM_TOKEN_STORAGE_KEY)
   }
 
   private buildLoginUrl(options: LoginOptions): URL {
@@ -161,7 +157,7 @@ export class FormService implements OAuthProtoService {
   }
 
   private clearTokenStorage(): void {
-    localStorage.removeItem(FORM_TOKEN_STORAGE_KEY)
+    secureDispose(FORM_TOKEN_STORAGE_KEY)
   }
 
   private doLogout(): void {
@@ -175,9 +171,9 @@ export class FormService implements OAuthProtoService {
     logoutRedirect(targetUri)
   }
 
-  isLoggedIn(): Promise<boolean> {
+  async isLoggedIn(): Promise<boolean> {
     // Use Promise to conform with interface
-    return Promise.resolve(this.login)
+    return await this.login
   }
 
   private getSubjectFromToken(token: string): string {
@@ -210,7 +206,9 @@ export class FormService implements OAuthProtoService {
 
     const logout = async () => {
       log.debug('Running oAuth logout hook')
-      if (!this.login || !this.userProfile.hasToken() || this.userProfile.hasError()) return false
+      const login = await this.login
+
+      if (!login || !this.userProfile.hasToken() || this.userProfile.hasError()) return false
 
       log.info('Log out')
       try {

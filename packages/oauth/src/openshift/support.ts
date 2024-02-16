@@ -1,4 +1,4 @@
-import { relToAbsUrl, redirect, logoutRedirect } from '../utils'
+import { relToAbsUrl, redirect, logoutRedirect, secureStore, secureDispose, secureRetrieve } from '../utils'
 import { log, UserProfile } from '../globals'
 import { EXPIRES_IN_KEY, OBTAINED_AT_KEY, OpenShiftOAuthConfig, TokenMetadata } from './globals'
 
@@ -52,7 +52,7 @@ export function buildLoginUrl(config: OpenShiftOAuthConfig, options: { uri: stri
   return uri
 }
 
-function extractToken(uri: URL): TokenMetadata | null {
+async function extractToken(uri: URL): Promise<TokenMetadata | null> {
   log.debug('Extract token from URI - query:', uri.search, 'hash: ', uri.hash)
 
   //
@@ -83,7 +83,8 @@ function extractToken(uri: URL): TokenMetadata | null {
     expires_in: parseInt(fragmentParams.get('expires_in') || '') || 0,
     obtainedAt: currentTimeSeconds(),
   }
-  localStorage.setItem(OS_TOKEN_STORAGE_KEY, JSON.stringify(credentials))
+
+  await secureStore(OS_TOKEN_STORAGE_KEY, JSON.stringify(credentials))
 
   fragmentParams.delete('token_type')
   fragmentParams.delete('access_token')
@@ -100,7 +101,7 @@ function extractToken(uri: URL): TokenMetadata | null {
 }
 
 export function clearTokenStorage(): void {
-  localStorage.removeItem(OS_TOKEN_STORAGE_KEY)
+  secureDispose(OS_TOKEN_STORAGE_KEY)
 }
 
 export function tokenHasExpired(profile: UserProfile): boolean {
@@ -119,24 +120,23 @@ export function tokenHasExpired(profile: UserProfile): boolean {
   return remaining <= 0
 }
 
-export function checkToken(uri: URL): TokenMetadata | null {
+export async function checkToken(uri: URL): Promise<TokenMetadata | null> {
   let answer: TokenMetadata | null = null
 
-  const tokenJson = localStorage.getItem(OS_TOKEN_STORAGE_KEY)
-
-  if (tokenJson) {
-    try {
+  try {
+    const tokenJson = await secureRetrieve(OS_TOKEN_STORAGE_KEY)
+    if (tokenJson) {
       answer = JSON.parse(tokenJson)
-    } catch (e) {
-      clearTokenStorage()
-      throw new Error('Error extracting osAuthCreds value:', { cause: e })
     }
+  } catch (e) {
+    clearTokenStorage()
+    throw new Error('Error extracting osAuthCreds value:', { cause: e })
   }
 
   if (!answer) {
     log.debug('Extracting token from uri', answer)
     try {
-      answer = extractToken(uri)
+      answer = await extractToken(uri)
     } catch (e) {
       clearTokenStorage()
       throw e
