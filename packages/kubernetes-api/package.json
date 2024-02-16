@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsup --clean",
     "build:watch": "tsup --watch",
-    "test": "jest",
+    "test": "jest --watchAll=false --passWithNoTests",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "replace-version": "replace __PACKAGE_VERSION_PLACEHOLDER__ $npm_package_version ./dist/index.js",
@@ -50,6 +50,7 @@
     "jest-extended": "^4.0.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^2.2.2",
+    "react-markdown": "^8.0.7",
     "replace": "^1.2.2",
     "ts-jest": "^29.1.2",
     "tsup": "^8.0.1"

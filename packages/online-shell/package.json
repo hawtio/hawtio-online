@@ -23,7 +23,7 @@
     "build": "yarn build:webpack && yarn replace-version yarn",
     "build:webpack": "webpack --mode production --progress --config webpack.config.prod.js --output-public-path='/online/'",
     "replace-version": "replace __PACKAGE_VERSION_PLACEHOLDER__ $npm_package_version ./build -r",
-    "test": "jest --watchAll=false --passWithNoTests src/**/*.test.ts*",
+    "test": "jest --watchAll=false --passWithNoTests",
     "test:coverage": "yarn test --coverage",
     "analyze:webpack:dev": "webpack --mode development --progress --config webpack.config.dev.js --output-public-path='/online/'",
     "analyze:webpack:prod": "webpack --mode production --progress --config webpack.config.dev.js --output-public-path='/online/'"
