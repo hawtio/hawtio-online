@@ -33,7 +33,7 @@ describe('helpers', () => {
     expect(helpers.prefixForKind(WatchTypes.NAMESPACES)).toBe(K8S_PREFIX + '/' + K8S_API_VERSION)
     expect(helpers.prefixForKind(WatchTypes.DEPLOYMENTS)).toBe(K8S_EXT_PREFIX + '/' + K8S_EXT_VERSION)
     expect(helpers.prefixForKind(WatchTypes.CONFIG_MAPS)).toBe(K8S_PREFIX + '/' + K8S_API_VERSION)
-    expect(helpers.prefixForKind(WatchTypes.IMAGE_STREAMS)).toBe(OS_PREFIX + '/' + OS_API_VERSION)
+    expect(helpers.prefixForKind(WatchTypes.IMAGE_STREAMS)).toBe(OS_PREFIX + '/image.openshift.io/' + OS_API_VERSION)
   })
 
   test('wsscheme', () => {

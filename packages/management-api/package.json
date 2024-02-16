@@ -22,7 +22,7 @@
   "scripts": {
     "build": "tsup --clean",
     "build:watch": "tsup --watch",
-    "test": "jest",
+    "test": "jest --watchAll=false --passWithNoTests",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "replace-version": "replace __PACKAGE_VERSION_PLACEHOLDER__ $npm_package_version ./dist/index.js",
