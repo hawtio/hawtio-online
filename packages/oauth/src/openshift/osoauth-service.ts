@@ -245,7 +245,7 @@ export class OSOAuthService implements OAuthProtoService {
       this.clearKeepAlive()
 
       log.debug('Checking token for validity')
-      const tokenParams = checkToken(currentURI)
+      const tokenParams = await checkToken(currentURI)
       if (!tokenParams) {
         log.debug('No Token so initiating new login')
         this.tryLogin(config, currentURI)

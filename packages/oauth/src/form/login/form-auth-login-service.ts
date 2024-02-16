@@ -8,6 +8,7 @@ import {
   redirect,
   relToAbsUrl,
   sanitizeUri,
+  secureStore,
   validateRedirectURI,
 } from '../../utils'
 import { FORM_TOKEN_STORAGE_KEY } from '../globals'
@@ -41,10 +42,10 @@ class FormAuthLoginService {
     fetchPath<void>(
       joinPaths(masterUri, 'api'),
       {
-        success: (_: string) => {
+        success: async (_: string) => {
           log.debug('Connected to master uri api')
           callback.success()
-          this.saveTokenAndRedirect(token)
+          await this.saveTokenAndRedirect(token)
           return
         },
         error: err => {
@@ -56,8 +57,8 @@ class FormAuthLoginService {
     )
   }
 
-  private saveTokenAndRedirect(token: string): void {
-    localStorage.setItem(FORM_TOKEN_STORAGE_KEY, token)
+  private async saveTokenAndRedirect(token: string) {
+    await secureStore(FORM_TOKEN_STORAGE_KEY, token)
     const uri = this.redirectUri()
     redirect(new URL(uri))
   }
