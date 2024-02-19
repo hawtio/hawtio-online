@@ -54,7 +54,7 @@
     "react-markdown": "^8.0.7",
     "replace": "^1.2.2",
     "ts-jest": "^29.1.2",
-    "tsup": "^8.0.1"
+    "tsup": "^8.0.2"
   },
   "peerDependencies": {
     "react": "^16.8 || ^17 || ^18",
