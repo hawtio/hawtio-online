@@ -183,20 +183,25 @@ module.exports = () => {
        *       thrown by the proxy but with an incorrect error message with
        *       the original host address in it rather than the target
        */
-      proxy: {
-        '/master': {
+      proxy: [
+        {
+          context: ['/master'],
           target: master_uri,
           pathRewrite: { '^/master': '' },
           secure: false,
           ws: true,
         },
-      },
+      ],
 
       static: {
         directory: path.join(__dirname, 'public'),
       },
 
       setupMiddlewares: (middlewares, devServer) => {
+        if (!devServer) {
+          throw new Error('webpack-dev-server is not defined')
+        }
+
         /*
          * Function to construct the config.json file
          * and make it available for authentication
