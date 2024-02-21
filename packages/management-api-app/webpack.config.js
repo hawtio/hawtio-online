@@ -43,6 +43,12 @@ module.exports = () => {
   const devPort = process.env.PORT || 2772
   const proxiedMaster = `http://localhost:${devPort}/master`
 
+  //
+  // No support for the dev server providing a default router prefix
+  // so need to specify here
+  //
+  const publicPath = '/online'
+
   return {
     mode: 'development',
     devtool: 'eval-source-map',
@@ -129,6 +135,7 @@ module.exports = () => {
       new HtmlWebpackPlugin({
         inject: true,
         template: path.resolve(__dirname, 'public', 'index.html'),
+        publicPath: publicPath,
       }),
       new InterpolateHtmlPlugin({
         NODE_ENV: 'development',
@@ -141,7 +148,9 @@ module.exports = () => {
     ],
     output: {
       path: path.resolve(__dirname, 'build'),
-      publicPath: 'auto',
+
+      // Set base path to desired publicPath
+      publicPath: publicPath,
       pathinfo: true,
       filename: 'static/js/bundle.js',
       chunkFilename: 'static/js/[name].chunk.js',
@@ -194,13 +203,30 @@ module.exports = () => {
       ],
 
       static: {
+        publicPath: publicPath,
         directory: path.join(__dirname, 'public'),
+      },
+
+      historyApiFallback: {
+        disableDotRule: true,
+        index: publicPath,
+      },
+
+      /*
+       * Vital for binding the react app to the desired url path
+       */
+      devMiddleware: {
+        publicPath: publicPath,
       },
 
       setupMiddlewares: (middlewares, devServer) => {
         if (!devServer) {
           throw new Error('webpack-dev-server is not defined')
         }
+
+        // Redirect / or /${publicPath} to /${publicPath}/
+        devServer.app.get('/', (_, res) => res.redirect(`${publicPath}/`))
+        devServer.app.get(`/${publicPath}$`, (_, res) => res.redirect(`${publicPath}/`))
 
         /*
          * Function to construct the config.json file
@@ -281,30 +307,14 @@ module.exports = () => {
           }
         }
 
-        const username = 'developer'
-        const login = false
         const proxyEnabled = true
         const keycloakEnabled = false
 
-        devServer.app.get('/osconsole/config.json', osconsole)
+        devServer.app.get(`${publicPath}/osconsole/config.json`, osconsole)
+        devServer.app.get(`${publicPath}/keycloak/enabled`, (_, res) => res.send(String(keycloakEnabled)))
+        devServer.app.get(`${publicPath}/proxy/enabled`, (_, res) => res.send(String(proxyEnabled)))
         devServer.app.get('/management/*', management)
         devServer.app.post('/management/*', management)
-
-        devServer.app.get('/hawtio/user', (_, res) => res.send(`"${username}"`))
-        devServer.app.post('/hawtio/auth/login', (_, res) => res.send(String(login)))
-        devServer.app.get('/hawtio/auth/logout', (_, res) => res.redirect('/hawtio/login'))
-        devServer.app.get('/hawtio/proxy/enabled', (_, res) => res.send(String(proxyEnabled)))
-        devServer.app.get('/hawtio/keycloak/enabled', (_, res) => res.send(String(keycloakEnabled)))
-        devServer.app.get('/keycloak/enabled', (_, res) => res.redirect('/hawtio/keycloak/enabled'))
-
-        //
-        // Use historyApiFallback to plug-in to the react router
-        // for accessing /login from the app. Having it here allows
-        // the paths above to remain external to the app
-        //
-        const history = historyApiFallback()
-        devServer.app.get('/', history)
-        devServer.app.get('/login', history)
 
         return middlewares
       },
