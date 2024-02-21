@@ -3,7 +3,12 @@ const { merge } = require('webpack-merge')
 const WebpackDevServer = require('webpack-dev-server')
 const DotenvPlugin = require('dotenv-webpack')
 const historyApiFallback = require('connect-history-api-fallback')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+/*
+ * 22/2/2024
+ * Analyzer plugin throwing errors with updates to new version of webpack-dev-server
+ * Disabling for the moment.
+ */
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const path = require('path')
 const url = require('url')
 const dotenv = require('dotenv')
@@ -29,7 +34,16 @@ module.exports = () => {
     process.exit(1)
   }
 
-  const clusterAuthFormUri = process.env.CLUSTER_AUTH_FORM || '/login'
+  //
+  // No support for the dev server providing a default router prefix
+  // so need to specify here.
+  //
+  // If this is to be changed then also need to change the same value
+  // in the public/hawtconfig.json file
+  //
+  const publicPath = '/online'
+
+  const clusterAuthFormUri = process.env.CLUSTER_AUTH_FORM || `${publicPath}/login`
   if (clusterAuthFormUri) console.log('Using Cluster Auth Form URL:', clusterAuthFormUri)
 
   console.log('Using Cluster URL:', master_uri)
@@ -42,7 +56,7 @@ module.exports = () => {
   const devPort = process.env.PORT || 2772
   const proxiedMaster = `http://localhost:${devPort}/master`
 
-  return merge(common('development'), {
+  return merge(common('development', publicPath), {
     devtool: 'eval-source-map',
     stats: 'errors-warnings',
 
@@ -54,7 +68,12 @@ module.exports = () => {
         systemvars: true,
         ignoreStub: true,
       }),
-      new BundleAnalyzerPlugin(),
+      /*
+       * 22/2/2024
+       * Analyzer plugin throwing errors with updates to new version of webpack-dev-server
+       * Disabling for the moment.
+       */
+      // new BundleAnalyzerPlugin(),
     ],
 
     devServer: {
@@ -80,13 +99,30 @@ module.exports = () => {
       ],
 
       static: {
+        publicPath: publicPath,
         directory: path.join(__dirname, 'public'),
+      },
+
+      historyApiFallback: {
+        disableDotRule: true,
+        index: publicPath,
+      },
+
+      /*
+       * Vital for binding the react app to the desired url path
+       */
+      devMiddleware: {
+        publicPath: publicPath,
       },
 
       setupMiddlewares: (middlewares, devServer) => {
         if (!devServer) {
           throw new Error('webpack-dev-server is not defined')
         }
+
+        // Redirect / or /${publicPath} to /${publicPath}/
+        devServer.app.get('/', (_, res) => res.redirect(`${publicPath}/`))
+        devServer.app.get(`/${publicPath}$`, (_, res) => res.redirect(`${publicPath}/`))
 
         /*
          * Function to construct the config.json file
@@ -181,27 +217,24 @@ module.exports = () => {
           pkceMethod: 'S256',
         }
 
-        devServer.app.get('/osconsole/config.json', osconsole)
+        /* Fetch the osconsole from the app's own public url path */
+        devServer.app.get(`${publicPath}/osconsole/config.json`, osconsole)
 
+        devServer.app.get('/', (req, res) => res.redirect(`${publicPath}`))
+
+        /* management urls are meant to be at the root of the server */
         devServer.app.get('/management/*', management)
         devServer.app.post('/management/*', management)
 
-        devServer.app.get('/keycloak/enabled', (_, res) => res.send(String(keycloakEnabled)))
-        devServer.app.get('/proxy/enabled', (_, res) => res.send(String(proxyEnabled)))
-
-        // Hawtio backend API mock
-        devServer.app.get('/hawtio/user', (_, res) => res.send(`"${username}"`))
-        devServer.app.get('/hawtio/keycloak/client-config', (_, res) => res.send(JSON.stringify(keycloakClientConfig)))
-        devServer.app.get('/hawtio/keycloak/validate-subject-matches', (_, res) => res.send('true'))
-        devServer.app.get('/hawtio/auth/logout', (_, res) => res.redirect('/hawtio/login'))
-        devServer.app.post('/hawtio/auth/login', (_, res) => res.send(String(login)))
+        devServer.app.get(`${publicPath}/keycloak/enabled`, (_, res) => res.send(String(keycloakEnabled)))
+        devServer.app.get(`${publicPath}/proxy/enabled`, (_, res) => res.send(String(proxyEnabled)))
 
         /*
          * Provide a server-side implementation of /auth/logout page to
          * allow use of the Clear-Site-Data header that will clear
          * all entries from the cache and storage relating to the app
          */
-        devServer.app.get('/auth/logout', (req, res) => {
+        devServer.app.get(`${publicPath}/auth/logout`, (req, res) => {
           let redirectUri = req.query.redirect_uri
 
           if (!redirectUri) {
@@ -215,20 +248,6 @@ module.exports = () => {
             res.redirect(r)
           }
         })
-
-        //
-        // Use historyApiFallback to plug-in to the react router
-        // for accessing /login from the app. Having it here allows
-        // the paths above to remain external to the app
-        //
-        const history = historyApiFallback({
-          verbose: true,
-          index: '/',
-        })
-
-        devServer.app.get('/', history)
-        devServer.app.get('/discover', history)
-        devServer.app.get('/login', history)
 
         return middlewares
       },

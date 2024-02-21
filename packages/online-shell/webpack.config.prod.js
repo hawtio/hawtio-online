@@ -5,7 +5,12 @@ const path = require('path')
 const { common } = require('./webpack.config.common.js')
 
 module.exports = () => {
-  return merge(common('production'), {
+  //
+  // Prefix path will be determined by the installed web server platform
+  //
+  const publicPath = '/'
+
+  return merge(common('production', publicPath), {
     devtool: 'source-map',
 
     plugins: [
