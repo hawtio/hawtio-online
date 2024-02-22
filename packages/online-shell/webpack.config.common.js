@@ -105,10 +105,14 @@ const common = (mode, publicPath) => {
       chunkFilename: 'static/js/[name].chunk.js',
       assetModuleFilename: 'static/media/[name].[hash][ext]',
     },
+
+    // For suppressing warnings that stop app running
     ignoreWarnings: [
       // For suppressing sourcemap warnings coming from some dependencies
       /Failed to parse source map/,
+      /Critical dependency: the request of a dependency is an expression/,
     ],
+
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
       alias: {
