@@ -63,7 +63,7 @@
       "maxLineWidth": 80
     }
   },
-  "packageManager": "yarn@3.6.1",
+  "packageManager": "yarn@4.1.0",
   "engines": {
     "yarn": ">=3.6.0",
     "node": ">=18"

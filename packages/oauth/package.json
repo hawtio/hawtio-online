@@ -55,9 +55,9 @@
     "react": "^16.8 || ^17 || ^18",
     "react-dom": "^16.8 || ^17 || ^18"
   },
-  "packageManager": "yarn@3.6.0",
+  "packageManager": "yarn@4.1.0",
   "engines": {
-    "yarn": ">=3.6.0",
+    "yarn": ">=4.1.0",
     "node": ">=18"
   },
   "publishConfig": {

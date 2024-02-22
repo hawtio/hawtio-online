@@ -96,10 +96,10 @@
       "last 1 safari version"
     ]
   },
-  "packageManager": "yarn@3.6.0",
+  "packageManager": "yarn@4.1.0",
   "engines": {
-    "yarn": ">=3.6.0",
-    "node": ">=16"
+    "yarn": ">=4.1.0",
+    "node": ">=18"
   },
   "publishConfig": {
     "access": "public"
