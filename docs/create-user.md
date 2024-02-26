@@ -47,8 +47,7 @@ EOF
 Finally, get the bearer token for the user with the following command:
 
 ```sh
-$ kubectl -n hawtio get secrets $(kubectl -n hawtio get sa hawtio-user -o jsonpath="{.secrets[0].name}") \
-        -o go-template="{{.data.token | base64decode}}"
+kubectl -n hawtio create token hawtio-user
 ```
 
 Now you can copy the token and paste it to the Token form to log in to Hawtio console.
