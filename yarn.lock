@@ -2010,7 +2010,7 @@ __metadata:
     js-logger: "npm:^1.6.1"
     jsonpath: "npm:^1.1.1"
     kubernetes-types: "npm:^1.26.0"
-    react-markdown: "npm:^8.0.7"
+    react-markdown: "npm:^9.0.1"
     replace: "npm:^1.2.2"
     ts-jest: "npm:^29.1.2"
     ts-node: "npm:^10.9.2"
