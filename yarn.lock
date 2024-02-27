@@ -2149,6 +2149,7 @@ __metadata:
     jest-watch-typeahead: "npm:^2.2.2"
     jquery: "npm:^3.7.0"
     js-logger: "npm:^1.6.1"
+    jwt-decode: "npm:^4.0.0"
     replace: "npm:^1.2.2"
     ts-jest: "npm:^29.1.2"
     ts-node: "npm:^10.9.2"
