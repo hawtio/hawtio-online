@@ -1,11 +1,11 @@
-import $ from 'jquery'
-import * as fetchIntercept from 'fetch-intercept'
-import { getCookie, logoutRedirect, redirect, secureDispose, secureRetrieve } from '../utils'
-import { log, OAuthProtoService, UserProfile } from '../globals'
-import { FormConfig, FORM_TOKEN_STORAGE_KEY, FORM_AUTH_PROTOCOL_MODULE, ResolveUser } from './globals'
-import { relToAbsUrl } from 'src/utils/utils'
-import { jwtDecode } from './jwt-decode'
 import { PUBLIC_USER, userService } from '@hawtio/react'
+import * as fetchIntercept from 'fetch-intercept'
+import $ from 'jquery'
+import { jwtDecode } from 'jwt-decode'
+import { relToAbsUrl } from 'src/utils/utils'
+import { OAuthProtoService, UserProfile, log } from '../globals'
+import { getCookie, logoutRedirect, redirect, secureDispose, secureRetrieve } from '../utils'
+import { FORM_AUTH_PROTOCOL_MODULE, FORM_TOKEN_STORAGE_KEY, FormConfig, ResolveUser } from './globals'
 
 type LoginOptions = {
   uri: URL
@@ -178,7 +178,7 @@ export class FormService implements OAuthProtoService {
 
   private getSubjectFromToken(token: string): string {
     const payload = jwtDecode(token)
-    return payload.sub.replace('system:serviceaccount:', '')
+    return payload.sub?.replace('system:serviceaccount:', '') ?? ''
   }
 
   registerUserHooks(): void {
