@@ -3,8 +3,17 @@ import * as fetchIntercept from 'fetch-intercept'
 import $ from 'jquery'
 import { jwtDecode } from 'jwt-decode'
 import { relToAbsUrl } from 'src/utils/utils'
-import { OAuthProtoService, UserProfile, log } from '../globals'
-import { FetchOptions, fetchPath, getCookie, joinPaths, logoutRedirect, redirect, secureDispose, secureRetrieve } from '../utils'
+import { OAuthProtoService, OPENSHIFT_MASTER_KIND, UserProfile, log } from '../globals'
+import {
+  FetchOptions,
+  fetchPath,
+  getCookie,
+  joinPaths,
+  logoutRedirect,
+  redirect,
+  secureDispose,
+  secureRetrieve,
+} from '../utils'
 import { FORM_AUTH_PROTOCOL_MODULE, FORM_TOKEN_STORAGE_KEY, FormConfig, ResolveUser } from './globals'
 
 type LoginOptions = {
@@ -15,11 +24,6 @@ interface Headers {
   Authorization: string
   'X-XSRF-TOKEN'?: string
 }
-
-/*
- * OpenShift core API groups
- */
-const OpenshiftAPIs = ['route.openshift.io', 'image.openshift.io', 'console.openshift.io']
 
 export class FormService implements OAuthProtoService {
   private userProfile: UserProfile
@@ -195,6 +199,7 @@ export class FormService implements OAuthProtoService {
       }
 
       const masterUri = this.userProfile.getMasterUri()
+      const isOpenShift = this.userProfile.getMasterKind() === OPENSHIFT_MASTER_KIND
       const token = this.userProfile.getToken()
 
       let subject = ''
@@ -213,7 +218,7 @@ export class FormService implements OAuthProtoService {
        * NOTE: This is an edge-case that really only affects development
        * since form-login is prioritized for authentication of non-OpenShift clusters.
        */
-      if (subject === '' && (await this.isOpenShift(masterUri, token))) {
+      if (subject === '' && isOpenShift) {
         // Default to 'user' if there is a failure
         subject = (await this.openShiftUser(masterUri, token)) ?? ''
       }
@@ -241,44 +246,6 @@ export class FormService implements OAuthProtoService {
       return true
     }
     userService.addLogoutHook(FORM_AUTH_PROTOCOL_MODULE, logout)
-  }
-
-  private async isOpenShift(masterUri: string, token: string): Promise<boolean> {
-    const fetchOptions: FetchOptions = {
-      headers: { Authorization: `Bearer ${token}` },
-    }
-
-    let isOS = false
-    await fetchPath<void>(
-      joinPaths(masterUri, 'apis'),
-      {
-        success: (data: string) => {
-          log.debug('Connected to master uri api')
-
-          /*
-           * Search the JSON API response to determine if they
-           * contain core OpenShift group APIs
-           */
-          const response = JSON.parse(data)
-          const apiGroups = response?.groups
-
-          const osApiGroups = apiGroups.filter((apiGroup: { name: string }): boolean => {
-            return OpenshiftAPIs.indexOf(apiGroup.name) > -1
-          })
-
-          // An Openshift cluster should contain at least the
-          // API groups specified by OpenshiftAPIs
-          isOS = osApiGroups && osApiGroups.length === OpenshiftAPIs.length
-        },
-        error: err => {
-          log.debug('Cannot access master api so cannot determine type of cluster', { cause: err })
-          isOS = false
-        },
-      },
-      fetchOptions,
-    )
-
-    return isOS
   }
 
   /**

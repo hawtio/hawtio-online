@@ -1,4 +1,4 @@
-import { log, OAuthProtoService, UserProfile } from './globals'
+import { KUBERNETES_MASTER_KIND, log, OAuthProtoService, UserProfile } from './globals'
 import { fetchPath } from './utils'
 import { DEFAULT_HAWTIO_MODE, DEFAULT_HAWTIO_NAMESPACE, HAWTIO_MODE_KEY, HAWTIO_NAMESPACE_KEY } from './metadata'
 import { OAuthConfig, PATH_OSCONSOLE_CLIENT_CONFIG } from './globals'
@@ -41,6 +41,7 @@ class OAuthService {
 
     log.debug('Adding master uri to profile')
     this.userProfile.setMasterUri(relToAbsUrl(config.master_uri || '/master'))
+    this.userProfile.setMasterKind(config.master_kind || KUBERNETES_MASTER_KIND)
 
     log.debug('Adding hawtio-mode to profile metadata')
     const hawtioMode = config.hawtio?.mode || DEFAULT_HAWTIO_MODE
