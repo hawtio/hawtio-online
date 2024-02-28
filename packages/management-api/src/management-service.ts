@@ -292,7 +292,7 @@ export class ManagementService extends EventEmitter {
     const connNames: string[] = []
     for (const container of containers) {
       const url: URL = this.connectToUrl(pod, container)
-      const protocol = url.protocol as 'http' | 'https'
+      const protocol = url.protocol.replace(':', '') as 'http' | 'https'
       const connection: Connection = {
         name: this.connectionKeyName(pod, container),
         jolokiaUrl: url.toString(),
