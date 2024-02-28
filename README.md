@@ -5,7 +5,7 @@
 An Hawtio console that eases the discovery and management of [_hawtio-enabled_ applications](#hawtio-enabled-application-examples) deployed on OpenShift and Kubernetes.
 
 <p align="center">
-  <img align="center" src="docs/overview.gif">
+  <img align="center" src="docs/overview.gif" alt="Hawtio Online overview">
 </p>
 
 ## Hawtio-enabled application examples
