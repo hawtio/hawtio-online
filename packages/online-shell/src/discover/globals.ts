@@ -2,7 +2,7 @@ import { ManagedPod } from '@hawtio/online-management-api'
 import { Logger } from '@hawtio/react'
 
 export const pluginPath = '/discover'
-export const pluginName = 'online-discover'
+export const pluginName = 'hawtio-online-discover'
 export const log = Logger.get(pluginName)
 
 export interface TypeFilter {
