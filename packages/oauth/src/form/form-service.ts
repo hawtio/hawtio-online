@@ -4,7 +4,7 @@ import $ from 'jquery'
 import { jwtDecode } from 'jwt-decode'
 import { relToAbsUrl } from 'src/utils/utils'
 import { OAuthProtoService, UserProfile, log } from '../globals'
-import { getCookie, logoutRedirect, redirect, secureDispose, secureRetrieve } from '../utils'
+import { FetchOptions, fetchPath, getCookie, joinPaths, logoutRedirect, redirect, secureDispose, secureRetrieve } from '../utils'
 import { FORM_AUTH_PROTOCOL_MODULE, FORM_TOKEN_STORAGE_KEY, FormConfig, ResolveUser } from './globals'
 
 type LoginOptions = {
@@ -15,6 +15,11 @@ interface Headers {
   Authorization: string
   'X-XSRF-TOKEN'?: string
 }
+
+/*
+ * OpenShift core API groups
+ */
+const OpenshiftAPIs = ['route.openshift.io', 'image.openshift.io', 'console.openshift.io']
 
 export class FormService implements OAuthProtoService {
   private userProfile: UserProfile
@@ -189,16 +194,33 @@ export class FormService implements OAuthProtoService {
         return false
       }
 
-      let subject = this.userProfile.getToken()
+      const masterUri = this.userProfile.getMasterUri()
+      const token = this.userProfile.getToken()
+
+      let subject = ''
       try {
-        subject = this.getSubjectFromToken(this.userProfile.getToken())
+        // Try and extract the subject from the token, if applicable
+        subject = this.getSubjectFromToken(token)
       } catch (err) {
         if (err instanceof Error) log.warn(err.message)
         else log.error(err)
       }
 
-      resolve({ username: subject, isLogin: true })
-      userService.setToken(this.userProfile.getToken())
+      /*
+       * If subject not assigned and the cluster is OpenShift
+       * then ask cluster API for user.
+       *
+       * NOTE: This is an edge-case that really only affects development
+       * since form-login is prioritized for authentication of non-OpenShift clusters.
+       */
+      if (subject === '' && (await this.isOpenShift(masterUri, token))) {
+        // Default to 'user' if there is a failure
+        subject = (await this.openShiftUser(masterUri, token)) ?? ''
+      }
+
+      // Default to user if subject cannot be established
+      resolve({ username: subject !== '' ? subject : 'user', isLogin: true })
+      userService.setToken(token)
 
       return true
     }
@@ -219,5 +241,75 @@ export class FormService implements OAuthProtoService {
       return true
     }
     userService.addLogoutHook(FORM_AUTH_PROTOCOL_MODULE, logout)
+  }
+
+  private async isOpenShift(masterUri: string, token: string): Promise<boolean> {
+    const fetchOptions: FetchOptions = {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+
+    let isOS = false
+    await fetchPath<void>(
+      joinPaths(masterUri, 'apis'),
+      {
+        success: (data: string) => {
+          log.debug('Connected to master uri api')
+
+          /*
+           * Search the JSON API response to determine if they
+           * contain core OpenShift group APIs
+           */
+          const response = JSON.parse(data)
+          const apiGroups = response?.groups
+
+          const osApiGroups = apiGroups.filter((apiGroup: { name: string }): boolean => {
+            return OpenshiftAPIs.indexOf(apiGroup.name) > -1
+          })
+
+          // An Openshift cluster should contain at least the
+          // API groups specified by OpenshiftAPIs
+          isOS = osApiGroups && osApiGroups.length === OpenshiftAPIs.length
+        },
+        error: err => {
+          log.debug('Cannot access master api so cannot determine type of cluster', { cause: err })
+          isOS = false
+        },
+      },
+      fetchOptions,
+    )
+
+    return isOS
+  }
+
+  /**
+   * Fetches the username connected to the token using the Openshift API.
+   * Only applicable if the cluster is Openshift.
+   *
+   * return null
+   */
+  private async openShiftUser(masterUri: string, token: string): Promise<string | null> {
+    const fetchOptions: FetchOptions = {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+
+    let userName = null
+    await fetchPath<void>(
+      joinPaths(masterUri, 'apis/user.openshift.io/v1/users/~'),
+      {
+        success: (data: string) => {
+          log.debug('Connected to master uri api')
+          const response = JSON.parse(data)
+          userName = response?.metadata?.name
+          return
+        },
+        error: err => {
+          log.debug('Cannot get username from Openshift token', { cause: err })
+          return
+        },
+      },
+      fetchOptions,
+    )
+
+    return userName
   }
 }
