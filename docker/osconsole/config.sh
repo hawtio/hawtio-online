@@ -6,6 +6,7 @@ openshift_config_cluster() {
   cat << EOF
 {
   "master_uri": "/master",
+  "master_kind": "${MASTER_KIND}",
   "hawtio": {
     "mode": "${HAWTIO_ONLINE_MODE}"
   },
@@ -24,6 +25,7 @@ openshift_config_namespace() {
   cat << EOF
 {
   "master_uri": "/master",
+  "master_kind": "${MASTER_KIND}",
   "hawtio": {
     "mode": "${HAWTIO_ONLINE_MODE}",
     "namespace": "${HAWTIO_ONLINE_NAMESPACE}"
@@ -43,6 +45,7 @@ form_config_cluster() {
   cat << EOF
 {
   "master_uri": "/master",
+  "master_kind": "${MASTER_KIND}",
   "hawtio": {
     "mode": "${HAWTIO_ONLINE_MODE}"
   },
@@ -57,6 +60,7 @@ form_config_namespace() {
   cat << EOF
 {
   "master_uri": "/master",
+  "master_kind": "${MASTER_KIND}",
   "hawtio": {
     "mode": "${HAWTIO_ONLINE_MODE}",
     "namespace": "${HAWTIO_ONLINE_NAMESPACE}"
@@ -98,6 +102,12 @@ invalid() {
   >&2 echo It should either be \'cluster\' or \'namespace\', but is "${HAWTIO_ONLINE_MODE:-not set}".
   exit 1
 }
+
+if [ "${OPENSHIFT}" == "true" ]; then
+  MASTER_KIND=openshift
+else
+  MASTER_KIND=kubernetes
+fi
 
 case "${HAWTIO_ONLINE_MODE}" in
   "cluster") cluster;;

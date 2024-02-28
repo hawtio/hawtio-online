@@ -14,6 +14,7 @@ const { dependencies } = require('./package.json')
 dotenv.config({ path: path.join(__dirname, '.env') })
 
 module.exports = () => {
+  const masterKind = process.env.MASTER_KIND || 'kubernetes'
   const clusterAuthType = process.env.CLUSTER_AUTH_TYPE || 'oauth'
 
   const master_uri = process.env.CLUSTER_MASTER
@@ -34,6 +35,7 @@ module.exports = () => {
   if (clusterAuthFormUri) console.log('Using Cluster Auth Form URL:', clusterAuthFormUri)
 
   console.log('Using Cluster URL:', master_uri)
+  console.log('Using Master Kind:', masterKind)
   console.log('Using Cluster Namespace:', namespace)
   console.log('Using Hawtio Cluster Mode:', mode)
   console.log('USing OAuth Client Id:', clientId)
@@ -234,6 +236,7 @@ module.exports = () => {
         const osconsole = (_, res) => {
           const oscConfig = {
             master_uri: proxiedMaster,
+            master_kind: masterKind,
             hawtio: {
               mode: mode,
             },

@@ -5,15 +5,13 @@ set -eu
 
 NGINX_HTML="/usr/share/nginx/html"
 HAWTIO_HTML="${NGINX_HTML}/online"
-mkdir -p "${HAWTIO_HTML}/osconsole"
-./config.sh > "${HAWTIO_HTML}/osconsole/config.json"
 
 # nginx.conf parameter default values
 export NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE=${NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE:-10m}
 export NGINX_CLIENT_BODY_BUFFER_SIZE=${NGINX_CLIENT_BODY_BUFFER_SIZE:-256k}
 export NGINX_PROXY_BUFFERS=${NGINX_PROXY_BUFFERS:-16 128k}
 
-OPENSHIFT=true
+export OPENSHIFT=true
 
 check_openshift_api() {
   APISERVER="https://${CLUSTER_MASTER:-kubernetes.default.svc}"
@@ -29,6 +27,13 @@ check_openshift_api() {
 }
 
 check_openshift_api
+
+#
+# Create osconsole/config.json after openshift api check
+# so that the OPENSHIFT flag can be provided to it
+#
+mkdir -p "${HAWTIO_HTML}/osconsole"
+./config.sh > "${HAWTIO_HTML}/osconsole/config.json"
 
 generate_nginx_gateway_conf() {
   TEMPLATE=/nginx-gateway.conf.template
