@@ -8,7 +8,7 @@ module.exports = () => {
   //
   // Prefix path will be determined by the installed web server platform
   //
-  const publicPath = '/'
+  const publicPath = '/online'
 
   return merge(common('production', publicPath), {
     devtool: 'source-map',
