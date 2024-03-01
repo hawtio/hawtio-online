@@ -7,8 +7,13 @@ export const log = Logger.get(moduleName)
 export const PATH_OSCONSOLE_CLIENT_CONFIG = 'osconsole/config.json'
 export const LOGOUT_ENDPOINT = '/auth/logout'
 
+// Kinds identified for the master cluster
+export const OPENSHIFT_MASTER_KIND = 'OPENSHIFT'
+export const KUBERNETES_MASTER_KIND = 'KUBERNETES'
+
 export interface OAuthConfig {
   master_uri?: string
+  master_kind: string
   hawtio?: Hawtio
   form?: FormConfig
   openshift?: OpenShiftOAuthConfig
@@ -29,6 +34,7 @@ export class UserProfile {
   // Type of oauth is the profile, eg. openshift, form
   private oAuthType = 'unknown'
   private masterUri?: string
+  private masterKind?: string
   private token?: string
   private error: Error | null = null
   private metadata: Record<string, unknown> = {}
@@ -63,6 +69,19 @@ export class UserProfile {
 
   setMasterUri(masterUri: string) {
     this.masterUri = masterUri
+  }
+
+  getMasterKind(): string {
+    return this.masterKind ? this.masterKind : ''
+  }
+
+  setMasterKind(masterKind: string) {
+    const ucType = masterKind.toUpperCase()
+    if (ucType === KUBERNETES_MASTER_KIND || ucType === OPENSHIFT_MASTER_KIND) this.masterKind = ucType
+    else {
+      log.warn(`Unknown value set for master_kind in config (${masterKind}). Defaulting master kind to kubernetes`)
+      this.masterKind = KUBERNETES_MASTER_KIND
+    }
   }
 
   hasError() {

@@ -22,7 +22,7 @@
   "scripts": {
     "build": "tsup --clean",
     "build:watch": "tsup --watch",
-    "test": "jest",
+    "test": "jest --watchAll=false --passWithNoTests",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "replace-version": "replace __PACKAGE_VERSION_PLACEHOLDER__ $npm_package_version ./dist/index.js",
@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@hawtio/online-kubernetes-api": "workspace:*",
-    "@hawtio/react": "^1.0.3",
+    "@hawtio/react": "^1.0.7",
     "eventemitter3": "^5.0.1",
     "jolokia.js": "^2.0.0",
     "jquery": "^3.7.0",
@@ -41,7 +41,7 @@
     "typescript": "^5.3.3"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.11",
+    "@types/jest": "^29.5.12",
     "@types/jquery": "^3.5.29",
     "@types/jsonpath": "^0.2.4",
     "babel-jest": "^29.6.1",
@@ -52,16 +52,16 @@
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^2.2.2",
     "replace": "^1.2.2",
-    "ts-jest": "^29.1.1",
-    "tsup": "^8.0.1"
+    "ts-jest": "^29.1.2",
+    "tsup": "^8.0.2"
   },
   "peerDependencies": {
     "react": "^16.8 || ^17 || ^18",
     "react-dom": "^16.8 || ^17 || ^18"
   },
-  "packageManager": "yarn@3.6.0",
+  "packageManager": "yarn@4.1.0",
   "engines": {
-    "yarn": ">=3.6.0",
+    "yarn": ">=4.1.0",
     "node": ">=18"
   },
   "publishConfig": {

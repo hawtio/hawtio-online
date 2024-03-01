@@ -38,7 +38,8 @@
     "license": "mkdir -p docker/licenses && yarn licenses generate-disclaimer -R > docker/licenses/licenses.txt",
     "gen:proxying": "./scripts/generate-proxying.sh",
     "gen:serving": "./scripts/generate-serving.sh",
-    "test": "yarn test:docker && yarn test:nginx",
+    "test": "yarn test:unit && yarn test:docker && yarn test:nginx",
+    "test:unit": "yarn workspaces foreach -v -Aipt --exclude @hawtio/online-root --exclude \"@hawtio/*-app\" run test",
     "test:docker": "jasmine docker/*.spec.js",
     "test:nginx": "cd docker/ && HAWTIO_ONLINE_RBAC_ACL= njs test.js",
     "deploy:k8s:namespace": "./scripts/kube-apply.sh deploy/k8s/namespace/",
@@ -50,11 +51,11 @@
   "devDependencies": {
     "concurrently": "^8.2.2",
     "cz-conventional-changelog": "3.3.0",
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "prettier": "3.1.1"
+    "prettier": "3.2.5"
   },
   "config": {
     "commitizen": {
@@ -62,7 +63,7 @@
       "maxLineWidth": 80
     }
   },
-  "packageManager": "yarn@3.6.1",
+  "packageManager": "yarn@4.1.0",
   "engines": {
     "yarn": ">=3.6.0",
     "node": ">=18"

@@ -1,11 +1,20 @@
-import $ from 'jquery'
-import * as fetchIntercept from 'fetch-intercept'
-import { getCookie, logoutRedirect, redirect } from '../utils'
-import { log, OAuthProtoService, UserProfile } from '../globals'
-import { FormConfig, FORM_TOKEN_STORAGE_KEY, FORM_AUTH_PROTOCOL_MODULE, ResolveUser } from './globals'
-import { relToAbsUrl } from 'src/utils/utils'
-import { jwtDecode } from './jwt-decode'
 import { PUBLIC_USER, userService } from '@hawtio/react'
+import * as fetchIntercept from 'fetch-intercept'
+import $ from 'jquery'
+import { jwtDecode } from 'jwt-decode'
+import { relToAbsUrl } from 'src/utils/utils'
+import { OAuthProtoService, OPENSHIFT_MASTER_KIND, UserProfile, log } from '../globals'
+import {
+  FetchOptions,
+  fetchPath,
+  getCookie,
+  joinPaths,
+  logoutRedirect,
+  redirect,
+  secureDispose,
+  secureRetrieve,
+} from '../utils'
+import { FORM_AUTH_PROTOCOL_MODULE, FORM_TOKEN_STORAGE_KEY, FormConfig, ResolveUser } from './globals'
 
 type LoginOptions = {
   uri: URL
@@ -18,7 +27,7 @@ interface Headers {
 
 export class FormService implements OAuthProtoService {
   private userProfile: UserProfile
-  private readonly login: boolean
+  private readonly login: Promise<boolean>
   private formConfig: FormConfig | null
   private fetchUnregister: (() => void) | null
 
@@ -31,7 +40,7 @@ export class FormService implements OAuthProtoService {
     this.fetchUnregister = null
   }
 
-  private createLogin(): boolean {
+  private async createLogin(): Promise<boolean> {
     if (!this.formConfig) {
       log.debug('Form auth disabled')
       return false
@@ -56,7 +65,7 @@ export class FormService implements OAuthProtoService {
       return true // already logged in
     }
 
-    const token = this.checkToken()
+    const token = await this.checkToken()
     if (!token) {
       this.tryLogin({ uri: new URL(window.location.href) })
       return false
@@ -72,13 +81,9 @@ export class FormService implements OAuthProtoService {
     return true
   }
 
-  private checkToken(): string | null {
-    let token: string | null = null
-
+  private async checkToken(): Promise<string | null> {
     // Token has to be provided in local storage
-    if (FORM_TOKEN_STORAGE_KEY in localStorage) token = localStorage.getItem(FORM_TOKEN_STORAGE_KEY) ?? null
-
-    return token
+    return await secureRetrieve(FORM_TOKEN_STORAGE_KEY)
   }
 
   private buildLoginUrl(options: LoginOptions): URL {
@@ -161,7 +166,7 @@ export class FormService implements OAuthProtoService {
   }
 
   private clearTokenStorage(): void {
-    localStorage.removeItem(FORM_TOKEN_STORAGE_KEY)
+    secureDispose(FORM_TOKEN_STORAGE_KEY)
   }
 
   private doLogout(): void {
@@ -175,14 +180,14 @@ export class FormService implements OAuthProtoService {
     logoutRedirect(targetUri)
   }
 
-  isLoggedIn(): Promise<boolean> {
+  async isLoggedIn(): Promise<boolean> {
     // Use Promise to conform with interface
-    return Promise.resolve(this.login)
+    return await this.login
   }
 
   private getSubjectFromToken(token: string): string {
     const payload = jwtDecode(token)
-    return payload.sub.replace('system:serviceaccount:', '')
+    return payload.sub?.replace('system:serviceaccount:', '') ?? ''
   }
 
   registerUserHooks(): void {
@@ -193,16 +198,34 @@ export class FormService implements OAuthProtoService {
         return false
       }
 
-      let subject = this.userProfile.getToken()
+      const masterUri = this.userProfile.getMasterUri()
+      const isOpenShift = this.userProfile.getMasterKind() === OPENSHIFT_MASTER_KIND
+      const token = this.userProfile.getToken()
+
+      let subject = ''
       try {
-        subject = this.getSubjectFromToken(this.userProfile.getToken())
+        // Try and extract the subject from the token, if applicable
+        subject = this.getSubjectFromToken(token)
       } catch (err) {
         if (err instanceof Error) log.warn(err.message)
         else log.error(err)
       }
 
-      resolve({ username: subject, isLogin: true })
-      userService.setToken(this.userProfile.getToken())
+      /*
+       * If subject not assigned and the cluster is OpenShift
+       * then ask cluster API for user.
+       *
+       * NOTE: This is an edge-case that really only affects development
+       * since form-login is prioritized for authentication of non-OpenShift clusters.
+       */
+      if (subject === '' && isOpenShift) {
+        // Default to 'user' if there is a failure
+        subject = (await this.openShiftUser(masterUri, token)) ?? ''
+      }
+
+      // Default to user if subject cannot be established
+      resolve({ username: subject !== '' ? subject : 'user', isLogin: true })
+      userService.setToken(token)
 
       return true
     }
@@ -210,7 +233,9 @@ export class FormService implements OAuthProtoService {
 
     const logout = async () => {
       log.debug('Running oAuth logout hook')
-      if (!this.login || !this.userProfile.hasToken() || this.userProfile.hasError()) return false
+      const login = await this.login
+
+      if (!login || !this.userProfile.hasToken() || this.userProfile.hasError()) return false
 
       log.info('Log out')
       try {
@@ -221,5 +246,37 @@ export class FormService implements OAuthProtoService {
       return true
     }
     userService.addLogoutHook(FORM_AUTH_PROTOCOL_MODULE, logout)
+  }
+
+  /**
+   * Fetches the username connected to the token using the Openshift API.
+   * Only applicable if the cluster is Openshift.
+   *
+   * return null
+   */
+  private async openShiftUser(masterUri: string, token: string): Promise<string | null> {
+    const fetchOptions: FetchOptions = {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+
+    let userName = null
+    await fetchPath<void>(
+      joinPaths(masterUri, 'apis/user.openshift.io/v1/users/~'),
+      {
+        success: (data: string) => {
+          log.debug('Connected to master uri api')
+          const response = JSON.parse(data)
+          userName = response?.metadata?.name
+          return
+        },
+        error: err => {
+          log.debug('Cannot get username from Openshift token', { cause: err })
+          return
+        },
+      },
+      fetchOptions,
+    )
+
+    return userName
   }
 }

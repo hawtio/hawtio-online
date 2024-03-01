@@ -6,10 +6,9 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const path = require('path')
 const { dependencies } = require('./package.json')
 
-const common = mode => {
+const common = (mode, publicPath) => {
   console.log(`Compilation Mode: ${mode}`)
-
-  const publicPath = mode === 'production' ? '/online' : ''
+  console.log(`Public Path: ${publicPath}`)
 
   return {
     mode: mode,
@@ -99,18 +98,21 @@ const common = mode => {
     output: {
       path: path.resolve(__dirname, 'build'),
 
-      // Set base path to /
-      publicPath: '/',
-
+      // Set base path to desired publicPath
+      publicPath: publicPath,
       pathinfo: true,
       filename: 'static/js/bundle.js',
       chunkFilename: 'static/js/[name].chunk.js',
       assetModuleFilename: 'static/media/[name].[hash][ext]',
     },
+
+    // For suppressing warnings that stop app running
     ignoreWarnings: [
       // For suppressing sourcemap warnings coming from some dependencies
       /Failed to parse source map/,
+      /Critical dependency: the request of a dependency is an expression/,
     ],
+
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
       alias: {

@@ -5,7 +5,7 @@
 An Hawtio console that eases the discovery and management of [_hawtio-enabled_ applications](#hawtio-enabled-application-examples) deployed on OpenShift and Kubernetes.
 
 <p align="center">
-  <img align="center" src="docs/overview.gif">
+  <img align="center" src="docs/overview.gif" alt="Hawtio Online overview">
 </p>
 
 ## Hawtio-enabled application examples
@@ -53,9 +53,10 @@ For OpenShift, a serving certificate is automatically generated for your Hawtio 
 
 #### Proxying certificates
 
-For Kubernetes, proxing certificates are disabled by default and you don't need to go through the steps.
+For Kubernetes, proxying certificates are disabled by default and you don't need to go through the steps.
 
-> :warning: This means that client certificate authentication between Hawtio Online and the Jolokia agents is not available by default for Kubernetes, and the Jolokia agents need to disable client certificate authentication so that Hawtio Online can connect to them. You can still use TLS for securing the communication between them.
+> [!WARNING]
+> This means that client certificate authentication between Hawtio Online and the Jolokia agents is not available by default for Kubernetes, and the Jolokia agents need to disable client certificate authentication so that Hawtio Online can connect to them. You can still use TLS for securing the communication between them.
 >
 > It is possible to use a proxying client certificate for Hawtio Online on Kubernetes; it requires you to generate or provide a custom CA for the certificate and then mount/configure it into the Jolokia agent for its client certificate authentication.
 
@@ -89,10 +90,12 @@ Now you can run the following instructions to deploy the Hawtio Online console o
 
 There are two deployment modes you can choose from: **cluster** and **namespace**.
 
-| Deployment Mode | Descripton |
+| Deployment Mode | Description |
 | --------------- | ---------- |
 | Cluster | The Hawtio Online console can discover and connect to _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed across multiple namespaces / projects. <br> **OpenShift:** Use an OAuth client that requires the `cluster-admin` role to be created. By default, this requires the generation of a client certificate, signed with the [service signing certificate][service-signing-certificate] authority, prior to the deployment. See the [Preparation - OpenShift](#openshift) section for more information. |
 | Namespace | This restricts the Hawtio Online console access to a single namespace / project, and as such acts as a single tenant deployment. <br> **OpenShift:** Use a service account as OAuth client, which only requires `admin` role in a project to be created. By default, this requires the generation of a client certificate, signed with the [service signing certificate][service-signing-certificate] authority, prior to the deployment. See the [Preparation - OpenShift](#openshift) section for more information. |
+
+<a name="f1">1</a>. Containers with a configured port named `jolokia` and that exposes the [Jolokia](https://jolokia.org) API.
 
 ### OpenShift
 
@@ -206,7 +209,7 @@ You must have the following tools installed:
 
 ### Build
 
-```
+```sh
 yarn install
 ```
 
@@ -214,7 +217,7 @@ yarn install
 
 In order to authenticate and obtain OAuth access tokens for the Hawtio console be authorized to watch for _hawtio-enabled_ <sup>[1](#f1)</sup> applications deployed in your cluster, you have to create an OAuth client that matches localhost development URLs.
 
-##### Cluster mode
+#### Cluster mode
 
 ```sh
 oc create -f oauthclient.yml
@@ -222,7 +225,7 @@ oc create -f oauthclient.yml
 
 See [OAuth Clients](https://docs.openshift.com/container-platform/latest/authentication/configuring-oauth-clients.html#oauth-default-clients_configuring-oauth-clients) for more information.
 
-##### Namespace mode
+#### Namespace mode
 
 ```sh
 oc create -f serviceaccount.yml
@@ -232,15 +235,15 @@ See [Service Accounts as OAuth Clients](https://docs.openshift.com/container-pla
 
 ### Run
 
-##### Cluster mode
+#### Cluster mode
 
-```
+```sh
 yarn start --master=`oc whoami --show-server` --mode=cluster
 ```
 
-##### Namespace mode
+#### Namespace mode
 
-```
+```sh
 yarn start --master=`oc whoami --show-server` --mode=namespace --namespace=`oc project -q`
 ```
 
@@ -250,7 +253,7 @@ You can access the console at <http://localhost:2772/>.
 
 In order for a local hawtio-online to detect the hawtio-enabled applications, each application container needs to be configured with the following environment variables:
 
-```
+```sh
 AB_JOLOKIA_AUTH_OPENSHIFT=false
 AB_JOLOKIA_PASSWORD_RANDOM=false
 AB_JOLOKIA_OPTS=useSslClientAuthentication=false,protocol=https
