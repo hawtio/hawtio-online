@@ -9,14 +9,12 @@ import {
   List,
   PageSection,
   PageSectionVariants,
-  Panel,
-  PanelHeader,
-  PanelMain,
-  PanelMainBody,
   Title,
+  Spinner,
+  CardTitle,
+  Skeleton,
 } from '@patternfly/react-core'
 import { CubesIcon } from '@patternfly/react-icons'
-import { HawtioLoadingCard } from '@hawtio/react'
 import * as discoverService from './discover-service'
 import { DiscoverToolbar } from './DiscoverToolbar'
 import { DiscoverContext, useDisplayItems } from './context'
@@ -26,21 +24,6 @@ import { DiscoverPodItem } from './DiscoverPodItem'
 export const Discover: React.FunctionComponent = () => {
   const { error, isLoading, discoverGroups, setDiscoverGroups, discoverPods, setDiscoverPods, filters, setFilters } =
     useDisplayItems()
-
-  if (isLoading) {
-    return (
-      <PageSection variant={PageSectionVariants.light}>
-        <Panel className='discover-loading'>
-          <PanelHeader>Waiting for Hawtio Containers ...</PanelHeader>
-          <PanelMain>
-            <PanelMainBody>
-              <HawtioLoadingCard />
-            </PanelMainBody>
-          </PanelMain>
-        </Panel>
-      </PageSection>
-    )
-  }
 
   if (error) {
     return (
@@ -56,9 +39,10 @@ export const Discover: React.FunctionComponent = () => {
     )
   }
 
-  if (discoverGroups.length + discoverPods.length === 0) {
+  if (discoverGroups.length + discoverPods.length === 0 && !isLoading) {
     return (
       <PageSection variant={PageSectionVariants.light}>
+        <DiscoverToolbar />
         <EmptyState>
           <EmptyStateIcon icon={CubesIcon} />
           <Title headingLevel='h1' size='lg'>
@@ -87,6 +71,20 @@ export const Discover: React.FunctionComponent = () => {
         }}
       >
         <DiscoverToolbar />
+
+        {isLoading && (
+          <Card>
+            <div style={{ justifyContent: 'center', display: 'flex' }}>
+              <CardTitle>
+                <Spinner size='sm' /> Loading {(discoverGroups.length > 0 || discoverPods.length > 0) && 'more'} pods...
+              </CardTitle>
+              <CardBody>
+                <Skeleton width='50%' /> <br />
+                <Skeleton width='50%' /> <br />
+              </CardBody>
+            </div>
+          </Card>
+        )}
 
         {discoverGroups.length > 0 && <DiscoverGroupList />}
 
