@@ -94,6 +94,20 @@ class OAuthService {
     return protoServiceActive && this.userProfile.isActive()
   }
 
+  async isRedirecting(): Promise<boolean> {
+    const protoService = await this.protoService
+    if (!protoService) {
+      return false
+    }
+
+    if (this.userProfile.hasError()) {
+      log.debug('Cannot login as user profile has error: ', this.userProfile.getError())
+      return false
+    }
+
+    return await protoService.isRedirecting()
+  }
+
   getUserProfile(): UserProfile {
     return this.userProfile
   }

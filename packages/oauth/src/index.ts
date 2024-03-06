@@ -12,6 +12,9 @@ const oAuthRegister = async (): Promise<void> => {
 
   log.info('Initialising the active profile')
   try {
+    const redirecting = await oAuthRedirecting()
+    if (redirecting) return
+
     oAuthService.registerUserHooks()
     await getActiveProfile()
     log.info('All OAuth plugins have been executed.')
@@ -23,6 +26,10 @@ const oAuthRegister = async (): Promise<void> => {
 
 export function oAuthInitialised(): boolean {
   return initialised
+}
+
+export function oAuthRedirecting(): Promise<boolean> {
+  return oAuthService.isRedirecting()
 }
 
 export const oAuthInit: HawtioPlugin = async () => {

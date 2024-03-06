@@ -18,6 +18,7 @@ export interface Hawtio {
 }
 
 export interface OAuthProtoService {
+  isRedirecting(): Promise<boolean>
   isLoggedIn(): Promise<boolean>
   registerUserHooks(): void
 }

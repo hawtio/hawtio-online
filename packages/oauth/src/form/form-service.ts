@@ -31,6 +31,7 @@ export class FormService implements OAuthProtoService {
   private readonly login: Promise<boolean>
   private formConfig: FormConfig | null
   private fetchUnregister: (() => void) | null
+  private redirecting = false
 
   constructor(formConfig: FormConfig | null, userProfile: UserProfile) {
     log.debug('Initialising Form Auth Service')
@@ -112,6 +113,7 @@ export class FormService implements OAuthProtoService {
       return
     }
 
+    this.redirecting = true
     redirect(targetUri)
   }
 
@@ -179,6 +181,11 @@ export class FormService implements OAuthProtoService {
     // Redirect to /auth/logout endpoint if possible
     const targetUri = this.buildLoginUrl({ uri: currentURI })
     logoutRedirect(targetUri)
+  }
+
+  async isRedirecting(): Promise<boolean> {
+    await this.login
+    return this.redirecting
   }
 
   async isLoggedIn(): Promise<boolean> {

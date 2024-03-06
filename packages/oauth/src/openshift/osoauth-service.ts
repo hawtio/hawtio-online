@@ -44,6 +44,7 @@ export class OSOAuthService implements OAuthProtoService {
   private userInfoUri = ''
   private keepaliveInterval = 10
   private keepAliveHandler: NodeJS.Timeout | null = null
+  private redirecting = false
 
   private userProfile: UserProfile
   private readonly adaptedConfig: Promise<OpenShiftOAuthConfig | null>
@@ -280,6 +281,7 @@ export class OSOAuthService implements OAuthProtoService {
   }
 
   private tryLogin(config: OpenShiftOAuthConfig, uri: URL) {
+    this.redirecting = true
     const targetUri = buildLoginUrl(config, { uri: uri.toString() })
     redirect(targetUri)
   }
@@ -295,6 +297,11 @@ export class OSOAuthService implements OAuthProtoService {
     // So little point in trying to delete the token. Lets do in client-side only
     //
     forceRelogin(currentURI, config)
+  }
+
+  async isRedirecting(): Promise<boolean> {
+    await this.login
+    return this.redirecting
   }
 
   async isLoggedIn(): Promise<boolean> {

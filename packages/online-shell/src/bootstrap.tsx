@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { camel, configManager, hawtio, Hawtio, jmx, logs, quartz, rbac, runtime, springboot } from '@hawtio/react'
 import { isMgmtApiRegistered } from '@hawtio/online-management-api'
+import { oAuthRedirecting } from '@hawtio/online-oauth'
 import { reportWebVitals } from './reportWebVitals'
 import { discover } from './discover'
 
@@ -22,17 +23,21 @@ isMgmtApiRegistered().then(() => {
   discover()
 
   // Bootstrap Hawtio
-  hawtio.bootstrap()
+  hawtio.bootstrap().then(() => {
+    oAuthRedirecting().then((redirecting: boolean) => {
+      if (redirecting) return
 
-  const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
-  root.render(
-    <React.StrictMode>
-      <Hawtio />
-    </React.StrictMode>,
-  )
+      const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
+      root.render(
+        <React.StrictMode>
+          <Hawtio />
+        </React.StrictMode>,
+      )
 
-  // If you want to start measuring performance in your app, pass a function
-  // to log results (for example: reportWebVitals(console.log))
-  // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-  reportWebVitals()
+      // If you want to start measuring performance in your app, pass a function
+      // to log results (for example: reportWebVitals(console.log))
+      // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+      reportWebVitals()
+    })
+  })
 })
