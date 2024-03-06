@@ -1,12 +1,4 @@
-!/deploy/
-!/deploy/**/*
-!/docker/
-!/docker/branding
-!/docs/
-!/packages/
-!/packages/**/*
-!/scripts/
-
+build/
 dist/
 lib/
 licenses/
@@ -15,6 +7,8 @@ node_modules/
 site/
 spec/
 target/
+
+.env
 
 # IDEs
 .project
@@ -31,11 +25,8 @@ target/
 !.yarn/sdks
 !.yarn/versions
 
-**/.env
-**/build
-
 # Debugging output file for webpack
-**/__webpackConfig__.txt
+__webpackConfig__.txt
 
 # snyk
 .dccache
