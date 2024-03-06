@@ -36,7 +36,7 @@ export class KubernetesService extends EventEmitter {
 
     try {
       this._oAuthProfile = await getActiveProfile()
-      if (!this._oAuthProfile) throw new Error('Cannot initialize an active OAuth profile')
+      if (!this._oAuthProfile) throw new Error('Cannot initialize k8 API due to no active OAuth profile')
 
       if (this._oAuthProfile.hasError()) throw this._oAuthProfile.getError()
 
