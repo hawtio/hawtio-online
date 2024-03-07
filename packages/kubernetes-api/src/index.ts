@@ -6,7 +6,7 @@ const registerK8Api = async (): Promise<boolean> => {
   log.debug('Awaiting registering of OAuth')
   oAuthInit()
 
-  log.debug('OAuth registered -  getting active profile')
+  log.debug('OAuth registered - getting active profile')
   return await k8Init()
 }
 
