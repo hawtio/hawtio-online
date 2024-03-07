@@ -1,17 +1,19 @@
-import $ from 'jquery'
+import { userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
-import { log, OAuthProtoService, UserProfile } from '../globals'
-import { fetchPath, isBlank, getCookie, redirect } from '../utils'
+import $ from 'jquery'
+import { OAuthProtoService, UserProfile } from '../api'
+import { log } from '../globals'
 import { CLUSTER_CONSOLE_KEY } from '../metadata'
+import { fetchPath, getCookie, isBlank, redirect } from '../utils'
 import {
+  CLUSTER_VERSION_KEY,
   DEFAULT_CLUSTER_VERSION,
   EXPIRES_IN_KEY,
-  OBTAINED_AT_KEY,
-  TOKEN_TYPE_KEY,
-  CLUSTER_VERSION_KEY,
   OAUTH_OS_PROTOCOL_MODULE,
+  OBTAINED_AT_KEY,
   OpenShiftOAuthConfig,
   ResolveUser,
+  TOKEN_TYPE_KEY,
 } from './globals'
 import {
   buildLoginUrl,
@@ -21,7 +23,6 @@ import {
   forceRelogin,
   tokenHasExpired,
 } from './support'
-import { userService } from '@hawtio/react'
 
 interface UserObject {
   kind: string

@@ -2,8 +2,8 @@ import { PUBLIC_USER, userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
 import $ from 'jquery'
 import { jwtDecode } from 'jwt-decode'
-import { relToAbsUrl } from 'src/utils/utils'
-import { OAuthProtoService, OPENSHIFT_MASTER_KIND, UserProfile, log } from '../globals'
+import { OAuthProtoService, UserProfile } from '../api'
+import { OPENSHIFT_MASTER_KIND, log } from '../globals'
 import {
   FetchOptions,
   fetchPath,
@@ -11,6 +11,7 @@ import {
   joinPaths,
   logoutRedirect,
   redirect,
+  relToAbsUrl,
   secureDispose,
   secureRetrieve,
 } from '../utils'

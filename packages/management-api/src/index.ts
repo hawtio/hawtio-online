@@ -1,6 +1,6 @@
-import { ManagementService } from './management-service'
-import { log } from './globals'
 import { isK8ApiRegistered } from '@hawtio/online-kubernetes-api'
+import { log } from './globals'
+import { ManagementService } from './management-service'
 
 export const mgmtService = new ManagementService()
 

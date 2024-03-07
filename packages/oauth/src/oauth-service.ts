@@ -1,10 +1,9 @@
-import { KUBERNETES_MASTER_KIND, log, OAuthProtoService, UserProfile } from './globals'
-import { fetchPath } from './utils'
-import { DEFAULT_HAWTIO_MODE, DEFAULT_HAWTIO_NAMESPACE, HAWTIO_MODE_KEY, HAWTIO_NAMESPACE_KEY } from './metadata'
-import { OAuthConfig, PATH_OSCONSOLE_CLIENT_CONFIG } from './globals'
-import { OSOAuthService } from './openshift'
-import { relToAbsUrl } from './utils/utils'
+import { OAuthConfig, OAuthProtoService, UserProfile } from './api'
 import { FormService } from './form'
+import { KUBERNETES_MASTER_KIND, PATH_OSCONSOLE_CLIENT_CONFIG, log } from './globals'
+import { DEFAULT_HAWTIO_MODE, DEFAULT_HAWTIO_NAMESPACE, HAWTIO_MODE_KEY, HAWTIO_NAMESPACE_KEY } from './metadata'
+import { OSOAuthService } from './openshift'
+import { fetchPath, relToAbsUrl } from './utils'
 
 class OAuthService {
   private userProfile: UserProfile = new UserProfile()
