@@ -1,5 +1,5 @@
-import { relToAbsUrl, redirect, logoutRedirect, secureStore, secureDispose, secureRetrieve } from '../utils'
 import { log, UserProfile } from '../globals'
+import { logoutRedirect, redirect, relToAbsUrl, secureDispose, secureRetrieve, secureStore } from '../utils'
 import { EXPIRES_IN_KEY, OBTAINED_AT_KEY, OpenShiftOAuthConfig, TokenMetadata } from './globals'
 
 const OS_TOKEN_STORAGE_KEY = 'osAuthCreds'

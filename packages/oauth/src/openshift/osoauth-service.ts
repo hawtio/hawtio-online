@@ -1,8 +1,8 @@
 import { userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
 import $ from 'jquery'
-import { OAuthProtoService, UserProfile } from '../api'
-import { log } from '../globals'
+import { OAuthProtoService } from '../api'
+import { UserProfile, log } from '../globals'
 import { CLUSTER_CONSOLE_KEY } from '../metadata'
 import { fetchPath, getCookie, isBlank, redirect } from '../utils'
 import {
