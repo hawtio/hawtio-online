@@ -56,7 +56,7 @@ export class UserProfile {
   }
 
   getToken(): string {
-    return this.token ? this.token : ''
+    return this.token ?? ''
   }
 
   setToken(token: string) {
@@ -64,7 +64,7 @@ export class UserProfile {
   }
 
   getMasterUri(): string {
-    return this.masterUri ? this.masterUri : ''
+    return this.masterUri ?? ''
   }
 
   setMasterUri(masterUri: string) {
@@ -72,7 +72,7 @@ export class UserProfile {
   }
 
   getMasterKind(): string {
-    return this.masterKind ? this.masterKind : ''
+    return this.masterKind ?? ''
   }
 
   setMasterKind(masterKind: string) {
