@@ -2,8 +2,7 @@ import { Logger } from '@hawtio/react'
 import { FormConfig } from './form'
 import { OpenShiftOAuthConfig } from './openshift'
 
-export const moduleName = 'hawtio-oauth'
-export const log = Logger.get(moduleName)
+export const log = Logger.get('hawtio-oauth')
 export const PATH_OSCONSOLE_CLIENT_CONFIG = 'osconsole/config.json'
 export const LOGOUT_ENDPOINT = '/auth/logout'
 
