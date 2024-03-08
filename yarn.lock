@@ -2166,6 +2166,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hawtio/online-root@workspace:."
   dependencies:
+    compression-webpack-plugin: "npm:^11.1.0"
     concurrently: "npm:^8.2.2"
     cz-conventional-changelog: "npm:3.3.0"
     eslint: "npm:^8.57.0"
@@ -5760,6 +5761,18 @@ __metadata:
   dependencies:
     mime-db: "npm:>= 1.43.0 < 2"
   checksum: 10/58321a85b375d39230405654721353f709d0c1442129e9a17081771b816302a012471a9b8f4864c7dbe02eef7f2aaac3c614795197092262e94b409c9be108f0
+  languageName: node
+  linkType: hard
+
+"compression-webpack-plugin@npm:^11.1.0":
+  version: 11.1.0
+  resolution: "compression-webpack-plugin@npm:11.1.0"
+  dependencies:
+    schema-utils: "npm:^4.2.0"
+    serialize-javascript: "npm:^6.0.2"
+  peerDependencies:
+    webpack: ^5.1.0
+  checksum: 10/9068fc0fe8feb3c342043b58d42756006b5e85393bd40356e2bd9b68b70adb77782cd42bda2c84bc26c749d7357ae195b526aad3e6e6ffb51db1a23217bf6357
   languageName: node
   linkType: hard
 

@@ -23,6 +23,7 @@ server {
     ssl_certificate_key /etc/tls/private/serving/tls.key;
     absolute_redirect   off;
     gzip                on;
+    gzip_types text/plain application/javascript text/javascript;
     root                /usr/share/nginx/html/;
 
     # Limit the keepalive of connections (60s default)
@@ -78,6 +79,7 @@ server {
         add_header location-rule ONLINE always;
         alias     /usr/share/nginx/html/online;
         try_files $uri$args $uri /online/index.html;
+        gzip_static on;
     }
 
     # Kubernetes master API reverse proxying
