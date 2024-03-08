@@ -4,6 +4,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const path = require('path')
 const { common } = require('./webpack.config.common.js')
 
+const CompressionPlugin = require('compression-webpack-plugin')
+
 module.exports = () => {
   //
   // Prefix path will be determined by the installed web server platform
@@ -16,6 +18,9 @@ module.exports = () => {
     plugins: [
       new CopyWebpackPlugin({
         patterns: [{ from: 'public/manifest.json' }, { from: 'public/hawtio-logo.svg' }],
+      }),
+      new CompressionPlugin({
+        threshold: 8192,
       }),
     ],
   })
