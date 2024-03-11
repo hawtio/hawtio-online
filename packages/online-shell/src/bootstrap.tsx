@@ -4,8 +4,12 @@ import { camel, configManager, hawtio, Hawtio, jmx, logs, quartz, rbac, runtime,
 import { isMgmtApiRegistered } from '@hawtio/online-management-api'
 import { reportWebVitals } from './reportWebVitals'
 import { discover } from './discover'
+import { InitLoading } from './console/InitLoading'
 
 configManager.addProductInfo('Hawtio Online', '__PACKAGE_VERSION_PLACEHOLDER__')
+
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
+root.render(<InitLoading />)
 
 // Register kubernetes & management - only then complete hawtio bootstrap
 isMgmtApiRegistered().then(() => {
@@ -24,7 +28,6 @@ isMgmtApiRegistered().then(() => {
   // Bootstrap Hawtio
   hawtio.bootstrap()
 
-  const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
   root.render(
     <React.StrictMode>
       <Hawtio />
