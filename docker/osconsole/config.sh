@@ -103,7 +103,7 @@ invalid() {
   exit 1
 }
 
-if [ "${OPENSHIFT}" == "true" ]; then
+if [ "${OPENSHIFT}" = "true" ]; then
   MASTER_KIND=openshift
 else
   MASTER_KIND=kubernetes

@@ -7,7 +7,7 @@ usage() {
 This script creates a TLS secret for Hawtio serving on Kubernetes.
 
 Usage:
-  $(basename $0) [-h] [-k tls_key] [-c tls_crt] [SECRET_NAME] [CN]
+  $(basename "$0") [-h] [-k tls_key] [-c tls_crt] [SECRET_NAME] [CN]
 
 Options:
   -c tls_key   TLS key
@@ -19,12 +19,13 @@ EOT
 
 kube_binary() {
   local k
-  k=$(command -v ${1} 2> /dev/null)
+  k=$(command -v "${1}" 2> /dev/null)
+  # shellcheck disable=SC2181
   if [ $? != 0 ]; then
     return
   fi
 
-  echo ${k}
+  echo "${k}"
 }
 
 while getopts c:k:h OPT; do
@@ -42,7 +43,7 @@ done
 shift $((OPTIND - 1))
 
 if [ -n "${KUBECLI}" ]; then
-  KUBECLI=$(kube_binary ${KUBECLI})
+  KUBECLI=$(kube_binary "${KUBECLI}")
 else
   # try finding oc
   KUBECLI=$(kube_binary oc)
@@ -83,10 +84,10 @@ if [ -z "${TLS_CRT}" ]; then
   TLS_CRT=tls.crt
 fi
 
-if ${KUBECLI} get secret ${SECRET_NAME} -n ${NAMESPACE} 1> /dev/null 2>& 1; then
+if ${KUBECLI} get secret "${SECRET_NAME}" -n "${NAMESPACE}" 1> /dev/null 2>& 1; then
   echo "The secret ${SECRET_NAME} in ${NAMESPACE} already exists"
   exit 0
 fi
 
 # Create the secret for Hawtio Online
-${KUBECLI} create secret tls ${SECRET_NAME} --cert tls.crt --key tls.key -n ${NAMESPACE}
+${KUBECLI} create secret tls "${SECRET_NAME}" --cert tls.crt --key tls.key -n "${NAMESPACE}"

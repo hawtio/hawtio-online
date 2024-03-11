@@ -23,7 +23,7 @@ This script generates a client certificate and then creates a TLS secret with it
 for Hawtio proxying on OpenShift 4.
 
 Usage:
-  $(basename $0) [-h] [SECRET_NAME] [CN]
+  $(basename "$0") [-h] [SECRET_NAME] [CN]
 
 Options:
   -h    Show this help
@@ -33,12 +33,13 @@ EOT
 
 kube_binary() {
   local k
-  k=$(command -v ${1} 2> /dev/null)
+  k=$(command -v "${1}" 2> /dev/null)
+  # shellcheck disable=SC2181
   if [ $? != 0 ]; then
     return
   fi
 
-  echo ${k}
+  echo "${k}"
 }
 
 while getopts h OPT; do
@@ -52,7 +53,7 @@ while getopts h OPT; do
 done
 
 if [ -n "${KUBECLI}" ]; then
-  KUBECLI=$(kube_binary ${KUBECLI})
+  KUBECLI=$(kube_binary "${KUBECLI}")
 else
   # try finding oc
   KUBECLI=$(kube_binary oc)
@@ -113,10 +114,10 @@ openssl req -new -key server.key -out server.csr -config csr.conf
 # Issue the signed certificate
 openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 10000 -extensions v3_ext -extfile csr.conf
 
-if ${KUBECLI} get secret ${SECRET_NAME} -n ${NAMESPACE} 1> /dev/null 2>& 1; then
+if ${KUBECLI} get secret "${SECRET_NAME}" -n "${NAMESPACE}" 1> /dev/null 2>& 1; then
   echo "The secret ${SECRET_NAME} in ${NAMESPACE} already exists"
   exit 0
 fi
 
 # Create the secret for Hawtio Online
-${KUBECLI} create secret tls ${SECRET_NAME} --cert server.crt --key server.key -n ${NAMESPACE}
+${KUBECLI} create secret tls "${SECRET_NAME}" --cert server.crt --key server.key -n "${NAMESPACE}"

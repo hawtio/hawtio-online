@@ -7,9 +7,9 @@ NGINX_HTML="/usr/share/nginx/html"
 HAWTIO_HTML="${NGINX_HTML}/online"
 
 # nginx.conf parameter default values
-export NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE=${NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE:-10m}
-export NGINX_CLIENT_BODY_BUFFER_SIZE=${NGINX_CLIENT_BODY_BUFFER_SIZE:-256k}
-export NGINX_PROXY_BUFFERS=${NGINX_PROXY_BUFFERS:-16 128k}
+export NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE="${NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE:-10m}"
+export NGINX_CLIENT_BODY_BUFFER_SIZE="${NGINX_CLIENT_BODY_BUFFER_SIZE:-256k}"
+export NGINX_PROXY_BUFFERS="${NGINX_PROXY_BUFFERS:-16 128k}"
 
 export OPENSHIFT=true
 
@@ -19,11 +19,11 @@ check_openshift_api() {
   TOKEN=$(cat ${SERVICEACCOUNT}/token)
   CACERT=${SERVICEACCOUNT}/ca.crt
 
-  STATUS_CODE=$(curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET ${APISERVER}/apis/apps.openshift.io/v1 --write-out '%{http_code}' --silent --output /dev/null)
+  STATUS_CODE=$(curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET "${APISERVER}"/apis/apps.openshift.io/v1 --write-out '%{http_code}' --silent --output /dev/null)
   if [ "${STATUS_CODE}" != "200" ]; then
     OPENSHIFT=false
   fi
-  echo OpenShift API: ${OPENSHIFT} - ${STATUS_CODE} ${APISERVER}/apis/apps.openshift.io/v1
+  echo "OpenShift API: ${OPENSHIFT} - ${STATUS_CODE} ${APISERVER}/apis/apps.openshift.io/v1"
 }
 
 check_openshift_api
@@ -40,6 +40,7 @@ generate_nginx_gateway_conf() {
   if [ "${OPENSHIFT}" = "false" ]; then
     TEMPLATE=/nginx-gateway-k8s.conf.template
   fi
+  # shellcheck disable=SC2016
   envsubst '
     $NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE
     $NGINX_CLIENT_BODY_BUFFER_SIZE
@@ -58,6 +59,7 @@ else
   ln -sf /nginx.conf /etc/nginx/conf.d/nginx.conf
 fi
 
+# shellcheck disable=SC2181
 if [ $? = 0 ]; then
   echo Starting NGINX...
   nginx -g 'daemon off;'
