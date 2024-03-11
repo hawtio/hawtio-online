@@ -17,6 +17,7 @@ export default {
     '\\.(css|less)$': '<rootDir>/src/__mocks__/styleMock.js',
     'react-markdown': '<rootDir>/../../node_modules/@hawtio/react/node_modules/react-markdown/react-markdown.min.js',
     '@patternfly/react-code-editor': path.resolve(__dirname, './src/__mocks__/codeEditorMock.js'),
+    oauth4webapi: path.resolve(__dirname, './src/__mocks__/oauth4webapi.js'),
   },
 
   // The path to a module that runs some code to configure or set up the testing
