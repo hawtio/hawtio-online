@@ -1,4 +1,4 @@
-import { userService } from '@hawtio/react'
+import { PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
 import $ from 'jquery'
 import { OAuthProtoService } from '../api'
@@ -12,7 +12,6 @@ import {
   OAUTH_OS_PROTOCOL_MODULE,
   OBTAINED_AT_KEY,
   OpenShiftOAuthConfig,
-  ResolveUser,
   TOKEN_TYPE_KEY,
 } from './globals'
 import {
@@ -304,8 +303,9 @@ export class OSOAuthService implements OAuthProtoService {
       const config = await this.adaptedConfig
       const login = await this.login
       if (!config || !login || this.userProfile.hasError()) {
-        resolve({ username: '', isLogin: false })
-        return false
+        // OpenShift OAuth provides a dedicated login page, thus setting isLoading=true
+        resolve({ username: PUBLIC_USER, isLogin: false, isLoading: true })
+        return true
       }
 
       if (this.userProfile.getToken()) {

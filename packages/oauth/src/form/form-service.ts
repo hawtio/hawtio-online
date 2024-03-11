@@ -1,9 +1,9 @@
-import { PUBLIC_USER, userService } from '@hawtio/react'
+import { PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
 import $ from 'jquery'
 import { jwtDecode } from 'jwt-decode'
 import { OAuthProtoService } from '../api'
-import { OPENSHIFT_MASTER_KIND, log, UserProfile } from '../globals'
+import { OPENSHIFT_MASTER_KIND, UserProfile, log } from '../globals'
 import {
   FetchOptions,
   fetchPath,
@@ -15,7 +15,7 @@ import {
   secureDispose,
   secureRetrieve,
 } from '../utils'
-import { FORM_AUTH_PROTOCOL_MODULE, FORM_TOKEN_STORAGE_KEY, FormConfig, ResolveUser } from './globals'
+import { FORM_AUTH_PROTOCOL_MODULE, FORM_TOKEN_STORAGE_KEY, FormConfig } from './globals'
 
 type LoginOptions = {
   uri: URL
@@ -196,7 +196,7 @@ export class FormService implements OAuthProtoService {
     const fetchUser = async (resolve: ResolveUser) => {
       if (!this.login || !this.userProfile.hasToken() || this.userProfile.hasError()) {
         resolve({ username: PUBLIC_USER, isLogin: false })
-        return false
+        return true
       }
 
       const masterUri = this.userProfile.getMasterUri()
