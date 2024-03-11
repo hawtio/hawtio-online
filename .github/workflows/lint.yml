@@ -48,3 +48,7 @@ jobs:
         id: lint
         if: steps.install.outcome == 'success'
         run: yarn lint --max-warnings=0
+      - name: Shellcheck
+        shell: bash
+        run: |
+          ./scripts/shellcheck.sh
