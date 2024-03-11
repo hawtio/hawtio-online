@@ -1,4 +1,4 @@
-FROM docker.io/node:18 as builder
+FROM docker.io/node:18-alpine as builder
 
 WORKDIR /hawtio-online
 
@@ -76,7 +76,7 @@ COPY docker/hawtio-404.html /usr/share/nginx/html
 
 # Copy licenses
 RUN mkdir -p /opt/hawtio/licenses
-COPY docker/licenses /opt/hawtio/licenses
+COPY --from=builder /hawtio-online/docker/licenses /opt/hawtio/licenses
 
 COPY --from=builder /hawtio-online/packages/online-shell/build /usr/share/nginx/html/online/
 COPY --from=envsubst /usr/bin/envsubst /usr/local/bin/

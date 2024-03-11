@@ -1,13 +1,12 @@
-import { KUBERNETES_MASTER_KIND, log, OAuthProtoService, UserProfile } from './globals'
-import { fetchPath } from './utils'
-import { DEFAULT_HAWTIO_MODE, DEFAULT_HAWTIO_NAMESPACE, HAWTIO_MODE_KEY, HAWTIO_NAMESPACE_KEY } from './metadata'
-import { OAuthConfig, PATH_OSCONSOLE_CLIENT_CONFIG } from './globals'
-import { OSOAuthService } from './openshift'
-import { relToAbsUrl } from './utils/utils'
+import { OAuthConfig, OAuthProtoService } from './api'
 import { FormService } from './form'
+import { KUBERNETES_MASTER_KIND, PATH_OSCONSOLE_CLIENT_CONFIG, UserProfile, log } from './globals'
+import { DEFAULT_HAWTIO_MODE, DEFAULT_HAWTIO_NAMESPACE, HAWTIO_MODE_KEY, HAWTIO_NAMESPACE_KEY } from './metadata'
+import { OSOAuthService } from './openshift'
+import { fetchPath, relToAbsUrl } from './utils'
 
 class OAuthService {
-  private userProfile: UserProfile = new UserProfile()
+  private readonly userProfile: UserProfile = new UserProfile()
 
   private readonly config: Promise<OAuthConfig | null>
   private readonly protoService: Promise<OAuthProtoService | null>
@@ -37,17 +36,17 @@ class OAuthService {
       this.userProfile.setError(new Error('Cannot find the osconsole configuration'))
       return null
     }
-    log.debug('OAuth config to be processed: ', config)
+    log.debug('OAuth config to be processed:', config)
 
     log.debug('Adding master uri to profile')
-    this.userProfile.setMasterUri(relToAbsUrl(config.master_uri || '/master'))
-    this.userProfile.setMasterKind(config.master_kind || KUBERNETES_MASTER_KIND)
+    this.userProfile.setMasterUri(relToAbsUrl(config.master_uri ?? '/master'))
+    this.userProfile.setMasterKind(config.master_kind ?? KUBERNETES_MASTER_KIND)
 
     log.debug('Adding hawtio-mode to profile metadata')
-    const hawtioMode = config.hawtio?.mode || DEFAULT_HAWTIO_MODE
+    const hawtioMode = config.hawtio?.mode ?? DEFAULT_HAWTIO_MODE
     this.userProfile.addMetadata(HAWTIO_MODE_KEY, hawtioMode)
     if (hawtioMode !== DEFAULT_HAWTIO_MODE)
-      this.userProfile.addMetadata(HAWTIO_NAMESPACE_KEY, config.hawtio?.namespace || DEFAULT_HAWTIO_NAMESPACE)
+      this.userProfile.addMetadata(HAWTIO_NAMESPACE_KEY, config.hawtio?.namespace ?? DEFAULT_HAWTIO_NAMESPACE)
 
     let protoService: OAuthProtoService | null = null
     if (config.form) {

@@ -1,34 +1,12 @@
 import { Logger } from '@hawtio/react'
-import { FormConfig } from './form'
-import { OpenShiftOAuthConfig } from './openshift'
 
-export const moduleName = 'hawtio-oauth'
-export const log = Logger.get(moduleName)
+export const log = Logger.get('hawtio-oauth')
 export const PATH_OSCONSOLE_CLIENT_CONFIG = 'osconsole/config.json'
 export const LOGOUT_ENDPOINT = '/auth/logout'
 
 // Kinds identified for the master cluster
 export const OPENSHIFT_MASTER_KIND = 'OPENSHIFT'
 export const KUBERNETES_MASTER_KIND = 'KUBERNETES'
-
-export interface OAuthConfig {
-  master_uri?: string
-  master_kind: string
-  hawtio?: Hawtio
-  form?: FormConfig
-  openshift?: OpenShiftOAuthConfig
-  token?: string
-}
-
-export interface Hawtio {
-  mode: string
-  namespace?: string
-}
-
-export interface OAuthProtoService {
-  isLoggedIn(): Promise<boolean>
-  registerUserHooks(): void
-}
 
 export class UserProfile {
   // Type of oauth is the profile, eg. openshift, form
@@ -56,7 +34,7 @@ export class UserProfile {
   }
 
   getToken(): string {
-    return this.token ? this.token : ''
+    return this.token ?? ''
   }
 
   setToken(token: string) {
@@ -64,7 +42,7 @@ export class UserProfile {
   }
 
   getMasterUri(): string {
-    return this.masterUri ? this.masterUri : ''
+    return this.masterUri ?? ''
   }
 
   setMasterUri(masterUri: string) {
@@ -72,7 +50,7 @@ export class UserProfile {
   }
 
   getMasterKind(): string {
-    return this.masterKind ? this.masterKind : ''
+    return this.masterKind ?? ''
   }
 
   setMasterKind(masterKind: string) {

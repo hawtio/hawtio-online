@@ -1,4 +1,5 @@
-import { log, UserProfile, getActiveProfile, CLUSTER_CONSOLE_KEY } from '@hawtio/online-oauth'
+import { UserProfile, getActiveProfile, CLUSTER_CONSOLE_KEY } from '@hawtio/online-oauth'
+import { log } from './globals'
 
 export class KubernetesAPI {
   private _initialized = false
@@ -12,7 +13,7 @@ export class KubernetesAPI {
 
     try {
       this._oAuthProfile = await getActiveProfile()
-      if (!this._oAuthProfile) throw new Error('Cannot initialize an active OAuth profile')
+      if (!this._oAuthProfile) throw new Error('Cannot initialize k8 API due to no active OAuth profile')
 
       if (this._oAuthProfile.hasError()) throw this._oAuthProfile.getError()
 
@@ -103,7 +104,7 @@ export class KubernetesAPI {
   }
 
   private checkInitOrError() {
-    if (!this.initialized) throw new Error('k8 API is not intialized')
+    if (!this.initialized) throw new Error('k8 API is not initialized')
 
     if (this.hasError()) throw this._error
 

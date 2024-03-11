@@ -1,0 +1,33 @@
+name: Image
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build image
+        run: |
+          docker build -t quay.io/hawtio/online:latest .
+      - name: Display image
+        run: |
+          docker images
+      - name: Push image to Quay.io
+        env:
+          USERNAME: ${{ secrets.QUAY_USERNAME }}
+          PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+        run: |
+          docker login -u $USERNAME -p $PASSWORD quay.io
+          docker push quay.io/hawtio/online:latest

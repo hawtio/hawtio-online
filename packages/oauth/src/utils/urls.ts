@@ -1,6 +1,5 @@
 import { LOGOUT_ENDPOINT, log } from '../globals'
 import { isBlank } from './strings'
-import { relToAbsUrl } from './utils'
 
 /**
  * Join the supplied strings together using '/', stripping any leading/ending '/'
@@ -76,4 +75,8 @@ export function redirect(target: URL) {
   log.debug('Redirecting to URI:', target)
   // Redirect to the target URI
   window.location.href = target.toString()
+}
+
+export function relToAbsUrl(relativeUrl: string): string {
+  return new URL(relativeUrl, window.location.origin).href
 }

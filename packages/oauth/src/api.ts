@@ -1,5 +1,26 @@
-import { log, UserProfile } from './globals'
+import { FormConfig } from './form'
+import { UserProfile, log } from './globals'
 import { oAuthService } from './oauth-service'
+import { OpenShiftOAuthConfig } from './openshift'
+
+export interface OAuthConfig {
+  master_uri?: string
+  master_kind: string
+  hawtio?: Hawtio
+  form?: FormConfig
+  openshift?: OpenShiftOAuthConfig
+  token?: string
+}
+
+export interface Hawtio {
+  mode: string
+  namespace?: string
+}
+
+export interface OAuthProtoService {
+  isLoggedIn(): Promise<boolean>
+  registerUserHooks(): void
+}
 
 let userProfile: UserProfile | null = null
 

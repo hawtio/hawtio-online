@@ -52,7 +52,7 @@ const common = (mode, publicPath) => {
         ignoreOrder: true,
       }),
       new webpack.container.ModuleFederationPlugin({
-        name: 'app',
+        name: 'hawtio-online',
         filename: 'remoteEntry.js',
         exposes: {},
         shared: {
