@@ -27,18 +27,18 @@ interface Headers {
 }
 
 export class FormService implements OAuthProtoService {
-  private userProfile: UserProfile
   private readonly login: Promise<boolean>
   private formConfig: FormConfig | null
-  private fetchUnregister: (() => void) | null
+  private fetchUnregister?: () => void
 
-  constructor(formConfig: FormConfig | null, userProfile: UserProfile) {
+  constructor(
+    formConfig: FormConfig | null,
+    private readonly userProfile: UserProfile,
+  ) {
     log.debug('Initialising Form Auth Service')
-    this.userProfile = userProfile
     this.userProfile.setOAuthType(FORM_AUTH_PROTOCOL_MODULE)
     this.formConfig = formConfig
     this.login = this.createLogin()
-    this.fetchUnregister = null
   }
 
   private async createLogin(): Promise<boolean> {
@@ -171,7 +171,7 @@ export class FormService implements OAuthProtoService {
   }
 
   private doLogout(): void {
-    if (this.fetchUnregister) this.fetchUnregister()
+    this.fetchUnregister?.()
 
     const currentURI = new URL(window.location.href)
     this.clearTokenStorage()
