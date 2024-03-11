@@ -38,7 +38,7 @@
     "js-logger": "^1.6.1",
     "jwt-decode": "^4.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
+    "typescript": "^5.4.2",
     "whatwg-fetch": "^3.6.20"
   },
   "devDependencies": {
