@@ -36,17 +36,17 @@ class OAuthService {
       this.userProfile.setError(new Error('Cannot find the osconsole configuration'))
       return null
     }
-    log.debug('OAuth config to be processed: ', config)
+    log.debug('OAuth config to be processed:', config)
 
     log.debug('Adding master uri to profile')
-    this.userProfile.setMasterUri(relToAbsUrl(config.master_uri || '/master'))
-    this.userProfile.setMasterKind(config.master_kind || KUBERNETES_MASTER_KIND)
+    this.userProfile.setMasterUri(relToAbsUrl(config.master_uri ?? '/master'))
+    this.userProfile.setMasterKind(config.master_kind ?? KUBERNETES_MASTER_KIND)
 
     log.debug('Adding hawtio-mode to profile metadata')
-    const hawtioMode = config.hawtio?.mode || DEFAULT_HAWTIO_MODE
+    const hawtioMode = config.hawtio?.mode ?? DEFAULT_HAWTIO_MODE
     this.userProfile.addMetadata(HAWTIO_MODE_KEY, hawtioMode)
     if (hawtioMode !== DEFAULT_HAWTIO_MODE)
-      this.userProfile.addMetadata(HAWTIO_NAMESPACE_KEY, config.hawtio?.namespace || DEFAULT_HAWTIO_NAMESPACE)
+      this.userProfile.addMetadata(HAWTIO_NAMESPACE_KEY, config.hawtio?.namespace ?? DEFAULT_HAWTIO_NAMESPACE)
 
     let protoService: OAuthProtoService | null = null
     if (config.form) {

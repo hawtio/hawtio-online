@@ -45,26 +45,22 @@ export class OSOAuthService implements OAuthProtoService {
   private keepaliveInterval = 10
   private keepAliveHandler: NodeJS.Timeout | null = null
 
-  private userProfile: UserProfile
   private readonly adaptedConfig: Promise<OpenShiftOAuthConfig | null>
   private readonly login: Promise<boolean>
-  private fetchUnregister: (() => void) | null
+  private fetchUnregister?: () => void
 
-  constructor(openShiftConfig: OpenShiftOAuthConfig, userProfile: UserProfile) {
-    log.debug('Initialising Openshift OAuth Service')
-    this.userProfile = userProfile
+  constructor(
+    openShiftConfig: OpenShiftOAuthConfig,
+    private readonly userProfile: UserProfile,
+  ) {
+    log.debug('Initialising OpenShift OAuth Service')
     this.userProfile.setOAuthType(OAUTH_OS_PROTOCOL_MODULE)
     this.adaptedConfig = this.processConfig(openShiftConfig)
     this.login = this.createLogin()
-    this.fetchUnregister = null
   }
 
   private async processConfig(config: OpenShiftOAuthConfig): Promise<OpenShiftOAuthConfig | null> {
-    if (!config) {
-      this.userProfile.setError(new Error('Cannot find the openshift auth configuration'))
-      return null
-    }
-    log.debug('OS OAuth config to be processed: ', config)
+    log.debug('OpenShift OAuth config to be processed:', config)
 
     if (config.oauth_authorize_uri) return config
 
@@ -75,8 +71,8 @@ export class OSOAuthService implements OAuthProtoService {
     }
 
     // See if web_console_url has been added to config
-    if (config.web_console_url && config.web_console_url.length > 0) {
-      log.debug(`Adding web console URI to user profile ${config.web_console_url}`)
+    if (!isBlank(config.web_console_url)) {
+      log.debug('Adding web console URI to user profile:', config.web_console_url)
       this.userProfile.addMetadata(CLUSTER_CONSOLE_KEY, config.web_console_url)
     }
 
@@ -89,7 +85,7 @@ export class OSOAuthService implements OAuthProtoService {
         config.issuer = metadata.issuer
 
         if (isBlank(config.oauth_authorize_uri) || isBlank(config.oauth_client_id)) {
-          this.userProfile.setError(new Error('Invalid openshift auth config'))
+          this.userProfile.setError(new Error('Invalid OpenShift auth config'))
           return null
         }
 
@@ -98,7 +94,7 @@ export class OSOAuthService implements OAuthProtoService {
         return config
       },
       error: err => {
-        const e: Error = new Error('Failed to contact the oauth metadata uri', { cause: err })
+        const e = new Error('Failed to contact the oauth metadata uri', { cause: err })
         this.userProfile.setError(e)
         return null
       },
@@ -106,13 +102,13 @@ export class OSOAuthService implements OAuthProtoService {
   }
 
   private setupFetch(config: OpenShiftOAuthConfig) {
-    if (!config || this.userProfile.hasError()) {
+    if (this.userProfile.hasError()) {
       return
     }
 
-    log.debug('Intercept Fetch API to attach Openshift auth token to authorization header')
-    const unregister = fetchIntercept.register({
-      request: (url, config) => {
+    log.debug('Intercept Fetch API to attach OpenShift auth token to authorization header')
+    this.fetchUnregister = fetchIntercept.register({
+      request: (url, requestConfig) => {
         log.debug('Fetch intercepted for oAuth authentication')
 
         if (tokenHasExpired(this.userProfile)) {
@@ -120,7 +116,7 @@ export class OSOAuthService implements OAuthProtoService {
           log.debug(reason)
 
           // Unregister this fetch handler before logging out
-          unregister()
+          this.fetchUnregister?.()
 
           this.doLogout(config)
         }
@@ -139,20 +135,20 @@ export class OSOAuthService implements OAuthProtoService {
           }
         }
 
-        return [url, { headers, ...config }]
+        return [url, { headers, ...requestConfig }]
       },
     })
   }
 
   private setupJQueryAjax(config: OpenShiftOAuthConfig) {
-    if (!config || this.userProfile.hasError()) {
+    if (this.userProfile.hasError()) {
       return
     }
 
     log.debug('Set authorization header to Openshift auth token for AJAX requests')
     const beforeSend = (xhr: JQueryXHR, settings: JQueryAjaxSettings) => {
       if (tokenHasExpired(this.userProfile)) {
-        log.debug(`Cannot navigate to ${settings.url} as token expired so need to logout`)
+        log.debug('Cannot navigate to', settings.url, 'as token expired so need to logout')
         this.doLogout(config)
         return
       }
@@ -237,7 +233,7 @@ export class OSOAuthService implements OAuthProtoService {
     }
 
     if (this.userProfile.hasError()) {
-      log.debug('Cannot login as user profile has an error: ', this.userProfile.getError())
+      log.debug('Cannot login as user profile has an error:', this.userProfile.getError())
       return false
     }
 
@@ -254,18 +250,18 @@ export class OSOAuthService implements OAuthProtoService {
       }
 
       log.debug('Populating user profile with token metadata')
-      /* Populate the profile with the new token */
-      this.userProfile.addMetadata<number>(EXPIRES_IN_KEY, tokenParams.expires_in || 0)
-      this.userProfile.addMetadata<string>(TOKEN_TYPE_KEY, tokenParams.token_type || '')
-      this.userProfile.addMetadata<number>(OBTAINED_AT_KEY, tokenParams.obtainedAt || 0)
+      // Populate the profile with the new token
+      this.userProfile.addMetadata<number>(EXPIRES_IN_KEY, tokenParams.expires_in ?? 0)
+      this.userProfile.addMetadata<string>(TOKEN_TYPE_KEY, tokenParams.token_type ?? '')
+      this.userProfile.addMetadata<number>(OBTAINED_AT_KEY, tokenParams.obtainedAt ?? 0)
 
-      this.userProfile.setToken(tokenParams.access_token || '')
+      this.userProfile.setToken(tokenParams.access_token ?? '')
 
       if (this.checkTokenExpired(config)) return false
 
-      /* Promote the hawtio mode to expose to third-parties */
+      // Promote the hawtio mode to expose to third-parties
       log.debug('Adding cluster version to profile metadata')
-      this.userProfile.addMetadata<string>(CLUSTER_VERSION_KEY, config.cluster_version || DEFAULT_CLUSTER_VERSION)
+      this.userProfile.addMetadata<string>(CLUSTER_VERSION_KEY, config.cluster_version ?? DEFAULT_CLUSTER_VERSION)
 
       // Need fetch for keepalive
       this.setupFetch(config)
@@ -274,7 +270,8 @@ export class OSOAuthService implements OAuthProtoService {
       this.setupKeepAlive(config)
       return true
     } catch (error) {
-      this.userProfile.setError(error instanceof Error ? error : new Error('Error from checking token'))
+      const e = error instanceof Error ? error : new Error('Error from checking token')
+      this.userProfile.setError(e)
       return false
     }
   }
@@ -285,7 +282,7 @@ export class OSOAuthService implements OAuthProtoService {
   }
 
   private doLogout(config: OpenShiftOAuthConfig): void {
-    if (this.fetchUnregister) this.fetchUnregister()
+    this.fetchUnregister?.()
 
     const currentURI = new URL(window.location.href)
     // The following request returns 403 when delegated authentication with an
@@ -320,11 +317,11 @@ export class OSOAuthService implements OAuthProtoService {
         })
 
         let username = this.userProfile.getToken() // default
-        if (userInfo && userInfo.metadata?.name) {
-          username = userInfo.metadata?.name
+        if (userInfo?.metadata?.name) {
+          username = userInfo.metadata.name
         }
 
-        resolve({ username: username, isLogin: true })
+        resolve({ username, isLogin: true })
         userService.setToken(this.userProfile.getToken())
       }
 
