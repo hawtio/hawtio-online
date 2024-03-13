@@ -2,7 +2,15 @@ import Jolokia, { BaseRequestOptions } from 'jolokia.js'
 import $ from 'jquery'
 import { log } from './globals'
 import jsonpath from 'jsonpath'
-import { k8Api, KubePod, k8Service, ObjectMeta, PodStatus, joinPaths, PodSpec } from '@hawtio/online-kubernetes-api'
+import {
+  kubernetesApi,
+  KubePod,
+  kubernetesService,
+  ObjectMeta,
+  PodStatus,
+  joinPaths,
+  PodSpec,
+} from '@hawtio/online-kubernetes-api'
 
 const DEFAULT_JOLOKIA_OPTIONS: BaseRequestOptions = {
   method: 'post',
@@ -54,7 +62,7 @@ export class ManagedPod {
   }
 
   static getJolokiaPath(pod: KubePod, port: number): string | null {
-    if (!k8Api.masterUri()) {
+    if (!kubernetesApi.masterUri()) {
       return null
     }
 
@@ -72,7 +80,7 @@ export class ManagedPod {
   }
 
   private extractPort(pod: KubePod): number {
-    const ports = jsonpath.query(pod, k8Service.jolokiaPortQuery)
+    const ports = jsonpath.query(pod, kubernetesService.jolokiaPortQuery)
     if (!ports || ports.length === 0) return ManagedPod.DEFAULT_JOLOKIA_PORT
     return ports[0].containerPort || ManagedPod.DEFAULT_JOLOKIA_PORT
   }

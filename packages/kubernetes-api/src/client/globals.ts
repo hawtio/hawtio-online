@@ -1,3 +1,4 @@
+import { UserProfile } from '@hawtio/online-oauth'
 import { Logger } from '@hawtio/react'
 import { KubeObject } from '../globals'
 import { WatchActions, WatchTypes } from '../model'
@@ -84,6 +85,6 @@ export interface WSHandler<T extends KubeObject> {
 }
 
 export interface ClientFactory {
-  create<T extends KubeObject>(options: KOptions, namespace?: string): Collection<T>
+  create<T extends KubeObject>(profile: UserProfile, options: KOptions, namespace?: string): Collection<T>
   destroy<T extends KubeObject>(client: Collection<T>, ...handles: Array<ProcessDataCallback<T>>): void
 }

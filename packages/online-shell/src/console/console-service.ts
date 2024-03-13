@@ -1,4 +1,4 @@
-import { k8Api, joinPaths } from '@hawtio/online-kubernetes-api'
+import { kubernetesApi, joinPaths } from '@hawtio/online-kubernetes-api'
 import { ConsoleType } from './globals'
 
 enum LinkPath {
@@ -25,26 +25,26 @@ export interface OSLinkConfig {
 }
 
 export function osLink(config: OSLinkConfig): URL | null {
-  if (!k8Api.consoleUri) return null
+  if (!kubernetesApi.consoleUri) return null
 
   const linkPath = LinkPath[config.type]
 
   switch (config.type) {
     case ConsoleType.console:
-      return new URL(k8Api.consoleUri)
+      return new URL(kubernetesApi.consoleUri)
     case ConsoleType.namespace:
-      return new URL(joinPaths(k8Api.consoleUri, linkPath, config.namespace || 'default'))
+      return new URL(joinPaths(kubernetesApi.consoleUri, linkPath, config.namespace || 'default'))
     case ConsoleType.search: {
-      const url: URL = new URL(joinPaths(k8Api.consoleUri, linkPath, config.namespace || 'default'))
+      const url: URL = new URL(joinPaths(kubernetesApi.consoleUri, linkPath, config.namespace || 'default'))
       url.search = `kind=${config.kind}&q=${encodeURI(config.selector || '')}`
       return url
     }
     case ConsoleType.node:
-      return new URL(joinPaths(k8Api.consoleUri, linkPath, config.selector || ''))
+      return new URL(joinPaths(kubernetesApi.consoleUri, linkPath, config.selector || ''))
     case ConsoleType.resource:
       return new URL(
         joinPaths(
-          k8Api.consoleUri,
+          kubernetesApi.consoleUri,
           linkPath,
           config.namespace || 'default',
           OS4[config.resource as keyof typeof OS4] || config.resource,

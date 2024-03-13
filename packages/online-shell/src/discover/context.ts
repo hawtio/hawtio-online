@@ -1,6 +1,6 @@
-import { createContext, useEffect, useRef, useState } from 'react'
-import { k8Api, k8Service } from '@hawtio/online-kubernetes-api'
+import { kubernetesApi, kubernetesService } from '@hawtio/online-kubernetes-api'
 import { MgmtActions, isMgmtApiRegistered, mgmtService } from '@hawtio/online-management-api'
+import { createContext, useEffect, useRef, useState } from 'react'
 import { filterAndGroupPods } from './discover-service'
 import { DiscoverGroup, DiscoverPod, TypeFilter } from './globals'
 
@@ -35,14 +35,14 @@ export function useDisplayItems() {
 
       if (!mgmtLoaded) return
 
-      if (k8Api.hasError()) {
-        setError(k8Api.error)
+      if (kubernetesApi.hasError()) {
+        setError(kubernetesApi.error)
         setIsMounting(false)
         return
       }
 
-      if (k8Service.hasError()) {
-        setError(k8Service.error)
+      if (kubernetesService.hasError()) {
+        setError(kubernetesService.error)
         setIsMounting(false)
         return
       }

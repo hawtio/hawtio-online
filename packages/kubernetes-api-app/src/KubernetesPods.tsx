@@ -1,4 +1,4 @@
-import { k8Service, KubePod } from '@hawtio/online-kubernetes-api'
+import { kubernetesService, KubePod } from '@hawtio/online-kubernetes-api'
 import {
   DescriptionList,
   DescriptionListDescription,
@@ -58,7 +58,7 @@ export const KubernetesPods: React.FunctionComponent<KubePodsProps> = (props: Ku
                       })}
                     </DescriptionList>
                   </Td>
-                  <Td dataLabel='Status'>{k8Service.podStatus(pod)}</Td>
+                  <Td dataLabel='Status'>{kubernetesService.podStatus(pod)}</Td>
                 </Tr>
               ))}
             </Tbody>

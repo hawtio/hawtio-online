@@ -1,29 +1,29 @@
-import { isK8ApiRegistered, k8Api, k8Service } from '@hawtio/online-kubernetes-api'
-import React, { useRef, useEffect, useState } from 'react'
+import { kubernetesApi, kubernetesService } from '@hawtio/online-kubernetes-api'
+import { useUser, userService } from '@hawtio/react'
 import {
   Alert,
+  Button,
   Card,
-  CardTitle,
   CardBody,
+  CardTitle,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
   Divider,
+  Label,
+  Masthead,
+  MastheadContent,
   Panel,
   PanelHeader,
   PanelMain,
   PanelMainBody,
   Skeleton,
   Title,
-  Masthead,
-  MastheadContent,
-  Label,
-  Button,
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
+import React, { useEffect, useRef, useState } from 'react'
 import { KubernetesClient } from './KubernetesClient'
-import { useUser, userService } from '@hawtio/react'
 
 export const Kubernetes: React.FunctionComponent = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -35,21 +35,17 @@ export const Kubernetes: React.FunctionComponent = () => {
     setIsLoading(true)
 
     const checkLoading = async () => {
-      const k8Loaded = await isK8ApiRegistered()
-
-      if (!k8Loaded) return
-
       if (!userLoaded) return
 
       setIsLoading(false)
 
-      if (k8Api.hasError()) {
-        setError(k8Api.error)
+      if (kubernetesApi.hasError()) {
+        setError(kubernetesApi.error)
         return
       }
 
-      if (k8Service.hasError()) {
-        setError(k8Service.error)
+      if (kubernetesService.hasError()) {
+        setError(kubernetesService.error)
       }
     }
 
@@ -126,22 +122,28 @@ export const Kubernetes: React.FunctionComponent = () => {
               <DescriptionList isHorizontal>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Kubernetes Master</DescriptionListTerm>
-                  <DescriptionListDescription>{k8Api.masterUri()}</DescriptionListDescription>
+                  <DescriptionListDescription>{kubernetesApi.masterUri()}</DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Is Openshift?</DescriptionListTerm>
-                  <DescriptionListDescription>{k8Api.isOpenshift ? 'true' : 'false'}</DescriptionListDescription>
+                  <DescriptionListDescription>
+                    {kubernetesApi.isOpenshift ? 'true' : 'false'}
+                  </DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Cluster Console</DescriptionListTerm>
                   <DescriptionListDescription>
-                    {k8Api.consoleUri ? <a href={k8Api.consoleUri}>{k8Api.consoleUri}</a> : '<not found>'}
+                    {kubernetesApi.consoleUri ? (
+                      <a href={kubernetesApi.consoleUri}>{kubernetesApi.consoleUri}</a>
+                    ) : (
+                      '<not found>'
+                    )}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
                   <DescriptionListTerm>Kubernetes Config</DescriptionListTerm>
                   <DescriptionListDescription>
-                    <pre>{JSON.stringify(k8Api.oAuthProfile, null, 2)}</pre>
+                    <pre>{JSON.stringify(kubernetesApi.oAuthProfile, null, 2)}</pre>
                   </DescriptionListDescription>
                 </DescriptionListGroup>
               </DescriptionList>

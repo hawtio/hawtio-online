@@ -1,3 +1,4 @@
+import { onlineKubernetesApi } from '@hawtio/online-kubernetes-api'
 import { isMgmtApiRegistered } from '@hawtio/online-management-api'
 import { camel, configManager, hawtio, Hawtio, jmx, logs, quartz, rbac, runtime, springboot } from '@hawtio/react'
 import React from 'react'
@@ -20,6 +21,8 @@ runtime()
 logs()
 quartz()
 springboot()
+
+onlineKubernetesApi()
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<InitLoading />)

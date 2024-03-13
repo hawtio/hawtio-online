@@ -1,15 +1,23 @@
+import { HawtioPlugin } from '@hawtio/react'
+import { kubernetesApi } from './api'
 import { log } from './globals'
-import { init } from './init'
+import { kubernetesService } from './kubernetes-service'
 
-const kubernetesApi = async (): Promise<boolean> => {
-  log.debug('OAuth registered - getting active profile')
-  return await init()
+export const onlineKubernetesApi: HawtioPlugin = () => {
+  log.debug('Loading Kubernetes API plugin')
+  const init = async () => {
+    log.debug('Initialising Kubernetes API')
+    await kubernetesApi.initialize()
+
+    log.debug('Initialising Kubernetes Service')
+    await kubernetesService.initialize()
+
+    log.debug('Loaded Kubernetes API plugin')
+  }
+  init()
 }
 
-export async function isK8sApiRegistered(): Promise<boolean> {
-  return await kubernetesApi()
-}
-
+export * from './api'
 export * from './globals'
-export { k8Api, k8Service } from './init'
+export * from './kubernetes-service'
 export * from './utils'

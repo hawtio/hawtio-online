@@ -1,8 +1,16 @@
-import { EventEmitter } from 'eventemitter3'
-import { ManagedPod, Management } from './managed-pod'
+import {
+  Container,
+  ContainerPort,
+  K8Actions,
+  KubePod,
+  debounce,
+  kubernetesApi,
+  kubernetesService,
+} from '@hawtio/online-kubernetes-api'
 import { Connection, Connections, connectService } from '@hawtio/react'
-import { k8Service, k8Api, KubePod, K8Actions, Container, ContainerPort, debounce } from '@hawtio/online-kubernetes-api'
+import { EventEmitter } from 'eventemitter3'
 import { MgmtActions, log } from './globals'
+import { ManagedPod, Management } from './managed-pod'
 
 interface UpdateEmitter {
   uid?: string
@@ -18,21 +26,21 @@ export class ManagementService extends EventEmitter {
   constructor() {
     super()
 
-    k8Service.on(K8Actions.CHANGED, () => this.initialize())
+    kubernetesService.on(K8Actions.CHANGED, () => this.initialize())
     setInterval(() => this.pollManagementData(), 10000)
   }
 
   async initialize(): Promise<boolean> {
-    if (!k8Api.initialized) {
-      await k8Api.initialize()
+    if (!kubernetesApi.initialized) {
+      await kubernetesApi.initialize()
     }
 
-    if (!k8Service.initialized) {
-      await k8Service.initialize()
+    if (!kubernetesService.initialized) {
+      await kubernetesService.initialize()
     }
 
     if (!this.hasError()) {
-      const kPods: KubePod[] = k8Service.getPods()
+      const kPods: KubePod[] = kubernetesService.getPods()
 
       kPods.forEach(kPod => {
         const uid = kPod.metadata?.uid
@@ -162,13 +170,13 @@ export class ManagementService extends EventEmitter {
   }
 
   hasError() {
-    return k8Api.hasError() || k8Service.hasError()
+    return kubernetesApi.hasError() || kubernetesService.hasError()
   }
 
   get error(): Error | null {
-    if (k8Api.hasError()) return k8Api.error
+    if (kubernetesApi.hasError()) return kubernetesApi.error
 
-    if (k8Service.hasError()) return k8Service.error
+    if (kubernetesService.hasError()) return kubernetesService.error
 
     return null
   }

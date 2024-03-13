@@ -10,6 +10,7 @@ export const METADATA_KEY_HAWTIO_NAMESPACE = 'hawtio-namespace'
 export const METADATA_KEY_CLUSTER_CONSOLE = 'cluster-console'
 
 export type AuthType = 'oauth' | 'form'
+export type MasterKind = 'openshift' | 'kubernetes'
 
 export class UserProfile {
   /**
@@ -17,18 +18,10 @@ export class UserProfile {
    */
   private authType: AuthType = 'oauth'
   private masterUri?: string
-  private masterKind?: 'openshift' | 'kubernetes'
+  private masterKind?: MasterKind
   private token?: string
   private error?: Error
   private metadata: Record<string, unknown> = {}
-
-  getAuthType(): AuthType {
-    return this.authType
-  }
-
-  setAuthType(type: AuthType) {
-    this.authType = type
-  }
 
   isActive(): boolean {
     return this.hasToken() || !this.hasError()
@@ -36,6 +29,18 @@ export class UserProfile {
 
   hasToken(): boolean {
     return this.getToken().length > 0
+  }
+
+  isOpenShift(): boolean {
+    return this.getMasterKind() === 'openshift'
+  }
+
+  getAuthType(): AuthType {
+    return this.authType
+  }
+
+  setAuthType(type: AuthType) {
+    this.authType = type
   }
 
   getToken(): string {
@@ -54,11 +59,11 @@ export class UserProfile {
     this.masterUri = masterUri
   }
 
-  getMasterKind(): 'openshift' | 'kubernetes' {
+  getMasterKind(): MasterKind {
     return this.masterKind ?? 'openshift'
   }
 
-  setMasterKind(masterKind: 'openshift' | 'kubernetes') {
+  setMasterKind(masterKind: MasterKind) {
     this.masterKind = masterKind
   }
 

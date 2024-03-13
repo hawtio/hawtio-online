@@ -1,17 +1,16 @@
 import {
   CLUSTER_VERSION_KEY,
-  getActiveProfile,
   HawtioMode,
   METADATA_KEY_HAWTIO_MODE,
   METADATA_KEY_HAWTIO_NAMESPACE,
   UserProfile,
+  oAuthService,
 } from '@hawtio/online-oauth'
-import { configManager, Hawtconfig } from '@hawtio/react'
+import { Hawtconfig, configManager } from '@hawtio/react'
 import EventEmitter from 'eventemitter3'
 import jsonpath from 'jsonpath'
-import { clientFactory, Collection, log, ProcessDataCallback } from './client'
+import { Collection, ProcessDataCallback, clientFactory, log } from './client'
 import { K8Actions, KubeObject, KubePod, KubeProject } from './globals'
-import { k8Api } from './init'
 import { WatchTypes } from './model'
 import { pathGet } from './utils'
 
@@ -22,41 +21,37 @@ export interface Client<T extends KubeObject> {
 
 export class KubernetesService extends EventEmitter {
   private readonly _jolokiaPortQuery = '$.spec.containers[*].ports[?(@.name=="jolokia")]'
+
+  private oAuthProfile?: Promise<UserProfile>
   private _loading = 0
-  private _initialized = false
-  private _error: Error | null = null
-  private _oAuthProfile: UserProfile | null = null
+  private error?: Error
   private projects: KubeProject[] = []
   private pods: KubePod[] = []
   private projects_client: Client<KubeProject> | null = null
   private pods_clients: { [key: string]: Client<KubePod> } = {}
 
-  async initialize(): Promise<boolean> {
-    if (this._initialized) return this._initialized
-
+  async initialize() {
     try {
-      this._oAuthProfile = await getActiveProfile()
-      if (!this._oAuthProfile) throw new Error('Cannot initialize Kubernetes API due to no active OAuth profile')
+      this.oAuthProfile = oAuthService.getUserProfile()
+      const profile = await this.oAuthProfile
+      if (profile.hasError()) throw profile.getError()
 
-      if (this._oAuthProfile.hasError()) throw this._oAuthProfile.getError()
-
-      const isCluster = this.is('cluster')
-      if (isCluster) {
-        const hawtConfig = await configManager.getHawtconfig()
-        this.initClusterConfig(hawtConfig)
-      } else {
-        this.initNamespaceConfig(this._oAuthProfile)
+      const mode = profile.metadataValue<HawtioMode>(METADATA_KEY_HAWTIO_MODE)
+      switch (mode) {
+        case 'cluster': {
+          const hawtConfig = await configManager.getHawtconfig()
+          this.initClusterConfig(profile, hawtConfig)
+          break
+        }
+        case 'namespace':
+          this.initNamespaceConfig(profile)
+          break
       }
-
-      this._initialized = true
     } catch (error) {
-      log.error('Kubernetes Service cannot complete initialisation due to: ', error)
-      if (error instanceof Error) this._error = error
-      else this._error = new Error('Unknown error during initialisation')
+      log.error('Kubernetes Service cannot complete initialisation due to:', error)
+      const e = error instanceof Error ? error : new Error('Unknown error during initialisation')
+      this.error = e
     }
-
-    this._initialized = true
-    return this._initialized
   }
 
   private initNamespaceConfig(profile: UserProfile) {
@@ -67,7 +62,7 @@ export class KubernetesService extends EventEmitter {
       log.warn("No namespace can be found - defaulting to 'default'")
       namespace = 'default'
     }
-    const pods_client = clientFactory.create<KubePod>({ kind: WatchTypes.PODS, namespace: namespace })
+    const pods_client = clientFactory.create<KubePod>(profile, { kind: WatchTypes.PODS, namespace: namespace })
     const pods_watch = pods_client.watch(pods => {
       this._loading--
       this.pods.splice(0, this.pods.length) // clear the array
@@ -80,11 +75,11 @@ export class KubernetesService extends EventEmitter {
     pods_client.connect()
   }
 
-  private initClusterConfig(hawtConfig: Hawtconfig) {
+  private initClusterConfig(profile: UserProfile, hawtConfig: Hawtconfig) {
     log.debug('Initialising Cluster Config')
-    const kindToWatch = k8Api.isOpenshift ? WatchTypes.PROJECTS : WatchTypes.NAMESPACES
+    const kindToWatch = profile.isOpenShift() ? WatchTypes.PROJECTS : WatchTypes.NAMESPACES
     const labelSelector = pathGet(hawtConfig, ['online', 'projectSelector']) as string
-    const projects_client = clientFactory.create<KubeProject>({
+    const projects_client = clientFactory.create<KubeProject>(profile, {
       kind: kindToWatch,
       labelSelector: labelSelector,
     })
@@ -95,7 +90,10 @@ export class KubernetesService extends EventEmitter {
       let filtered = projects.filter(project => !this.projects.some(p => p.metadata?.uid === project.metadata?.uid))
       for (const project of filtered) {
         this._loading++
-        const pods_client = clientFactory.create<KubePod>({ kind: WatchTypes.PODS, namespace: project.metadata?.name })
+        const pods_client = clientFactory.create<KubePod>(profile, {
+          kind: WatchTypes.PODS,
+          namespace: project.metadata?.name,
+        })
         const pods_watch = pods_client.watch(pods => {
           this._loading--
           const others = this.pods.filter(pod => pod.metadata?.namespace !== project.metadata?.name)
@@ -144,18 +142,13 @@ export class KubernetesService extends EventEmitter {
     projects_client.connect()
   }
 
-  get initialized(): boolean {
-    return this._initialized
-  }
+  private async assertInitAndNoErrors() {
+    if (this.hasError()) throw this.error
 
-  private checkInitOrError() {
-    if (!this.initialized) throw new Error('Kubernetes Service is not initialized')
+    if (!this.oAuthProfile) throw new Error('Kubernetes Service is not initialized')
 
-    if (this.hasError()) throw this._error
-
-    if (!this._oAuthProfile) throw new Error('Cannot find the oAuth profile')
-
-    if (this._oAuthProfile.hasError()) throw this._oAuthProfile.getError()
+    const profile = await this.oAuthProfile
+    if (profile.hasError()) throw profile.getError()
   }
 
   get loading() {
@@ -166,40 +159,43 @@ export class KubernetesService extends EventEmitter {
     return this._loading > 0
   }
 
-  hasError() {
-    return this._error !== null
+  hasError(): boolean {
+    return this.error !== undefined
   }
 
-  get error(): Error | null {
-    return this._error
+  getError(): Error | undefined {
+    return this.error
   }
 
   get jolokiaPortQuery() {
     return this._jolokiaPortQuery
   }
 
-  is(mode: HawtioMode): boolean {
-    return mode === this._oAuthProfile?.metadataValue(METADATA_KEY_HAWTIO_MODE)
+  async is(mode: HawtioMode): Promise<boolean> {
+    if (!this.oAuthProfile) throw new Error('Kubernetes Service is not initialized')
+    const profile = await this.oAuthProfile
+    return mode === profile.metadataValue(METADATA_KEY_HAWTIO_MODE)
   }
 
-  getPods(): KubePod[] {
-    this.checkInitOrError()
+  async getPods(): Promise<KubePod[]> {
+    await this.assertInitAndNoErrors()
     return this.pods
   }
 
-  getProjects(): KubeProject[] {
-    this.checkInitOrError()
+  async getProjects(): Promise<KubeProject[]> {
+    await this.assertInitAndNoErrors()
     return this.projects
   }
 
-  getClusterVersion(): string | undefined {
-    this.checkInitOrError()
-    return this._oAuthProfile?.metadataValue(CLUSTER_VERSION_KEY)
+  async getClusterVersion(): Promise<string | undefined> {
+    await this.assertInitAndNoErrors()
+    const profile = await this.oAuthProfile
+    return profile?.metadataValue(CLUSTER_VERSION_KEY)
   }
 
-  disconnect() {
-    this.checkInitOrError()
-    if (this.is('cluster') && this.projects_client) {
+  async disconnect() {
+    await this.assertInitAndNoErrors()
+    if ((await this.is('cluster')) && this.projects_client) {
       clientFactory.destroy(this.projects_client.collection, this.projects_client.watch)
     }
 
@@ -221,7 +217,7 @@ export class KubernetesService extends EventEmitter {
     }
 
     let initializing = false
-    let reason
+    let reason = ''
 
     // Print detailed container reasons if available. Only the first will be
     // displayed if multiple containers have this detail.
@@ -290,3 +286,5 @@ export class KubernetesService extends EventEmitter {
     return reason || 'unknown'
   }
 }
+
+export const kubernetesService = new KubernetesService()

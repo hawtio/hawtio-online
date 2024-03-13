@@ -109,7 +109,7 @@ export class OSOAuthService implements ProtocolService {
     log.debug('Intercept Fetch API to attach OpenShift auth token to authorization header')
     this.fetchUnregister = fetchIntercept.register({
       request: (url, requestConfig) => {
-        log.debug('Fetch intercepted for oAuth authentication')
+        log.debug('OAuth - Fetch intercepted for OAuth authentication')
 
         if (tokenHasExpired(this.userProfile)) {
           const reason = `Cannot navigate to ${url} as token expired so need to logout`
@@ -341,11 +341,11 @@ export class OSOAuthService implements ProtocolService {
       return false
     }
 
-    log.info('Log out Openshift')
+    log.info('Log out OpenShift')
     try {
       this.doLogout(config)
     } catch (error) {
-      log.error('Error logging out Openshift:', error)
+      log.error('Error logging out OpenShift:', error)
     }
     return true
   }

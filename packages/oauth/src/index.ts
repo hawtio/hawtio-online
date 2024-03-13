@@ -22,4 +22,5 @@ export const onlineOAuth: HawtioPlugin = () => {
 export * from './api'
 export * from './form'
 export * from './globals'
+export * from './oauth-service'
 export * from './openshift'

@@ -35,6 +35,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@hawtio/online-kubernetes-api": "workspace:*",
     "@hawtio/online-management-api": "workspace:*",
+    "@hawtio/online-oauth": "workspace:*",
     "@hawtio/react": "^1.1.1",
     "@patternfly/react-core": "^4.278.1",
     "@patternfly/react-styles": "^4.92.6",

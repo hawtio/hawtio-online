@@ -15,7 +15,7 @@ import {
   secureDispose,
   secureRetrieve,
 } from '../utils'
-import { FORM_AUTH_PROTOCOL_MODULE, FORM_TOKEN_STORAGE_KEY, FormConfig } from './globals'
+import { FORM_TOKEN_STORAGE_KEY, FormConfig } from './globals'
 
 type LoginOptions = {
   uri: URL
@@ -123,7 +123,7 @@ export class FormService implements ProtocolService {
     log.debug('Intercept Fetch API to attach auth token to authorization header')
     this.fetchUnregister = fetchIntercept.register({
       request: (url, config) => {
-        log.debug('Fetch intercepted for oAuth authentication')
+        log.debug('Form - Fetch intercepted for OAuth authentication')
 
         let headers: Headers = {
           Authorization: `Bearer ${this.userProfile.getToken()}`,
