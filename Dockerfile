@@ -69,7 +69,7 @@ RUN mkdir -p /usr/share/nginx/html/online/osconsole && \
     chmod g=u /usr/share/nginx/html/online/osconsole/config.json
 
 COPY docker/nginx.js docker/rbac.js docker/js-yaml.js docker/jwt-decode.js /etc/nginx/conf.d/
-COPY docker/nginx.conf docker/nginx-gateway.conf.template docker/nginx-gateway-k8s.conf.template docker/osconsole/config.sh docker/nginx.sh docker/ACL.yaml /
+COPY docker/nginx-gateway.conf.template docker/osconsole/config.sh docker/nginx.sh docker/ACL.yaml /
 
 COPY docker/hawtio-50x.html /usr/share/nginx/html
 COPY docker/hawtio-404.html /usr/share/nginx/html

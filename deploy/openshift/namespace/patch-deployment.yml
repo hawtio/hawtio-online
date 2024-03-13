@@ -18,8 +18,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: HAWTIO_ONLINE_GATEWAY
-              value: 'true'
             - name: OPENSHIFT_WEB_CONSOLE_URL
               value: ''
             - name: OPENSHIFT_CLUSTER_VERSION
