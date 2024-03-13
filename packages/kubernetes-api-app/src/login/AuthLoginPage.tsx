@@ -1,10 +1,10 @@
-import React from 'react'
-import { usePlugins, DEFAULT_APP_NAME, useHawtconfig, useUser } from '@hawtio/react'
-import { backgroundImages, hawtioLogo } from './img'
+import { log } from '@hawtio/online-kubernetes-api'
+import { DEFAULT_APP_NAME, useHawtconfig, usePlugins, useUser } from '@hawtio/react'
 import { ListItem, ListVariant, LoginFooterItem, LoginPage } from '@patternfly/react-core'
-import { log } from '@hawtio/online-oauth'
-import { AuthLoadingPage } from './AuthLoadingPage'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AuthLoadingPage } from './AuthLoadingPage'
+import { backgroundImages, hawtioLogo } from './img'
 
 export const AuthLoginPage: React.FunctionComponent = () => {
   const navigate = useNavigate()

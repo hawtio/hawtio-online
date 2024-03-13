@@ -69,7 +69,9 @@ server {
           return 200 "Acknowledge logout but nothing further to do";
         }
 
-        add_header Clear-Site-Data "\"*\"";
+        # Do not specify "storage" as local storage contains persistent data such as
+        # preferences and connections but without credentials.
+        add_header Clear-Site-Data "\"cache\", \"cookies\"";
         add_header Cache-Control "no-store";
         return 307 $decodeRedirectUri;
     }

@@ -72,8 +72,8 @@ export function sanitizeUri(url: URL) {
 }
 
 export function redirect(target: URL) {
-  log.debug('Redirecting to URI:', target)
-  // Redirect to the target URI
+  log.debug('Redirecting to:', target)
+  // Redirect to the target URL
   window.location.href = target.toString()
 }
 

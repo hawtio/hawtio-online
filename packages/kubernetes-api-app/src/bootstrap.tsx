@@ -1,11 +1,11 @@
+import { isK8sApiRegistered, log } from '@hawtio/online-kubernetes-api'
 import { Logger, configManager, hawtio } from '@hawtio/react'
-import { isK8ApiRegistered, log } from '@hawtio/online-kubernetes-api'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { reportWebVitals } from './reportWebVitals'
-import { Kubernetes } from './Kubernetes'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Kubernetes } from './Kubernetes'
 import { AuthLoginPage } from './login'
+import { reportWebVitals } from './reportWebVitals'
 
 // To be removed post-development / pre-production
 Logger.setLevel(Logger.DEBUG)
@@ -16,7 +16,7 @@ const configure = () => {
   configManager.addProductInfo('Kubernetes API Test App', '1.0.0')
 }
 configure()
-isK8ApiRegistered().then(() => {
+isK8sApiRegistered().then(() => {
   // Bootstrap Hawtio
   hawtio.bootstrap()
 

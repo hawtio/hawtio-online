@@ -6,7 +6,7 @@ export const OBTAINED_AT_KEY = 'obtainedAt'
 export const CLUSTER_VERSION_KEY = 'cluster-version'
 export const DEFAULT_CLUSTER_VERSION = '<unknown>'
 
-export interface OpenShiftOAuthConfig {
+export type OpenShiftOAuthConfig = {
   oauth_metadata_uri?: string
   issuer?: string
   oauth_authorize_uri?: string
@@ -14,11 +14,4 @@ export interface OpenShiftOAuthConfig {
   scope: string
   cluster_version?: string
   web_console_url?: string
-}
-
-export interface TokenMetadata {
-  access_token?: string
-  token_type?: string
-  expires_in?: number
-  obtainedAt?: number
 }

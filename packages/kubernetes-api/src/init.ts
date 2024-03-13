@@ -5,7 +5,7 @@ import { KubernetesService } from './kubernetes-service'
 export const k8Api = new KubernetesAPI()
 export const k8Service = new KubernetesService()
 
-export const k8Init = async (): Promise<boolean> => {
+export async function init(): Promise<boolean> {
   if (k8Api.initialized && k8Service.initialized) return true
 
   log.debug('Initialising kubernetes api')

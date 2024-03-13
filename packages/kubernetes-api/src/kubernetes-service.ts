@@ -1,19 +1,19 @@
+import {
+  CLUSTER_VERSION_KEY,
+  getActiveProfile,
+  HawtioMode,
+  METADATA_KEY_HAWTIO_MODE,
+  METADATA_KEY_HAWTIO_NAMESPACE,
+  UserProfile,
+} from '@hawtio/online-oauth'
 import { configManager, Hawtconfig } from '@hawtio/react'
 import EventEmitter from 'eventemitter3'
-import {
-  HawtioMode,
-  HAWTIO_MODE_KEY,
-  HAWTIO_NAMESPACE_KEY,
-  CLUSTER_VERSION_KEY,
-  UserProfile,
-  getActiveProfile,
-} from '@hawtio/online-oauth'
 import jsonpath from 'jsonpath'
-import { WatchTypes } from './model'
-import { pathGet } from './utils'
 import { clientFactory, Collection, log, ProcessDataCallback } from './client'
 import { K8Actions, KubeObject, KubePod, KubeProject } from './globals'
 import { k8Api } from './init'
+import { WatchTypes } from './model'
+import { pathGet } from './utils'
 
 export interface Client<T extends KubeObject> {
   collection: Collection<T>
@@ -36,11 +36,11 @@ export class KubernetesService extends EventEmitter {
 
     try {
       this._oAuthProfile = await getActiveProfile()
-      if (!this._oAuthProfile) throw new Error('Cannot initialize k8 API due to no active OAuth profile')
+      if (!this._oAuthProfile) throw new Error('Cannot initialize Kubernetes API due to no active OAuth profile')
 
       if (this._oAuthProfile.hasError()) throw this._oAuthProfile.getError()
 
-      const isCluster = this.is(HawtioMode.Cluster)
+      const isCluster = this.is('cluster')
       if (isCluster) {
         const hawtConfig = await configManager.getHawtconfig()
         this.initClusterConfig(hawtConfig)
@@ -50,7 +50,7 @@ export class KubernetesService extends EventEmitter {
 
       this._initialized = true
     } catch (error) {
-      log.error('k8 Service cannot complete initialisation due to: ', error)
+      log.error('Kubernetes Service cannot complete initialisation due to: ', error)
       if (error instanceof Error) this._error = error
       else this._error = new Error('Unknown error during initialisation')
     }
@@ -62,7 +62,7 @@ export class KubernetesService extends EventEmitter {
   private initNamespaceConfig(profile: UserProfile) {
     log.debug('Initialising Namespace Config')
     this._loading++
-    let namespace = profile.metadataValue<string>(HAWTIO_NAMESPACE_KEY)
+    let namespace = profile.metadataValue<string>(METADATA_KEY_HAWTIO_NAMESPACE)
     if (!namespace) {
       log.warn("No namespace can be found - defaulting to 'default'")
       namespace = 'default'
@@ -149,7 +149,7 @@ export class KubernetesService extends EventEmitter {
   }
 
   private checkInitOrError() {
-    if (!this.initialized) throw new Error('k8 Service is not intialized')
+    if (!this.initialized) throw new Error('Kubernetes Service is not initialized')
 
     if (this.hasError()) throw this._error
 
@@ -179,7 +179,7 @@ export class KubernetesService extends EventEmitter {
   }
 
   is(mode: HawtioMode): boolean {
-    return mode === this._oAuthProfile?.metadataValue(HAWTIO_MODE_KEY)
+    return mode === this._oAuthProfile?.metadataValue(METADATA_KEY_HAWTIO_MODE)
   }
 
   getPods(): KubePod[] {
@@ -199,7 +199,7 @@ export class KubernetesService extends EventEmitter {
 
   disconnect() {
     this.checkInitOrError()
-    if (this.is(HawtioMode.Cluster) && this.projects_client) {
+    if (this.is('cluster') && this.projects_client) {
       clientFactory.destroy(this.projects_client.collection, this.projects_client.watch)
     }
 

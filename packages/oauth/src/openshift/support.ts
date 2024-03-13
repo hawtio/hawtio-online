@@ -1,8 +1,15 @@
 import { log, UserProfile } from '../globals'
 import { logoutRedirect, redirect, relToAbsUrl, secureDispose, secureRetrieve, secureStore } from '../utils'
-import { EXPIRES_IN_KEY, OBTAINED_AT_KEY, OpenShiftOAuthConfig, TokenMetadata } from './globals'
+import { EXPIRES_IN_KEY, OBTAINED_AT_KEY, OpenShiftOAuthConfig } from './globals'
 
-const OS_TOKEN_STORAGE_KEY = 'osAuthCreds'
+export type TokenMetadata = {
+  accessToken?: string
+  tokenType?: string
+  expiresIn?: number
+  obtainedAt?: number
+}
+
+const OS_TOKEN_STORAGE_KEY = 'online.oauth.openshift.credentials'
 
 export function currentTimeSeconds(): number {
   return Math.floor(new Date().getTime() / 1000)
@@ -22,11 +29,11 @@ export function buildUserInfoUri(masterUri: string, config: OpenShiftOAuthConfig
 export function forceRelogin(url: URL, config: OpenShiftOAuthConfig) {
   clearTokenStorage()
 
-  const targetUri = buildLoginUrl(config, { uri: url.toString() })
+  const targetUri = buildLoginUrl(config, { url: url.toString() })
   logoutRedirect(targetUri)
 }
 
-export function buildLoginUrl(config: OpenShiftOAuthConfig, options: { uri: string }): URL {
+export function buildLoginUrl(config: OpenShiftOAuthConfig, options: { url: string }): URL {
   if (!config) {
     log.debug('Cannot login due to config not being properly defined')
     throw new Error('Cannot complete login process due to incorrect configuration profile')
@@ -36,83 +43,91 @@ export function buildLoginUrl(config: OpenShiftOAuthConfig, options: { uri: stri
   const targetURI = config.oauth_authorize_uri
   const scope = config.scope
 
-  const uri = new URL(targetURI as string)
+  const url = new URL(targetURI as string)
 
   /**
    * The authorization uri uses the searchParams for holding
    * the parameters while the token response uri returns the token
    * and metadata in the hash
    */
-  uri.searchParams.append('client_id', clientId)
-  uri.searchParams.append('response_type', 'token')
-  uri.searchParams.append('state', options.uri)
-  uri.searchParams.append('redirect_uri', options.uri)
-  uri.searchParams.append('scope', scope)
+  url.searchParams.append('client_id', clientId)
+  url.searchParams.append('response_type', 'token')
+  url.searchParams.append('state', options.url)
+  url.searchParams.append('redirect_uri', options.url)
+  url.searchParams.append('scope', scope)
 
-  return uri
+  return url
 }
 
-async function extractToken(uri: URL): Promise<TokenMetadata | null> {
-  log.debug('Extract token from URI - query:', uri.search, 'hash: ', uri.hash)
+/**
+ * Extracts token from the hash part of the URL.
+ *
+ * If a token is found, it stores the token to the local storage and redirects to
+ * the original URL so that the login check flow can be reiterated with the stored
+ * token.
+ *
+ * If no token is found, it just returns null and lets the subsequent steps to
+ * prompt the user to login.
+ */
+async function extractToken(url: URL): Promise<TokenMetadata | null> {
+  log.debug('Extract token from URL - search:', url.search, 'hash:', url.hash)
 
   //
   // Error has occurred on the lines of a scoping denied
   //
-  const searchParams = new URLSearchParams(uri.search)
+  const searchParams = new URLSearchParams(url.search)
   if (searchParams.has('error')) {
-    throw new Error(
-      searchParams.get('error_description') || searchParams.get('error_description') || 'unknown login error occurred',
-    )
+    const error = searchParams.get('error_description') ?? 'unknown login error occurred'
+    throw new Error(error)
   }
 
-  const fragmentParams = new URLSearchParams(uri.hash.substring(1))
+  const fragmentParams = new URLSearchParams(url.hash.substring(1))
 
   log.debug('Extract token from URI - fragmentParams:', fragmentParams)
-  if (
-    !fragmentParams.has('access_token') ||
-    (fragmentParams.get('token_type') !== 'bearer' && fragmentParams.get('token_type') !== 'Bearer')
-  ) {
-    log.debug('No token in URI')
+  const accessToken = fragmentParams.get('access_token') ?? undefined
+  const tokenType = fragmentParams.get('token_type') ?? undefined
+  if (!accessToken || tokenType?.toLowerCase() !== 'bearer') {
+    log.debug('No token in URL')
     return null
   }
 
   log.debug('Got token')
   const credentials: TokenMetadata = {
-    token_type: fragmentParams.get('token_type') || '',
-    access_token: fragmentParams.get('access_token') || '',
-    expires_in: parseInt(fragmentParams.get('expires_in') || '') || 0,
+    accessToken,
+    tokenType,
+    expiresIn: parseInt(fragmentParams.get('expires_in') ?? '0') ?? 0,
     obtainedAt: currentTimeSeconds(),
   }
 
   await secureStore(OS_TOKEN_STORAGE_KEY, JSON.stringify(credentials))
 
+  // Remove hash fragments from URL
   fragmentParams.delete('token_type')
   fragmentParams.delete('access_token')
   fragmentParams.delete('expires_in')
   fragmentParams.delete('scope')
   fragmentParams.delete('state')
-
-  uri.hash = fragmentParams.toString()
+  url.hash = fragmentParams.toString()
 
   // Redirect to new location
-  redirect(uri)
+  redirect(url)
 
   return credentials
 }
 
-export function clearTokenStorage(): void {
+export function clearTokenStorage() {
   secureDispose(OS_TOKEN_STORAGE_KEY)
 }
 
 export function tokenHasExpired(profile: UserProfile): boolean {
   // if no token metadata then remaining will end up as (-1 - now())
   let remaining = -1
-  if (!profile) return true // no profile so no oken
+  if (!profile) return true // no profile so no token
 
   if (!profile.getToken()) return true // no token then must have expired!
 
-  const obtainedAt = profile.metadataValue<number>(OBTAINED_AT_KEY) || 0
-  const expiry = profile.metadataValue<number>(EXPIRES_IN_KEY) || 0
+  const obtainedAt = profile.metadataValue<number>(OBTAINED_AT_KEY) ?? 0
+  const expiry = profile.metadataValue<number>(EXPIRES_IN_KEY) ?? 0
   if (obtainedAt) {
     remaining = obtainedAt + expiry - currentTimeSeconds()
   }
@@ -120,7 +135,7 @@ export function tokenHasExpired(profile: UserProfile): boolean {
   return remaining <= 0
 }
 
-export async function checkToken(uri: URL): Promise<TokenMetadata | null> {
+export async function checkToken(url: URL): Promise<TokenMetadata | null> {
   let answer: TokenMetadata | null = null
 
   try {
@@ -128,18 +143,17 @@ export async function checkToken(uri: URL): Promise<TokenMetadata | null> {
     if (tokenJson) {
       answer = JSON.parse(tokenJson)
     }
-  } catch (e) {
+  } catch (err) {
     clearTokenStorage()
-    throw new Error('Error extracting osAuthCreds value:', { cause: e })
+    log.warn('Error extracting OSOAuth credentials:', err)
   }
 
   if (!answer) {
-    log.debug('Extracting token from uri', answer)
+    log.debug('Extracting token from URL:', url)
     try {
-      answer = await extractToken(uri)
-    } catch (e) {
-      clearTokenStorage()
-      throw e
+      answer = await extractToken(url)
+    } catch (err) {
+      log.warn('Error extracting token from URL:', err)
     }
   }
 

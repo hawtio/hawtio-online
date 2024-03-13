@@ -5,18 +5,13 @@ export type FetchPathCallback<T> = {
   error: (err: Error) => T
 }
 
-export type FetchOptions = {
-  headers: Record<string, string>
-}
+export type FetchOptions = RequestInit
 
 export async function fetchPath<T>(path: string, callback: FetchPathCallback<T>, options?: FetchOptions): Promise<T> {
   try {
-    const init: RequestInit = {}
-    if (options) init.headers = options.headers
-
-    const res = await fetch(path, init)
+    const res = await fetch(path, options)
     if (!res.ok) {
-      const msg = `Failed to fetch ${path} : ${res.status}, ${res.statusText}`
+      const msg = `Failed to fetch ${options?.method ?? 'GET'} ${path} : ${res.status}, ${res.statusText}`
       log.error(msg)
       return callback.error(new Error(msg))
     }
@@ -25,8 +20,7 @@ export async function fetchPath<T>(path: string, callback: FetchPathCallback<T>,
     return callback.success(data)
   } catch (err) {
     log.error('Failed to fetch', path, ':', err)
-    return callback.error(
-      err instanceof Error ? err : new Error('Fetch failed due to unknown error. See log for details'),
-    )
+    const e = err instanceof Error ? err : new Error('Fetch failed due to unknown error. See log for details')
+    return callback.error(e)
   }
 }

@@ -1,15 +1,13 @@
 import { PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
 import $ from 'jquery'
-import { OAuthProtoService } from '../api'
-import { UserProfile, log } from '../globals'
-import { CLUSTER_CONSOLE_KEY } from '../metadata'
+import { ProtocolService } from '../api'
+import { METADATA_KEY_CLUSTER_CONSOLE, UserProfile, log } from '../globals'
 import { fetchPath, getCookie, isBlank, redirect } from '../utils'
 import {
   CLUSTER_VERSION_KEY,
   DEFAULT_CLUSTER_VERSION,
   EXPIRES_IN_KEY,
-  OAUTH_OS_PROTOCOL_MODULE,
   OBTAINED_AT_KEY,
   OpenShiftOAuthConfig,
   TOKEN_TYPE_KEY,
@@ -39,7 +37,10 @@ interface Headers {
   'X-XSRF-TOKEN'?: string
 }
 
-export class OSOAuthService implements OAuthProtoService {
+/**
+ * OpenShift OAuth service
+ */
+export class OSOAuthService implements ProtocolService {
   private userInfoUri = ''
   private keepaliveInterval = 10
   private keepAliveHandler: NodeJS.Timeout | null = null
@@ -53,7 +54,7 @@ export class OSOAuthService implements OAuthProtoService {
     private readonly userProfile: UserProfile,
   ) {
     log.debug('Initialising OpenShift OAuth Service')
-    this.userProfile.setOAuthType(OAUTH_OS_PROTOCOL_MODULE)
+    this.userProfile.setAuthType('oauth')
     this.adaptedConfig = this.processConfig(openShiftConfig)
     this.login = this.createLogin()
   }
@@ -72,12 +73,12 @@ export class OSOAuthService implements OAuthProtoService {
     // See if web_console_url has been added to config
     if (!isBlank(config.web_console_url)) {
       log.debug('Adding web console URI to user profile:', config.web_console_url)
-      this.userProfile.addMetadata(CLUSTER_CONSOLE_KEY, config.web_console_url)
+      this.userProfile.addMetadata(METADATA_KEY_CLUSTER_CONSOLE, config.web_console_url)
     }
 
     log.debug('Fetching OAuth server metadata from:', config.oauth_metadata_uri)
     return fetchPath<OpenShiftOAuthConfig | null>(config.oauth_metadata_uri, {
-      success: (data: string) => {
+      success: data => {
         log.debug('Loaded', config.oauth_metadata_uri, ':', data)
         const metadata = JSON.parse(data)
         config.oauth_authorize_uri = metadata.authorization_endpoint
@@ -178,8 +179,8 @@ export class OSOAuthService implements OAuthProtoService {
           return
         }
 
-        const obtainedAt = this.userProfile.metadataValue<number>(OBTAINED_AT_KEY) || 0
-        const expiry = this.userProfile.metadataValue<number>(EXPIRES_IN_KEY) || 0
+        const obtainedAt = this.userProfile.metadataValue<number>(OBTAINED_AT_KEY) ?? 0
+        const expiry = this.userProfile.metadataValue<number>(EXPIRES_IN_KEY) ?? 0
         if (obtainedAt) {
           const remainingTime = obtainedAt + expiry - currentTimeSeconds()
           if (remainingTime > 0) {
@@ -236,31 +237,33 @@ export class OSOAuthService implements OAuthProtoService {
       return false
     }
 
-    const currentURI = new URL(window.location.href)
+    log.debug('Check login state')
+
+    const currentUrl = new URL(window.location.href)
     try {
       this.clearKeepAlive()
 
       log.debug('Checking token for validity')
-      const tokenParams = await checkToken(currentURI)
+      const tokenParams = await checkToken(currentUrl)
       if (!tokenParams) {
         log.debug('No Token so initiating new login')
-        this.tryLogin(config, currentURI)
+        this.tryLogin(config, currentUrl)
         return false
       }
 
       log.debug('Populating user profile with token metadata')
       // Populate the profile with the new token
-      this.userProfile.addMetadata<number>(EXPIRES_IN_KEY, tokenParams.expires_in ?? 0)
-      this.userProfile.addMetadata<string>(TOKEN_TYPE_KEY, tokenParams.token_type ?? '')
-      this.userProfile.addMetadata<number>(OBTAINED_AT_KEY, tokenParams.obtainedAt ?? 0)
+      this.userProfile.addMetadata(EXPIRES_IN_KEY, tokenParams.expiresIn ?? 0)
+      this.userProfile.addMetadata(TOKEN_TYPE_KEY, tokenParams.tokenType ?? '')
+      this.userProfile.addMetadata(OBTAINED_AT_KEY, tokenParams.obtainedAt ?? 0)
 
-      this.userProfile.setToken(tokenParams.access_token ?? '')
+      this.userProfile.setToken(tokenParams.accessToken ?? '')
 
       if (this.checkTokenExpired(config)) return false
 
       // Promote the hawtio mode to expose to third-parties
       log.debug('Adding cluster version to profile metadata')
-      this.userProfile.addMetadata<string>(CLUSTER_VERSION_KEY, config.cluster_version ?? DEFAULT_CLUSTER_VERSION)
+      this.userProfile.addMetadata(CLUSTER_VERSION_KEY, config.cluster_version ?? DEFAULT_CLUSTER_VERSION)
 
       // Need fetch for keepalive
       this.setupFetch(config)
@@ -275,76 +278,75 @@ export class OSOAuthService implements OAuthProtoService {
     }
   }
 
-  private tryLogin(config: OpenShiftOAuthConfig, uri: URL) {
-    const targetUri = buildLoginUrl(config, { uri: uri.toString() })
-    redirect(targetUri)
+  private tryLogin(config: OpenShiftOAuthConfig, url: URL) {
+    const targetUrl = buildLoginUrl(config, { url: url.toString() })
+    redirect(targetUrl)
   }
 
-  private doLogout(config: OpenShiftOAuthConfig): void {
-    this.fetchUnregister?.()
-
-    const currentURI = new URL(window.location.href)
+  private doLogout(config: OpenShiftOAuthConfig) {
+    const currentURL = new URL(window.location.href)
+    const apiTokenUrl = this.getApiOAuthAccessTokensUrl()
     // The following request returns 403 when delegated authentication with an
     // OAuthClient is used, as possible scopes do not grant permissions to access the OAuth API:
     // See https://github.com/openshift/origin/issues/7011
-    //
-    // So little point in trying to delete the token. Lets do in client-side only
-    //
-    forceRelogin(currentURI, config)
+    const always = () => {
+      this.fetchUnregister?.()
+      forceRelogin(currentURL, config)
+    }
+    fetchPath(apiTokenUrl, { success: always, error: always }, { method: 'DELETE' })
   }
 
-  async isLoggedIn(): Promise<boolean> {
-    return await this.login
+  private getApiOAuthAccessTokensUrl(): string {
+    const masterUri = this.userProfile.getMasterUri()
+    const token = this.userProfile.getToken()
+    return `${masterUri}/apis/oauth.openshift.io/v1/oauthaccesstokens/${token}`
   }
 
-  registerUserHooks() {
-    log.debug('Registering oAuth user hooks')
-    const fetchUser = async (resolve: ResolveUser) => {
-      const config = await this.adaptedConfig
-      const login = await this.login
-      if (!config || !login || this.userProfile.hasError()) {
-        // OpenShift OAuth provides a dedicated login page, thus setting isLoading=true
-        resolve({ username: PUBLIC_USER, isLogin: false, isLoading: true })
-        return true
-      }
+  isLoggedIn(): Promise<boolean> {
+    return this.login
+  }
 
-      if (this.userProfile.getToken()) {
-        const userInfo = await fetchPath<UserObject | null>(this.userInfoUri, {
-          success: (data: string) => {
-            return JSON.parse(data)
-          },
-          error: () => null,
-        })
-
-        let username = this.userProfile.getToken() // default
-        if (userInfo?.metadata?.name) {
-          username = userInfo.metadata.name
-        }
-
-        resolve({ username, isLogin: true })
-        userService.setToken(this.userProfile.getToken())
-      }
-
+  async fetchUser(resolve: ResolveUser): Promise<boolean> {
+    const config = await this.adaptedConfig
+    const login = await this.login
+    if (!config || !login || this.userProfile.hasError()) {
+      // OpenShift OAuth provides a dedicated login page, thus setting isLoading=true
+      resolve({ username: PUBLIC_USER, isLogin: false, isLoading: true })
       return true
     }
-    userService.addFetchUserHook(OAUTH_OS_PROTOCOL_MODULE, fetchUser)
 
-    const logout = async () => {
-      log.debug('Running oAuth logout hook')
-      const config = await this.adaptedConfig
-      const login = await this.login
-      if (!config || !login || this.userProfile.hasError()) {
-        return false
+    if (this.userProfile.getToken()) {
+      const userInfo = await fetchPath<UserObject | null>(this.userInfoUri, {
+        success: data => JSON.parse(data),
+        error: () => null,
+      })
+
+      let username = this.userProfile.getToken() // default
+      if (userInfo?.metadata?.name) {
+        username = userInfo.metadata.name
       }
 
-      log.info('Log out Openshift')
-      try {
-        this.doLogout(config)
-      } catch (error) {
-        log.error('Error logging out Openshift:', error)
-      }
-      return true
+      resolve({ username, isLogin: true })
+      userService.setToken(this.userProfile.getToken())
     }
-    userService.addLogoutHook(OAUTH_OS_PROTOCOL_MODULE, logout)
+
+    return true
+  }
+
+  async logout(): Promise<boolean> {
+    log.debug('OAuth - Running logout hook')
+    const config = await this.adaptedConfig
+    const login = await this.login
+    if (!config || !login || this.userProfile.hasError()) {
+      return false
+    }
+
+    log.info('Log out Openshift')
+    try {
+      this.doLogout(config)
+    } catch (error) {
+      log.error('Error logging out Openshift:', error)
+    }
+    return true
   }
 }

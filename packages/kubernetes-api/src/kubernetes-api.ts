@@ -1,4 +1,4 @@
-import { UserProfile, getActiveProfile, CLUSTER_CONSOLE_KEY } from '@hawtio/online-oauth'
+import { METADATA_KEY_CLUSTER_CONSOLE, UserProfile, getActiveProfile } from '@hawtio/online-oauth'
 import { log } from './globals'
 
 export class KubernetesAPI {
@@ -35,7 +35,7 @@ export class KubernetesAPI {
       return null
     }
 
-    const consoleUri = profile.metadataValue<string>(CLUSTER_CONSOLE_KEY)
+    const consoleUri = profile.metadataValue<string>(METADATA_KEY_CLUSTER_CONSOLE)
     if (consoleUri) {
       log.debug(`Console URI specified: ${consoleUri}`)
       return consoleUri

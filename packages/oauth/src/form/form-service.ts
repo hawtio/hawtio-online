@@ -2,8 +2,8 @@ import { PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
 import $ from 'jquery'
 import { jwtDecode } from 'jwt-decode'
-import { OAuthProtoService } from '../api'
-import { OPENSHIFT_MASTER_KIND, UserProfile, log } from '../globals'
+import { ProtocolService } from '../api'
+import { UserProfile, log } from '../globals'
 import {
   FetchOptions,
   fetchPath,
@@ -26,7 +26,7 @@ interface Headers {
   'X-XSRF-TOKEN'?: string
 }
 
-export class FormService implements OAuthProtoService {
+export class FormService implements ProtocolService {
   private readonly login: Promise<boolean>
   private formConfig: FormConfig | null
   private fetchUnregister?: () => void
@@ -36,7 +36,7 @@ export class FormService implements OAuthProtoService {
     private readonly userProfile: UserProfile,
   ) {
     log.debug('Initialising Form Auth Service')
-    this.userProfile.setOAuthType(FORM_AUTH_PROTOCOL_MODULE)
+    this.userProfile.setAuthType('form')
     this.formConfig = formConfig
     this.login = this.createLogin()
   }
@@ -191,62 +191,57 @@ export class FormService implements OAuthProtoService {
     return payload.sub?.replace('system:serviceaccount:', '') ?? ''
   }
 
-  registerUserHooks(): void {
-    log.debug('Registering oAuth user hooks')
-    const fetchUser = async (resolve: ResolveUser) => {
-      if (!this.login || !this.userProfile.hasToken() || this.userProfile.hasError()) {
-        resolve({ username: PUBLIC_USER, isLogin: false })
-        return true
-      }
-
-      const masterUri = this.userProfile.getMasterUri()
-      const isOpenShift = this.userProfile.getMasterKind() === OPENSHIFT_MASTER_KIND
-      const token = this.userProfile.getToken()
-
-      let subject = ''
-      try {
-        // Try and extract the subject from the token, if applicable
-        subject = this.getSubjectFromToken(token)
-      } catch (err) {
-        if (err instanceof Error) log.warn(err.message)
-        else log.error(err)
-      }
-
-      /*
-       * If subject not assigned and the cluster is OpenShift
-       * then ask cluster API for user.
-       *
-       * NOTE: This is an edge-case that really only affects development
-       * since form-login is prioritized for authentication of non-OpenShift clusters.
-       */
-      if (subject === '' && isOpenShift) {
-        // Default to 'user' if there is a failure
-        subject = (await this.openShiftUser(masterUri, token)) ?? ''
-      }
-
-      // Default to user if subject cannot be established
-      resolve({ username: subject !== '' ? subject : 'user', isLogin: true })
-      userService.setToken(token)
-
+  async fetchUser(resolve: ResolveUser): Promise<boolean> {
+    if (!this.login || !this.userProfile.hasToken() || this.userProfile.hasError()) {
+      resolve({ username: PUBLIC_USER, isLogin: false })
       return true
     }
-    userService.addFetchUserHook(FORM_AUTH_PROTOCOL_MODULE, fetchUser)
 
-    const logout = async () => {
-      log.debug('Running oAuth logout hook')
-      const login = await this.login
+    const masterUri = this.userProfile.getMasterUri()
+    const isOpenShift = this.userProfile.getMasterKind() === 'openshift'
+    const token = this.userProfile.getToken()
 
-      if (!login || !this.userProfile.hasToken() || this.userProfile.hasError()) return false
-
-      log.info('Log out')
-      try {
-        this.doLogout()
-      } catch (error) {
-        log.error('Error logging out:', error)
-      }
-      return true
+    let subject = ''
+    try {
+      // Try and extract the subject from the token, if applicable
+      subject = this.getSubjectFromToken(token)
+    } catch (err) {
+      if (err instanceof Error) log.warn(err.message)
+      else log.error(err)
     }
-    userService.addLogoutHook(FORM_AUTH_PROTOCOL_MODULE, logout)
+
+    /*
+     * If subject not assigned and the cluster is OpenShift
+     * then ask cluster API for user.
+     *
+     * NOTE: This is an edge-case that really only affects development
+     * since form-login is prioritized for authentication of non-OpenShift clusters.
+     */
+    if (subject === '' && isOpenShift) {
+      // Default to 'user' if there is a failure
+      subject = (await this.openShiftUser(masterUri, token)) ?? ''
+    }
+
+    // Default to user if subject cannot be established
+    resolve({ username: subject !== '' ? subject : 'user', isLogin: true })
+    userService.setToken(token)
+
+    return true
+  }
+
+  async logout(): Promise<boolean> {
+    log.debug('Form - Running logout hook')
+    const login = await this.login
+
+    if (!login || !this.userProfile.hasToken() || this.userProfile.hasError()) return false
+
+    log.info('Log out')
+    try {
+      this.doLogout()
+    } catch (error) {
+      log.error('Error logging out:', error)
+    }
+    return true
   }
 
   /**

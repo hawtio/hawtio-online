@@ -1,17 +1,13 @@
-import { oAuthInit } from '@hawtio/online-oauth'
-import { k8Init } from './init'
 import { log } from './globals'
+import { init } from './init'
 
-const registerK8Api = async (): Promise<boolean> => {
-  log.debug('Awaiting registering of OAuth')
-  oAuthInit()
-
+const kubernetesApi = async (): Promise<boolean> => {
   log.debug('OAuth registered - getting active profile')
-  return await k8Init()
+  return await init()
 }
 
-export async function isK8ApiRegistered(): Promise<boolean> {
-  return await registerK8Api()
+export async function isK8sApiRegistered(): Promise<boolean> {
+  return await kubernetesApi()
 }
 
 export * from './globals'

@@ -1,32 +1,37 @@
 import { Logger } from '@hawtio/react'
 
-export const log = Logger.get('hawtio-oauth')
+export const pluginName = 'hawtio-online-oauth'
+export const log = Logger.get(pluginName)
 export const PATH_OSCONSOLE_CLIENT_CONFIG = 'osconsole/config.json'
 export const LOGOUT_ENDPOINT = '/auth/logout'
 
-// Kinds identified for the master cluster
-export const OPENSHIFT_MASTER_KIND = 'OPENSHIFT'
-export const KUBERNETES_MASTER_KIND = 'KUBERNETES'
+export const METADATA_KEY_HAWTIO_MODE = 'hawtio-mode'
+export const METADATA_KEY_HAWTIO_NAMESPACE = 'hawtio-namespace'
+export const METADATA_KEY_CLUSTER_CONSOLE = 'cluster-console'
+
+export type AuthType = 'oauth' | 'form'
 
 export class UserProfile {
-  // Type of oauth is the profile, eg. openshift, form
-  private oAuthType = 'unknown'
+  /**
+   * Type of auth with the profile: oauth or form
+   */
+  private authType: AuthType = 'oauth'
   private masterUri?: string
-  private masterKind?: string
+  private masterKind?: 'openshift' | 'kubernetes'
   private token?: string
-  private error: Error | null = null
+  private error?: Error
   private metadata: Record<string, unknown> = {}
 
-  getOAuthType() {
-    return this.oAuthType
+  getAuthType(): AuthType {
+    return this.authType
   }
 
-  setOAuthType(oAuthType: string) {
-    this.oAuthType = oAuthType
+  setAuthType(type: AuthType) {
+    this.authType = type
   }
 
   isActive(): boolean {
-    return this.hasToken() || this.hasError()
+    return this.hasToken() || !this.hasError()
   }
 
   hasToken(): boolean {
@@ -49,33 +54,28 @@ export class UserProfile {
     this.masterUri = masterUri
   }
 
-  getMasterKind(): string {
-    return this.masterKind ?? ''
+  getMasterKind(): 'openshift' | 'kubernetes' {
+    return this.masterKind ?? 'openshift'
   }
 
-  setMasterKind(masterKind: string) {
-    const ucType = masterKind.toUpperCase()
-    if (ucType === KUBERNETES_MASTER_KIND || ucType === OPENSHIFT_MASTER_KIND) this.masterKind = ucType
-    else {
-      log.warn(`Unknown value set for master_kind in config (${masterKind}). Defaulting master kind to kubernetes`)
-      this.masterKind = KUBERNETES_MASTER_KIND
-    }
+  setMasterKind(masterKind: 'openshift' | 'kubernetes') {
+    this.masterKind = masterKind
   }
 
-  hasError() {
-    return this.error !== null
+  hasError(): boolean {
+    return this.error !== undefined
   }
 
-  getError() {
+  getError(): Error | undefined {
     return this.error
   }
 
-  setError(error: Error) {
-    this.error = new Error('Openshift OAuth Error', { cause: error })
-    log.error(error)
+  setError(cause: Error) {
+    this.error = new Error('OpenShift OAuth Error', { cause })
+    log.error(cause)
   }
 
-  addMetadata<T>(key: string, value: T) {
+  addMetadata(key: string, value: unknown) {
     this.metadata[key] = value
   }
 
@@ -83,7 +83,7 @@ export class UserProfile {
     return this.metadata
   }
 
-  metadataValue<T>(key: string) {
+  metadataValue<T>(key: string): T {
     return this.metadata[key] as T
   }
 }
