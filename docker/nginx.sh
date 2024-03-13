@@ -37,27 +37,23 @@ mkdir -p "${HAWTIO_HTML}/osconsole"
 
 generate_nginx_gateway_conf() {
   TEMPLATE=/nginx-gateway.conf.template
-  if [ "${OPENSHIFT}" = "false" ]; then
-    TEMPLATE=/nginx-gateway-k8s.conf.template
+  if [ "${OPENSHIFT}" = "true" ]; then
+    export PROXY_SSL_CERTIFICATE="proxy_ssl_certificate     /etc/tls/private/proxying/tls.crt;"
+    export PROXY_SSL_KEY="proxy_ssl_certificate_key     /etc/tls/private/proxying/tls.key;"
   fi
+
   # shellcheck disable=SC2016
   envsubst '
     $NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE
     $NGINX_CLIENT_BODY_BUFFER_SIZE
     $NGINX_PROXY_BUFFERS
-    ' < $TEMPLATE > /etc/nginx/conf.d/nginx.conf
+    $PROXY_SSL_CERTIFICATE
+    $PROXY_SSL_KEY
+    ' < ${TEMPLATE} > /etc/nginx/conf.d/nginx.conf
 }
 
-if [ -n "${HAWTIO_ONLINE_RBAC_ACL+x}" ]; then
-  echo Using RBAC NGINX configuration
-  generate_nginx_gateway_conf
-elif [ "${HAWTIO_ONLINE_GATEWAY:-}" = "true" ]; then
-  echo Using gateway NGINX configuration
-  generate_nginx_gateway_conf
-else
-  echo Using legacy NGINX configuration
-  ln -sf /nginx.conf /etc/nginx/conf.d/nginx.conf
-fi
+echo Generating gateway NGINX configuration
+generate_nginx_gateway_conf
 
 # shellcheck disable=SC2181
 if [ $? = 0 ]; then

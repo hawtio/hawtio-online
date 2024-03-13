@@ -16,7 +16,6 @@ map $http_upgrade $connection_upgrade {
     ''      close;
 }
 
-
 server {
     listen              8443 ssl;
     server_name         localhost;
@@ -161,9 +160,9 @@ server {
         internal;
         proxy_pass                $1://$2:$3/$4$is_args$args;
         proxy_ssl_verify          off;
-        proxy_ssl_certificate     /etc/tls/private/proxying/tls.crt;
-        proxy_ssl_certificate_key /etc/tls/private/proxying/tls.key;
         proxy_ssl_session_reuse   on;
+        ${PROXY_SSL_CERTIFICATE}
+        ${PROXY_SSL_KEY}
         # Do not foward authorization header
         proxy_set_header          Authorization "";
     }
