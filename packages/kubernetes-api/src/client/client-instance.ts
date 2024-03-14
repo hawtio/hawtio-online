@@ -1,4 +1,4 @@
-import { KubeObject } from 'src/globals'
+import { KubeObject } from '../globals'
 import { Collection } from './globals'
 
 /*
