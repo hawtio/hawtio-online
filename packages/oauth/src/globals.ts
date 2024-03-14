@@ -1,6 +1,7 @@
 import { Logger } from '@hawtio/react'
 
-export const log = Logger.get('hawtio-oauth')
+export const pluginName = 'hawtio-online-oauth'
+export const log = Logger.get(pluginName)
 export const PATH_OSCONSOLE_CLIENT_CONFIG = 'osconsole/config.json'
 export const LOGOUT_ENDPOINT = '/auth/logout'
 

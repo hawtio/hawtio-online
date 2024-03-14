@@ -1,9 +1,9 @@
 import { hawtio, HawtioPlugin } from '@hawtio/react'
-import { log } from './globals'
 import { getActiveProfile } from './api'
-import { oAuthService } from './oauth-service'
-import { FORM_AUTH_PROTOCOL_MODULE, FORM_AUTH_PROTOCOL_MODULE_FORM } from './form/globals'
 import { FormAuthLoginForm } from './form'
+import { FORM_AUTH_PROTOCOL_MODULE } from './form/globals'
+import { log } from './globals'
+import { oAuthService } from './oauth-service'
 
 let initialised = false
 
@@ -26,10 +26,10 @@ export function oAuthInitialised(): boolean {
 }
 
 export const oAuthInit: HawtioPlugin = async () => {
-  if (hawtio.getPlugins().filter(plugin => plugin.id === FORM_AUTH_PROTOCOL_MODULE).length === 0) {
+  if (hawtio.getPlugins().filter(plugin => plugin.id === 'online-oauth').length === 0) {
     hawtio.addPlugin({
-      id: FORM_AUTH_PROTOCOL_MODULE,
-      title: FORM_AUTH_PROTOCOL_MODULE_FORM,
+      id: 'online-oauth',
+      title: 'Online OAuth',
       path: '/login',
       isLogin: true,
       component: FormAuthLoginForm,
@@ -44,8 +44,8 @@ export const oAuthInit: HawtioPlugin = async () => {
   await oAuthRegister()
 }
 
-export * from './metadata'
-export * from './globals'
 export * from './api'
-export * from './openshift'
 export * from './form'
+export * from './globals'
+export * from './metadata'
+export * from './openshift'
