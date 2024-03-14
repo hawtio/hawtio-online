@@ -42,6 +42,15 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
       )
     }
 
+    const error = props.pod.mPod.management.status.error
+    if (error) {
+      return (
+        <Label color='red' icon={<CamelRouteIcon />} className='pod-item-routes'>
+          {`?? routes`}
+        </Label>
+      )
+    }
+
     const total = props.pod.mPod.management.camel.routes_count
     return (
       <Label color='gold' icon={<CamelRouteIcon />} className='pod-item-routes'>

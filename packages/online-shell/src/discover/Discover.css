@@ -58,9 +58,20 @@
 }
 
 .pod-item-connect-button {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0;
+  flex-basis: 20%;
+  align-items: end;
   max-height: 2em;
   margin-top: auto;
   margin-bottom: auto;
+}
+
+.pod-item-connect-error-Label {
+  margin-top: 0.2em;
+  text-align: right;
+  color: red;
 }
 
 .state-icon {

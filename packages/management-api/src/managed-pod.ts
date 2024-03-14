@@ -15,7 +15,11 @@ export type Management = {
   status: {
     managed: boolean
     running: boolean
-    error: boolean
+    // Optional error object - reset to undefined on successful connection
+    error?: {
+      message: string // Error message
+      code: number // HTTP error code of the error
+    }
   }
   camel: {
     routes_count: number
@@ -32,8 +36,7 @@ export class ManagedPod {
   private _management: Management = {
     status: {
       managed: false,
-      running: false,
-      error: false,
+      running: false
     },
     camel: {
       routes_count: 0,
@@ -108,6 +111,19 @@ export class ManagedPod {
     return this._management
   }
 
+  getManagementError(): Error | null {
+    if (!this._management.status.error) return null
+
+    return new Error(`${this._management.status.error.message} (${this._management.status.error.code})`)
+  }
+
+  private setManagementError(errorCode: number, errorMsg: string) {
+    this._management.status.error = {
+      code: errorCode,
+      message: errorMsg,
+    }
+  }
+
   async probeJolokiaUrl(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       $.ajax({
@@ -117,36 +133,60 @@ export class ManagedPod {
       })
         .done((data: string, textStatus: string, xhr: JQueryXHR) => {
           if (xhr.status !== 200) {
-            reject()
+            this.setManagementError(xhr.status, textStatus)
+            reject(this.getManagementError())
             return
           }
 
+          let jsonResponse
           try {
-            const resp = JSON.parse(data)
-            if ('error' in resp) {
-              throw new Error(resp.error)
-            }
-
-            if ('value' in resp && 'agent' in resp.value) {
-              log.debug('Found jolokia agent at:', this.jolokiaPath, 'version:', resp.value.agent)
-              resolve(this.jolokiaPath)
-              return
-            } else {
-              throw new Error('Detected jolokia but cannot determine agent or version')
-            }
+            jsonResponse = JSON.parse(data)
           } catch (e) {
-            // Parse error should mean redirect to html
-            reject(e)
+            let msg
+            if (e instanceof Error) msg = e.message
+            else msg = String(e)
+
+            this.setManagementError(500, msg)
+            reject(this.getManagementError())
+            return
+          }
+
+          if (!jsonResponse || 'error' in jsonResponse) {
+            this.setManagementError(500, jsonResponse.error)
+            reject(this.getManagementError())
+            return
+          }
+
+          if ('value' in jsonResponse && 'agent' in jsonResponse.value) {
+            log.debug('Found jolokia agent at:', this.jolokiaPath, 'version:', jsonResponse.value.agent)
+            resolve(this.jolokiaPath)
+            return
+          } else {
+            this.setManagementError(500, 'Detected jolokia but cannot determine agent or version')
+            reject(this.getManagementError())
             return
           }
         })
         .fail((xhr: JQueryXHR, _: string, error: string) => {
-          if (error) {
-            reject(`Jolokia Probe Error: ${error}`)
-          }
-
-          reject(`${xhr.status} ${xhr.statusText}`)
+          const msg = `Jolokia Connect Error - ${error ?? xhr.statusText}`
+          this.setManagementError(xhr.status, msg)
+          reject(this.getManagementError())
         })
+    })
+  }
+
+  search(successCb: () => void, failCb: (error: Error) => void) {
+    this.jolokia.search('org.apache.camel:context=*,type=routes,*', {
+      method: 'post',
+      success: (routes: string[]) => {
+        this._management.status.error = undefined
+        this._management.camel.routes_count = routes.length
+        successCb()
+      },
+      error: error => {
+        this.setManagementError(error.status, error.error)
+        failCb(this.getManagementError() as Error)
+      },
     })
   }
 }

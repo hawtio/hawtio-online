@@ -1,5 +1,12 @@
 import React from 'react'
-import { Button, Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  ExpandableSection,
+  ExpandableSectionVariant,
+} from '@patternfly/react-core'
 import { mgmtService } from '@hawtio/online-management-api'
 import { DiscoverPod } from './globals'
 import './Discover.css'
@@ -12,10 +19,16 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
   props: DiscoverPodConnectProps,
 ) => {
   const connectionNames: string[] = mgmtService.refreshConnections(props.pod.mPod)
+  const mgmtError = props.pod.mPod?.getManagementError()
 
+  const [isErrorExpanded, setIsErrorExpanded] = React.useState(false)
   const [isOpen, setIsOpen] = React.useState(false)
 
-  const onToggle = (isOpen: boolean) => {
+  const onErrorToggle = (isExpanded: boolean) => {
+    setIsErrorExpanded(isExpanded)
+  }
+
+  const onConnectToggle = (isOpen: boolean) => {
     setIsOpen(isOpen)
   }
 
@@ -30,7 +43,7 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
   }
 
   const disableContainerButton = (): boolean => {
-    return mgmtService.podStatus(props.pod.mPod) !== 'Running' || connectionNames.length === 0
+    return mgmtService.podStatus(props.pod.mPod) !== 'Running' || connectionNames.length === 0 || mgmtError !== null
   }
 
   const onConnect = (connectName: string) => {
@@ -56,7 +69,7 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
           className='connect-button-dropdown'
           onSelect={onSelect}
           toggle={
-            <DropdownToggle id='toggle-initial-selection' toggleVariant='primary' onToggle={onToggle}>
+            <DropdownToggle id='toggle-initial-selection' toggleVariant='primary' onToggle={onConnectToggle}>
               Connect
             </DropdownToggle>
           }
@@ -73,6 +86,19 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
             )
           })}
         />
+      )}
+
+      {mgmtError && (
+        <div className='pod-item-connect-error-Label'>
+          <ExpandableSection
+            variant={ExpandableSectionVariant.truncate}
+            toggleText={isErrorExpanded ? 'Show less' : 'Show more'}
+            onToggle={onErrorToggle}
+            isExpanded={isErrorExpanded}
+          >
+            {String(mgmtError)}
+          </ExpandableSection>
+        </div>
       )}
     </React.Fragment>
   )
