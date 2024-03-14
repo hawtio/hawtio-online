@@ -73,6 +73,11 @@ const common = (mode, publicPath) => {
             singleton: true,
             requiredVersion: dependencies['@hawtio/react'],
           },
+          '@hawtio/online-oauth': {
+            singleton: true,
+            // Hardcoding needed because it cannot handle yarn 'workspace:*' version
+            requiredVersion: '^0.0.0',
+          },
           '@hawtio/online-kubernetes-api': {
             singleton: true,
             // Hardcoding needed because it cannot handle yarn 'workspace:*' version
