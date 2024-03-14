@@ -1,5 +1,5 @@
 import { OwnerReference } from '@hawtio/online-kubernetes-api'
-import { ManagedPod, mgmtService } from '@hawtio/online-management-api'
+import { ManagedPod, managementService } from '@hawtio/online-management-api'
 import { DiscoverGroup, DiscoverPod, DiscoverType, TypeFilter } from './globals'
 
 export function unwrap(error: Error): string {
@@ -53,11 +53,11 @@ function toDiscoverGroup(
 function createDiscoverPod(pod: ManagedPod): DiscoverPod {
   return {
     type: DiscoverType.Pod,
-    name: pod.metadata?.name || '<unknown>',
-    uid: pod.metadata?.uid || '<unknown>',
-    namespace: pod.metadata?.namespace || '<unknown>',
-    labels: pod.metadata?.labels || {},
-    annotations: pod.metadata?.annotations || {},
+    name: pod.metadata?.name ?? '<unknown>',
+    uid: pod.metadata?.uid ?? '<unknown>',
+    namespace: pod.metadata?.namespace ?? '<unknown>',
+    labels: pod.metadata?.labels ?? {},
+    annotations: pod.metadata?.annotations ?? {},
     mPod: pod,
   }
 }
@@ -123,7 +123,7 @@ export function filterAndGroupPods(
   theFilters: TypeFilter[],
   currentGroups: DiscoverGroup[],
 ): [DiscoverGroup[], DiscoverPod[]] {
-  const pods: ManagedPod[] = mgmtService.pods || []
+  const pods = managementService.pods
 
   if (!theFilters || theFilters.length === 0) return groupPodsByDeployment(pods, currentGroups)
 
@@ -145,7 +145,7 @@ export function filterAndGroupPods(
 }
 
 export function getStatus(pod: DiscoverPod): string {
-  return mgmtService.podStatus(pod.mPod)
+  return managementService.podStatus(pod.mPod)
 }
 
 export enum ViewType {

@@ -1,16 +1,16 @@
-import React, { ReactNode, useEffect, useState } from 'react'
-import { ThIcon } from '@patternfly/react-icons'
+import { ManagementActions, managementService } from '@hawtio/online-management-api'
 import { Dropdown, DropdownGroup, DropdownItem, DropdownSeparator, DropdownToggle } from '@patternfly/react-core'
+import { ThIcon } from '@patternfly/react-icons'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { ConsoleLink, ConsoleType } from '../console'
-import { ManagedPod, MgmtActions, mgmtService } from '@hawtio/online-management-api'
 
 export const HeaderMenuDropDown: React.FunctionComponent = () => {
-  const [pods, setPods] = useState<ManagedPod[]>(mgmtService.pods)
+  const [pods, setPods] = useState(managementService.pods)
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
-    mgmtService.on(MgmtActions.UPDATED, () => {
-      setPods([...mgmtService.pods])
+    managementService.on(ManagementActions.UPDATED, () => {
+      setPods([...managementService.pods])
     })
   }, [])
 
@@ -31,12 +31,12 @@ export const HeaderMenuDropDown: React.FunctionComponent = () => {
   const podEntries = (): ReactNode => (
     <DropdownGroup label='Containers' key='header-menu-dropdown-pod-group'>
       {pods.map(pod => {
-        const connNames = mgmtService.refreshConnections(pod)
+        const connNames = managementService.refreshConnections(pod)
         return connNames.map(connName => (
           <DropdownItem
             key={`header-menu-dropdown-pod-${connName}`}
             component='button'
-            onClick={() => mgmtService.connect(connName)}
+            onClick={() => managementService.connect(connName)}
           >
             {connName}
           </DropdownItem>

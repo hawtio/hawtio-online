@@ -1,8 +1,8 @@
-import React from 'react'
+import { managementService } from '@hawtio/online-management-api'
 import { Button, Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
-import { mgmtService } from '@hawtio/online-management-api'
-import { DiscoverPod } from './globals'
+import React from 'react'
 import './Discover.css'
+import { DiscoverPod } from './globals'
 
 interface DiscoverPodConnectProps {
   pod: DiscoverPod
@@ -11,7 +11,7 @@ interface DiscoverPodConnectProps {
 export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps> = (
   props: DiscoverPodConnectProps,
 ) => {
-  const connectionNames: string[] = mgmtService.refreshConnections(props.pod.mPod)
+  const connectionNames: string[] = managementService.refreshConnections(props.pod.mPod)
 
   const [isOpen, setIsOpen] = React.useState(false)
 
@@ -30,11 +30,11 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
   }
 
   const disableContainerButton = (): boolean => {
-    return mgmtService.podStatus(props.pod.mPod) !== 'Running' || connectionNames.length === 0
+    return managementService.podStatus(props.pod.mPod) !== 'Running' || connectionNames.length === 0
   }
 
   const onConnect = (connectName: string) => {
-    mgmtService.connect(connectName)
+    managementService.connect(connectName)
   }
 
   return (

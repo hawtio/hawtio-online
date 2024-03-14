@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
+import React, { useState } from 'react'
+import { log } from '../../globals'
 import { TokenForm } from './TokenForm'
-import { log } from 'src/globals'
 import { formAuthLoginService } from './form-auth-login-service'
 
 /**

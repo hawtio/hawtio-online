@@ -1,4 +1,4 @@
-import { kubernetesService, K8Actions, KubeProject, KubePod } from '@hawtio/online-kubernetes-api'
+import { kubernetesService, KubernetesActions, KubeProject, KubePod } from '@hawtio/online-kubernetes-api'
 import React, { useEffect, useState } from 'react'
 import { Panel, PanelHeader, PanelMain, PanelMainBody, Tab, Tabs, TabTitleText, Title } from '@patternfly/react-core'
 import { KubernetesProjects } from './KubernetesProjects'
@@ -10,7 +10,7 @@ export const KubernetesClient: React.FunctionComponent = () => {
   const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0)
 
   useEffect(() => {
-    kubernetesService.on(K8Actions.CHANGED, () => {
+    kubernetesService.on(KubernetesActions.CHANGED, () => {
       const projects = kubernetesService.getProjects()
       setProjects([...projects]) // must use spread to ensure update
 

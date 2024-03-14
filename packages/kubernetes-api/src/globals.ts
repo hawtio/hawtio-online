@@ -2,7 +2,7 @@ import { Logger } from '@hawtio/react'
 import { NamespaceSpec, NamespaceStatus, Pod } from 'kubernetes-types/core/v1'
 import { ObjectMeta } from 'kubernetes-types/meta/v1'
 
-export const pluginName = 'hawtio-k8s-api'
+export const pluginName = 'hawtio-online-k8s-api'
 export const log = Logger.get(pluginName)
 
 export const K8S_PREFIX = 'api'
@@ -40,10 +40,10 @@ export type KubeProject = KubeObject & {
   status?: NamespaceStatus
 }
 
-/*
+/**
  * States emitted by the Kubernetes Service
  */
-export enum K8Actions {
+export enum KubernetesActions {
   CHANGED = 'CHANGED',
 }
 

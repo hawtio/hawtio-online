@@ -1,24 +1,23 @@
+import { UserProfile } from '@hawtio/online-oauth'
 import { ServiceSpec } from 'kubernetes-types/core/v1'
 import { K8S_EXT_PREFIX, KubeObject } from '../globals'
-import {} from '../kubernetes-service'
-import { fetchPath, FetchPathCallback, isFunction, joinPaths } from '../utils'
 import { getClusterIP, getName, getNamespace, namespaced, prefixForKind, toCollectionName, wsUrl } from '../helpers'
+import {} from '../kubernetes-service'
 import { WatchActions, WatchTypes } from '../model'
+import { FetchPathCallback, fetchPath, isFunction, joinPaths } from '../utils'
 import {
-  log,
-  UNKNOWN_VALUE,
   Collection,
+  ErrorDataCallback,
   KOptions,
   ObjectList,
-  WSHandler,
   ProcessDataCallback,
-  ErrorDataCallback,
+  UNKNOWN_VALUE,
+  WSHandler,
+  log,
 } from './globals'
 import { ObjectListImpl } from './object-list'
-import { WSHandlerImpl } from './ws-handler'
 import { getKey } from './support'
-import { kubernetesApi } from 'src/api'
-import { UserProfile } from '@hawtio/online-oauth'
+import { WSHandlerImpl } from './ws-handler'
 
 /*
  * Implements the external API for working with k8s collections of objects
@@ -33,7 +32,7 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
   private _oAuthToken: string
 
   constructor(
-    profile: UserProfile,
+    private profile: UserProfile,
     private _options: KOptions,
   ) {
     this._isOpenshift = profile.isOpenShift()
@@ -73,7 +72,7 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
       }
       url = new URL(answer)
     } else {
-      url = new URL(joinPaths(kubernetesApi.masterUri(), this._path))
+      url = new URL(joinPaths(this.profile.getMasterUri(), this._path))
     }
 
     if (this.options.labelSelector) {
@@ -93,7 +92,8 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
       }
       url = wsUrl(answer)
     } else {
-      let urlStr = joinPaths(kubernetesApi.masterUri(), this._path)
+      const masterUri = this.profile.getMasterUri()
+      let urlStr = joinPaths(masterUri, this._path)
       const location = window.location
       if (location && urlStr.indexOf('://') < 0) {
         let hostname = location.hostname
@@ -102,7 +102,7 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
           if (port) {
             hostname += ':' + port
           }
-          urlStr = joinPaths(hostname, kubernetesApi.masterUri(), this._path)
+          urlStr = joinPaths(hostname, masterUri, this._path)
         }
       }
       url = wsUrl(urlStr)
@@ -121,11 +121,11 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
   }
 
   get wsURL() {
-    return (this._wsUrl || '').toString()
+    return (this._wsUrl ?? '').toString()
   }
 
   get restURL() {
-    return (this._restUrl || '').toString()
+    return (this._restUrl ?? '').toString()
   }
 
   get namespace() {
@@ -205,7 +205,8 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
           prefix = joinPaths('/api/v1/proxy/namespaces', namespace, '/services/jenkinshift:80/', prefix)
           log.debug('Using buildconfigs URL override')
         }
-        url = joinPaths(kubernetesApi.masterUri(), prefix, 'namespaces', namespace, kind)
+        const masterUri = this.profile.getMasterUri()
+        url = joinPaths(masterUri, prefix, 'namespaces', namespace, kind)
       }
     }
     if (useName) {

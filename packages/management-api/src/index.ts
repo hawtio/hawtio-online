@@ -1,16 +1,18 @@
+import { HawtioPlugin } from '@hawtio/react'
 import { log } from './globals'
-import { ManagementService } from './management-service'
+import { managementService } from './management-service'
 
-export const mgmtService = new ManagementService()
+export const onlineManagementApi: HawtioPlugin = () => {
+  log.debug('Loading Management API plugin')
+  const init = async () => {
+    log.debug('Initialising Management Service')
+    await managementService.initialize()
 
-const managementApi = async (): Promise<boolean> => {
-  log.debug('x Awaiting registering of ManagementService')
-  return await mgmtService.initialize()
+    log.debug('Loaded Management API plugin')
+  }
+  init()
 }
 
-export async function isMgmtApiRegistered(): Promise<boolean> {
-  return await managementApi()
-}
-
-export { MgmtActions } from './globals'
-export { ManagedPod } from './managed-pod'
+export * from './globals'
+export * from './managed-pod'
+export * from './management-service'

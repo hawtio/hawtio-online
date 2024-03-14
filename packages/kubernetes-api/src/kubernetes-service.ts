@@ -10,7 +10,7 @@ import { Hawtconfig, configManager } from '@hawtio/react'
 import EventEmitter from 'eventemitter3'
 import jsonpath from 'jsonpath'
 import { Collection, ProcessDataCallback, clientFactory, log } from './client'
-import { K8Actions, KubeObject, KubePod, KubeProject } from './globals'
+import { KubernetesActions, KubeObject, KubePod, KubeProject } from './globals'
 import { WatchTypes } from './model'
 import { pathGet } from './utils'
 
@@ -28,7 +28,7 @@ export class KubernetesService extends EventEmitter {
   private projects: KubeProject[] = []
   private pods: KubePod[] = []
   private projects_client: Client<KubeProject> | null = null
-  private pods_clients: { [key: string]: Client<KubePod> } = {}
+  private pods_clients: Record<string, Client<KubePod>> = {}
 
   async initialize() {
     try {
@@ -68,7 +68,7 @@ export class KubernetesService extends EventEmitter {
       this.pods.splice(0, this.pods.length) // clear the array
       const jolokiaPods = pods.filter(pod => jsonpath.query(pod, this.jolokiaPortQuery).length > 0)
       this.pods.push(...jolokiaPods)
-      this.emit(K8Actions.CHANGED)
+      this.emit(KubernetesActions.CHANGED)
     })
 
     this.pods_clients[namespace] = { collection: pods_client, watch: pods_watch }
@@ -116,7 +116,7 @@ export class KubernetesService extends EventEmitter {
             this.pods.push(jpod)
           }
 
-          this.emit(K8Actions.CHANGED)
+          this.emit(KubernetesActions.CHANGED)
         })
         this.pods_clients[project.metadata?.name as string] = {
           collection: pods_client,

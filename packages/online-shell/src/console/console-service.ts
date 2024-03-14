@@ -24,31 +24,32 @@ export interface OSLinkConfig {
   kind?: string
 }
 
-export function osLink(config: OSLinkConfig): URL | null {
-  if (!kubernetesApi.consoleUri) return null
+export async function osLink(config: OSLinkConfig): Promise<URL | null> {
+  const consoleUri = await kubernetesApi.getConsoleUri()
+  if (!consoleUri) return null
 
   const linkPath = LinkPath[config.type]
 
   switch (config.type) {
     case ConsoleType.console:
-      return new URL(kubernetesApi.consoleUri)
+      return new URL(consoleUri)
     case ConsoleType.namespace:
-      return new URL(joinPaths(kubernetesApi.consoleUri, linkPath, config.namespace || 'default'))
+      return new URL(joinPaths(consoleUri, linkPath, config.namespace ?? 'default'))
     case ConsoleType.search: {
-      const url: URL = new URL(joinPaths(kubernetesApi.consoleUri, linkPath, config.namespace || 'default'))
-      url.search = `kind=${config.kind}&q=${encodeURI(config.selector || '')}`
+      const url: URL = new URL(joinPaths(consoleUri, linkPath, config.namespace ?? 'default'))
+      url.search = `kind=${config.kind}&q=${encodeURI(config.selector ?? '')}`
       return url
     }
     case ConsoleType.node:
-      return new URL(joinPaths(kubernetesApi.consoleUri, linkPath, config.selector || ''))
+      return new URL(joinPaths(consoleUri, linkPath, config.selector ?? ''))
     case ConsoleType.resource:
       return new URL(
         joinPaths(
-          kubernetesApi.consoleUri,
+          consoleUri,
           linkPath,
-          config.namespace || 'default',
+          config.namespace ?? 'default',
           OS4[config.resource as keyof typeof OS4] || config.resource,
-          config.selector || '',
+          config.selector ?? '',
         ),
       )
     default:

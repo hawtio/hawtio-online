@@ -1,4 +1,4 @@
-import { isMgmtApiRegistered, mgmtService, ManagedPod, MgmtActions } from '@hawtio/online-management-api'
+import { managementService, ManagedPod, ManagementActions } from '@hawtio/online-management-api'
 import React, { useRef, useEffect, useState } from 'react'
 import {
   Alert,
@@ -25,6 +25,7 @@ import {
 import { InfoCircleIcon } from '@patternfly/react-icons'
 import { useUser, userService } from '@hawtio/react'
 import { ManagementPods } from './ManagementPods'
+import { kubernetesApi, kubernetesService } from '@hawtio/online-kubernetes-api'
 
 export const Management: React.FunctionComponent = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -38,21 +39,21 @@ export const Management: React.FunctionComponent = () => {
     setIsLoading(true)
 
     const checkLoading = async () => {
-      const mgmtLoaded = await isMgmtApiRegistered()
-
-      if (!mgmtLoaded) return
+      // Block until initialisation is done
+      await kubernetesApi.getOAuthProfile()
+      await kubernetesService.getPods()
 
       if (!userLoaded) return
 
       setIsLoading(false)
 
-      if (mgmtService.hasError()) {
-        setError(mgmtService.error)
+      if (managementService.hasError()) {
+        setError(managementService.error)
         return
       }
 
-      mgmtService.on(MgmtActions.UPDATED, () => {
-        setPods([...mgmtService.pods]) // Use spread to ensure react updates the state
+      managementService.on(ManagementActions.UPDATED, () => {
+        setPods([...managementService.pods]) // Use spread to ensure react updates the state
       })
     }
 

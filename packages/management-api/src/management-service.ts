@@ -1,76 +1,68 @@
 import {
   Container,
   ContainerPort,
-  K8Actions,
-  KubePod,
+  KubernetesActions,
   debounce,
   kubernetesApi,
   kubernetesService,
 } from '@hawtio/online-kubernetes-api'
 import { Connection, Connections, connectService } from '@hawtio/react'
 import { EventEmitter } from 'eventemitter3'
-import { MgmtActions, log } from './globals'
+import { ManagementActions, log } from './globals'
 import { ManagedPod, Management } from './managed-pod'
 
-interface UpdateEmitter {
+export type UpdateEmitter = {
   uid?: string
   fireUpdate: boolean
 }
 
 export class ManagementService extends EventEmitter {
-  private _initialized = false
-  private _pods: { [key: string]: ManagedPod } = {}
-  private pollManagementData = debounce(() => this.mgmtUpdate(), 1000)
-  private uidQueue: Set<string> = new Set<string>()
+  private _pods: Record<string, ManagedPod> = {}
+  private uidQueue: Set<string> = new Set()
 
   constructor() {
     super()
 
-    kubernetesService.on(K8Actions.CHANGED, () => this.initialize())
+    kubernetesService.on(KubernetesActions.CHANGED, () => this.initialize())
+    // TODO: Use Jolokia polling preference
     setInterval(() => this.pollManagementData(), 10000)
   }
 
-  async initialize(): Promise<boolean> {
-    if (!kubernetesApi.initialized) {
-      await kubernetesApi.initialize()
+  async initialize() {
+    if (this.hasError()) {
+      log.error('Cannot initialize Management Service due to:', this.error)
+      return
     }
 
-    if (!kubernetesService.initialized) {
-      await kubernetesService.initialize()
-    }
+    const kPods = await kubernetesService.getPods()
+    kPods.forEach(kPod => {
+      const uid = kPod.metadata?.uid
+      if (!uid) {
+        log.error('Cannot access uid from pod')
+        return
+      }
 
-    if (!this.hasError()) {
-      const kPods: KubePod[] = kubernetesService.getPods()
+      const mPod = this._pods[uid]
+      if (!mPod) {
+        this._pods[uid] = new ManagedPod(kPod)
+      } else {
+        kPod.management = mPod.pod.management
+        mPod.pod = kPod
+      }
 
-      kPods.forEach(kPod => {
-        const uid = kPod.metadata?.uid
-        if (!uid) {
-          log.error('Cannot access uid from pod')
-          return
-        }
-
-        const mPod = this._pods[uid]
-        if (!mPod) {
-          this._pods[uid] = new ManagedPod(kPod)
-        } else {
-          kPod.management = mPod.pod.management
-          mPod.pod = kPod
-        }
-
-        for (const uid in this._pods) {
-          if (!kPods.some(kPod => kPod.metadata?.uid === uid)) {
-            delete this._pods[uid]
-          }
+      Object.keys(this._pods).forEach(uid => {
+        if (!kPods.some(kPod => kPod.metadata?.uid === uid)) {
+          delete this._pods[uid]
         }
       })
+    })
 
-      // let's kick a polling cycle
-      this.pollManagementData()
-    }
+    // let's kick a polling cycle
+    this.pollManagementData()
+  }
 
-    // At least first pass of the pods has been completed
-    this._initialized = true
-    return this._initialized
+  private pollManagementData() {
+    debounce(() => this.mgmtUpdate(), 1000)
   }
 
   private hash(s: string): number {
@@ -98,7 +90,7 @@ export class ManagementService extends EventEmitter {
     }
 
     if (emitter.fireUpdate && this.uidQueue.size === 0) {
-      this.emit(MgmtActions.UPDATED)
+      this.emit(ManagementActions.UPDATED)
     }
   }
 
@@ -165,18 +157,14 @@ export class ManagementService extends EventEmitter {
     }
   }
 
-  get initialized(): boolean {
-    return this._initialized
-  }
-
   hasError() {
     return kubernetesApi.hasError() || kubernetesService.hasError()
   }
 
   get error(): Error | null {
-    if (kubernetesApi.hasError()) return kubernetesApi.error
+    if (kubernetesApi.hasError()) return kubernetesApi.getError() ?? null
 
-    if (kubernetesService.hasError()) return kubernetesService.error
+    if (kubernetesService.hasError()) return kubernetesService.getError() ?? null
 
     return null
   }
@@ -268,15 +256,15 @@ export class ManagementService extends EventEmitter {
   }
 
   jolokiaContainerPort(container: Container): number {
-    const ports: Array<ContainerPort> = container.ports || []
+    const ports: Array<ContainerPort> = container.ports ?? []
     const containerPort = ports.find(port => port.name === 'jolokia')
     return containerPort?.containerPort ?? ManagedPod.DEFAULT_JOLOKIA_PORT
   }
 
-  jolokiaContainers(pod: ManagedPod): Array<Container> {
+  jolokiaContainers(pod: ManagedPod): Container[] {
     if (!pod) return []
 
-    const containers: Array<Container> = pod.spec?.containers || []
+    const containers: Container[] = pod.spec?.containers ?? []
     return containers.filter(container => {
       return this.jolokiaContainerPort(container) !== null
     })
@@ -284,7 +272,7 @@ export class ManagementService extends EventEmitter {
 
   connectToUrl(pod: ManagedPod, container: Container): URL {
     const jolokiaPort = this.jolokiaContainerPort(container)
-    const jolokiaPath = ManagedPod.getJolokiaPath(pod.pod, jolokiaPort) || ''
+    const jolokiaPath = ManagedPod.getJolokiaPath(pod.pod, jolokiaPort) ?? ''
     const url: URL = new URL(jolokiaPath)
     return url
   }
@@ -294,7 +282,7 @@ export class ManagementService extends EventEmitter {
   }
 
   refreshConnections(pod: ManagedPod): string[] {
-    const containers: Array<Container> = this.jolokiaContainers(pod)
+    const containers: Container[] = this.jolokiaContainers(pod)
     const connections: Connections = connectService.loadConnections()
 
     const connNames: string[] = []
@@ -324,14 +312,16 @@ export class ManagementService extends EventEmitter {
   }
 
   connect(connectName: string) {
-    const connections: Connections = connectService.loadConnections()
+    const connections = connectService.loadConnections()
 
-    const connection: Connection = connections[connectName]
+    const connection = connections[connectName]
     if (!connection) {
-      log.error(`There is no connection configured with name ${connectName}`)
+      log.error('There is no connection configured with name', connectName)
       return
     }
 
     connectService.connect(connection)
   }
 }
+
+export const managementService = new ManagementService()

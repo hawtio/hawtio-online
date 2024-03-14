@@ -1,22 +1,28 @@
-import React, { PropsWithChildren } from 'react'
 import { Button } from '@patternfly/react-core'
-import { ConsoleType } from './globals'
-import * as consoleService from './console-service'
+import React, { PropsWithChildren, useEffect, useState } from 'react'
 import './Console.css'
+import * as consoleService from './console-service'
+import { ConsoleType } from './globals'
 
-interface ConsoleLinkProps {
-  type: ConsoleType
-  namespace?: string
-  selector?: string
-  resource?: string
-  kind?: string
-  inline?: boolean
-}
+export const ConsoleLink: React.FunctionComponent<
+  PropsWithChildren<{
+    type: ConsoleType
+    namespace?: string
+    selector?: string
+    resource?: string
+    kind?: string
+    inline?: boolean
+  }>
+> = props => {
+  const [url, setUrl] = useState<URL | null>(null)
 
-export const ConsoleLink: React.FunctionComponent<PropsWithChildren<ConsoleLinkProps>> = (
-  props: PropsWithChildren<ConsoleLinkProps>,
-) => {
-  const url = consoleService.osLink(props)
+  useEffect(() => {
+    const fetchUrl = async () => {
+      const url = await consoleService.osLink(props)
+      setUrl(url)
+    }
+    fetchUrl()
+  }, [props])
 
   return (
     <React.Fragment>

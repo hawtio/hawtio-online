@@ -1,5 +1,5 @@
 import { kubernetesApi, kubernetesService } from '@hawtio/online-kubernetes-api'
-import { MgmtActions, isMgmtApiRegistered, mgmtService } from '@hawtio/online-management-api'
+import { ManagementActions, managementService } from '@hawtio/online-management-api'
 import { createContext, useEffect, useRef, useState } from 'react'
 import { filterAndGroupPods } from './discover-service'
 import { DiscoverGroup, DiscoverPod, TypeFilter } from './globals'
@@ -31,18 +31,18 @@ export function useDisplayItems() {
     setIsMounting(true)
 
     const checkLoading = async () => {
-      const mgmtLoaded = await isMgmtApiRegistered()
-
-      if (!mgmtLoaded) return
+      // Block until initialisation is done
+      await kubernetesApi.getOAuthProfile()
+      await kubernetesService.getPods()
 
       if (kubernetesApi.hasError()) {
-        setError(kubernetesApi.error)
+        setError(kubernetesApi.getError() ?? null)
         setIsMounting(false)
         return
       }
 
       if (kubernetesService.hasError()) {
-        setError(kubernetesService.error)
+        setError(kubernetesService.getError() ?? null)
         setIsMounting(false)
         return
       }
@@ -73,15 +73,15 @@ export function useDisplayItems() {
   useEffect(() => {
     const mgmtListener = () => {
       organisePods(discoverGroups, filters)
-      // Listener inited so loading now complete
+      // Listener init'ed so loading now complete
       setIsLoading(false)
     }
 
-    mgmtService.on(MgmtActions.UPDATED, mgmtListener)
+    managementService.on(ManagementActions.UPDATED, mgmtListener)
     updateListener.current = mgmtListener
 
     return () => {
-      if (updateListener.current) mgmtService.off(MgmtActions.UPDATED, updateListener.current)
+      updateListener.current && managementService.off(ManagementActions.UPDATED, updateListener.current)
     }
   }, [isMounting, filters, discoverGroups])
 
