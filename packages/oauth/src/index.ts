@@ -7,17 +7,16 @@ import { oAuthService } from './oauth-service'
 
 let initialised = false
 
-const oAuthRegister = async (): Promise<void> => {
+export const oAuthInit = async () => {
   if (initialised) return
 
   log.info('Initialising the active profile')
   try {
-    oAuthService.registerUserHooks()
     await getActiveProfile()
     log.info('All OAuth plugins have been executed.')
     initialised = true
   } catch (error) {
-    log.error('Failed to initialise the oauth plugin: ', error)
+    log.error('Failed to initialise the oauth plugin:', error)
   }
 }
 
@@ -25,23 +24,24 @@ export function oAuthInitialised(): boolean {
   return initialised
 }
 
-export const oAuthInit: HawtioPlugin = async () => {
-  if (hawtio.getPlugins().filter(plugin => plugin.id === 'online-oauth').length === 0) {
-    hawtio.addPlugin({
-      id: 'online-oauth',
-      title: 'Online OAuth',
-      path: '/login',
-      isLogin: true,
-      component: FormAuthLoginForm,
-      isActive: async () => {
-        await oAuthService.isActive()
-        const profile = oAuthService.getUserProfile()
-        return profile.getOAuthType() === FORM_AUTH_PROTOCOL_MODULE
-      },
-    })
-  }
+export const onlineOAuth: HawtioPlugin = () => {
+  oAuthService.registerUserHooks()
+  // Register the plugin for replacing the login form in the form auth mode
+  hawtio.addPlugin({
+    id: 'online-oauth',
+    title: 'Online OAuth',
+    // For login plugin, path shouldn't have any effect
+    path: '/online-oauth',
+    isLogin: true,
+    component: FormAuthLoginForm,
+    isActive: async () => {
+      if (!(await oAuthService.isActive())) return false
+      const profile = oAuthService.getUserProfile()
+      return profile.getOAuthType() === FORM_AUTH_PROTOCOL_MODULE
+    },
+  })
 
-  await oAuthRegister()
+  oAuthInit()
 }
 
 export * from './api'

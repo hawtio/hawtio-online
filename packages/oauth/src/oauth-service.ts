@@ -1,3 +1,4 @@
+import { FetchUserHook, LogoutHook, userService } from '@hawtio/react'
 import { OAuthConfig, OAuthProtoService } from './api'
 import { FormService } from './form'
 import { KUBERNETES_MASTER_KIND, PATH_OSCONSOLE_CLIENT_CONFIG, UserProfile, log } from './globals'
@@ -100,15 +101,17 @@ class OAuthService {
 
   async registerUserHooks(): Promise<void> {
     log.debug('Registering oAuth user hooks')
-
-    const protoService = await this.protoService
-    const loggedIn = (await protoService?.isLoggedIn()) ?? false
-    if (!loggedIn) {
-      log.debug('Cannot register user hooks as OAuth Protocol Service is not logged-in')
-      return
+    const fetchUser: FetchUserHook = async resolve => {
+      const protoService = await this.protoService
+      return protoService?.fetchUser(resolve) ?? false
     }
+    userService.addFetchUserHook('online-oauth', fetchUser)
 
-    protoService?.registerUserHooks()
+    const logout: LogoutHook = async () => {
+      const protoService = await this.protoService
+      return protoService?.logout() ?? false
+    }
+    userService.addLogoutHook('online-oauth', logout)
   }
 }
 
