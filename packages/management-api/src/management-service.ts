@@ -114,12 +114,13 @@ export class ManagementService extends EventEmitter {
       // Flag that the pod is now under management
       mPod.management.status.managed = true
 
+      // Is the pod actually running at the moment
       mPod.management.status.running = this.podStatus(mPod) === 'Running'
 
       if (!mPod.management.status.running) {
         /*
          * No point in trying to fire a jolokia request
-         * against a non-running pod.
+         * against a non-running pod or a pod that cannot connect via jolokia
          * Emit an update but only if the status has in fact changed
          */
         this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
@@ -136,24 +137,19 @@ export class ManagementService extends EventEmitter {
         }
       } catch (error) {
         log.error(new Error(`Cannot access jolokia url at ${mPod.jolokiaPath}`, { cause: error }))
-        mPod.management.status.error = true
         this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
         continue
       }
 
-      mPod.jolokia.search('org.apache.camel:context=*,type=routes,*', {
-        method: 'post',
-        success: (routes: string[]) => {
-          mPod.management.status.error = false
-          mPod.management.camel.routes_count = routes.length
+      mPod.search(
+        () => {
           this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
         },
-        error: error => {
+        (error: Error) => {
           log.error(error)
-          mPod.management.status.error = true
           this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
-        },
-      })
+        }
+      )
     }
   }
 
