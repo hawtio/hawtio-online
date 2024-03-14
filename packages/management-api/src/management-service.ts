@@ -116,15 +116,29 @@ export class ManagementService extends EventEmitter {
 
       // Is the pod actually running at the moment
       mPod.management.status.running = this.podStatus(mPod) === 'Running'
-
       if (!mPod.management.status.running) {
         /*
          * No point in trying to fire a jolokia request
          * against a non-running pod or a pod that cannot connect via jolokia
          * Emit an update but only if the status has in fact changed
          */
-        this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
+        this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
         continue
+      }
+
+      // Reduce the number of times that a pod with managment error is polled
+      const mgmtError = mPod.getManagementError()
+      if (mgmtError) {
+        mPod.incrementErrorPollCount()
+
+        if (mPod.errorPolling.count < mPod.errorPolling.threshold) {
+          // ignore this probing iteration as we have an error and not reach the polling threshold
+          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
+          continue
+        } else {
+          // met the threshold so poll on this occasion but raise the threshold
+          mPod.incrementErrorPollThreshold()
+        }
       }
 
       /*
@@ -133,22 +147,22 @@ export class ManagementService extends EventEmitter {
       try {
         const url = await mPod.probeJolokiaUrl()
         if (!url) {
-          this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
+          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
         }
       } catch (error) {
         log.error(new Error(`Cannot access jolokia url at ${mPod.jolokiaPath}`, { cause: error }))
-        this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
+        this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
         continue
       }
 
       mPod.search(
         () => {
-          this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
+          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
         },
         (error: Error) => {
-          log.error(error)
-          this.emitUpdate({ uid, fireUpdate: fingerprint === this.fingerprint(mPod.management) })
-        }
+          log.error(new Error(`Cannot access jolokia url at ${mPod.jolokiaPath}`, { cause: error }))
+          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
+        },
       )
     }
   }

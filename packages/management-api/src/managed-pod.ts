@@ -15,15 +15,25 @@ export type Management = {
   status: {
     managed: boolean
     running: boolean
-    // Optional error object - reset to undefined on successful connection
+    /**
+     * Optional error object
+     * - reset to undefined on successful connection
+     */
     error?: {
-      message: string // Error message
-      code: number // HTTP error code of the error
+      /** Error message */
+      message: string
+      /** HTTP error code */
+      code: number
     }
   }
   camel: {
     routes_count: number
   }
+}
+
+export type ErrorPolling = {
+  count: number
+  threshold: number
 }
 
 export class ManagedPod {
@@ -36,11 +46,16 @@ export class ManagedPod {
   private _management: Management = {
     status: {
       managed: false,
-      running: false
+      running: false,
     },
     camel: {
       routes_count: 0,
     },
+  }
+
+  private _errorPolling: ErrorPolling = {
+    count: 0,
+    threshold: 1,
   }
 
   constructor(public pod: KubePod) {
@@ -117,11 +132,25 @@ export class ManagedPod {
     return new Error(`${this._management.status.error.message} (${this._management.status.error.code})`)
   }
 
-  private setManagementError(errorCode: number, errorMsg: string) {
-    this._management.status.error = {
-      code: errorCode,
-      message: errorMsg,
-    }
+  private setManagementError(code: number, message: string) {
+    this._management.status.error = { code, message }
+  }
+
+  getErrorPolling(): ErrorPolling {
+    return this._errorPolling
+  }
+
+  resetErrorPolling() {
+    this._errorPolling.count = 0
+    this._errorPolling.threshold = 1
+  }
+
+  incrementErrorPollCount() {
+    this._errorPolling.count++
+  }
+
+  incrementErrorPollThreshold() {
+    this._errorPolling.threshold = this._errorPolling.threshold * 2
   }
 
   async probeJolokiaUrl(): Promise<string> {
