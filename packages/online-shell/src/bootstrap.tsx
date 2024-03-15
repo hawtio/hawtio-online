@@ -1,16 +1,27 @@
 import { isMgmtApiRegistered } from '@hawtio/online-management-api'
 import { onlineOAuth } from '@hawtio/online-oauth'
-import { camel, configManager, hawtio, Hawtio, jmx, logs, quartz, rbac, runtime, springboot } from '@hawtio/react'
+import {
+  camel,
+  configManager,
+  hawtio,
+  Hawtio,
+  HawtioLoadingPage,
+  jmx,
+  logs,
+  quartz,
+  rbac,
+  runtime,
+  springboot,
+} from '@hawtio/react'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { InitLoading } from './console/InitLoading'
 import { discover } from './discover'
 import { reportWebVitals } from './reportWebVitals'
 
 configManager.addProductInfo('Hawtio Online', '__PACKAGE_VERSION_PLACEHOLDER__')
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
-root.render(<InitLoading />)
+root.render(<HawtioLoadingPage />)
 
 // Load OpenShift OAuth plugin first
 onlineOAuth()
