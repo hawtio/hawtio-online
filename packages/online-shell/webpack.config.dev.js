@@ -97,6 +97,17 @@ module.exports = () => {
           pathRewrite: { '^/master': '' },
           secure: false,
           ws: true,
+          onProxyRes: (proxyRes, req, res) => {
+            if (proxyRes.statusCode === 401) {
+              /*
+               * When both the 401 status code and the www-authenticate error are encountered
+               * Chrome (un)helpfully displays a pop-up login dialog. We want to disable that
+               * since it interferes with the probing of the jolokia connections
+               */
+              console.log('Unauthorized Error detected: removing www-authenticate header')
+              delete proxyRes.headers['www-authenticate']
+            }
+          },
         },
       ],
 

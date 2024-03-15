@@ -35,6 +35,17 @@ function proxyJolokiaAgent(req) {
     for (var header in res.headersOut) {
       req.headersOut[header] = res.headersOut[header];
     }
+
+    if (res.status === 401) {
+      /*
+       * If an unauthorized response is received from the jolokia agent
+       * then want to avoid browsers like Chrome displaying a popup authentication
+       * dialog (initiated by the 401 status & the 'www-authenticate' header) by
+       * dropping the 'www-authenticate' header
+       */
+      delete req.headersOut['www-authenticate'];
+    }
+
     req.return(res.status, res.responseBody);
   }
 
