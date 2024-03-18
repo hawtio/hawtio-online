@@ -2077,7 +2077,7 @@ __metadata:
     jquery: "npm:^3.7.0"
     jsonpath: "npm:^1.1.1"
     replace: "npm:^1.2.2"
-    superstruct: "npm:^1.0.3"
+    superstruct: "npm:^1.0.4"
     ts-jest: "npm:^29.1.2"
     ts-node: "npm:^10.9.2"
     tsup: "npm:^8.0.2"
