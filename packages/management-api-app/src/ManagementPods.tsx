@@ -17,7 +17,7 @@ type ManagedPodsProps = {
 
 const podDetailStyle = (pod: ManagedPod) => {
   return {
-    color: pod.management.status.error ? 'red' : 'blue',
+    color: pod.getManagement().status.error ? 'red' : 'blue',
     fontWeight: 'bold',
   }
 }
@@ -40,12 +40,12 @@ export const ManagementPods: React.FunctionComponent<ManagedPodsProps> = (props:
             </Thead>
             <Tbody>
               {props.pods.map(pod => (
-                <Tr key={pod.metadata?.uid}>
-                  <Td dataLabel='Name'>{pod.metadata?.name}</Td>
-                  <Td dataLabel='Namespace'>{pod.metadata?.namespace}</Td>
+                <Tr key={pod.getMetadata()?.uid}>
+                  <Td dataLabel='Name'>{pod.getMetadata()?.name}</Td>
+                  <Td dataLabel='Namespace'>{pod.getMetadata()?.namespace}</Td>
                   <Td dataLabel='Labels'>
                     <DescriptionList>
-                      {Object.entries(pod.metadata?.labels || {}).map(([key, value]) => {
+                      {Object.entries(pod.getMetadata()?.labels || {}).map(([key, value]) => {
                         return (
                           <DescriptionListGroup key={key}>
                             <DescriptionListTerm>{key}</DescriptionListTerm>
@@ -57,7 +57,7 @@ export const ManagementPods: React.FunctionComponent<ManagedPodsProps> = (props:
                   </Td>
                   <Td dataLabel='Annotations'>
                     <DescriptionList>
-                      {Object.entries(pod.metadata?.annotations || {}).map(([key, value]) => {
+                      {Object.entries(pod.getMetadata()?.annotations || {}).map(([key, value]) => {
                         return (
                           <DescriptionListGroup key={key}>
                             <DescriptionListTerm>{key}</DescriptionListTerm>
@@ -70,9 +70,9 @@ export const ManagementPods: React.FunctionComponent<ManagedPodsProps> = (props:
                   <Td dataLabel='Status'>{k8Service.podStatus(pod.pod)}</Td>
                   <Td dataLabel='Management'>
                     <div style={podDetailStyle(pod)}>
-                      <pre>{JSON.stringify(pod.management, null, 2)}</pre>
+                      <pre>{JSON.stringify(pod.getManagement(), null, 2)}</pre>
                     </div>
-                    {pod.management.status.error && (
+                    {pod.getManagement().status.error && (
                       <div>
                         <p>Jolokia connections are not succeeding. Possible reasons:</p>
                         <ol>

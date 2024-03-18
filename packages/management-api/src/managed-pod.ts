@@ -106,23 +106,23 @@ export class ManagedPod {
     return new Jolokia(options)
   }
 
-  get kind(): string | undefined {
+  getKind(): string | undefined {
     return this.pod.kind
   }
 
-  get metadata(): ObjectMeta | undefined {
+  getMetadata(): ObjectMeta | undefined {
     return this.pod.metadata
   }
 
-  get spec(): PodSpec | undefined {
+  getSpec(): PodSpec | undefined {
     return this.pod.spec
   }
 
-  get status(): PodStatus | undefined {
+  getStatus(): PodStatus | undefined {
     return this.pod.status
   }
 
-  get management(): Management {
+  getManagement(): Management {
     return this._management
   }
 
