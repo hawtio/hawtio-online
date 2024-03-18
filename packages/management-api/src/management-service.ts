@@ -109,20 +109,20 @@ export class ManagementService extends EventEmitter {
 
     for (const uid of Object.keys(this._pods)) {
       const mPod: ManagedPod = this._pods[uid]
-      const fingerprint = this.fingerprint(mPod.management)
+      const fingerprint = this.fingerprint(mPod.getManagement())
 
       // Flag that the pod is now under management
-      mPod.management.status.managed = true
+      mPod.getManagement().status.managed = true
 
       // Is the pod actually running at the moment
-      mPod.management.status.running = this.podStatus(mPod) === 'Running'
-      if (!mPod.management.status.running) {
+      mPod.getManagement().status.running = this.podStatus(mPod) === 'Running'
+      if (!mPod.getManagement().status.running) {
         /*
          * No point in trying to fire a jolokia request
          * against a non-running pod or a pod that cannot connect via jolokia
          * Emit an update but only if the status has in fact changed
          */
-        this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
+        this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.getManagement()) })
         continue
       }
 
@@ -131,9 +131,9 @@ export class ManagementService extends EventEmitter {
       if (mgmtError) {
         mPod.incrementErrorPollCount()
 
-        if (mPod.errorPolling.count < mPod.errorPolling.threshold) {
+        if (mPod.getErrorPolling().count < mPod.getErrorPolling().threshold) {
           // ignore this probing iteration as we have an error and not reach the polling threshold
-          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
+          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.getManagement()) })
           continue
         } else {
           // met the threshold so poll on this occasion but raise the threshold
@@ -147,21 +147,21 @@ export class ManagementService extends EventEmitter {
       try {
         const url = await mPod.probeJolokiaUrl()
         if (!url) {
-          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
+          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.getManagement()) })
         }
       } catch (error) {
         log.error(new Error(`Cannot access jolokia url at ${mPod.jolokiaPath}`, { cause: error }))
-        this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
+        this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.getManagement()) })
         continue
       }
 
       mPod.search(
         () => {
-          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
+          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.getManagement()) })
         },
         (error: Error) => {
           log.error(new Error(`Cannot access jolokia url at ${mPod.jolokiaPath}`, { cause: error }))
-          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.management) })
+          this.emitUpdate({ uid, fireUpdate: fingerprint !== this.fingerprint(mPod.getManagement()) })
         },
       )
     }
@@ -191,11 +191,11 @@ export class ManagementService extends EventEmitter {
     // Return results that match
     // https://github.com/openshift/origin/blob/master/vendor/k8s.io/kubernetes/pkg/printers/internalversion/printers.go#L523-L615
 
-    if (!pod || (!pod.metadata?.deletionTimestamp && !pod.status)) {
+    if (!pod || (!pod.getMetadata()?.deletionTimestamp && !pod.getStatus())) {
       return ''
     }
 
-    if (pod.metadata?.deletionTimestamp) {
+    if (pod.getMetadata()?.deletionTimestamp) {
       return 'Terminating'
     }
 
@@ -205,7 +205,7 @@ export class ManagementService extends EventEmitter {
     // Print detailed container reasons if available. Only the first will be
     // displayed if multiple containers have this detail.
 
-    const initContainerStatuses = pod.status?.initContainerStatuses || []
+    const initContainerStatuses = pod.getStatus()?.initContainerStatuses || []
     for (const initContainerStatus of initContainerStatuses) {
       const initContainerState = initContainerStatus['state']
       if (!initContainerState) continue
@@ -241,9 +241,9 @@ export class ManagementService extends EventEmitter {
     }
 
     if (!initializing) {
-      reason = pod.status?.reason || pod.status?.phase || ''
+      reason = pod.getStatus()?.reason || pod.getStatus()?.phase || ''
 
-      const containerStatuses = pod.status?.containerStatuses || []
+      const containerStatuses = pod.getStatus()?.containerStatuses || []
       for (const containerStatus of containerStatuses) {
         const containerReason = containerStatus.state?.waiting?.reason || containerStatus.state?.terminated?.reason
 
@@ -278,7 +278,7 @@ export class ManagementService extends EventEmitter {
   jolokiaContainers(pod: ManagedPod): Array<Container> {
     if (!pod) return []
 
-    const containers: Array<Container> = pod.spec?.containers || []
+    const containers: Array<Container> = pod.getSpec()?.containers || []
     return containers.filter(container => {
       return this.jolokiaContainerPort(container) !== null
     })
@@ -292,7 +292,7 @@ export class ManagementService extends EventEmitter {
   }
 
   private connectionKeyName(pod: ManagedPod, container: Container) {
-    return `${pod.metadata?.name}-${container.name}`
+    return `${pod.getMetadata()?.name}-${container.name}`
   }
 
   refreshConnections(pod: ManagedPod): string[] {

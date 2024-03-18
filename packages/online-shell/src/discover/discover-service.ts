@@ -11,11 +11,11 @@ export function unwrap(error: Error): string {
 }
 
 function applyFilter(filter: TypeFilter, pod: ManagedPod): boolean {
-  if (!pod.metadata) return false
+  if (!pod.getMetadata()) return false
 
-  type KubeObjKey = keyof typeof pod.metadata
+  type KubeObjKey = keyof typeof pod.getMetadata
 
-  const podProp = pod.metadata[filter.type.toLowerCase() as KubeObjKey] as string
+  const podProp = pod.getMetadata[filter.type.toLowerCase() as KubeObjKey] as string
 
   // Want to filter on this property but value
   // is null so filter fails
@@ -41,33 +41,34 @@ function toDiscoverGroup(
     type: DiscoverType.Group,
     name: owner.name,
     uid: owner.uid,
-    namespace: pod.metadata?.namespace || '<unknown>',
+    namespace: pod.getMetadata()?.namespace || '<unknown>',
     replicas: discoverReplicas || [],
     expanded: expanded,
-    config: recordValue(pod.metadata?.annotations, 'openshift.io/deployment-config.name'),
-    version: recordValue(pod.metadata?.annotations, 'openshift.io/deployment-config.latest-version'),
-    statefulset: recordValue(pod.metadata?.labels, 'statefulset.kubernetes.io/pod-name'),
+    config: recordValue(pod.getMetadata()?.annotations, 'openshift.io/deployment-config.name'),
+    version: recordValue(pod.getMetadata()?.annotations, 'openshift.io/deployment-config.latest-version'),
+    statefulset: recordValue(pod.getMetadata()?.labels, 'statefulset.kubernetes.io/pod-name'),
   }
 }
 
 function createDiscoverPod(pod: ManagedPod): DiscoverPod {
   return {
     type: DiscoverType.Pod,
-    name: pod.metadata?.name || '<unknown>',
-    uid: pod.metadata?.uid || '<unknown>',
-    namespace: pod.metadata?.namespace || '<unknown>',
-    labels: pod.metadata?.labels || {},
-    annotations: pod.metadata?.annotations || {},
+    name: pod.getMetadata()?.name || '<unknown>',
+    uid: pod.getMetadata()?.uid || '<unknown>',
+    namespace: pod.getMetadata()?.namespace || '<unknown>',
+    labels: pod.getMetadata()?.labels || {},
+    annotations: pod.getMetadata()?.annotations || {},
     mPod: pod,
   }
 }
 
 function podOwner(pod: ManagedPod): OwnerReference | null {
-  if (!pod.metadata || !pod.metadata?.ownerReferences) return null
+  const metadata = pod.getMetadata()
+  if (!metadata || !metadata.ownerReferences) return null
 
-  if (pod.metadata.ownerReferences.length === 0) return null
+  if (metadata.ownerReferences.length === 0) return null
 
-  return pod.metadata.ownerReferences[0]
+  return metadata.ownerReferences[0]
 }
 
 function podsWithOwner(remainingPods: ManagedPod[], ownerRef: OwnerReference): ManagedPod[] {
@@ -106,7 +107,7 @@ function groupPodsByDeployment(
 
     const theExDiscoverGroups = exDiscoverGroups.filter(group => {
       return (
-        group.uid === pod.metadata?.uid && group.namespace === pod.metadata.namespace && group.name === ownerRef?.name
+        group.uid === pod.getMetadata()?.uid && group.namespace === pod.getMetadata()?.namespace && group.name === ownerRef?.name
       )
     })
 
