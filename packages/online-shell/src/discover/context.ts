@@ -25,6 +25,12 @@ export function useDisplayItems() {
     const [newDiscoverGroups, newDiscoverPods] = filterAndGroupPods(filters, [...discoverGroups])
     setDiscoverGroups([...newDiscoverGroups])
     setDiscoverPods([...newDiscoverPods])
+
+    newDiscoverGroups.flatMap(discoverGroup =>
+      discoverGroup.replicas.map(discoverPod => discoverPod.mPod.errorNotify()),
+    )
+
+    newDiscoverPods.map(discoverPod => discoverPod.mPod.errorNotify())
   }
 
   useEffect(() => {

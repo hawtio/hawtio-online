@@ -8,6 +8,7 @@ import { log } from './globals'
 import jsonpath from 'jsonpath'
 import { k8Api, KubePod, k8Service, ObjectMeta, PodStatus, joinPaths, PodSpec } from '@hawtio/online-kubernetes-api'
 import { ParseResult, isJolokiaVersionResponseType, jolokiaResponseParse } from './jolokia-response-utils'
+import { eventService } from '@hawtio/react'
 
 const DEFAULT_JOLOKIA_OPTIONS: BaseRequestOptions = {
   method: 'post',
@@ -210,5 +211,14 @@ export class ManagedPod {
         failCb(this.getManagementError() as Error)
       },
     })
+  }
+
+  errorNotify() {
+    const name = this.getMetadata()?.name || '<unknown>'
+    const mgmtError = this.getManagementError()
+    if (mgmtError) {
+      const msg = `${name}: ${mgmtError.message}`
+      eventService.notify({ type: 'danger', message: msg })
+    }
   }
 }
