@@ -1,8 +1,13 @@
-import Jolokia, { BaseRequestOptions } from 'jolokia.js'
+import Jolokia, {
+  BaseRequestOptions,
+  Response as JolokiaResponse,
+  VersionResponse as JolokiaVersionResponse,
+} from 'jolokia.js'
 import $ from 'jquery'
 import { log } from './globals'
 import jsonpath from 'jsonpath'
 import { k8Api, KubePod, k8Service, ObjectMeta, PodStatus, joinPaths, PodSpec } from '@hawtio/online-kubernetes-api'
+import { ParseResult, isJolokiaVersionResponseType, jolokiaResponseParse } from './jolokia-response-utils'
 
 const DEFAULT_JOLOKIA_OPTIONS: BaseRequestOptions = {
   method: 'post',
@@ -167,33 +172,21 @@ export class ManagedPod {
             return
           }
 
-          let jsonResponse
-          try {
-            jsonResponse = JSON.parse(data)
-          } catch (e) {
-            let msg
-            if (e instanceof Error) msg = e.message
-            else msg = String(e)
-
-            this.setManagementError(500, msg)
+          const result: ParseResult<JolokiaResponse> = jolokiaResponseParse(data)
+          if (result.hasError) {
+            this.setManagementError(500, result.error)
             reject(this.getManagementError())
             return
           }
 
-          if (!jsonResponse || 'error' in jsonResponse) {
-            this.setManagementError(500, jsonResponse.error)
-            reject(this.getManagementError())
-            return
-          }
-
-          if ('value' in jsonResponse && 'agent' in jsonResponse.value) {
-            log.debug('Found jolokia agent at:', this.jolokiaPath, 'version:', jsonResponse.value.agent)
+          const jsonResponse: JolokiaResponse = result.parsed
+          if (isJolokiaVersionResponseType(jsonResponse.value)) {
+            const versionResponse = jsonResponse.value as JolokiaVersionResponse
+            log.debug('Found jolokia agent at:', this.jolokiaPath, 'details:', versionResponse.agent)
             resolve(this.jolokiaPath)
-            return
           } else {
             this.setManagementError(500, 'Detected jolokia but cannot determine agent or version')
             reject(this.getManagementError())
-            return
           }
         })
         .fail((xhr: JQueryXHR, _: string, error: string) => {
