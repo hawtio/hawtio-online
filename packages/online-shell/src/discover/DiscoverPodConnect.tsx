@@ -4,8 +4,8 @@ import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
-  ExpandableSection,
-  ExpandableSectionVariant,
+  NotificationBadge,
+  NotificationBadgeVariant,
 } from '@patternfly/react-core'
 import { mgmtService } from '@hawtio/online-management-api'
 import { DiscoverPod } from './globals'
@@ -21,12 +21,7 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
   const connectionNames: string[] = mgmtService.refreshConnections(props.pod.mPod)
   const mgmtError = props.pod.mPod?.getManagementError()
 
-  const [isErrorExpanded, setIsErrorExpanded] = React.useState(false)
   const [isOpen, setIsOpen] = React.useState(false)
-
-  const onErrorToggle = (isExpanded: boolean) => {
-    setIsErrorExpanded(isExpanded)
-  }
 
   const onConnectToggle = (isOpen: boolean) => {
     setIsOpen(isOpen)
@@ -52,6 +47,15 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
 
   return (
     <React.Fragment>
+      {mgmtError && (
+        <NotificationBadge
+          variant={NotificationBadgeVariant.attention}
+          onClick={() => props.pod.mPod.errorNotify()}
+          aria-label='Display Connect Error'
+          className='pod-item-connect-error-badge'
+        />
+      )}
+
       {connectionNames.length <= 1 && (
         <Button
           variant='primary'
@@ -86,19 +90,6 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
             )
           })}
         />
-      )}
-
-      {mgmtError && (
-        <div className='pod-item-connect-error-Label'>
-          <ExpandableSection
-            variant={ExpandableSectionVariant.truncate}
-            toggleText={isErrorExpanded ? 'Show less' : 'Show more'}
-            onToggle={onErrorToggle}
-            isExpanded={isErrorExpanded}
-          >
-            {String(mgmtError)}
-          </ExpandableSection>
-        </div>
       )}
     </React.Fragment>
   )

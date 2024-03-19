@@ -107,7 +107,9 @@ function groupPodsByDeployment(
 
     const theExDiscoverGroups = exDiscoverGroups.filter(group => {
       return (
-        group.uid === pod.getMetadata()?.uid && group.namespace === pod.getMetadata()?.namespace && group.name === ownerRef?.name
+        group.uid === pod.getMetadata()?.uid &&
+        group.namespace === pod.getMetadata()?.namespace &&
+        group.name === ownerRef?.name
       )
     })
 
