@@ -58,6 +58,9 @@
 }
 
 .pod-item-connect-button {
+  flex-basis: 15%;
+  display: flex;
+  justify-content: flex-end;
   max-height: 2em;
   margin-top: auto;
   margin-bottom: auto;
