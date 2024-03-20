@@ -64,6 +64,8 @@ export class ManagedPod {
     threshold: 1,
   }
 
+  private _fingerprint = 1234
+
   constructor(public pod: KubePod) {
     this.jolokiaPort = this.extractPort(pod)
     this.jolokiaPath = ManagedPod.getJolokiaPath(pod, this.jolokiaPort) || ''
@@ -157,6 +159,29 @@ export class ManagedPod {
 
   incrementErrorPollThreshold() {
     this._errorPolling.threshold = this._errorPolling.threshold * 2
+  }
+
+  private hash(s: string): number {
+    return Array.from(s).reduce((a, b) => {
+      a = (a << 5) - a + b.charCodeAt(0)
+      return a & a
+    }, 0)
+  }
+
+  /**
+   * Re-calculate the fingerprint and update
+   * Returns the new fingerprint
+   */
+  private calcFingerprint(): number {
+    const s = JSON.stringify({ management: this.getManagement(), data: this.pod })
+
+    /* Save the fingerprint for the next update iteration */
+    this._fingerprint = this.hash(s)
+    return this._fingerprint
+  }
+
+  hasChanged(): boolean {
+    return this._fingerprint !== this.calcFingerprint()
   }
 
   async probeJolokiaUrl(): Promise<string> {
