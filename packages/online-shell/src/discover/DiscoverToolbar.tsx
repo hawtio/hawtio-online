@@ -16,7 +16,6 @@ import {
 import { LongArrowAltUpIcon, LongArrowAltDownIcon } from '@patternfly/react-icons'
 import { DiscoverContext } from './context'
 import { DiscoverItem, TypeFilter } from './globals'
-import { filterAndGroupPods } from './discover-service'
 
 const defaultFilterInputPlaceholder = 'Filter by Name...'
 const headers = ['Name', 'Namespace']
@@ -57,10 +56,6 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
     const emptyFilters: TypeFilter[] = []
     setFilters(emptyFilters)
     setFilterInput('')
-
-    const [newDiscoverGroups, newDiscoverPods] = filterAndGroupPods(emptyFilters, [...discoverGroups])
-    setDiscoverGroups(newDiscoverGroups)
-    setDiscoverPods(newDiscoverPods)
   }
 
   const onSelectFilterType = (
@@ -103,10 +98,6 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
 
     const newFilters = filters.concat(filter)
     setFilters(newFilters)
-
-    const [newDiscoverGroups, newDiscoverPods] = filterAndGroupPods(newFilters, [...discoverGroups])
-    setDiscoverGroups(newDiscoverGroups)
-    setDiscoverPods(newDiscoverPods)
   }
 
   const deleteFilter = (filterChip: string) => {
@@ -115,10 +106,6 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
     })
 
     setFilters(remaining)
-
-    const [newDiscoverGroups, newDiscoverPods] = filterAndGroupPods(remaining, [...discoverGroups])
-    setDiscoverGroups(newDiscoverGroups)
-    setDiscoverPods(newDiscoverPods)
   }
 
   const onSelectSortType = (

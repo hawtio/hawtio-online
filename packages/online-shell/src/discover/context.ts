@@ -1,6 +1,6 @@
-import { createContext, useEffect, useRef, useState } from 'react'
+import { createContext, useCallback, useEffect, useRef, useState } from 'react'
 import { MgmtActions, isMgmtApiRegistered, mgmtService } from '@hawtio/online-management-api'
-import { filterAndGroupPods } from './discover-service'
+import { discoverService } from './discover-service'
 import { DiscoverGroup, DiscoverPod, TypeFilter } from './globals'
 
 type UpdateListener = () => void
@@ -11,6 +11,7 @@ type UpdateListener = () => void
 export function useDisplayItems() {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const updateListenerRef = useRef<UpdateListener>()
+
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>()
   const [discoverGroups, setDiscoverGroups] = useState<DiscoverGroup[]>([])
@@ -19,18 +20,13 @@ export function useDisplayItems() {
   // Set of filters created by filter control and displayed as chips
   const [filters, setFilters] = useState<TypeFilter[]>([])
 
-  const organisePods = (discoverGroups: DiscoverGroup[], filters: TypeFilter[]) => {
-    const [newDiscoverGroups, newDiscoverPods] = filterAndGroupPods(filters, [...discoverGroups])
-    setDiscoverGroups([...newDiscoverGroups])
-    setDiscoverPods([...newDiscoverPods])
+  const organisePods = useCallback(() => {
+    const [discoverGroups, discoverPods] = discoverService.filterAndGroupPods(filters)
+    setDiscoverGroups([...discoverGroups])
+    setDiscoverPods([...discoverPods])
 
-    newDiscoverGroups.flatMap(discoverGroup =>
-      discoverGroup.replicas.map(discoverPod => discoverPod.mPod.errorNotify()),
-    )
-
-    newDiscoverPods.map(discoverPod => discoverPod.mPod.errorNotify())
     setIsLoading(false)
-  }
+  }, [filters])
 
   useEffect(() => {
     const waitLoading = async () => {
@@ -42,14 +38,14 @@ export function useDisplayItems() {
       }
 
       /*
-      * First pass:
-      *  - mgmtService already has fully initialized pods
-      *  - pods partially updated and waiting to complete data from an update
-      */
-      organisePods(discoverGroups, filters)
+       * First pass:
+       *  - mgmtService already has fully initialized pods
+       *  - pods partially updated and waiting to complete data from an update
+       */
+      organisePods()
 
       const updateListener = () => {
-        organisePods(discoverGroups, filters)
+        organisePods()
       }
 
       mgmtService.on(MgmtActions.UPDATED, updateListener)
@@ -63,7 +59,7 @@ export function useDisplayItems() {
 
       if (updateListenerRef.current) mgmtService.off(MgmtActions.UPDATED, updateListenerRef.current)
     }
-  }, []) // One time set-up on mounting
+  }, [organisePods])
 
   return { error, isLoading, discoverGroups, setDiscoverGroups, discoverPods, setDiscoverPods, filters, setFilters }
 }

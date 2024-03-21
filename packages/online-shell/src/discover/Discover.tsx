@@ -17,7 +17,7 @@ import {
 } from '@patternfly/react-core'
 import { CubesIcon } from '@patternfly/react-icons'
 import { HawtioLoadingCard } from '@hawtio/react'
-import * as discoverService from './discover-service'
+import { discoverService } from './discover-service'
 import { DiscoverToolbar } from './DiscoverToolbar'
 import { DiscoverContext, useDisplayItems } from './context'
 import { DiscoverGroupList } from './DiscoverGroupList'
