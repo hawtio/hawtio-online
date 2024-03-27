@@ -1,4 +1,4 @@
-import { PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
+import { hawtio, PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
 import $ from 'jquery'
 import { OAuthProtoService } from '../api'
@@ -283,14 +283,15 @@ export class OSOAuthService implements OAuthProtoService {
   private doLogout(config: OpenShiftOAuthConfig): void {
     this.fetchUnregister?.()
 
-    const currentURI = new URL(window.location.href)
+    const currentURL = new URL(`${window.location.origin}/${hawtio.getBasePath() || ''}`)
+
     // The following request returns 403 when delegated authentication with an
     // OAuthClient is used, as possible scopes do not grant permissions to access the OAuth API:
     // See https://github.com/openshift/origin/issues/7011
     //
     // So little point in trying to delete the token. Lets do in client-side only
     //
-    forceRelogin(currentURI, config)
+    forceRelogin(currentURL, config)
   }
 
   isLoggedIn(): Promise<boolean> {
