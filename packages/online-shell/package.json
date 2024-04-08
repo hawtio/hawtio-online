@@ -42,7 +42,7 @@
     "@patternfly/react-table": "^4.113.7",
     "@patternfly/react-tokens": "^4.94.6",
     "@types/node": "^18.19.28",
-    "@types/react": "^18.2.73",
+    "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.23",
     "jquery-match-height": "^0.7.2",
     "jsonpath": "^1.1.1",
