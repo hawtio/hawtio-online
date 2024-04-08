@@ -1954,7 +1954,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api-app@workspace:packages/kubernetes-api-app"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^1.2.0"
+    "@hawtio/react": "npm:^1.2.1"
     "@patternfly/react-core": "npm:^4.278.1"
     "@patternfly/react-styles": "npm:^4.92.6"
     "@patternfly/react-table": "npm:^4.113.7"
@@ -1991,7 +1991,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api@workspace:packages/kubernetes-api"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.2.0"
+    "@hawtio/react": "npm:^1.2.1"
     "@testing-library/jest-dom": "npm:^6.4.2"
     "@types/jest": "npm:^29.5.12"
     "@types/jquery": "npm:^3.5.29"
@@ -2024,7 +2024,7 @@ __metadata:
   resolution: "@hawtio/online-management-api-app@workspace:packages/management-api-app"
   dependencies:
     "@hawtio/online-management-api": "workspace:*"
-    "@hawtio/react": "npm:^1.2.0"
+    "@hawtio/react": "npm:^1.2.1"
     "@patternfly/react-core": "npm:^4.278.1"
     "@patternfly/react-styles": "npm:^4.92.6"
     "@patternfly/react-table": "npm:^4.113.7"
@@ -2061,7 +2061,7 @@ __metadata:
   resolution: "@hawtio/online-management-api@workspace:packages/management-api"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^1.2.0"
+    "@hawtio/react": "npm:^1.2.1"
     "@types/jest": "npm:^29.5.12"
     "@types/jquery": "npm:^3.5.29"
     "@types/jsonpath": "npm:^0.2.4"
@@ -2093,7 +2093,7 @@ __metadata:
   resolution: "@hawtio/online-oauth-app@workspace:packages/oauth-app"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.2.0"
+    "@hawtio/react": "npm:^1.2.1"
     "@patternfly/react-core": "npm:^4.278.1"
     "@patternfly/react-styles": "npm:^4.92.6"
     "@patternfly/react-table": "npm:^4.113.7"
@@ -2131,7 +2131,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hawtio/online-oauth@workspace:packages/oauth"
   dependencies:
-    "@hawtio/react": "npm:^1.2.0"
+    "@hawtio/react": "npm:^1.2.1"
     "@thumbmarkjs/thumbmarkjs": "npm:^0.14.6"
     "@types/jest": "npm:^29.5.12"
     "@types/jquery": "npm:^3.5.29"
@@ -2183,7 +2183,7 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.2.0"
+    "@hawtio/react": "npm:^1.2.1"
     "@patternfly/react-core": "npm:^4.278.1"
     "@patternfly/react-styles": "npm:^4.92.6"
     "@patternfly/react-table": "npm:^4.113.7"
@@ -2227,9 +2227,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@hawtio/react@npm:1.2.0"
+"@hawtio/react@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "@hawtio/react@npm:1.2.1"
   dependencies:
     "@hawtio/camel-model-v4_0": "npm:@hawtio/camel-model@~4.0.4"
     "@hawtio/camel-model-v4_4": "npm:@hawtio/camel-model@~4.4.0"
@@ -2246,9 +2246,9 @@ __metadata:
     "@types/dagre-layout": "npm:^0.8.5"
     "@types/jest": "npm:^29.5.12"
     "@types/jquery": "npm:^3.5.29"
-    "@types/node": "npm:^18.19.26"
+    "@types/node": "npm:^18.19.28"
     "@types/react": "npm:^18.2.23"
-    "@types/react-dom": "npm:^18.2.22"
+    "@types/react-dom": "npm:^18.2.23"
     "@types/react-router-dom": "npm:^5.3.3"
     dagre: "npm:^0.8.5"
     eventemitter3: "npm:^5.0.1"
@@ -2258,7 +2258,7 @@ __metadata:
     jwt-decode: "npm:^4.0.0"
     keycloak-js: "npm:^23.0.7"
     monaco-editor: "npm:^0.47.0"
-    oauth4webapi: "npm:^2.10.3"
+    oauth4webapi: "npm:^2.10.4"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-markdown: "npm:^8.0.7"
@@ -2277,7 +2277,7 @@ __metadata:
   peerDependenciesMeta:
     keycloak-js:
       optional: true
-  checksum: 10/fbd243523c2d938f6a9f2e2416e24c3aa5b9405bdcddda6211c7c155d815ee729563e05216ca54cdad8a5bf7329db29b53142b7e1733914cd56b741b43e928a4
+  checksum: 10/2a888e22f81c23a630a85a0af754b52f80ebf7778df3cb8ce25cec8a94c1ea9791aa68031d89f0542820943a0993c3728844cb656af2914119be0ba5a81fb0b8
   languageName: node
   linkType: hard
 
@@ -3829,7 +3829,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.19.26, @types/node@npm:^18.19.28":
+"@types/node@npm:^18.19.28":
   version: 18.19.28
   resolution: "@types/node@npm:18.19.28"
   dependencies:
@@ -3875,7 +3875,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.2.22, @types/react-dom@npm:^18.2.23":
+"@types/react-dom@npm:^18.2.23":
   version: 18.2.23
   resolution: "@types/react-dom@npm:18.2.23"
   dependencies:
@@ -11484,10 +11484,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oauth4webapi@npm:^2.10.3":
-  version: 2.10.3
-  resolution: "oauth4webapi@npm:2.10.3"
-  checksum: 10/5914a7c8234084275771e2e24337becee1350042c94815bec28134e6572df5f926e47f8a31ae4a22a213203bb68585e9712ba3386b5de61516487f241fe1979b
+"oauth4webapi@npm:^2.10.4":
+  version: 2.10.4
+  resolution: "oauth4webapi@npm:2.10.4"
+  checksum: 10/49f870ddd6f0a28bba486886455c2c0e65fd06178e3f7113bfb85b44b1f82a777c23b2753a0ec8e05ddaf5a7daacad3960073d5dcc67bfec8ecdb985bdbc3257
   languageName: node
   linkType: hard
 
