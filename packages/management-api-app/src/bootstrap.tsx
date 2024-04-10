@@ -6,6 +6,7 @@ import { reportWebVitals } from './reportWebVitals'
 import { Management } from './Management'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthLoginPage } from './login'
+import { onlineOAuth } from '@hawtio/online-oauth'
 
 // To be removed post-development / pre-production
 Logger.setLevel(Logger.DEBUG)
@@ -16,6 +17,10 @@ const configure = () => {
   configManager.addProductInfo('Management API Test App', '1.0.0')
 }
 configure()
+
+// Load OpenShift OAuth plugin first
+onlineOAuth()
+
 isMgmtApiRegistered().then(() => {
   // Bootstrap Hawtio
   hawtio.bootstrap()

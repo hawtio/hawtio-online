@@ -1,5 +1,5 @@
 import { configManager, hawtio, Logger } from '@hawtio/react'
-import { log, oAuthInit } from '@hawtio/online-oauth'
+import { log, onlineOAuth } from '@hawtio/online-oauth'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { reportWebVitals } from './reportWebVitals'
@@ -15,7 +15,8 @@ const configure = () => {
 }
 configure()
 
-oAuthInit()
+// Load OpenShift OAuth plugin first
+onlineOAuth()
 
 // Bootstrap Hawtio
 hawtio.bootstrap()

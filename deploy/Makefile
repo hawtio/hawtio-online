@@ -274,7 +274,7 @@ endif
 #** CLUSTER_TYPE:   Set the cluster type to install on [ openshift | k8s ]
 #** MODE:           Set the mode of installation [ cluster | namespace ]
 #** NAMESPACE:      Set the namespace to uninstall the resources from
-#** UNINSTALL_ALL:  Uninstall all Camel K resources including crds and cluster roles installed by setup-cluster [true|false]
+#** UNINSTALL_ALL:  Uninstall all resources including crds and cluster roles installed by setup-cluster [true|false]
 #** DRY_RUN:        Print the resources to be applied instead of applying them [true|false]
 #
 #---

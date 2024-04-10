@@ -76,7 +76,7 @@ export interface WSHandler<T extends KubeObject> {
   connect(): void
   send(data: string | KubeObject): void
   onOpen(event: Event): void
-  onMessage(event: MessageEvent): void
+  onMessage(event: MessageEvent | { data: string }): void
   onError(event: Event): void
   shouldClose(event: Event): boolean
   onClose(event: CloseEvent): void
