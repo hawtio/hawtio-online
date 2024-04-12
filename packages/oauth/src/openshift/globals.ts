@@ -22,10 +22,3 @@ export interface TokenMetadata {
   expires_in?: number
   obtainedAt?: number
 }
-
-export type User = {
-  username: string
-  isLogin: boolean
-}
-
-export type ResolveUser = (user: User) => void

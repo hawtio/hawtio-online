@@ -29,17 +29,16 @@
   },
   "dependencies": {
     "@hawtio/online-oauth": "workspace:*",
-    "@hawtio/react": "^1.1.0",
+    "@hawtio/react": "^1.2.0",
     "@types/jquery": "^3.5.29",
     "@types/jsonpath": "^0.2.4",
-    "@types/node": "^18.19.22",
+    "@types/node": "^18.19.28",
     "eventemitter3": "^5.0.1",
     "jquery": "^3.7.0",
-    "js-logger": "^1.6.1",
     "jsonpath": "^1.1.1",
     "kubernetes-types": "^1.26.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",

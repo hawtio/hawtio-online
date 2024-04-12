@@ -50,7 +50,7 @@ export class ObjectPoller<T extends KubeObject> {
                 object: item,
               }),
             }
-            this.handler.onmessage(event)
+            this.handler.onMessage(event)
           })
         }
 

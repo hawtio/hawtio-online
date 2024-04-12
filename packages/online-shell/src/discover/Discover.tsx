@@ -17,7 +17,7 @@ import {
 } from '@patternfly/react-core'
 import { CubesIcon } from '@patternfly/react-icons'
 import { HawtioLoadingCard } from '@hawtio/react'
-import * as discoverService from './discover-service'
+import { discoverService } from './discover-service'
 import { DiscoverToolbar } from './DiscoverToolbar'
 import { DiscoverContext, useDisplayItems } from './context'
 import { DiscoverGroupList } from './DiscoverGroupList'
@@ -56,25 +56,9 @@ export const Discover: React.FunctionComponent = () => {
     )
   }
 
-  if (discoverGroups.length + discoverPods.length === 0) {
-    return (
-      <PageSection variant={PageSectionVariants.light}>
-        <EmptyState>
-          <EmptyStateIcon icon={CubesIcon} />
-          <Title headingLevel='h1' size='lg'>
-            No Hawtio Containers
-          </Title>
-          <EmptyStateBody>
-            There are no containers running with a port configured whose name is <code>jolokia</code>.
-          </EmptyStateBody>
-        </EmptyState>
-      </PageSection>
-    )
-  }
-
   return (
     <PageSection variant={PageSectionVariants.light}>
-      <Title headingLevel='h1'>Pods</Title>
+      <Title headingLevel='h1'>Hawtio Containers</Title>
 
       <DiscoverContext.Provider
         value={{
@@ -87,6 +71,18 @@ export const Discover: React.FunctionComponent = () => {
         }}
       >
         <DiscoverToolbar />
+
+        {discoverGroups.length + discoverPods.length === 0 && (
+          <EmptyState>
+            <EmptyStateIcon icon={CubesIcon} />
+            <Title headingLevel='h1' size='lg'>
+              No Hawtio Containers
+            </Title>
+            <EmptyStateBody>
+              There are no containers running with a port configured whose name is <code>jolokia</code>.
+            </EmptyStateBody>
+          </EmptyState>
+        )}
 
         {discoverGroups.length > 0 && <DiscoverGroupList />}
 

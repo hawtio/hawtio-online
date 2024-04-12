@@ -1,6 +1,6 @@
 import { decrypt, encrypt, generateKey, toBase64, toByteArray } from './crypto'
 
-const SESSION_KEY_SALT = 'online.encrypt.salt'
+const SESSION_KEY_SALT = 'online.oauth.salt'
 
 export async function secureStore(storageKey: string, storageValue: string) {
   //

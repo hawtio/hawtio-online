@@ -17,24 +17,24 @@ interface DiscoverPodItemProps {
 
 export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (props: DiscoverPodItemProps) => {
   const nodeLabel = (): ReactNode => {
-    if (props.pod.mPod.spec?.nodeName) {
+    if (props.pod.mPod.getSpec()?.nodeName) {
       return (
-        <ConsoleLink type={ConsoleType.node} selector={props.pod.mPod.spec?.nodeName}>
-          {props.pod.mPod.spec?.nodeName}
+        <ConsoleLink type={ConsoleType.node} selector={props.pod.mPod.getSpec()?.nodeName}>
+          {props.pod.mPod.getSpec()?.nodeName}
         </ConsoleLink>
       )
     }
 
-    return props.pod.mPod.status?.hostIP
+    return props.pod.mPod.getStatus()?.hostIP
   }
 
   const containersLabel = (): ReactNode => {
-    const total = props.pod.mPod.spec?.containers.length || 0
+    const total = props.pod.mPod.getSpec()?.containers.length || 0
     return `${total} container${total !== 1 ? 's' : ''}`
   }
 
   const routesLabel = (): ReactNode => {
-    if (!props.pod.mPod.management.status.managed) {
+    if (!props.pod.mPod.getManagement().status.managed) {
       return (
         <Label color='grey' icon={<FontAwesomeIcon icon={faSpinner} spin />} className='pod-item-routes'>
           {`querying routes ...`}
@@ -42,7 +42,16 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
       )
     }
 
-    const total = props.pod.mPod.management.camel.routes_count
+    const error = props.pod.mPod.getManagement().status.error
+    if (error) {
+      return (
+        <Label color='red' icon={<CamelRouteIcon />} className='pod-item-routes'>
+          {`?? routes`}
+        </Label>
+      )
+    }
+
+    const total = props.pod.mPod.getManagement().camel.routes_count
     return (
       <Label color='gold' icon={<CamelRouteIcon />} className='pod-item-routes'>
         {`${total} route${total !== 1 ? 's' : ''}`}

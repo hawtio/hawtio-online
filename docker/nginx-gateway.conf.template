@@ -16,7 +16,6 @@ map $http_upgrade $connection_upgrade {
     ''      close;
 }
 
-
 server {
     listen              8443 ssl;
     server_name         localhost;
@@ -24,6 +23,7 @@ server {
     ssl_certificate_key /etc/tls/private/serving/tls.key;
     absolute_redirect   off;
     gzip                on;
+    gzip_types text/plain application/javascript text/javascript;
     root                /usr/share/nginx/html/;
 
     # Limit the keepalive of connections (60s default)
@@ -47,6 +47,9 @@ server {
     # Prevent click jacking attacks
     add_header X-Frame-Options "SAMEORIGIN";
 
+    # Ensure only https is used for this server
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
     # Only accept newer ssl protocols
     ssl_protocols TLSv1.2 TLSv1.3;
 
@@ -69,21 +72,51 @@ server {
           return 200 "Acknowledge logout but nothing further to do";
         }
 
-        add_header Clear-Site-Data "\"*\"";
+        # Do not specify "storage" as local storage contains persistent data such as
+        # preferences and connections but without credentials.
+        add_header Clear-Site-Data "\"cache\", \"cookies\"";
         add_header Cache-Control "no-store";
+
+        # Prevent click jacking attacks
+        # Note: must be re-declared since other headers have been added
+        add_header X-Frame-Options "SAMEORIGIN";
+
+        # Ensure only https is used for this server
+        # Note: must be re-declared since other headers have been added
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
         return 307 $decodeRedirectUri;
     }
 
     # Static content serving
     location /online {
         add_header location-rule ONLINE always;
+
+        # Prevent click jacking attacks
+        # Note: must be re-declared since other headers have been added
+        add_header X-Frame-Options "SAMEORIGIN";
+
+        # Ensure only https is used for this server
+        # Note: must be re-declared since other headers have been added
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
         alias     /usr/share/nginx/html/online;
         try_files $uri$args $uri /online/index.html;
+        gzip_static on;
     }
 
     # Kubernetes master API reverse proxying
     location /master {
         add_header                    location-rule MASTER always;
+
+        # Prevent click jacking attacks
+        # Note: must be re-declared since other headers have been added
+        add_header X-Frame-Options "SAMEORIGIN";
+
+        # Ensure only https is used for this server
+        # Note: must be re-declared since other headers have been added
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
         proxy_pass                    https://kubernetes.default/;
         rewrite                       /master/(.*) /$1 break;
         proxy_pass_request_headers    on;
@@ -99,6 +132,15 @@ server {
 
     location /management {
         add_header                    location-rule MANAGEMENT always;
+
+        # Prevent click jacking attacks
+        # Note: must be re-declared since other headers have been added
+        add_header X-Frame-Options "SAMEORIGIN";
+
+        # Ensure only https is used for this server
+        # Note: must be re-declared since other headers have been added
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
         js_content                    gateway.proxyJolokiaAgent;
     }
 
@@ -143,6 +185,7 @@ server {
     # Pod details requests cache
     location /podIP {
         add_header location-rule POD_IP always;
+
         internal;
         proxy_pass                    https://kubernetes.default/;
         rewrite                       /podIP/(.+)/(.+) /api/v1/namespaces/$1/pods/$2 break;
@@ -161,9 +204,9 @@ server {
         internal;
         proxy_pass                $1://$2:$3/$4$is_args$args;
         proxy_ssl_verify          off;
-        proxy_ssl_certificate     /etc/tls/private/proxying/tls.crt;
-        proxy_ssl_certificate_key /etc/tls/private/proxying/tls.key;
         proxy_ssl_session_reuse   on;
+        ${PROXY_SSL_CERTIFICATE}
+        ${PROXY_SSL_KEY}
         # Do not foward authorization header
         proxy_set_header          Authorization "";
     }
@@ -177,6 +220,15 @@ server {
 
     location @console_redirect {
         add_header Location $upstream_http_location always;
+
+        # Prevent click jacking attacks
+        # Note: must be re-declared since other headers have been added
+        add_header X-Frame-Options "SAMEORIGIN";
+
+        # Ensure only https is used for this server
+        # Note: must be re-declared since other headers have been added
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
         return 200;
     }
 }

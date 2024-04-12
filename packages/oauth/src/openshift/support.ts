@@ -2,7 +2,7 @@ import { log, UserProfile } from '../globals'
 import { logoutRedirect, redirect, relToAbsUrl, secureDispose, secureRetrieve, secureStore } from '../utils'
 import { EXPIRES_IN_KEY, OBTAINED_AT_KEY, OpenShiftOAuthConfig, TokenMetadata } from './globals'
 
-const OS_TOKEN_STORAGE_KEY = 'osAuthCreds'
+const OS_TOKEN_STORAGE_KEY = 'online.oauth.openshift.credentials'
 
 export function currentTimeSeconds(): number {
   return Math.floor(new Date().getTime() / 1000)

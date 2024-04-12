@@ -58,9 +58,23 @@
 }
 
 .pod-item-connect-button {
+  flex-basis: 15%;
+  display: flex;
+  justify-content: flex-end;
   max-height: 2em;
   margin-top: auto;
   margin-bottom: auto;
+}
+
+.pod-item-connect-error-badge {
+  margin-right: 0.2em;
+}
+
+.pod-item-connect-error-badge span {
+  width: 1.5em;
+  height: 1.6em;
+  padding-left: 0.25em;
+  padding-top: 0.1em;
 }
 
 .state-icon {

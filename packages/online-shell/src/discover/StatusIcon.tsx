@@ -10,7 +10,7 @@ import {
   faTimes,
   faQuestion,
 } from '@fortawesome/free-solid-svg-icons'
-import * as discoverService from './discover-service'
+import { discoverService } from './discover-service'
 import { DiscoverPod } from './globals'
 import './Discover.css'
 

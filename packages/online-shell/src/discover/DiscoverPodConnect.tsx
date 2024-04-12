@@ -1,5 +1,12 @@
 import React from 'react'
-import { Button, Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+  NotificationBadge,
+  NotificationBadgeVariant,
+} from '@patternfly/react-core'
 import { mgmtService } from '@hawtio/online-management-api'
 import { DiscoverPod } from './globals'
 import './Discover.css'
@@ -12,10 +19,11 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
   props: DiscoverPodConnectProps,
 ) => {
   const connectionNames: string[] = mgmtService.refreshConnections(props.pod.mPod)
+  const mgmtError = props.pod.mPod?.getManagementError()
 
   const [isOpen, setIsOpen] = React.useState(false)
 
-  const onToggle = (isOpen: boolean) => {
+  const onConnectToggle = (isOpen: boolean) => {
     setIsOpen(isOpen)
   }
 
@@ -30,7 +38,7 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
   }
 
   const disableContainerButton = (): boolean => {
-    return mgmtService.podStatus(props.pod.mPod) !== 'Running' || connectionNames.length === 0
+    return mgmtService.podStatus(props.pod.mPod) !== 'Running' || connectionNames.length === 0 || mgmtError !== null
   }
 
   const onConnect = (connectName: string) => {
@@ -39,6 +47,15 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
 
   return (
     <React.Fragment>
+      {mgmtError && (
+        <NotificationBadge
+          variant={NotificationBadgeVariant.attention}
+          onClick={() => props.pod.mPod.errorNotify()}
+          aria-label='Display Connect Error'
+          className='pod-item-connect-error-badge'
+        />
+      )}
+
       {connectionNames.length <= 1 && (
         <Button
           variant='primary'
@@ -56,7 +73,7 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
           className='connect-button-dropdown'
           onSelect={onSelect}
           toggle={
-            <DropdownToggle id='toggle-initial-selection' toggleVariant='primary' onToggle={onToggle}>
+            <DropdownToggle id='toggle-initial-selection' toggleVariant='primary' onToggle={onConnectToggle}>
               Connect
             </DropdownToggle>
           }

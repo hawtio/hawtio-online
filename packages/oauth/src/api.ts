@@ -1,3 +1,4 @@
+import { ResolveUser } from '@hawtio/react'
 import { FormConfig } from './form'
 import { UserProfile, log } from './globals'
 import { oAuthService } from './oauth-service'
@@ -19,7 +20,8 @@ export interface Hawtio {
 
 export interface OAuthProtoService {
   isLoggedIn(): Promise<boolean>
-  registerUserHooks(): void
+  fetchUser(resolve: ResolveUser): Promise<boolean>
+  logout(): Promise<boolean>
 }
 
 let userProfile: UserProfile | null = null

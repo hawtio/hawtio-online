@@ -1,4 +1,4 @@
-import { userService } from '@hawtio/react'
+import { PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
 import $ from 'jquery'
 import { OAuthProtoService } from '../api'
@@ -12,7 +12,6 @@ import {
   OAUTH_OS_PROTOCOL_MODULE,
   OBTAINED_AT_KEY,
   OpenShiftOAuthConfig,
-  ResolveUser,
   TOKEN_TYPE_KEY,
 } from './globals'
 import {
@@ -294,57 +293,52 @@ export class OSOAuthService implements OAuthProtoService {
     forceRelogin(currentURI, config)
   }
 
-  async isLoggedIn(): Promise<boolean> {
-    return await this.login
+  isLoggedIn(): Promise<boolean> {
+    return this.login
   }
 
-  registerUserHooks() {
-    log.debug('Registering oAuth user hooks')
-    const fetchUser = async (resolve: ResolveUser) => {
-      const config = await this.adaptedConfig
-      const login = await this.login
-      if (!config || !login || this.userProfile.hasError()) {
-        resolve({ username: '', isLogin: false })
-        return false
-      }
-
-      if (this.userProfile.getToken()) {
-        const userInfo = await fetchPath<UserObject | null>(this.userInfoUri, {
-          success: (data: string) => {
-            return JSON.parse(data)
-          },
-          error: () => null,
-        })
-
-        let username = this.userProfile.getToken() // default
-        if (userInfo?.metadata?.name) {
-          username = userInfo.metadata.name
-        }
-
-        resolve({ username, isLogin: true })
-        userService.setToken(this.userProfile.getToken())
-      }
-
+  async fetchUser(resolve: ResolveUser): Promise<boolean> {
+    log.debug('OAuth - Running fetchUser hook')
+    const config = await this.adaptedConfig
+    const login = await this.login
+    if (!config || !login || this.userProfile.hasError()) {
+      // OpenShift OAuth provides a dedicated login page, thus setting isLoading=true
+      resolve({ username: PUBLIC_USER, isLogin: false, isLoading: true })
       return true
     }
-    userService.addFetchUserHook(OAUTH_OS_PROTOCOL_MODULE, fetchUser)
 
-    const logout = async () => {
-      log.debug('Running oAuth logout hook')
-      const config = await this.adaptedConfig
-      const login = await this.login
-      if (!config || !login || this.userProfile.hasError()) {
-        return false
+    if (this.userProfile.getToken()) {
+      const userInfo = await fetchPath<UserObject | null>(this.userInfoUri, {
+        success: data => JSON.parse(data),
+        error: () => null,
+      })
+
+      let username = this.userProfile.getToken() // default
+      if (userInfo?.metadata?.name) {
+        username = userInfo.metadata.name
       }
 
-      log.info('Log out Openshift')
-      try {
-        this.doLogout(config)
-      } catch (error) {
-        log.error('Error logging out Openshift:', error)
-      }
-      return true
+      resolve({ username, isLogin: true })
+      userService.setToken(this.userProfile.getToken())
     }
-    userService.addLogoutHook(OAUTH_OS_PROTOCOL_MODULE, logout)
+
+    return true
+  }
+
+  async logout(): Promise<boolean> {
+    log.debug('OAuth - Running logout hook')
+    const config = await this.adaptedConfig
+    const login = await this.login
+    if (!config || !login || this.userProfile.hasError()) {
+      return false
+    }
+
+    log.info('Log out OpenShift')
+    try {
+      this.doLogout(config)
+    } catch (error) {
+      log.error('Error logging out OpenShift:', error)
+    }
+    return true
   }
 }

@@ -2,7 +2,7 @@ import { Logger } from '@hawtio/react'
 import { KubeObject } from '../globals'
 import { WatchActions, WatchTypes } from '../model'
 
-export const log = Logger.get('hawtio-k8s-objects')
+export const log = Logger.get('hawtio-online-k8s-objects')
 
 // Allow clients to add other types to force polling under whatever circumstances
 export const pollingOnly = [WatchTypes.IMAGE_STREAM_TAGS]
@@ -76,7 +76,7 @@ export interface WSHandler<T extends KubeObject> {
   connect(): void
   send(data: string | KubeObject): void
   onOpen(event: Event): void
-  onMessage(event: MessageEvent): void
+  onMessage(event: MessageEvent | { data: string }): void
   onError(event: Event): void
   shouldClose(event: Event): boolean
   onClose(event: CloseEvent): void

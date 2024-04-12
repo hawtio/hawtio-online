@@ -119,9 +119,9 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
     return false
   }
 
-  onMessage(event: MessageEvent) {
+  onMessage(event: MessageEvent | { data: string }) {
     log.debug('Receiving message from web socket: ', event)
-    if (this.shouldClose(event)) {
+    if (event instanceof MessageEvent && this.shouldClose(event)) {
       log.debug('Should be closed!')
       return
     }
