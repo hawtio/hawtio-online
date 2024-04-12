@@ -77,6 +77,10 @@ server {
         add_header Clear-Site-Data "\"cache\", \"cookies\"";
         add_header Cache-Control "no-store";
 
+        # Prevent click jacking attacks
+        # Note: must be re-declared since other headers have been added
+        add_header X-Frame-Options "SAMEORIGIN";
+
         # Ensure only https is used for this server
         # Note: must be re-declared since other headers have been added
         add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
@@ -87,6 +91,10 @@ server {
     # Static content serving
     location /online {
         add_header location-rule ONLINE always;
+
+        # Prevent click jacking attacks
+        # Note: must be re-declared since other headers have been added
+        add_header X-Frame-Options "SAMEORIGIN";
 
         # Ensure only https is used for this server
         # Note: must be re-declared since other headers have been added
@@ -100,6 +108,10 @@ server {
     # Kubernetes master API reverse proxying
     location /master {
         add_header                    location-rule MASTER always;
+
+        # Prevent click jacking attacks
+        # Note: must be re-declared since other headers have been added
+        add_header X-Frame-Options "SAMEORIGIN";
 
         # Ensure only https is used for this server
         # Note: must be re-declared since other headers have been added
@@ -120,6 +132,10 @@ server {
 
     location /management {
         add_header                    location-rule MANAGEMENT always;
+
+        # Prevent click jacking attacks
+        # Note: must be re-declared since other headers have been added
+        add_header X-Frame-Options "SAMEORIGIN";
 
         # Ensure only https is used for this server
         # Note: must be re-declared since other headers have been added
@@ -204,6 +220,10 @@ server {
 
     location @console_redirect {
         add_header Location $upstream_http_location always;
+
+        # Prevent click jacking attacks
+        # Note: must be re-declared since other headers have been added
+        add_header X-Frame-Options "SAMEORIGIN";
 
         # Ensure only https is used for this server
         # Note: must be re-declared since other headers have been added
