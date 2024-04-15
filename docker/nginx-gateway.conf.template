@@ -50,6 +50,10 @@ server {
     # Ensure only https is used for this server
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
+    # Govern what content can be loaded by the server and from where
+    # Click jacking prevention to be used in addition to X-Frame-Options
+    add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
+
     # Only accept newer ssl protocols
     ssl_protocols TLSv1.2 TLSv1.3;
 
@@ -85,6 +89,10 @@ server {
         # Note: must be re-declared since other headers have been added
         add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
+        # Govern what content can be loaded by the server and from where
+        # Click jacking prevention to be used in addition to X-Frame-Options
+        add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
+
         return 307 $decodeRedirectUri;
     }
 
@@ -99,6 +107,11 @@ server {
         # Ensure only https is used for this server
         # Note: must be re-declared since other headers have been added
         add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+        # Govern what content can be loaded by the server and from where
+        # Click jacking prevention to be used in addition to X-Frame-Options
+        # Requires allowing inline-styles and inline data objects (svg imgs)
+        add_header Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'self'; form-action 'self'; ";
 
         alias     /usr/share/nginx/html/online;
         try_files $uri$args $uri /online/index.html;
@@ -134,6 +147,10 @@ server {
         # Note: must be re-declared since other headers have been added
         add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
+        # Govern what content can be loaded by the server and from where
+        # Click jacking prevention to be used in addition to X-Frame-Options
+        add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
+
         proxy_pass                    https://kubernetes.default/;
         rewrite                       /masterinternal/(.*) /$1 break;
         proxy_pass_request_headers    on;
@@ -157,6 +174,10 @@ server {
         # Ensure only https is used for this server
         # Note: must be re-declared since other headers have been added
         add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+        # Govern what content can be loaded by the server and from where
+        # Click jacking prevention to be used in addition to X-Frame-Options
+        add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
 
         js_content                    gateway.proxyJolokiaAgent;
     }
@@ -245,6 +266,10 @@ server {
         # Ensure only https is used for this server
         # Note: must be re-declared since other headers have been added
         add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+        # Govern what content can be loaded by the server and from where
+        # Click jacking prevention to be used in addition to X-Frame-Options
+        add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
 
         return 200;
     }
