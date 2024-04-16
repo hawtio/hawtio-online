@@ -105,9 +105,26 @@ server {
         gzip_static on;
     }
 
-    # Kubernetes master API reverse proxying
+    #
+    # External location which checks whether the
+    # requested uri is accessible before redirecting
+    # to the internal /masterinternal
+    #
     location /master {
         add_header                    location-rule MASTER always;
+        js_content                    gateway.proxyMasterGuard;
+    }
+
+    #
+    # Kubernetes master API reverse proxying
+    #
+    # Configured as internal so that all requests should be submitted
+    # through the /master location and checked with the proxyMasterGuard
+    #
+    location /masterinternal {
+        internal;
+
+        add_header                    location-rule MASTER-INTERNAL always;
 
         # Prevent click jacking attacks
         # Note: must be re-declared since other headers have been added
@@ -118,7 +135,7 @@ server {
         add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
         proxy_pass                    https://kubernetes.default/;
-        rewrite                       /master/(.*) /$1 break;
+        rewrite                       /masterinternal/(.*) /$1 break;
         proxy_pass_request_headers    on;
         proxy_pass_request_body       on;
         proxy_redirect                off;
