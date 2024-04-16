@@ -38,9 +38,12 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
   }
 
   const disableContainerButton = (): boolean => {
-    return mgmtService.podStatus(props.pod.mPod) !== 'Running' ||
-      (! props.pod.mPod.getManagement().status.managed) ||
-      connectionNames.length === 0 || mgmtError !== null
+    return (
+      mgmtService.podStatus(props.pod.mPod) !== 'Running' ||
+      !props.pod.mPod.getManagement().status.managed ||
+      connectionNames.length === 0 ||
+      mgmtError !== null
+    )
   }
 
   const onConnect = (connectName: string) => {
