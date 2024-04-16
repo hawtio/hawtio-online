@@ -13,10 +13,51 @@ RBAC.initACL(jsyaml.safeLoad(fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL
 var isRbacEnabled = typeof process.env['HAWTIO_ONLINE_RBAC_ACL'] !== 'undefined';
 var useForm = process.env['HAWTIO_ONLINE_AUTH'] === 'form';
 
-export default { decodeRedirectUri, proxyJolokiaAgent };
+export default { decodeRedirectUri, proxyJolokiaAgent, proxyMasterGuard };
 
 function decodeRedirectUri(r) {
   return decodeURIComponent(r.args.redirect_uri);
+}
+
+/*
+ * Access list of uri patterns allowed to proxy to the master cluster
+ */
+var masterUrlPatterns = [
+  // OpenShift Query OAuth Server
+  /\/master\/.well-known\/oauth-authorization-server$/,
+  // OpenShift v1 api
+  /\/master\/apis\/apps.openshift.io\/v1$/,
+  // OpenShift Current User
+  /\/master\/apis\/user.openshift.io\/v1\/users\/~$/,
+  // Kubernetes Pods in a wildcard namespace to be converted to websocket
+  /\/master\/api\/v1\/namespaces\/[0-9a-zA-Z-]+\/pods\?watch=true$/,
+  // Kubernetes Pods in a wildcard namespace
+  /\/master\/api\/v1\/namespaces\/[0-9a-zA-Z-]+\/pods$/
+]
+
+function proxyMasterGuard(req) {
+  var masterPatternFound = false;
+  /* websocket uri will have watch arg - must be included */
+  var uri = req.variables.is_args ? `${req.uri}?${req.variables.args}` : req.uri
+
+  masterPatternFound = masterUrlPatterns.some(function(element) {
+    return uri.match(element);
+  });
+
+  if (masterPatternFound) {
+    var internalUri = uri.replace(/master/, 'masterinternal');
+    try {
+      req.internalRedirect(internalUri);
+    } catch (error) {
+      req.headersOut['Content-Type'] = 'application/json';
+      req.return(502, JSON.stringify({ message: `Error: ${error.message}` }));
+    }
+
+    return;
+  }
+
+  req.headersOut['Content-Type'] = 'application/json';
+  req.return(502, JSON.stringify({ message: `Error: Access to ${uri} is not allowed` }));
 }
 
 function proxyJolokiaAgent(req) {

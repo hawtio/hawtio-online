@@ -11,13 +11,17 @@ var listMBeans = fs.readFileSync('test.listMBeans.json');
 
 function report(code, expectedCode, message) {
   console.log('code:', code);
+  console.log('expected-code:', expectedCode);
   console.log('message:', message, "\n");
 
-  if (code !== expectedCode)
+  if (code !== expectedCode) {
     throw new Error(`Failure: Return status code ${code} does not match expected ${expectedCode}`);
+  }
 }
 
-function callGateway(input) {
+/* === Jolokia Gateway === */
+
+function callJolokiaGateway(input) {
   var options = {
     return: (code, message) => {
       report(code, input.expectedCode, message);
@@ -33,7 +37,7 @@ function callGateway(input) {
 
 function requestWithViewerRoleTest() {
   console.log('=== requestWithViewerRoleTest');
-  return callGateway({
+  return callJolokiaGateway({
     method: 'POST',
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
@@ -49,7 +53,7 @@ function requestWithViewerRoleTest() {
 
 function bulkRequestWithViewerRoleTest() {
   console.log('=== bulkRequestWithViewerRoleTest');
-  return callGateway({
+  return callJolokiaGateway({
     method: 'POST',
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify([
@@ -72,7 +76,7 @@ function bulkRequestWithViewerRoleTest() {
 
 function requestOperationWithArgumentsAndNoRoleTest() {
   console.log('=== requestOperationWithArgumentsAndNoRoleTest');
-  return callGateway({
+  return callJolokiaGateway({
     method: 'POST',
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
@@ -91,7 +95,7 @@ function requestOperationWithArgumentsAndNoRoleTest() {
 
 function requestOperationWithArgumentsAndViewerRoleTest() {
   console.log('=== requestOperationWithArgumentsAndViewerRoleTest');
-  return callGateway({
+  return callJolokiaGateway({
     method: 'POST',
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
@@ -111,7 +115,7 @@ function requestOperationWithArgumentsAndViewerRoleTest() {
 
 function searchCamelRoutesTest() {
   console.log('=== searchCamelRoutesTest');
-  return callGateway({
+  return callJolokiaGateway({
     method: 'POST',
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
@@ -126,7 +130,7 @@ function searchCamelRoutesTest() {
 
 function searchRbacMBeanTest() {
   console.log('=== searchRbacMBeanTest');
-  return callGateway({
+  return callJolokiaGateway({
     method: 'POST',
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
@@ -141,7 +145,7 @@ function searchRbacMBeanTest() {
 
 function bulkRequestWithInterceptionTest() {
   console.log('=== bulkRequestWithInterceptionTest');
-  return callGateway({
+  return callJolokiaGateway({
     method: 'POST',
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify([
@@ -167,7 +171,7 @@ function bulkRequestWithInterceptionTest() {
 
 function canInvokeSingleOperationTest() {
   console.log('=== canInvokeSingleOperationTest');
-  return callGateway({
+  return callJolokiaGateway({
     method: 'POST',
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
@@ -187,7 +191,7 @@ function canInvokeSingleOperationTest() {
 
 function canInvokeSingleAttributeTest() {
   console.log('=== canInvokeSingleAttributeTest');
-  return callGateway({
+  return callJolokiaGateway({
     method: 'POST',
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
@@ -207,7 +211,7 @@ function canInvokeSingleAttributeTest() {
 
 function canInvokeMapTest() {
   console.log('=== canInvokeMapTest');
-  return callGateway({
+  return callJolokiaGateway({
     method: 'POST',
     uri: '/management/namespaces/test/pods/https:pod:443/remaining',
     requestBody: JSON.stringify({
@@ -290,6 +294,78 @@ function doWithViewerRole(uri, options) {
   return Promise.resolve(res);
 }
 
+/* === Master Gateway === */
+
+function callMasterGateway(input) {
+  /*
+   * Separate out the args from the uri as per real Request specification
+   */
+  var is_args = input.uri.includes('?');
+  var args = is_args ? input.uri.substring(input.uri.indexOf('?') + 1, input.uri.length) : '';
+  input.uri = is_args ? input.uri.substring(0, input.uri.indexOf('?')) : input.uri;
+
+  var options = {
+    return: (code, message) => {
+      report(code, input.expectedCode, message);
+    },
+    log: (message) => {
+      console.log(message);
+    },
+    headersOut: {},
+    variables: {
+      is_args: is_args,
+      args: args
+    },
+    internalRedirect: (uri) => {
+      console.log(`redirected-uri: ${uri}`, "\n");
+
+      if (input.expectedURI !== uri)
+        throw new Error(`Failure: Redirect uri ${uri} does not match expected uri ${input.expectedURI}`);
+    }
+  }
+
+  var payload = Object.assign(input, options);
+  gateway.proxyMasterGuard(payload);
+}
+
+function canMasterAuthServerMetadataTest() {
+  console.log('=== canMasterAuthServerMetadataTest');
+
+  return callMasterGateway({
+    method: 'GET',
+    uri: '/master/.well-known/oauth-authorization-server',
+    expectedURI: '/masterinternal/.well-known/oauth-authorization-server',
+    expectedCode: 200
+  });
+}
+
+function canMasterApiPodsTest() {
+  console.log('=== canMasterApiPodsTest');
+
+  callMasterGateway({
+    method: 'GET',
+    uri: '/master/api/v1/namespaces/hawtio/pods?watch=true',
+    expectedURI: '/masterinternal/api/v1/namespaces/hawtio/pods?watch=true',
+    expectedCode: 200
+  });
+}
+
+/* Should be illegal - guard should stop it and return a 502 */
+function canMasterApiSecretsTest() {
+  console.log('=== canMasterApiSecretsTest');
+
+  return callMasterGateway({
+    method: 'GET',
+    uri: '/master/api/v1/namespaces/hawtio/secrets',
+    expectedCode: 502
+  });
+}
+
+/* Execute non-promise tests first */
+canMasterAuthServerMetadataTest()
+canMasterApiPodsTest()
+canMasterApiSecretsTest()
+
 Promise.resolve()
   .then(requestWithViewerRoleTest)
   .then(bulkRequestWithViewerRoleTest)
@@ -301,4 +377,3 @@ Promise.resolve()
   .then(canInvokeSingleOperationTest)
   .then(canInvokeSingleAttributeTest)
   .then(canInvokeMapTest)
-  ;
