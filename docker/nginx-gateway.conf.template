@@ -111,7 +111,7 @@ server {
         # Govern what content can be loaded by the server and from where
         # Click jacking prevention to be used in addition to X-Frame-Options
         # Requires allowing inline-styles and inline data objects (svg imgs)
-        add_header Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'self'; form-action 'self'; ";
+        add_header Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; frame-ancestors 'self'; form-action 'self'; ";
 
         alias     /usr/share/nginx/html/online;
         try_files $uri$args $uri /online/index.html;
