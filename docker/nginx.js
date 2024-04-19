@@ -32,7 +32,9 @@ var masterUrlPatterns = [
   // Kubernetes Pods in a wildcard namespace to be converted to websocket
   /\/master\/api\/v1\/namespaces\/[0-9a-zA-Z-]+\/pods\?watch=true$/,
   // Kubernetes Pods in a wildcard namespace
-  /\/master\/api\/v1\/namespaces\/[0-9a-zA-Z-]+\/pods$/
+  /\/master\/api\/v1\/namespaces\/[0-9a-zA-Z-]+\/pods$/,
+  // Query for the uri of the OpenShift web console
+  /\/master\/api\/v1\/namespaces\/openshift-config-managed\/configmaps\/console-public/
 ]
 
 function proxyMasterGuard(req) {
