@@ -38,13 +38,17 @@ async function logoutRedirectAvailable(): Promise<boolean> {
   return true
 }
 
+export function logoutUri(): URL {
+  return new URL(relToAbsUrl(LOGOUT_ENDPOINT))
+}
+
 export function logoutRedirect(redirectUri: URL): void {
   // Have a logout page so append redirect uri to its url
-  const logoutUri = new URL(relToAbsUrl(LOGOUT_ENDPOINT))
-  logoutUri.searchParams.append('redirect_uri', redirectUri.toString())
+  const targetUri = logoutUri()
+  targetUri.searchParams.append('redirect_uri', redirectUri.toString())
 
   logoutRedirectAvailable().then(exists => {
-    if (exists) redirect(logoutUri)
+    if (exists) redirect(targetUri)
     else redirect(redirectUri)
   })
 }
