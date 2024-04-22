@@ -4,7 +4,7 @@ import $ from 'jquery'
 import { OAuthProtoService } from '../api'
 import { UserProfile, log } from '../globals'
 import { CLUSTER_CONSOLE_KEY } from '../metadata'
-import { fetchPath, getCookie, isBlank, redirect } from '../utils'
+import { fetchPath, getCookie, isBlank, logoutUri, redirect } from '../utils'
 import {
   CLUSTER_VERSION_KEY,
   DEFAULT_CLUSTER_VERSION,
@@ -237,6 +237,11 @@ export class OSOAuthService implements OAuthProtoService {
     }
 
     const currentURI = new URL(window.location.href)
+    if (currentURI.pathname === logoutUri().pathname) {
+      //Reset the logout path to the base path
+      currentURI.pathname = currentURI.pathname.replace(logoutUri().pathname, '/')
+    }
+
     try {
       this.clearKeepAlive()
 
