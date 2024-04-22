@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: hawtio-rbac
+  namespace: hawtio
 data:
   ACL.yaml: |
     # This file defines the roles allowed for MBean operations
