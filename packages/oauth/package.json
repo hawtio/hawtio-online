@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@hawtio/react": "^1.2.3",
-    "@thumbmarkjs/thumbmarkjs": "^0.14.6",
+    "@thumbmarkjs/thumbmarkjs": "^0.14.7",
     "babel-jest": "^29.6.1",
     "fetch-intercept": "^2.4.0",
     "jest-extended": "^4.0.0",

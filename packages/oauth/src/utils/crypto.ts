@@ -2,7 +2,7 @@ import { getFingerprint } from '@thumbmarkjs/thumbmarkjs'
 
 export async function generateKey(salt: ArrayBufferView): Promise<CryptoKey> {
   const fingerprint = await getFingerprint()
-  const data = new TextEncoder().encode(fingerprint)
+  const data = new TextEncoder().encode(fingerprint as string)
   const key = await window.crypto.subtle.importKey('raw', data, { name: 'PBKDF2' }, false, ['deriveKey'])
   const algorithm = {
     name: 'PBKDF2',
