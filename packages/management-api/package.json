@@ -32,7 +32,7 @@
     "@hawtio/online-kubernetes-api": "workspace:*",
     "@hawtio/react": "^1.2.3",
     "eventemitter3": "^5.0.1",
-    "jolokia.js": "^2.0.0",
+    "jolokia.js": "^2.0.1",
     "jquery": "^3.7.0",
     "jsonpath": "^1.1.1",
     "superstruct": "^1.0.4",
