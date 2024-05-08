@@ -73,6 +73,7 @@
     "jasmine": "^5.1.0"
   },
   "resolutions": {
+    "eslint-config-react-app/eslint-plugin-react-hooks": "^4.6.2",
     "victory-area": "36.8.6",
     "victory-bar": "36.8.6",
     "victory-brush-container": "36.8.6",
