@@ -3,12 +3,6 @@ const { merge } = require('webpack-merge')
 const WebpackDevServer = require('webpack-dev-server')
 const DotenvPlugin = require('dotenv-webpack')
 const historyApiFallback = require('connect-history-api-fallback')
-/*
- * 22/2/2024
- * Analyzer plugin throwing errors with updates to new version of webpack-dev-server
- * Disabling for the moment.
- */
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const path = require('path')
 const url = require('url')
 const dotenv = require('dotenv')
@@ -70,12 +64,6 @@ module.exports = () => {
         systemvars: true,
         ignoreStub: true,
       }),
-      /*
-       * 22/2/2024
-       * Analyzer plugin throwing errors with updates to new version of webpack-dev-server
-       * Disabling for the moment.
-       */
-      // new BundleAnalyzerPlugin(),
     ],
 
     devServer: {

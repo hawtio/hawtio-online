@@ -25,8 +25,8 @@
     "replace-version": "replace __PACKAGE_VERSION_PLACEHOLDER__ $npm_package_version ./build -r",
     "test": "jest --watchAll=false --passWithNoTests",
     "test:coverage": "yarn test --coverage",
-    "analyze:webpack:dev": "webpack --mode development --progress --config webpack.config.dev.js --output-public-path='/online/'",
-    "analyze:webpack:prod": "webpack --mode production --progress --config webpack.config.dev.js --output-public-path='/online/'"
+    "analyze:webpack:dev": "webpack --mode development --analyze --progress --config webpack.config.dev.js --output-public-path='/online/'",
+    "analyze:webpack:prod": "webpack --mode production --analyze --progress --config webpack.config.prod.js --output-public-path='/online/'"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
