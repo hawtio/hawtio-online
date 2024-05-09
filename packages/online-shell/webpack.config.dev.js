@@ -11,7 +11,7 @@ const { common } = require('./webpack.config.common.js')
 // this will update the process.env with environment variables in .env file
 dotenv.config({ path: path.join(__dirname, '.env') })
 
-module.exports = () => {
+module.exports = (env, argv) => {
   const masterKind = process.env.MASTER_KIND || 'kubernetes'
   const clusterAuthType = process.env.CLUSTER_AUTH_TYPE || 'oauth'
 
@@ -52,7 +52,7 @@ module.exports = () => {
   const devPort = process.env.PORT || 2772
   const proxiedMaster = `http://localhost:${devPort}/master`
 
-  return merge(common('development', publicPath), {
+  return merge(common('development', publicPath, env.PACKAGE_VERSION), {
     devtool: 'eval-source-map',
     stats: 'errors-warnings',
 

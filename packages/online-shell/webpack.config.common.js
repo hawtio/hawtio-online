@@ -6,9 +6,10 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const path = require('path')
 const { dependencies } = require('./package.json')
 
-const common = (mode, publicPath) => {
+const common = (mode, publicPath, packageVersion) => {
   console.log(`Compilation Mode: ${mode}`)
   console.log(`Public Path: ${publicPath}`)
+  console.log(`Package Version: ${packageVersion}`)
 
   return {
     mode: mode,
@@ -98,6 +99,7 @@ const common = (mode, publicPath) => {
       }),
       new webpack.DefinePlugin({
         'process.env': JSON.stringify(process.env),
+        HAWTIO_ONLINE_PACKAGE_VERSION: JSON.stringify(packageVersion),
       }),
     ],
     output: {

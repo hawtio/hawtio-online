@@ -19,10 +19,9 @@
     "react"
   ],
   "scripts": {
-    "start": "webpack serve --hot --mode development --progress --config webpack.config.dev.js",
-    "build": "yarn build:webpack && yarn replace-version",
-    "build:webpack": "webpack --mode production --progress --config webpack.config.prod.js --output-public-path='/online/'",
-    "replace-version": "replace __HAWTIO_ONLINE_PACKAGE_VERSION_PLACEHOLDER__ $npm_package_version ./build -r",
+    "start": "webpack serve --hot --mode development --progress --config webpack.config.dev.js --env PACKAGE_VERSION=$npm_package_version",
+    "build": "yarn build:webpack",
+    "build:webpack": "webpack --mode production --progress --config webpack.config.prod.js --output-public-path='/online/' --env PACKAGE_VERSION=$npm_package_version",
     "test": "jest --watchAll=false --passWithNoTests",
     "test:coverage": "yarn test --coverage",
     "analyze:webpack:dev": "webpack --mode development --analyze --progress --config webpack.config.dev.js --output-public-path='/online/'",
@@ -68,7 +67,6 @@
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "process": "^0.11.10",
-    "replace": "^1.2.2",
     "source-map-loader": "^5.0.0",
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.1",

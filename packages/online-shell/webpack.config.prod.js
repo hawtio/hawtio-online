@@ -6,13 +6,13 @@ const { common } = require('./webpack.config.common.js')
 
 const CompressionPlugin = require('compression-webpack-plugin')
 
-module.exports = () => {
+module.exports = (env, argv) => {
   //
   // Prefix path will be determined by the installed web server platform
   //
   const publicPath = '/online'
 
-  return merge(common('production', publicPath), {
+  return merge(common('production', publicPath, env.PACKAGE_VERSION), {
     devtool: 'source-map',
 
     plugins: [
