@@ -248,29 +248,4 @@ server {
         # Do not foward authorization header
         proxy_set_header          Authorization "";
     }
-
-    # Get the OpenShift console URL
-    location = /console {
-        proxy_pass             https://kubernetes.default/;
-        error_page             302 = @console_redirect;
-        proxy_intercept_errors on;
-    }
-
-    location @console_redirect {
-        add_header Location $upstream_http_location always;
-
-        # Prevent click jacking attacks
-        # Note: must be re-declared since other headers have been added
-        add_header X-Frame-Options "SAMEORIGIN";
-
-        # Ensure only https is used for this server
-        # Note: must be re-declared since other headers have been added
-        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-
-        # Govern what content can be loaded by the server and from where
-        # Click jacking prevention to be used in addition to X-Frame-Options
-        add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
-
-        return 200;
-    }
 }

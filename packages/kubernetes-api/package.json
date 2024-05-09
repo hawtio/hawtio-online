@@ -29,19 +29,19 @@
   },
   "dependencies": {
     "@hawtio/online-oauth": "workspace:*",
-    "@hawtio/react": "^1.2.0",
+    "@hawtio/react": "^1.2.3",
     "@types/jquery": "^3.5.29",
     "@types/jsonpath": "^0.2.4",
-    "@types/node": "^18.19.28",
+    "@types/node": "^18.19.31",
     "eventemitter3": "^5.0.1",
     "jquery": "^3.7.0",
     "jsonpath": "^1.1.1",
-    "kubernetes-types": "^1.26.0",
+    "kubernetes-types": "^1.29.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/jest-dom": "^6.4.5",
     "@types/jest": "^29.5.12",
     "babel-jest": "^29.6.1",
     "eslint-config-react-app": "^7.0.1",

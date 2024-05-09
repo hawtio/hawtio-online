@@ -55,7 +55,7 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "prettier": "3.2.5"
   },
   "config": {
@@ -71,5 +71,23 @@
   },
   "dependencies": {
     "jasmine": "^5.1.0"
+  },
+  "resolutions": {
+    "eslint-config-react-app/eslint-plugin-react-hooks": "^4.6.2",
+    "victory-area": "36.8.6",
+    "victory-bar": "36.8.6",
+    "victory-brush-container": "36.8.6",
+    "victory-core": "36.8.6",
+    "victory-cursor-container": "36.8.6",
+    "victory-create-container": "36.8.6",
+    "victory-legend": "36.8.6",
+    "victory-line": "36.8.6",
+    "victory-pie": "36.8.6",
+    "victory-scatter": "36.8.6",
+    "victory-selection-container": "36.8.6",
+    "victory-shared-events": "36.8.6",
+    "victory-tooltip": "36.8.6",
+    "victory-voronoi-container": "36.8.6",
+    "victory-zoom-container": "36.8.6"
   }
 }
