@@ -17,8 +17,9 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { discover } from './discover'
 import { reportWebVitals } from './reportWebVitals'
+import { HAWTIO_ONLINE_VERSION } from './constants'
 
-configManager.addProductInfo('Hawtio Online', '__HAWTIO_ONLINE_PACKAGE_VERSION_PLACEHOLDER__')
+configManager.addProductInfo('Hawtio Online', HAWTIO_ONLINE_VERSION)
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<HawtioLoadingPage />)
