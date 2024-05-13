@@ -3,6 +3,7 @@ import Jolokia, {
   Response as JolokiaResponse,
   VersionResponse as JolokiaVersionResponse,
 } from 'jolokia.js'
+import 'jolokia.js/simple'
 import $ from 'jquery'
 import { log } from './globals'
 import jsonpath from 'jsonpath'
