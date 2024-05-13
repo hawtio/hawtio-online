@@ -1960,7 +1960,7 @@ __metadata:
     "@patternfly/react-table": "npm:^4.113.7"
     "@patternfly/react-tokens": "npm:^4.94.6"
     "@types/node": "npm:^18.19.31"
-    "@types/react": "npm:18.2.64"
+    "@types/react": "npm:18.3.2"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.1"
@@ -1971,7 +1971,7 @@ __metadata:
     mini-css-extract-plugin: "npm:2.9.0"
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
-    react: "npm:^18.2.0"
+    react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.23.0"
     source-map-loader: "npm:^5.0.0"
@@ -2031,7 +2031,7 @@ __metadata:
     "@patternfly/react-table": "npm:^4.113.7"
     "@patternfly/react-tokens": "npm:^4.94.6"
     "@types/node": "npm:^18.19.31"
-    "@types/react": "npm:18.2.64"
+    "@types/react": "npm:18.3.2"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.1"
@@ -2042,7 +2042,7 @@ __metadata:
     mini-css-extract-plugin: "npm:2.9.0"
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
-    react: "npm:^18.2.0"
+    react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.23.0"
     source-map-loader: "npm:^5.0.0"
@@ -2101,7 +2101,7 @@ __metadata:
     "@patternfly/react-table": "npm:^4.113.7"
     "@patternfly/react-tokens": "npm:^4.94.6"
     "@types/node": "npm:^18.19.31"
-    "@types/react": "npm:18.2.64"
+    "@types/react": "npm:18.3.2"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.1"
@@ -2113,7 +2113,7 @@ __metadata:
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     process: "npm:^0.11.10"
-    react: "npm:^18.2.0"
+    react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.23.0"
     source-map-loader: "npm:^5.0.0"
@@ -2192,7 +2192,7 @@ __metadata:
     "@patternfly/react-table": "npm:^4.113.7"
     "@patternfly/react-tokens": "npm:^4.94.6"
     "@types/node": "npm:^18.19.31"
-    "@types/react": "npm:18.2.64"
+    "@types/react": "npm:18.3.2"
     "@types/react-dom": "npm:^18.3.0"
     babel-loader: "npm:^9.1.3"
     connect-history-api-fallback: "npm:^2.0.0"
@@ -2211,7 +2211,7 @@ __metadata:
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     process: "npm:^0.11.10"
-    react: "npm:^18.2.0"
+    react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-markdown: "npm:^8.0.7"
     source-map-loader: "npm:^5.0.0"
@@ -3958,14 +3958,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.2.64":
-  version: 18.2.64
-  resolution: "@types/react@npm:18.2.64"
+"@types/react@npm:18.3.2":
+  version: 18.3.2
+  resolution: "@types/react@npm:18.3.2"
   dependencies:
     "@types/prop-types": "npm:*"
-    "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 10/e82bd16660030c9aabdb5027bb9bf69570a90813e4a894c17bfb288978c2b80251def5754e455d72aa3485d99136e1b11b694f78c586e5918e10b3bb09b91b3c
+  checksum: 10/a85eed82c1009dc9d979281d9ea1f5322255003de3378390f35d897b4bdaf1d34ea748636c03e9e9b4b7cc97c2f4582993d2d60e40846226ad497d97c7d8565a
   languageName: node
   linkType: hard
 
@@ -12117,6 +12116,15 @@ __metadata:
   dependencies:
     loose-envify: "npm:^1.1.0"
   checksum: 10/b9214a9bd79e99d08de55f8bef2b7fc8c39630be97c4e29d7be173d14a9a10670b5325e94485f74cd8bff4966ef3c78ee53c79a7b0b9b70cba20aa8973acc694
+  languageName: node
+  linkType: hard
+
+"react@npm:^18.3.1":
+  version: 18.3.1
+  resolution: "react@npm:18.3.1"
+  dependencies:
+    loose-envify: "npm:^1.1.0"
+  checksum: 10/261137d3f3993eaa2368a83110466fc0e558bc2c7f7ae7ca52d94f03aac945f45146bd85e5f481044db1758a1dbb57879e2fcdd33924e2dde1bdc550ce73f7bf
   languageName: node
   linkType: hard
 
