@@ -29,6 +29,10 @@ var masterUrlPatterns = [
   /\/master\/apis\/apps.openshift.io\/v1$/,
   // OpenShift Current User
   /\/master\/apis\/user.openshift.io\/v1\/users\/~$/,
+  // OpenShift projects (for cluster-mode)
+  /\/master\/apis\/project.openshift.io\/v1\/projects$/,
+  // Kubernetes namespaces (for cluster-mode)
+  /\/master\/api\/v1\/namespaces$/,
   // Kubernetes Pods in a wildcard namespace to be converted to websocket
   /\/master\/api\/v1\/namespaces\/[0-9a-zA-Z-]+\/pods\?watch=true$/,
   // Kubernetes Pods in a wildcard namespace
@@ -59,7 +63,7 @@ function proxyMasterGuard(req) {
   }
 
   req.headersOut['Content-Type'] = 'application/json';
-  req.return(502, JSON.stringify({ message: `Error: Access to ${uri} is not allowed` }));
+  req.return(502, JSON.stringify({ message: `Error (gateway): Access to ${uri} is not allowed.` }));
 }
 
 function proxyJolokiaAgent(req) {
