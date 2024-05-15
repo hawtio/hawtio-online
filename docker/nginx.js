@@ -30,13 +30,11 @@ var masterUrlPatterns = [
   // OpenShift Current User
   /\/master\/apis\/user.openshift.io\/v1\/users\/~$/,
   // OpenShift projects (for cluster-mode)
-  /\/master\/apis\/project.openshift.io\/v1\/projects$/,
+  /\/master\/apis\/project.openshift.io\/v1\/projects(\?.*)?/,
   // Kubernetes namespaces (for cluster-mode)
-  /\/master\/api\/v1\/namespaces$/,
+  /\/master\/api\/v1\/namespaces(\?.*)?/,
   // Kubernetes Pods in a wildcard namespace to be converted to websocket
-  /\/master\/api\/v1\/namespaces\/[0-9a-zA-Z-]+\/pods\?watch=true$/,
-  // Kubernetes Pods in a wildcard namespace
-  /\/master\/api\/v1\/namespaces\/[0-9a-zA-Z-]+\/pods$/,
+  /\/master\/api\/v1\/namespaces\/[0-9a-zA-Z-]+\/pods(\?.*)?/,
   // Query for the uri of the OpenShift web console
   /\/master\/api\/v1\/namespaces\/openshift-config-managed\/configmaps\/console-public/
 ]
