@@ -1954,7 +1954,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api-app@workspace:packages/kubernetes-api-app"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^1.2.4"
+    "@hawtio/react": "npm:^1.2.6"
     "@patternfly/react-core": "npm:^4.278.1"
     "@patternfly/react-styles": "npm:^4.92.6"
     "@patternfly/react-table": "npm:^4.113.7"
@@ -1992,7 +1992,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api@workspace:packages/kubernetes-api"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.2.4"
+    "@hawtio/react": "npm:^1.2.6"
     "@testing-library/jest-dom": "npm:^6.4.5"
     "@types/jest": "npm:^29.5.12"
     "@types/jquery": "npm:^3.5.29"
@@ -2025,7 +2025,7 @@ __metadata:
   resolution: "@hawtio/online-management-api-app@workspace:packages/management-api-app"
   dependencies:
     "@hawtio/online-management-api": "workspace:*"
-    "@hawtio/react": "npm:^1.2.4"
+    "@hawtio/react": "npm:^1.2.6"
     "@patternfly/react-core": "npm:^4.278.1"
     "@patternfly/react-styles": "npm:^4.92.6"
     "@patternfly/react-table": "npm:^4.113.7"
@@ -2063,7 +2063,7 @@ __metadata:
   resolution: "@hawtio/online-management-api@workspace:packages/management-api"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^1.2.4"
+    "@hawtio/react": "npm:^1.2.6"
     "@types/jest": "npm:^29.5.12"
     "@types/jquery": "npm:^3.5.29"
     "@types/jsonpath": "npm:^0.2.4"
@@ -2095,7 +2095,7 @@ __metadata:
   resolution: "@hawtio/online-oauth-app@workspace:packages/oauth-app"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.2.4"
+    "@hawtio/react": "npm:^1.2.6"
     "@patternfly/react-core": "npm:^4.278.1"
     "@patternfly/react-styles": "npm:^4.92.6"
     "@patternfly/react-table": "npm:^4.113.7"
@@ -2134,7 +2134,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hawtio/online-oauth@workspace:packages/oauth"
   dependencies:
-    "@hawtio/react": "npm:^1.2.4"
+    "@hawtio/react": "npm:^1.2.6"
     "@thumbmarkjs/thumbmarkjs": "npm:^0.14.7"
     "@types/jest": "npm:^29.5.12"
     "@types/jquery": "npm:^3.5.29"
@@ -2186,7 +2186,7 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.2.4"
+    "@hawtio/react": "npm:^1.2.6"
     "@patternfly/react-core": "npm:^4.278.1"
     "@patternfly/react-styles": "npm:^4.92.6"
     "@patternfly/react-table": "npm:^4.113.7"
@@ -2229,9 +2229,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:^1.2.4":
-  version: 1.2.4
-  resolution: "@hawtio/react@npm:1.2.4"
+"@hawtio/react@npm:^1.2.6":
+  version: 1.2.6
+  resolution: "@hawtio/react@npm:1.2.6"
   dependencies:
     "@hawtio/camel-model-v4_0": "npm:@hawtio/camel-model@~4.0.4"
     "@hawtio/camel-model-v4_4": "npm:@hawtio/camel-model@~4.4.0"
@@ -2254,7 +2254,7 @@ __metadata:
     "@types/react-router-dom": "npm:^5.3.3"
     dagre: "npm:^0.8.5"
     eventemitter3: "npm:^5.0.1"
-    jolokia.js: "npm:^2.0.0"
+    jolokia.js: "npm:^2.0.1"
     jquery: "npm:^3.7.1"
     js-logger: "npm:^1.6.1"
     jwt-decode: "npm:^4.0.0"
@@ -2279,7 +2279,7 @@ __metadata:
   peerDependenciesMeta:
     keycloak-js:
       optional: true
-  checksum: 10/b05e5a65b7e2cee590e776b9ac0590502254966063472234c98dba8008a07afbdd0c146aa01131d599879aade55477ed423369a5b385a34bfc4b1b525c485ec1
+  checksum: 10/2cde563d5339d5b13368f5951f4739e6e49b72ef3af9f448621996980d84a9a6e097d1ef56f7eb9ff00827f4454ff162b1c5f389ff920f0e33b2420793a5099d
   languageName: node
   linkType: hard
 
@@ -9736,23 +9736,6 @@ __metadata:
   bin:
     jest: bin/jest.js
   checksum: 10/97023d78446098c586faaa467fbf2c6b07ff06e2c85a19e3926adb5b0effe9ac60c4913ae03e2719f9c01ae8ffd8d92f6b262cedb9555ceeb5d19263d8c6362a
-  languageName: node
-  linkType: hard
-
-"jolokia.js@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "jolokia.js@npm:2.0.0"
-  dependencies:
-    jquery: "npm:^3.7.1"
-  peerDependencies:
-    cubism: ^1.6.0
-    jsdom: ^22.1.0
-  peerDependenciesMeta:
-    cubism:
-      optional: true
-    jsdom:
-      optional: true
-  checksum: 10/d530e54ce076804d233d4294dec10098defd1307d1973b42e673006070fb2a7e8ff6c8e181467a5fceb2149c2426e38acca9a33312124ecf76235c564734dd3c
   languageName: node
   linkType: hard
 
