@@ -1917,15 +1917,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/react-fontawesome@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@fortawesome/react-fontawesome@npm:0.2.0"
+"@fortawesome/react-fontawesome@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@fortawesome/react-fontawesome@npm:0.2.1"
   dependencies:
     prop-types: "npm:^15.8.1"
   peerDependencies:
     "@fortawesome/fontawesome-svg-core": ~1 || ~6
     react: ">=16.3"
-  checksum: 10/9b574daaf4413ae202dc8e4ff500726ea58d0a5cf6bdca9ad992f57956625f3750596852fd511600ed5b547025fc8af1cf6cf5a25a807b5c0f49af24b3e00efe
+  checksum: 10/eb699278bb5f3db3e4ab5fc2102e3266dc02dd88458aa6f6c6cd455038e61a380d00dbcd0b2ac6c57e57ec08b3d770234f7b16aa4fd7f5ccdbb59f9927cd9853
   languageName: node
   linkType: hard
 
@@ -2182,7 +2182,7 @@ __metadata:
     "@fortawesome/fontawesome-svg-core": "npm:^6.5.2"
     "@fortawesome/free-brands-svg-icons": "npm:^6.5.2"
     "@fortawesome/free-solid-svg-icons": "npm:^6.5.2"
-    "@fortawesome/react-fontawesome": "npm:^0.2.0"
+    "@fortawesome/react-fontawesome": "npm:^0.2.1"
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/online-oauth": "workspace:*"
