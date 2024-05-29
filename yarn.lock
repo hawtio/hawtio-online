@@ -1995,7 +1995,7 @@ __metadata:
     "@hawtio/react": "npm:^1.2.6"
     "@testing-library/jest-dom": "npm:^6.4.5"
     "@types/jest": "npm:^29.5.12"
-    "@types/jquery": "npm:^3.5.29"
+    "@types/jquery": "npm:^3.5.30"
     "@types/jsonpath": "npm:^0.2.4"
     "@types/node": "npm:^18.19.31"
     babel-jest: "npm:^29.6.1"
@@ -2065,7 +2065,7 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": "npm:^1.2.6"
     "@types/jest": "npm:^29.5.12"
-    "@types/jquery": "npm:^3.5.29"
+    "@types/jquery": "npm:^3.5.30"
     "@types/jsonpath": "npm:^0.2.4"
     babel-jest: "npm:^29.6.1"
     eslint-config-react-app: "npm:^7.0.1"
@@ -2137,7 +2137,7 @@ __metadata:
     "@hawtio/react": "npm:^1.2.6"
     "@thumbmarkjs/thumbmarkjs": "npm:^0.14.7"
     "@types/jest": "npm:^29.5.12"
-    "@types/jquery": "npm:^3.5.29"
+    "@types/jquery": "npm:^3.5.30"
     babel-jest: "npm:^29.6.1"
     fetch-intercept: "npm:^2.4.0"
     jest: "npm:^29.6.1"
@@ -3772,6 +3772,15 @@ __metadata:
   dependencies:
     "@types/sizzle": "npm:*"
   checksum: 10/364facf2cb0bc935cb4b7f4af0b12c8e901b02b08a85af213172485166123b10aad8563f8e51e363f65a778c4105a59a64dedd0b0fd73f96557219d46477af56
+  languageName: node
+  linkType: hard
+
+"@types/jquery@npm:^3.5.30":
+  version: 3.5.30
+  resolution: "@types/jquery@npm:3.5.30"
+  dependencies:
+    "@types/sizzle": "npm:*"
+  checksum: 10/5287586be022bfe85d411733b35f8f0ae8577c4afb5a94ff0e157d2c1036e10adfdd15ed80becb06f01647c39be5dbb24a45cba10db3fa6304eb442fa509321e
   languageName: node
   linkType: hard
 
