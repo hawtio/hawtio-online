@@ -31,6 +31,8 @@ var masterUrlPatterns = [
   /\/master\/apis\/user.openshift.io\/v1\/users\/~$/,
   // OpenShift projects (for cluster-mode)
   /\/master\/apis\/project.openshift.io\/v1\/projects(\?.*)?/,
+  // Kubernetes Token Login Validation
+  /\/master\/api/,
   // Kubernetes namespaces (for cluster-mode)
   /\/master\/api\/v1\/namespaces(\?.*)?/,
   // Kubernetes Pods in a wildcard namespace to be converted to websocket
