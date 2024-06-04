@@ -1,0 +1,3425 @@
+{
+  "request": {
+    "mbean": "hawtio:type\u003dsecurity,name\u003dRBACRegistry",
+    "type": "exec",
+    "operation": "list()"
+  },
+  "response": {
+    "request": {
+      "mbean": "hawtio:type\u003dsecurity,name\u003dRBACRegistry",
+      "type": "exec",
+      "operation": "list()"
+    },
+    "value": {
+      "cache": {},
+      "domains": {
+        "org.springframework.boot": {
+          "type\u003dEndpoint,name\u003dHealth": {
+            "op": {
+              "healthForPath": {
+                "args": [
+                  {
+                    "name": "path",
+                    "type": "java.lang.Object"
+                  }
+                ],
+                "ret": "java.util.Map",
+                "desc": "Invoke healthForPath for endpoint health"
+              },
+              "health": {
+                "args": [],
+                "ret": "java.util.Map",
+                "desc": "Invoke health for endpoint health"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {},
+            "desc": "MBean operations for endpoint health"
+          }
+        },
+        "JMImplementation": {
+          "type\u003dMBeanServerDelegate": {
+            "op": {},
+            "not": {
+              "javax.management.MBeanServerNotification": {
+                "types": [
+                  "JMX.mbean.unregistered",
+                  "JMX.mbean.registered"
+                ],
+                "name": "javax.management.MBeanServerNotification",
+                "desc": "Notifications sent by the MBeanServerDelegate MBean"
+              }
+            },
+            "canInvoke": true,
+            "attr": {
+              "ImplementationName": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "The JMX implementation name (the name of this product)"
+              },
+              "MBeanServerId": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "The MBean server agent identification"
+              },
+              "ImplementationVersion": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "The JMX implementation version (the version of this product)."
+              },
+              "SpecificationVersion": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "The version of the JMX specification implemented by this product."
+              },
+              "SpecificationVendor": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "The vendor of the JMX specification implemented by this product."
+              },
+              "SpecificationName": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "The full name of the JMX specification implemented by this product."
+              },
+              "ImplementationVendor": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "the JMX implementation vendor (the vendor of this product)."
+              }
+            },
+            "desc": "Represents  the MBean server from the management point of view."
+          }
+        },
+        "java.util.logging": {
+          "type\u003dLogging": {
+            "op": {
+              "getLoggerLevel": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "java.lang.String",
+                    "desc": "p0"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "getLoggerLevel"
+              },
+              "getParentLoggerName": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "java.lang.String",
+                    "desc": "p0"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "getParentLoggerName"
+              },
+              "setLoggerLevel": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "java.lang.String",
+                    "desc": "p0"
+                  },
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": "p1"
+                  }
+                ],
+                "ret": "void",
+                "desc": "setLoggerLevel"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "LoggerNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "LoggerNames"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          }
+        },
+        "jdk.management.jfr": {
+          "type\u003dFlightRecorder": {
+            "op": {
+              "getRecordingOptions": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  }
+                ],
+                "ret": "javax.management.openmbean.TabularData",
+                "desc": "getRecordingOptions"
+              },
+              "takeSnapshot": {
+                "args": [],
+                "ret": "long",
+                "desc": "takeSnapshot"
+              },
+              "closeRecording": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  }
+                ],
+                "ret": "void",
+                "desc": "closeRecording"
+              },
+              "newRecording": {
+                "args": [],
+                "ret": "long",
+                "desc": "newRecording"
+              },
+              "setRecordingSettings": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  },
+                  {
+                    "name": "p1",
+                    "type": "javax.management.openmbean.TabularData",
+                    "desc": "p1"
+                  }
+                ],
+                "ret": "void",
+                "desc": "setRecordingSettings"
+              },
+              "openStream": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  },
+                  {
+                    "name": "p1",
+                    "type": "javax.management.openmbean.TabularData",
+                    "desc": "p1"
+                  }
+                ],
+                "ret": "long",
+                "desc": "openStream"
+              },
+              "cloneRecording": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  },
+                  {
+                    "name": "p1",
+                    "type": "boolean",
+                    "desc": "p1"
+                  }
+                ],
+                "ret": "long",
+                "desc": "cloneRecording"
+              },
+              "setRecordingOptions": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  },
+                  {
+                    "name": "p1",
+                    "type": "javax.management.openmbean.TabularData",
+                    "desc": "p1"
+                  }
+                ],
+                "ret": "void",
+                "desc": "setRecordingOptions"
+              },
+              "copyTo": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  },
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": "p1"
+                  }
+                ],
+                "ret": "void",
+                "desc": "copyTo"
+              },
+              "startRecording": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  }
+                ],
+                "ret": "void",
+                "desc": "startRecording"
+              },
+              "closeStream": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  }
+                ],
+                "ret": "void",
+                "desc": "closeStream"
+              },
+              "getRecordingSettings": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  }
+                ],
+                "ret": "javax.management.openmbean.TabularData",
+                "desc": "getRecordingSettings"
+              },
+              "setPredefinedConfiguration": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  },
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": "p1"
+                  }
+                ],
+                "ret": "void",
+                "desc": "setPredefinedConfiguration"
+              },
+              "readStream": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  }
+                ],
+                "ret": "[B",
+                "desc": "readStream"
+              },
+              "setConfiguration": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  },
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": "p1"
+                  }
+                ],
+                "ret": "void",
+                "desc": "setConfiguration"
+              },
+              "stopRecording": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "long",
+                    "desc": "p0"
+                  }
+                ],
+                "ret": "boolean",
+                "desc": "stopRecording"
+              }
+            },
+            "not": {
+              "javax.management.AttributeChangeNotification": {
+                "types": [
+                  "jmx.attribute.change"
+                ],
+                "name": "javax.management.AttributeChangeNotification",
+                "desc": "Notifies if the RecordingState has changed for one of the recordings, for example if a recording starts or stops"
+              }
+            },
+            "canInvoke": true,
+            "attr": {
+              "EventTypes": {
+                "rw": false,
+                "type": "[Ljavax.management.openmbean.CompositeData;",
+                "desc": "EventTypes"
+              },
+              "Recordings": {
+                "rw": false,
+                "type": "[Ljavax.management.openmbean.CompositeData;",
+                "desc": "Recordings"
+              },
+              "Configurations": {
+                "rw": false,
+                "type": "[Ljavax.management.openmbean.CompositeData;",
+                "desc": "Configurations"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          }
+        },
+        "java.lang": {
+          "name\u003dCopy,type\u003dGarbageCollector": {
+            "op": {},
+            "not": {
+              "javax.management.Notification": {
+                "types": [
+                  "com.sun.management.gc.notification"
+                ],
+                "name": "javax.management.Notification",
+                "desc": "GC Notification"
+              }
+            },
+            "canInvoke": true,
+            "attr": {
+              "MemoryPoolNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryPoolNames"
+              },
+              "LastGcInfo": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "LastGcInfo"
+              },
+              "CollectionTime": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionTime"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "CollectionCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionCount"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dThreading": {
+            "op": {
+              "getThreadCpuTime": [
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "[J",
+                      "desc": "p0"
+                    }
+                  ],
+                  "ret": "[J",
+                  "desc": "getThreadCpuTime"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "long",
+                      "desc": "p0"
+                    }
+                  ],
+                  "ret": "long",
+                  "desc": "getThreadCpuTime"
+                }
+              ],
+              "findDeadlockedThreads": {
+                "args": [],
+                "ret": "[J",
+                "desc": "findDeadlockedThreads"
+              },
+              "getThreadInfo": [
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "long",
+                      "desc": "p0"
+                    }
+                  ],
+                  "ret": "javax.management.openmbean.CompositeData",
+                  "desc": "getThreadInfo"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "[J",
+                      "desc": "p0"
+                    },
+                    {
+                      "name": "p1",
+                      "type": "boolean",
+                      "desc": "p1"
+                    },
+                    {
+                      "name": "p2",
+                      "type": "boolean",
+                      "desc": "p2"
+                    },
+                    {
+                      "name": "p3",
+                      "type": "int",
+                      "desc": "p3"
+                    }
+                  ],
+                  "ret": "[Ljavax.management.openmbean.CompositeData;",
+                  "desc": "getThreadInfo"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "[J",
+                      "desc": "p0"
+                    },
+                    {
+                      "name": "p1",
+                      "type": "boolean",
+                      "desc": "p1"
+                    },
+                    {
+                      "name": "p2",
+                      "type": "boolean",
+                      "desc": "p2"
+                    }
+                  ],
+                  "ret": "[Ljavax.management.openmbean.CompositeData;",
+                  "desc": "getThreadInfo"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "[J",
+                      "desc": "p0"
+                    },
+                    {
+                      "name": "p1",
+                      "type": "int",
+                      "desc": "p1"
+                    }
+                  ],
+                  "ret": "[Ljavax.management.openmbean.CompositeData;",
+                  "desc": "getThreadInfo"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "long",
+                      "desc": "p0"
+                    },
+                    {
+                      "name": "p1",
+                      "type": "int",
+                      "desc": "p1"
+                    }
+                  ],
+                  "ret": "javax.management.openmbean.CompositeData",
+                  "desc": "getThreadInfo"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "[J",
+                      "desc": "p0"
+                    }
+                  ],
+                  "ret": "[Ljavax.management.openmbean.CompositeData;",
+                  "desc": "getThreadInfo"
+                }
+              ],
+              "getThreadAllocatedBytes": [
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "[J",
+                      "desc": "p0"
+                    }
+                  ],
+                  "ret": "[J",
+                  "desc": "getThreadAllocatedBytes"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "long",
+                      "desc": "p0"
+                    }
+                  ],
+                  "ret": "long",
+                  "desc": "getThreadAllocatedBytes"
+                }
+              ],
+              "getThreadUserTime": [
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "[J",
+                      "desc": "p0"
+                    }
+                  ],
+                  "ret": "[J",
+                  "desc": "getThreadUserTime"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "long",
+                      "desc": "p0"
+                    }
+                  ],
+                  "ret": "long",
+                  "desc": "getThreadUserTime"
+                }
+              ],
+              "findMonitorDeadlockedThreads": {
+                "args": [],
+                "ret": "[J",
+                "desc": "findMonitorDeadlockedThreads"
+              },
+              "resetPeakThreadCount": {
+                "args": [],
+                "ret": "void",
+                "desc": "resetPeakThreadCount"
+              },
+              "dumpAllThreads": [
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "boolean",
+                      "desc": "p0"
+                    },
+                    {
+                      "name": "p1",
+                      "type": "boolean",
+                      "desc": "p1"
+                    }
+                  ],
+                  "ret": "[Ljavax.management.openmbean.CompositeData;",
+                  "desc": "dumpAllThreads"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p0",
+                      "type": "boolean",
+                      "desc": "p0"
+                    },
+                    {
+                      "name": "p1",
+                      "type": "boolean",
+                      "desc": "p1"
+                    },
+                    {
+                      "name": "p2",
+                      "type": "int",
+                      "desc": "p2"
+                    }
+                  ],
+                  "ret": "[Ljavax.management.openmbean.CompositeData;",
+                  "desc": "dumpAllThreads"
+                }
+              ]
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "ThreadAllocatedMemorySupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "ThreadAllocatedMemorySupported"
+              },
+              "ThreadContentionMonitoringEnabled": {
+                "rw": true,
+                "type": "boolean",
+                "desc": "ThreadContentionMonitoringEnabled"
+              },
+              "CurrentThreadAllocatedBytes": {
+                "rw": false,
+                "type": "long",
+                "desc": "CurrentThreadAllocatedBytes"
+              },
+              "TotalStartedThreadCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "TotalStartedThreadCount"
+              },
+              "CurrentThreadCpuTimeSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CurrentThreadCpuTimeSupported"
+              },
+              "CurrentThreadUserTime": {
+                "rw": false,
+                "type": "long",
+                "desc": "CurrentThreadUserTime"
+              },
+              "AllThreadIds": {
+                "rw": false,
+                "type": "[J",
+                "desc": "AllThreadIds"
+              },
+              "PeakThreadCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "PeakThreadCount"
+              },
+              "ThreadAllocatedMemoryEnabled": {
+                "rw": true,
+                "type": "boolean",
+                "desc": "ThreadAllocatedMemoryEnabled"
+              },
+              "CurrentThreadCpuTime": {
+                "rw": false,
+                "type": "long",
+                "desc": "CurrentThreadCpuTime"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              },
+              "ThreadContentionMonitoringSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "ThreadContentionMonitoringSupported"
+              },
+              "ThreadCpuTimeSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "ThreadCpuTimeSupported"
+              },
+              "ThreadCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "ThreadCount"
+              },
+              "ThreadCpuTimeEnabled": {
+                "rw": true,
+                "type": "boolean",
+                "desc": "ThreadCpuTimeEnabled"
+              },
+              "ObjectMonitorUsageSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "ObjectMonitorUsageSupported"
+              },
+              "SynchronizerUsageSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "SynchronizerUsageSupported"
+              },
+              "DaemonThreadCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "DaemonThreadCount"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dEden Space,type\u003dMemoryPool": {
+            "op": {
+              "resetPeakUsage": {
+                "args": [],
+                "ret": "void",
+                "desc": "resetPeakUsage"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "Usage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "Usage"
+              },
+              "UsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "UsageThresholdCount"
+              },
+              "MemoryManagerNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryManagerNames"
+              },
+              "UsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdSupported"
+              },
+              "UsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "UsageThreshold"
+              },
+              "CollectionUsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionUsageThresholdCount"
+              },
+              "PeakUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "PeakUsage"
+              },
+              "UsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdExceeded"
+              },
+              "CollectionUsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "CollectionUsageThreshold"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              },
+              "Type": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Type"
+              },
+              "CollectionUsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdSupported"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "CollectionUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "CollectionUsage"
+              },
+              "CollectionUsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdExceeded"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dMemory": {
+            "op": {
+              "gc": {
+                "args": [],
+                "ret": "void",
+                "desc": "gc"
+              }
+            },
+            "not": {
+              "javax.management.Notification": {
+                "types": [
+                  "java.management.memory.threshold.exceeded",
+                  "java.management.memory.collection.threshold.exceeded"
+                ],
+                "name": "javax.management.Notification",
+                "desc": "Memory Notification"
+              }
+            },
+            "canInvoke": true,
+            "attr": {
+              "ObjectPendingFinalizationCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "ObjectPendingFinalizationCount"
+              },
+              "Verbose": {
+                "rw": true,
+                "type": "boolean",
+                "desc": "Verbose"
+              },
+              "HeapMemoryUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "HeapMemoryUsage"
+              },
+              "NonHeapMemoryUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "NonHeapMemoryUsage"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dMetaspace,type\u003dMemoryPool": {
+            "op": {
+              "resetPeakUsage": {
+                "args": [],
+                "ret": "void",
+                "desc": "resetPeakUsage"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "Usage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "Usage"
+              },
+              "UsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "UsageThresholdCount"
+              },
+              "MemoryManagerNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryManagerNames"
+              },
+              "UsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdSupported"
+              },
+              "UsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "UsageThreshold"
+              },
+              "CollectionUsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionUsageThresholdCount"
+              },
+              "PeakUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "PeakUsage"
+              },
+              "UsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdExceeded"
+              },
+              "CollectionUsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "CollectionUsageThreshold"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              },
+              "Type": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Type"
+              },
+              "CollectionUsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdSupported"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "CollectionUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "CollectionUsage"
+              },
+              "CollectionUsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdExceeded"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dOperatingSystem": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "OpenFileDescriptorCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "OpenFileDescriptorCount"
+              },
+              "CommittedVirtualMemorySize": {
+                "rw": false,
+                "type": "long",
+                "desc": "CommittedVirtualMemorySize"
+              },
+              "FreePhysicalMemorySize": {
+                "rw": false,
+                "type": "long",
+                "desc": "FreePhysicalMemorySize"
+              },
+              "SystemLoadAverage": {
+                "rw": false,
+                "type": "double",
+                "desc": "SystemLoadAverage"
+              },
+              "Arch": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Arch"
+              },
+              "ProcessCpuLoad": {
+                "rw": false,
+                "type": "double",
+                "desc": "ProcessCpuLoad"
+              },
+              "FreeSwapSpaceSize": {
+                "rw": false,
+                "type": "long",
+                "desc": "FreeSwapSpaceSize"
+              },
+              "TotalPhysicalMemorySize": {
+                "rw": false,
+                "type": "long",
+                "desc": "TotalPhysicalMemorySize"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              },
+              "TotalSwapSpaceSize": {
+                "rw": false,
+                "type": "long",
+                "desc": "TotalSwapSpaceSize"
+              },
+              "TotalMemorySize": {
+                "rw": false,
+                "type": "long",
+                "desc": "TotalMemorySize"
+              },
+              "ProcessCpuTime": {
+                "rw": false,
+                "type": "long",
+                "desc": "ProcessCpuTime"
+              },
+              "MaxFileDescriptorCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "MaxFileDescriptorCount"
+              },
+              "SystemCpuLoad": {
+                "rw": false,
+                "type": "double",
+                "desc": "SystemCpuLoad"
+              },
+              "Version": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Version"
+              },
+              "AvailableProcessors": {
+                "rw": false,
+                "type": "int",
+                "desc": "AvailableProcessors"
+              },
+              "CpuLoad": {
+                "rw": false,
+                "type": "double",
+                "desc": "CpuLoad"
+              },
+              "FreeMemorySize": {
+                "rw": false,
+                "type": "long",
+                "desc": "FreeMemorySize"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dCodeCacheManager,type\u003dMemoryManager": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "MemoryPoolNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryPoolNames"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dMarkSweepCompact,type\u003dGarbageCollector": {
+            "op": {},
+            "not": {
+              "javax.management.Notification": {
+                "types": [
+                  "com.sun.management.gc.notification"
+                ],
+                "name": "javax.management.Notification",
+                "desc": "GC Notification"
+              }
+            },
+            "canInvoke": true,
+            "attr": {
+              "MemoryPoolNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryPoolNames"
+              },
+              "LastGcInfo": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "LastGcInfo"
+              },
+              "CollectionTime": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionTime"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "CollectionCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionCount"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dCodeHeap \u0027non-nmethods\u0027,type\u003dMemoryPool": {
+            "op": {
+              "resetPeakUsage": {
+                "args": [],
+                "ret": "void",
+                "desc": "resetPeakUsage"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "Usage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "Usage"
+              },
+              "UsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "UsageThresholdCount"
+              },
+              "MemoryManagerNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryManagerNames"
+              },
+              "UsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdSupported"
+              },
+              "UsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "UsageThreshold"
+              },
+              "CollectionUsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionUsageThresholdCount"
+              },
+              "PeakUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "PeakUsage"
+              },
+              "UsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdExceeded"
+              },
+              "CollectionUsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "CollectionUsageThreshold"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              },
+              "Type": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Type"
+              },
+              "CollectionUsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdSupported"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "CollectionUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "CollectionUsage"
+              },
+              "CollectionUsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdExceeded"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dCompressed Class Space,type\u003dMemoryPool": {
+            "op": {
+              "resetPeakUsage": {
+                "args": [],
+                "ret": "void",
+                "desc": "resetPeakUsage"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "Usage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "Usage"
+              },
+              "UsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "UsageThresholdCount"
+              },
+              "MemoryManagerNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryManagerNames"
+              },
+              "UsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdSupported"
+              },
+              "UsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "UsageThreshold"
+              },
+              "CollectionUsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionUsageThresholdCount"
+              },
+              "PeakUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "PeakUsage"
+              },
+              "UsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdExceeded"
+              },
+              "CollectionUsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "CollectionUsageThreshold"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              },
+              "Type": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Type"
+              },
+              "CollectionUsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdSupported"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "CollectionUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "CollectionUsage"
+              },
+              "CollectionUsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdExceeded"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dCodeHeap \u0027non-profiled nmethods\u0027,type\u003dMemoryPool": {
+            "op": {
+              "resetPeakUsage": {
+                "args": [],
+                "ret": "void",
+                "desc": "resetPeakUsage"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "Usage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "Usage"
+              },
+              "UsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "UsageThresholdCount"
+              },
+              "MemoryManagerNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryManagerNames"
+              },
+              "UsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdSupported"
+              },
+              "UsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "UsageThreshold"
+              },
+              "CollectionUsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionUsageThresholdCount"
+              },
+              "PeakUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "PeakUsage"
+              },
+              "UsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdExceeded"
+              },
+              "CollectionUsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "CollectionUsageThreshold"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              },
+              "Type": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Type"
+              },
+              "CollectionUsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdSupported"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "CollectionUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "CollectionUsage"
+              },
+              "CollectionUsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdExceeded"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dTenured Gen,type\u003dMemoryPool": {
+            "op": {
+              "resetPeakUsage": {
+                "args": [],
+                "ret": "void",
+                "desc": "resetPeakUsage"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "Usage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "Usage"
+              },
+              "UsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "UsageThresholdCount"
+              },
+              "MemoryManagerNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryManagerNames"
+              },
+              "UsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdSupported"
+              },
+              "UsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "UsageThreshold"
+              },
+              "CollectionUsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionUsageThresholdCount"
+              },
+              "PeakUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "PeakUsage"
+              },
+              "UsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdExceeded"
+              },
+              "CollectionUsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "CollectionUsageThreshold"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              },
+              "Type": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Type"
+              },
+              "CollectionUsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdSupported"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "CollectionUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "CollectionUsage"
+              },
+              "CollectionUsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdExceeded"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dSurvivor Space,type\u003dMemoryPool": {
+            "op": {
+              "resetPeakUsage": {
+                "args": [],
+                "ret": "void",
+                "desc": "resetPeakUsage"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "Usage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "Usage"
+              },
+              "UsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "UsageThresholdCount"
+              },
+              "MemoryManagerNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryManagerNames"
+              },
+              "UsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdSupported"
+              },
+              "UsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "UsageThreshold"
+              },
+              "CollectionUsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionUsageThresholdCount"
+              },
+              "PeakUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "PeakUsage"
+              },
+              "UsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdExceeded"
+              },
+              "CollectionUsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "CollectionUsageThreshold"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              },
+              "Type": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Type"
+              },
+              "CollectionUsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdSupported"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "CollectionUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "CollectionUsage"
+              },
+              "CollectionUsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdExceeded"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dClassLoading": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "LoadedClassCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "LoadedClassCount"
+              },
+              "UnloadedClassCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "UnloadedClassCount"
+              },
+              "Verbose": {
+                "rw": true,
+                "type": "boolean",
+                "desc": "Verbose"
+              },
+              "TotalLoadedClassCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "TotalLoadedClassCount"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dCodeHeap \u0027profiled nmethods\u0027,type\u003dMemoryPool": {
+            "op": {
+              "resetPeakUsage": {
+                "args": [],
+                "ret": "void",
+                "desc": "resetPeakUsage"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "Usage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "Usage"
+              },
+              "UsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "UsageThresholdCount"
+              },
+              "MemoryManagerNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryManagerNames"
+              },
+              "UsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdSupported"
+              },
+              "UsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "UsageThreshold"
+              },
+              "CollectionUsageThresholdCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CollectionUsageThresholdCount"
+              },
+              "PeakUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "PeakUsage"
+              },
+              "UsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "UsageThresholdExceeded"
+              },
+              "CollectionUsageThreshold": {
+                "rw": true,
+                "type": "long",
+                "desc": "CollectionUsageThreshold"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              },
+              "Type": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Type"
+              },
+              "CollectionUsageThresholdSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdSupported"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "CollectionUsage": {
+                "rw": false,
+                "type": "javax.management.openmbean.CompositeData",
+                "desc": "CollectionUsage"
+              },
+              "CollectionUsageThresholdExceeded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CollectionUsageThresholdExceeded"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dCompilation": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "CompilationTimeMonitoringSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CompilationTimeMonitoringSupported"
+              },
+              "TotalCompilationTime": {
+                "rw": false,
+                "type": "long",
+                "desc": "TotalCompilationTime"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dMetaspace Manager,type\u003dMemoryManager": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "MemoryPoolNames": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "MemoryPoolNames"
+              },
+              "Valid": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Valid"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dRuntime": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "SpecVendor": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "SpecVendor"
+              },
+              "ClassPath": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "ClassPath"
+              },
+              "InputArguments": {
+                "rw": false,
+                "type": "[Ljava.lang.String;",
+                "desc": "InputArguments"
+              },
+              "Uptime": {
+                "rw": false,
+                "type": "long",
+                "desc": "Uptime"
+              },
+              "VmName": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "VmName"
+              },
+              "StartTime": {
+                "rw": false,
+                "type": "long",
+                "desc": "StartTime"
+              },
+              "VmVersion": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "VmVersion"
+              },
+              "SpecName": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "SpecName"
+              },
+              "Pid": {
+                "rw": false,
+                "type": "long",
+                "desc": "Pid"
+              },
+              "ManagementSpecVersion": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "ManagementSpecVersion"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              },
+              "VmVendor": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "VmVendor"
+              },
+              "LibraryPath": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "LibraryPath"
+              },
+              "BootClassPath": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "BootClassPath"
+              },
+              "SpecVersion": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "SpecVersion"
+              },
+              "SystemProperties": {
+                "rw": false,
+                "type": "javax.management.openmbean.TabularData",
+                "desc": "SystemProperties"
+              },
+              "BootClassPathSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "BootClassPathSupported"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          }
+        },
+        "com.sun.management": {
+          "type\u003dHotSpotDiagnostic": {
+            "op": {
+              "setVMOption": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "java.lang.String",
+                    "desc": "p0"
+                  },
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": "p1"
+                  }
+                ],
+                "ret": "void",
+                "desc": "setVMOption"
+              },
+              "getVMOption": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "java.lang.String",
+                    "desc": "p0"
+                  }
+                ],
+                "ret": "javax.management.openmbean.CompositeData",
+                "desc": "getVMOption"
+              },
+              "dumpHeap": {
+                "args": [
+                  {
+                    "name": "p0",
+                    "type": "java.lang.String",
+                    "desc": "p0"
+                  },
+                  {
+                    "name": "p1",
+                    "type": "boolean",
+                    "desc": "p1"
+                  }
+                ],
+                "ret": "void",
+                "desc": "dumpHeap"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "DiagnosticOptions": {
+                "rw": false,
+                "type": "[Ljavax.management.openmbean.CompositeData;",
+                "desc": "DiagnosticOptions"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dDiagnosticCommand": {
+            "op": {
+              "vmUptime": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Print VM uptime."
+              },
+              "jfrDump": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Copies contents of a JFR recording to file. Either the name or the recording id must be specified."
+              },
+              "jfrStart": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Starts a new JFR recording"
+              },
+              "threadPrint": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Print all threads with stacktraces."
+              },
+              "jfrStop": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Stops a JFR recording"
+              },
+              "vmCds": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Dump a static or dynamic shared archive including all shareable classes"
+              },
+              "compilerCodelist": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Print all compiled methods in code cache that are alive"
+              },
+              "vmEvents": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Print VM event logs"
+              },
+              "jfrCheck": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Checks running JFR recording(s)"
+              },
+              "vmSymboltable": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Dump symbol table."
+              },
+              "gcRun": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Call java.lang.System.gc()."
+              },
+              "systemTrimNativeHeap": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Attempts to free up memory by trimming the C-heap."
+              },
+              "vmClassloaders": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Prints classloader hierarchy."
+              },
+              "vmMetaspace": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Prints the statistics for the metaspace"
+              },
+              "compilerDirectivesPrint": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Print all active compiler directives."
+              },
+              "vmSetFlag": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Sets VM flag option using the provided value."
+              },
+              "compilerDirectivesAdd": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Add compiler directives from file."
+              },
+              "vmDynlibs": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Print loaded dynamic libraries."
+              },
+              "vmPrintTouchedMethods": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Print all methods that have ever been touched during the lifetime of this JVM."
+              },
+              "compilerCodecache": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Print code cache layout and bounds."
+              },
+              "vmNativeMemory": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Print native memory usage"
+              },
+              "compilerPerfmap": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Write map file for Linux perf tool."
+              },
+              "gcClassHistogram": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Provide statistics about the Java heap usage."
+              },
+              "gcRunFinalization": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Call java.lang.System.runFinalization()."
+              },
+              "jvmtiDataDump": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Signal the JVM to do a data-dump request for JVMTI."
+              },
+              "gcFinalizerInfo": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Provide information about Java finalization queue."
+              },
+              "vmStringtable": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Dump string table."
+              },
+              "help": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "For more information about a specific command use \u0027help \u003ccommand\u003e\u0027. With no argument this will show a list of available commands. \u0027help all\u0027 will show help for all commands."
+              },
+              "jfrConfigure": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Configure JFR"
+              },
+              "vmSystemProperties": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Print system properties."
+              },
+              "compilerDirectivesClear": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Remove all compiler directives."
+              },
+              "vmSystemdictionary": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Prints the statistics for dictionary hashtable sizes and bucket length"
+              },
+              "vmClassloaderStats": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Print statistics about all ClassLoaders."
+              },
+              "compilerDirectivesRemove": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Remove latest added compiler directive."
+              },
+              "gcHeapInfo": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Provide generic Java heap information."
+              },
+              "compilerCodeHeapAnalytics": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Print CodeHeap analytics"
+              },
+              "vmVersion": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Print JVM version information."
+              },
+              "vmInfo": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Print information about JVM environment and status."
+              },
+              "compilerQueue": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Print methods queued for compilation."
+              },
+              "vmFlags": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Print VM flag options and their current values."
+              },
+              "vmLog": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Lists current log configuration, enables/disables/configures a log output, or rotates all logs."
+              },
+              "jvmtiAgentLoad": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Load JVMTI native agent."
+              },
+              "vmClassHierarchy": {
+                "args": [
+                  {
+                    "name": "arguments",
+                    "type": "[Ljava.lang.String;",
+                    "desc": "Array of Diagnostic Commands Arguments and Options"
+                  }
+                ],
+                "ret": "java.lang.String",
+                "desc": "Print a list of all loaded classes, indented to show the class hiearchy. The name of each class is followed by the ClassLoaderData* of its ClassLoader, or \"null\" if loaded by the bootstrap class loader."
+              },
+              "vmCommandLine": {
+                "args": [],
+                "ret": "java.lang.String",
+                "desc": "Print the command line used to start this VM instance."
+              }
+            },
+            "not": {
+              "javax.management.Notification": {
+                "types": [
+                  "jmx.mbean.info.changed"
+                ],
+                "name": "javax.management.Notification",
+                "desc": "Diagnostic Framework Notification"
+              }
+            },
+            "canInvoke": true,
+            "attr": {},
+            "desc": "Diagnostic Commands"
+          }
+        },
+        "hawtio": {
+          "type\u003dRegistry": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "UpdateCounter": {
+                "rw": false,
+                "type": "long",
+                "desc": "Attribute exposed for management"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dsecurity,name\u003dRBACRegistry": {
+            "op": {
+              "list": [
+                {
+                  "args": [],
+                  "ret": "java.util.Map",
+                  "desc": "Operation exposed for management"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p1",
+                      "type": "java.lang.String",
+                      "desc": ""
+                    }
+                  ],
+                  "ret": "java.util.Map",
+                  "desc": "Operation exposed for management"
+                }
+              ]
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {},
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dAbout": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "HawtioVersion": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Attribute exposed for management"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dsecurity,area\u003djmx,name\u003dHawtioDummyJMXSecurity": {
+            "op": {
+              "canInvoke": [
+                {
+                  "args": [
+                    {
+                      "name": "p1",
+                      "type": "java.lang.String",
+                      "desc": ""
+                    }
+                  ],
+                  "ret": "boolean",
+                  "desc": "Operation exposed for management"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p1",
+                      "type": "java.util.Map",
+                      "desc": ""
+                    }
+                  ],
+                  "ret": "javax.management.openmbean.TabularData",
+                  "desc": "Operation exposed for management"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p1",
+                      "type": "java.lang.String",
+                      "desc": ""
+                    },
+                    {
+                      "name": "p2",
+                      "type": "java.lang.String",
+                      "desc": ""
+                    },
+                    {
+                      "name": "p3",
+                      "type": "[Ljava.lang.String;",
+                      "desc": ""
+                    }
+                  ],
+                  "ret": "boolean",
+                  "desc": "Operation exposed for management"
+                },
+                {
+                  "args": [
+                    {
+                      "name": "p1",
+                      "type": "java.lang.String",
+                      "desc": ""
+                    },
+                    {
+                      "name": "p2",
+                      "type": "java.lang.String",
+                      "desc": ""
+                    }
+                  ],
+                  "ret": "boolean",
+                  "desc": "Operation exposed for management"
+                }
+              ]
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {},
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dQuartzFacade": {
+            "op": {
+              "updateCronTrigger": {
+                "args": [
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p2",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p3",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p4",
+                    "type": "int",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p5",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p6",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  }
+                ],
+                "ret": "void",
+                "desc": "Operation exposed for management"
+              },
+              "updateSimpleTrigger": {
+                "args": [
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p2",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p3",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p4",
+                    "type": "int",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p5",
+                    "type": "int",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p6",
+                    "type": "long",
+                    "desc": ""
+                  }
+                ],
+                "ret": "void",
+                "desc": "Operation exposed for management"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {},
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dTreeWatcher": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "Counter": {
+                "rw": false,
+                "type": "long",
+                "desc": "Attribute exposed for management"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          }
+        },
+        "java.nio": {
+          "name\u003ddirect,type\u003dBufferPool": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "TotalCapacity": {
+                "rw": false,
+                "type": "long",
+                "desc": "TotalCapacity"
+              },
+              "MemoryUsed": {
+                "rw": false,
+                "type": "long",
+                "desc": "MemoryUsed"
+              },
+              "Count": {
+                "rw": false,
+                "type": "long",
+                "desc": "Count"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dmapped,type\u003dBufferPool": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "TotalCapacity": {
+                "rw": false,
+                "type": "long",
+                "desc": "TotalCapacity"
+              },
+              "MemoryUsed": {
+                "rw": false,
+                "type": "long",
+                "desc": "MemoryUsed"
+              },
+              "Count": {
+                "rw": false,
+                "type": "long",
+                "desc": "Count"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003dmapped - \u0027non-volatile memory\u0027,type\u003dBufferPool": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "TotalCapacity": {
+                "rw": false,
+                "type": "long",
+                "desc": "TotalCapacity"
+              },
+              "MemoryUsed": {
+                "rw": false,
+                "type": "long",
+                "desc": "MemoryUsed"
+              },
+              "Count": {
+                "rw": false,
+                "type": "long",
+                "desc": "Count"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "ObjectName": {
+                "rw": false,
+                "type": "javax.management.ObjectName",
+                "desc": "ObjectName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          }
+        },
+        "org.xnio": {
+          "type\u003dXnio,provider\u003d\"nio\",worker\u003d\"XNIO-2\"": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "ServerMXBeans": {
+                "rw": false,
+                "type": "[Ljavax.management.ObjectName;",
+                "desc": "ServerMXBeans"
+              },
+              "ProviderName": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "ProviderName"
+              },
+              "WorkerPoolSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "WorkerPoolSize"
+              },
+              "WorkerQueueSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "WorkerQueueSize"
+              },
+              "ShutdownRequested": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "ShutdownRequested"
+              },
+              "IoThreadCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "IoThreadCount"
+              },
+              "BusyWorkerThreadCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "BusyWorkerThreadCount"
+              },
+              "CoreWorkerPoolSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "CoreWorkerPoolSize"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "MaxWorkerPoolSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "MaxWorkerPoolSize"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dXnio,provider\u003d\"nio\",worker\u003d\"XNIO-1\",address\u003d\"/[0:0:0:0:0:0:0:0]:10000\"": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "ProviderName": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "ProviderName"
+              },
+              "ConnectionCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "ConnectionCount"
+              },
+              "ConnectionLimitLowWater": {
+                "rw": false,
+                "type": "int",
+                "desc": "ConnectionLimitLowWater"
+              },
+              "BindAddress": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "BindAddress"
+              },
+              "ConnectionLimitHighWater": {
+                "rw": false,
+                "type": "int",
+                "desc": "ConnectionLimitHighWater"
+              },
+              "WorkerName": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "WorkerName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dXnio,provider\u003d\"nio\"": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "Version": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Version"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dXnio,provider\u003d\"nio\",worker\u003d\"XNIO-1\"": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "ServerMXBeans": {
+                "rw": false,
+                "type": "[Ljavax.management.ObjectName;",
+                "desc": "ServerMXBeans"
+              },
+              "ProviderName": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "ProviderName"
+              },
+              "WorkerPoolSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "WorkerPoolSize"
+              },
+              "WorkerQueueSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "WorkerQueueSize"
+              },
+              "ShutdownRequested": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "ShutdownRequested"
+              },
+              "IoThreadCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "IoThreadCount"
+              },
+              "BusyWorkerThreadCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "BusyWorkerThreadCount"
+              },
+              "CoreWorkerPoolSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "CoreWorkerPoolSize"
+              },
+              "Name": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "Name"
+              },
+              "MaxWorkerPoolSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "MaxWorkerPoolSize"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dXnio,provider\u003d\"nio\",worker\u003d\"XNIO-2\",address\u003d\"/[0:0:0:0:0:0:0:0]:10001\"": {
+            "op": {},
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "ProviderName": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "ProviderName"
+              },
+              "ConnectionCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "ConnectionCount"
+              },
+              "ConnectionLimitLowWater": {
+                "rw": false,
+                "type": "int",
+                "desc": "ConnectionLimitLowWater"
+              },
+              "BindAddress": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "BindAddress"
+              },
+              "ConnectionLimitHighWater": {
+                "rw": false,
+                "type": "int",
+                "desc": "ConnectionLimitHighWater"
+              },
+              "WorkerName": {
+                "rw": false,
+                "type": "java.lang.String",
+                "desc": "WorkerName"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          }
+        },
+        "jboss.threads": {
+          "name\u003d\"XNIO-1\",type\u003dthread-pool": {
+            "op": {
+              "prestartCoreThread": {
+                "args": [],
+                "ret": "boolean",
+                "desc": "prestartCoreThread"
+              },
+              "prestartAllCoreThreads": {
+                "args": [],
+                "ret": "int",
+                "desc": "prestartAllCoreThreads"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "GrowthResistanceSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "GrowthResistanceSupported"
+              },
+              "MaximumPoolSize": {
+                "rw": true,
+                "type": "int",
+                "desc": "MaximumPoolSize"
+              },
+              "PoolSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "PoolSize"
+              },
+              "CorePoolSize": {
+                "rw": true,
+                "type": "int",
+                "desc": "CorePoolSize"
+              },
+              "Terminated": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Terminated"
+              },
+              "AllowCoreThreadTimeOut": {
+                "rw": true,
+                "type": "boolean",
+                "desc": "AllowCoreThreadTimeOut"
+              },
+              "GrowthResistance": {
+                "rw": true,
+                "type": "float",
+                "desc": "GrowthResistance"
+              },
+              "SubmittedTaskCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "SubmittedTaskCount"
+              },
+              "CorePoolSizeSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CorePoolSizeSupported"
+              },
+              "Terminating": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Terminating"
+              },
+              "QueueSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "QueueSize"
+              },
+              "KeepAliveTimeSeconds": {
+                "rw": true,
+                "type": "long",
+                "desc": "KeepAliveTimeSeconds"
+              },
+              "Shutdown": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Shutdown"
+              },
+              "CompletedTaskCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CompletedTaskCount"
+              },
+              "QueueBounded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "QueueBounded"
+              },
+              "LargestPoolSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "LargestPoolSize"
+              },
+              "CoreThreadPrestartSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CoreThreadPrestartSupported"
+              },
+              "MaximumQueueSize": {
+                "rw": true,
+                "type": "int",
+                "desc": "MaximumQueueSize"
+              },
+              "ActiveCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "ActiveCount"
+              },
+              "LargestQueueSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "LargestQueueSize"
+              },
+              "RejectedTaskCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "RejectedTaskCount"
+              },
+              "QueueSizeModifiable": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "QueueSizeModifiable"
+              },
+              "SpinMissCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "SpinMissCount"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          },
+          "name\u003d\"XNIO-2\",type\u003dthread-pool": {
+            "op": {
+              "prestartCoreThread": {
+                "args": [],
+                "ret": "boolean",
+                "desc": "prestartCoreThread"
+              },
+              "prestartAllCoreThreads": {
+                "args": [],
+                "ret": "int",
+                "desc": "prestartAllCoreThreads"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "GrowthResistanceSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "GrowthResistanceSupported"
+              },
+              "MaximumPoolSize": {
+                "rw": true,
+                "type": "int",
+                "desc": "MaximumPoolSize"
+              },
+              "PoolSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "PoolSize"
+              },
+              "CorePoolSize": {
+                "rw": true,
+                "type": "int",
+                "desc": "CorePoolSize"
+              },
+              "Terminated": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Terminated"
+              },
+              "AllowCoreThreadTimeOut": {
+                "rw": true,
+                "type": "boolean",
+                "desc": "AllowCoreThreadTimeOut"
+              },
+              "GrowthResistance": {
+                "rw": true,
+                "type": "float",
+                "desc": "GrowthResistance"
+              },
+              "SubmittedTaskCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "SubmittedTaskCount"
+              },
+              "CorePoolSizeSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CorePoolSizeSupported"
+              },
+              "Terminating": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Terminating"
+              },
+              "QueueSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "QueueSize"
+              },
+              "KeepAliveTimeSeconds": {
+                "rw": true,
+                "type": "long",
+                "desc": "KeepAliveTimeSeconds"
+              },
+              "Shutdown": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "Shutdown"
+              },
+              "CompletedTaskCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "CompletedTaskCount"
+              },
+              "QueueBounded": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "QueueBounded"
+              },
+              "LargestPoolSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "LargestPoolSize"
+              },
+              "CoreThreadPrestartSupported": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "CoreThreadPrestartSupported"
+              },
+              "MaximumQueueSize": {
+                "rw": true,
+                "type": "int",
+                "desc": "MaximumQueueSize"
+              },
+              "ActiveCount": {
+                "rw": false,
+                "type": "int",
+                "desc": "ActiveCount"
+              },
+              "LargestQueueSize": {
+                "rw": false,
+                "type": "int",
+                "desc": "LargestQueueSize"
+              },
+              "RejectedTaskCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "RejectedTaskCount"
+              },
+              "QueueSizeModifiable": {
+                "rw": false,
+                "type": "boolean",
+                "desc": "QueueSizeModifiable"
+              },
+              "SpinMissCount": {
+                "rw": false,
+                "type": "long",
+                "desc": "SpinMissCount"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          }
+        },
+        "jolokia": {
+          "type\u003dNotificationStore,agent\u003d10.217.0.214-10-71e520b4-servlet": {
+            "op": {
+              "pull": {
+                "args": [
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p2",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  }
+                ],
+                "ret": "org.jolokia.server.core.service.notification.NotificationResult",
+                "desc": "Operation exposed for management"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {},
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dDiscovery,agent\u003d10.217.0.214-10-71e520b4-servlet": {
+            "op": {
+              "lookupAgentsWithTimeout": {
+                "args": [
+                  {
+                    "name": "p1",
+                    "type": "int",
+                    "desc": ""
+                  }
+                ],
+                "ret": "java.util.List",
+                "desc": "Operation exposed for management"
+              },
+              "lookupAgentsWithTimeoutAndMulticastAddress": {
+                "args": [
+                  {
+                    "name": "p1",
+                    "type": "int",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p2",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p3",
+                    "type": "int",
+                    "desc": ""
+                  }
+                ],
+                "ret": "java.util.List",
+                "desc": "Operation exposed for management"
+              },
+              "lookupAgents": {
+                "args": [],
+                "ret": "java.util.List",
+                "desc": "Operation exposed for management"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {},
+            "desc": "Information on the management interface of the MBean"
+          },
+          "type\u003dConfig,agent\u003d10.217.0.214-10-71e520b4-servlet": {
+            "op": {
+              "setHistoryEntriesForOperation": {
+                "args": [
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p2",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p3",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p4",
+                    "type": "int",
+                    "desc": ""
+                  }
+                ],
+                "ret": "void",
+                "desc": "Operation exposed for management"
+              },
+              "setHistoryLimitForOperation": {
+                "args": [
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p2",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p3",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p4",
+                    "type": "int",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p5",
+                    "type": "long",
+                    "desc": ""
+                  }
+                ],
+                "ret": "void",
+                "desc": "Operation exposed for management"
+              },
+              "updateAndAdd": {
+                "args": [
+                  {
+                    "name": "p1",
+                    "type": "org.jolokia.server.core.request.JolokiaRequest",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p2",
+                    "type": "org.json.simple.JSONObject",
+                    "desc": ""
+                  }
+                ],
+                "ret": "void",
+                "desc": "Operation exposed for management"
+              },
+              "resetHistoryEntries": {
+                "args": [],
+                "ret": "void",
+                "desc": "Operation exposed for management"
+              },
+              "setHistoryEntriesForAttribute": {
+                "args": [
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p2",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p3",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p4",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p5",
+                    "type": "int",
+                    "desc": ""
+                  }
+                ],
+                "ret": "void",
+                "desc": "Operation exposed for management"
+              },
+              "setHistoryLimitForAttribute": {
+                "args": [
+                  {
+                    "name": "p1",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p2",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p3",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p4",
+                    "type": "java.lang.String",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p5",
+                    "type": "int",
+                    "desc": ""
+                  },
+                  {
+                    "name": "p6",
+                    "type": "long",
+                    "desc": ""
+                  }
+                ],
+                "ret": "void",
+                "desc": "Operation exposed for management"
+              }
+            },
+            "not": {},
+            "canInvoke": true,
+            "attr": {
+              "HistorySize": {
+                "rw": false,
+                "type": "int",
+                "desc": "Attribute exposed for management"
+              },
+              "HistoryMaxEntries": {
+                "rw": true,
+                "type": "int",
+                "desc": "Attribute exposed for management"
+              }
+            },
+            "desc": "Information on the management interface of the MBean"
+          }
+        }
+      }
+    },
+    "status": 200,
+    "timestamp": 1718220951
+  }
+}

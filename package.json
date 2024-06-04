@@ -11,7 +11,8 @@
   },
   "workspaces": [
     "packages/*",
-    "docker"
+    "docker",
+    "docker/*"
   ],
   "scripts": {
     "build": "yarn build:online && yarn license",

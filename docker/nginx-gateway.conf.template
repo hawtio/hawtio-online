@@ -1,6 +1,4 @@
 # vim: set filetype=nginx:
-js_import gateway from conf.d/nginx.js;
-js_set    $decodeRedirectUri gateway.decodeRedirectUri;
 
 proxy_cache_path /var/cache/nginx/pods levels=1:2 keys_zone=pods:2m max_size=4m inactive=60m use_temp_path=off;
 proxy_cache_path /var/cache/nginx/rbac levels=1:2 keys_zone=rbac:256k max_size=3m inactive=60m use_temp_path=off;
@@ -93,7 +91,16 @@ server {
         # Click jacking prevention to be used in addition to X-Frame-Options
         add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
 
-        return 307 $decodeRedirectUri;
+        proxy_pass                    https://localhost:3000/logout;
+        proxy_pass_request_headers    on;
+        proxy_pass_request_body       on;
+        proxy_redirect                off;
+        proxy_ssl_verify              on;
+        proxy_ssl_trusted_certificate /var/run/secrets/kubernetes.io/serviceaccount/ca.crt;
+        proxy_ssl_session_reuse       on;
+        proxy_http_version            1.1;
+        proxy_set_header Upgrade      $http_upgrade;
+        proxy_set_header Connection   $connection_upgrade;
     }
 
     # Static content serving
@@ -125,17 +132,27 @@ server {
     #
     location /master {
         add_header                    location-rule MASTER always;
-        js_content                    gateway.proxyMasterGuard;
+        proxy_pass                    https://localhost:3000/master;
+        proxy_pass_request_headers    on;
+        proxy_pass_request_body       on;
+        proxy_redirect                off;
+        proxy_ssl_verify              on;
+        proxy_ssl_trusted_certificate /var/run/secrets/kubernetes.io/serviceaccount/ca.crt;
+        proxy_ssl_session_reuse       on;
+        proxy_http_version            1.1;
+        proxy_set_header Upgrade      $http_upgrade;
+        proxy_set_header Connection   $connection_upgrade;
     }
 
     #
     # Kubernetes master API reverse proxying
     #
-    # Configured as internal so that all requests should be submitted
+    # Configured as allow localhost so that all requests should be submitted
     # through the /master location and checked with the proxyMasterGuard
     #
     location /masterinternal {
-        internal;
+        allow 127.0.0.1;
+        deny all;
 
         add_header                    location-rule MASTER-INTERNAL always;
 
@@ -179,12 +196,23 @@ server {
         # Click jacking prevention to be used in addition to X-Frame-Options
         add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
 
-        js_content                    gateway.proxyJolokiaAgent;
+        proxy_pass                    https://localhost:3000/management;
+        proxy_pass_request_headers    on;
+        proxy_pass_request_body       on;
+        proxy_redirect                off;
+        proxy_ssl_verify              on;
+        proxy_ssl_trusted_certificate /var/run/secrets/kubernetes.io/serviceaccount/ca.crt;
+        proxy_ssl_session_reuse       on;
+        proxy_http_version            1.1;
+        proxy_set_header Upgrade      $http_upgrade;
+        proxy_set_header Connection   $connection_upgrade;
     }
 
     # Self-LocalSubjectAccessReview requests cache
     location /authorization {
-        internal;
+        allow 127.0.0.1;
+        deny all;
+
         proxy_pass                    https://kubernetes.default/;
         rewrite                       /authorization/([^/]+)/(.*) /apis/$1/v1/$2 break;
         proxy_set_header              Content-Type application/json;
@@ -200,10 +228,13 @@ server {
         proxy_cache_valid             201 10s;
         proxy_ignore_headers          Cache-Control;
     }
+
     # Duplicated location, as it seems caching does not handle multiple sub-requests calling the same location
     # leading to different hash keys :(
     location /authorization2 {
-        internal;
+        allow 127.0.0.1;
+        deny all;
+
         proxy_pass                    https://kubernetes.default/;
         rewrite                       /authorization2/([^/]+)/(.*) /apis/$1/v1/$2 break;
         proxy_set_header              Content-Type application/json;
@@ -224,7 +255,9 @@ server {
     location /podIP {
         add_header location-rule POD_IP always;
 
-        internal;
+        allow 127.0.0.1;
+        deny all;
+
         proxy_pass                    https://kubernetes.default/;
         rewrite                       /podIP/(.+)/(.+) /api/v1/namespaces/$1/pods/$2 break;
         proxy_pass_request_headers    on;
@@ -239,7 +272,9 @@ server {
 
     # Proxy pod addressed by podIP
     location ~ ^/proxy/(http|https):(.+):(\d+)/(.*)$ {
-        internal;
+        allow 127.0.0.1;
+        deny all;
+
         proxy_pass                $1://$2:$3/$4$is_args$args;
         proxy_ssl_verify          off;
         proxy_ssl_session_reuse   on;
