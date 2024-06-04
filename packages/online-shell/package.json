@@ -1,6 +1,6 @@
 {
   "name": "@hawtio/online-shell",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "The UI shell on hawtio-online for kubernetes",
   "author": "Hawtio developer team",
   "license": "Apache-2.0",
