@@ -1,0 +1,75 @@
+{
+  "name": "@hawtio/gateway",
+  "version": "2.1.0",
+  "description": "The hawtio-online gateway to jolokia on kubernetes",
+  "author": "Hawtio developer team",
+  "license": "Apache-2.0",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hawtio/hawtio-online.git"
+  },
+  "keywords": [
+    "hawtio",
+    "jolokia"
+  ],
+  "scripts": {
+    "start:dev": "yarn start:proxy & yarn start:gateway",
+    "start:proxy": "node --env-file .env.development proxy-dev-server.js",
+    "start:gateway": "tsup --watch",
+    "build": "tsup --clean",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --detectOpenHandles --watch",
+    "test:coverage": "jest --coverage",
+    "prepack": "yarn build && yarn replace-version"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^18.19.31",
+    "babel-jest": "^29.6.1",
+    "cors": "^2.8.5",
+    "express-http-proxy": "^2.0.0",
+    "express-pino-logger": "^7.0.0",
+    "fetch-intercept": "^2.4.0",
+    "helmet": "^6.0.0",
+    "jest-extended": "^4.0.0",
+    "js-yaml": "^4.1.0",
+    "jsdom": "^24.1.0",
+    "jwt-decode": "^4.0.0",
+    "method-override": "^3.0.0",
+    "pino": "^8.6.1",
+    "pino-multi-stream": "^6.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "yaml": "^2.4.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express-pino-logger": "^4.0.5",
+    "@types/jest": "^29.5.12",
+    "@types/jquery": "^3.5.29",
+    "@types/js-yaml": "^4.0.9",
+    "@types/method-override": "^0.0.35",
+    "@types/pino-multi-stream": "^5.1.6",
+    "@types/supertest": "^6.0.2",
+    "@types/yaml": "^1.9.7",
+    "jest": "^29.6.1",
+    "jest-environment-jsdom": "^29.6.1",
+    "jest-fetch-mock": "^3.0.3",
+    "jest-watch-typeahead": "^2.2.2",
+    "replace": "^1.2.2",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.1.2",
+    "tsup": "^8.1.0"
+  },
+  "packageManager": "yarn@4.1.0",
+  "engines": {
+    "yarn": ">=4.1.0",
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "private"
+  }
+}

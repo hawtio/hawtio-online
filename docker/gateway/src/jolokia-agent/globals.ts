@@ -1,0 +1,204 @@
+import {
+  MBeanInfo, MBeanInfoError,
+  MBeanAttribute, MBeanOperation,
+  Request as MBeanRequest } from 'jolokia.js'
+import 'jolokia.js/simple'
+
+export interface BulkValue {
+  CanInvoke: boolean,
+  Method: string,
+  ObjectName: string
+}
+
+export interface InterceptedResponse {
+  status: number,
+  request: MBeanRequest,
+  value?: unknown,
+  timestamp?: number,
+  reason?: string
+}
+
+export interface Intercepted {
+  intercepted: boolean,
+  request: MBeanRequest,
+  response?: InterceptedResponse
+}
+
+export type OptimisedJmxDomain = Record<string, OptimisedMBeanInfo>
+export type OptimisedJmxDomains = Record<string, OptimisedJmxDomain>
+export type MBeanOperationEntry = [string, MBeanOperation | MBeanOperation[]]
+export type MBeanInfoCache = Record<string, OptimisedMBeanInfo>
+
+export type OptimisedCachedDomains = {
+  cache: MBeanInfoCache
+  domains: OptimisedJmxDomains
+}
+
+export interface OptimisedMBeanAttribute extends MBeanAttribute {
+  canInvoke?: boolean;
+}
+
+export interface OptimisedMBeanOperation extends MBeanOperation {
+  canInvoke?: boolean;
+}
+
+export type OptimisedMBeanOperations = Record<string, OptimisedMBeanOperation | OptimisedMBeanOperation[]>;
+
+export interface OptimisedMBeanInfo extends Omit<MBeanInfo, 'attr' | 'op'> {
+  attr?: Record<string, OptimisedMBeanAttribute>
+  op?: OptimisedMBeanOperations
+  opByString?: Record<string, OptimisedMBeanOperation>
+  canInvoke?: boolean
+}
+
+interface OperationDefined {
+  op: MBeanOperation
+}
+
+interface AttributeDefined {
+  attr: MBeanAttribute
+}
+
+interface MBeanDefinedRequest extends Pick<MBeanRequest, 'type'> {
+  type: 'read' | 'write' | 'exec' | 'search'
+  mbean: string
+}
+
+interface ExecMBeanRequest extends Pick<MBeanRequest, 'type'> {
+  type: 'exec'
+  arguments?: unknown[]
+}
+
+interface ArgumentRequest extends ExecMBeanRequest {
+  type: 'exec'
+  arguments: unknown[]
+}
+
+export function isMBeanRequest(obj: unknown): obj is MBeanRequest {
+  if (! obj) return false
+
+  const notificationCmdTypes = ['register', 'unregister', 'add', 'remove', 'ping', 'open', 'list']
+  const r = (obj as MBeanRequest)
+  switch (r.type) {
+    case 'read':
+    case 'write':
+    case 'exec':
+    case 'search':
+      return r.mbean !== undefined
+    case 'list':
+    case 'version':
+      return true
+    case 'notification':
+      return r.command !== undefined && notificationCmdTypes.includes(r.command)
+    default:
+      return false
+  }
+}
+
+export function isMBeanRequestArray(obj: unknown): obj is MBeanRequest[] {
+  if (! obj) return false
+
+  if (! Array.isArray(obj)) return false
+
+  for (const element of obj) {
+    if (! isMBeanRequest(element)) return false
+  }
+
+  return true
+}
+
+export function isMBeanDefinedRequest(obj: unknown): obj is MBeanDefinedRequest {
+  if (! obj) return false
+
+  return (obj as MBeanDefinedRequest).mbean !== undefined
+}
+
+export function isMBeanOperation(obj: unknown): obj is MBeanOperation {
+  if (! obj) return false
+
+  return (obj as MBeanOperation).desc !== undefined
+    && (obj as MBeanOperation).ret != undefined
+}
+
+export function hasMBeanOperation(obj: unknown): obj is OperationDefined {
+  if (! obj) return false
+
+  return isMBeanOperation((obj as OperationDefined).op) &&
+    (obj as OperationDefined)?.op !== undefined
+}
+
+export function hasMBeanAttribute(obj: unknown): obj is AttributeDefined {
+  if (! obj) return false
+
+  return (obj as AttributeDefined)?.attr !== undefined
+}
+
+export function isArgumentExecRequest(obj: unknown): obj is ExecMBeanRequest {
+  if (! obj) return false
+
+  return (obj as ExecMBeanRequest).type === 'exec' &&
+    'arguments' in (obj as ExecMBeanRequest)
+}
+
+export function hasArguments(obj: unknown): obj is ArgumentRequest {
+  if (! obj) return false
+
+  return isArgumentExecRequest(obj) &&
+    (obj as ArgumentRequest).arguments !== undefined
+}
+
+export function isMBeanInfo(obj: MBeanInfo | MBeanInfoError): obj is MBeanInfo {
+  if (! obj) return false
+
+  return (obj as MBeanInfo).desc !== undefined
+}
+
+export function isMBeanInfoError(obj: MBeanInfo | MBeanInfoError): obj is MBeanInfoError {
+  if (! obj) return false
+
+  return (obj as MBeanInfoError).error !== undefined
+}
+
+export function isOptimisedMBeanInfo(obj: MBeanInfo): obj is OptimisedMBeanInfo {
+  if (! obj) return false
+
+  return 'opByString' in (obj as OptimisedMBeanInfo) &&
+    'canInvoke' in (obj as OptimisedMBeanInfo)
+}
+
+export function isOptimisedCachedDomains(obj: unknown): obj is OptimisedCachedDomains {
+  if (! obj) return false
+
+  return (obj as OptimisedCachedDomains).cache !== undefined &&
+    (obj as OptimisedCachedDomains).domains !== undefined
+}
+
+export function isObject(value: unknown): value is object {
+  if (! value) return false
+
+  const type = typeof value
+  return value != null && (type === 'object' || type === 'function')
+}
+
+export function isRecord(value: unknown): value is Record<string, unknown> {
+  return isObject(value) && (typeof value === 'object')
+}
+
+export function isString(value: unknown): value is string {
+  return typeof value === 'string' || value instanceof String
+}
+
+export function toStringArray(value: unknown): string[] {
+  if (! Array.isArray(value)) return []
+
+  const strings: string[] = []
+  value.forEach(v => {
+    strings.push(v.toString())
+  })
+
+  return strings
+}
+
+export function cloneObject<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value))
+}
