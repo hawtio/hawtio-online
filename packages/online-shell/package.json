@@ -51,7 +51,7 @@
     "react-dom": "^18.3.1",
     "react-markdown": "^8.0.7",
     "typescript": "^5.4.5",
-    "web-vitals": "^3.5.2"
+    "web-vitals": "^4.1.0"
   },
   "devDependencies": {
     "babel-loader": "^9.1.3",
