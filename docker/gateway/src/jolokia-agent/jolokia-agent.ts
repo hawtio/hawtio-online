@@ -198,7 +198,7 @@ async function getPodIP(agentInfo: AgentInfo): Promise<string> {
   }
 
   const json = await res.json()
-  const data = isObject(json) ? json : JSON.parse(json)
+  const data = isObject(json) ? json : JSON.parse(json as string)
   return data.status.podIP
 }
 
@@ -429,7 +429,7 @@ async function proxyJolokiaAgentWithRbac(agentInfo: AgentInfo): Promise<SimpleRe
 
   let role
   let data = await response.json()
-  let sar = JSON.parse(data)
+  let sar = JSON.parse(data as string)
   let allowed = useForm ? sar.status.allowed : sar.allowed
 
   if (allowed) {
@@ -442,7 +442,7 @@ async function proxyJolokiaAgentWithRbac(agentInfo: AgentInfo): Promise<SimpleRe
     }
 
     data = await response.json()
-    sar = JSON.parse(data)
+    sar = JSON.parse(data as string)
     allowed = useForm ? sar.status.allowed : sar.allowed
 
     if (allowed) {
@@ -468,10 +468,10 @@ async function proxyJolokiaAgentWithoutRbac(agentInfo: AgentInfo) : Promise<Simp
 
   logger.info('Passed selfLocalSubjectAccessReview')
   const data = await response.json()
-  const sar = isObject(data) ? data : JSON.parse(data)
+  const sar = isObject(data) ? data : JSON.parse(data as string)
   const allowed = useForm ? sar.status.allowed : sar.allowed
   if (!allowed) {
-    return reject(403, data)
+    return reject(403, sar)
   }
 
   logger.info('Getting pod ip')

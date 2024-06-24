@@ -8,13 +8,10 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   loader: {
-    '.svg': 'dataurl',
-    '.jpg': 'dataurl',
-    '.png': 'dataurl',
-    '.md': 'text',
     '.yaml': 'text',
   },
   platform: 'node',
   onSuccess: 'node --env-file .env.development dist/gateway-api.js',
-  publicDir: 'public'
+  publicDir: 'public',
+  watch: true
 })
