@@ -27,10 +27,14 @@ OPERATOR_SDK_VERSION := v1.26.1
 KUSTOMIZE_VERSION := v4.5.4
 OPM_VERSION := v1.24.0
 IMAGE_NAME ?= quay.io/hawtio/online
+GATEWAY_IMAGE_NAME ?= quay.io/hawtio/online-gateway
 
 # Replace SNAPSHOT with the current timestamp
 DATETIMESTAMP=$(shell date -u '+%Y%m%d-%H%M%S')
 VERSION := $(subst -SNAPSHOT,-$(DATETIMESTAMP),$(VERSION))
+
+GATEWAY_DOCKERFILE=Dockerfile-gateway
+NGINX_DOCKERFILE=Dockerfile-nginx
 
 #
 # Situations when user wants to override
@@ -39,6 +43,7 @@ VERSION := $(subst -SNAPSHOT,-$(DATETIMESTAMP),$(VERSION))
 # - need to preserve original image and version as used in other files
 #
 CUSTOM_IMAGE ?= $(IMAGE_NAME)
+CUSTOM_GATEWAY_IMAGE ?= $(GATEWAY_IMAGE_NAME)
 CUSTOM_VERSION ?= $(VERSION)
 
 RELEASE_GIT_REMOTE := origin
@@ -112,10 +117,17 @@ check-licenses:
 
 image:
 	@echo "####### Building Hawtio Online container image..."
-	docker build -t $(CUSTOM_IMAGE):$(CUSTOM_VERSION) -f Dockerfile .
+	docker build -t $(CUSTOM_IMAGE):$(CUSTOM_VERSION) -f Dockerfile-nginx .
 
 image-push: image
 	docker push $(CUSTOM_IMAGE):$(CUSTOM_VERSION)
+
+image-gateway:
+	@echo "####### Building Hawtio Online Gateway container image..."
+	docker build -t $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_VERSION) -f Dockerfile-gateway .
+
+image-gateway-push: image-gateway
+	docker push $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_VERSION)
 
 get-image:
 	@echo $(CUSTOM_IMAGE)
