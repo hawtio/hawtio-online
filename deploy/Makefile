@@ -76,6 +76,18 @@ endef
 
 #
 # Macro for editing kustomization to define
+# the image reference
+#
+# Parameter: directory of the kustomization.yaml
+#
+define set-kustomize-gateway-image
+	$(if $(filter $(GATEWAY_IMAGE_NAME),$(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_VERSION)),,\
+		@cd $(1) || exit 1 && \
+			$(KUSTOMIZE) edit set image $(GATEWAY_IMAGE_NAME)=$(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_VERSION))
+endef
+
+#
+# Macro for editing kustomization to define
 # the namespace
 #
 # Parameter: directory of the kustomization.yaml
@@ -165,6 +177,8 @@ install: kustomize kubectl
 	@$(call set-kustomize-namespace, $(CLUSTER_TYPE)/$(MODE))
 # Set the image reference of the kustomization
 	@$(call set-kustomize-image,$(CLUSTER_TYPE)/$(MODE))
+# Set the gateway image reference of the kustomization
+	@$(call set-kustomize-gateway-image,$(CLUSTER_TYPE)/$(MODE))
 # Configure use of hawtconfig configmap
 	@$(MAKE) -s .hawtconfig
 # Set the console url on openshift, if specified
