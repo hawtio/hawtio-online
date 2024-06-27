@@ -1,8 +1,15 @@
 import {
+  Request as ExpressRequest,
+  Response as ExpressResponse
+} from 'express-serve-static-core'
+import {
   MBeanInfo, MBeanInfoError,
   MBeanAttribute, MBeanOperation,
-  Request as MBeanRequest } from 'jolokia.js'
+  Request as MBeanRequest
+} from 'jolokia.js'
 import 'jolokia.js/simple'
+import { GatewayOptions } from 'src/globals'
+
 
 export interface BulkValue {
   CanInvoke: boolean,
@@ -72,6 +79,37 @@ interface ExecMBeanRequest extends Pick<MBeanRequest, 'type'> {
 interface ArgumentRequest extends ExecMBeanRequest {
   type: 'exec'
   arguments: unknown[]
+}
+
+export interface AgentInfo {
+  request: ExpressRequest
+  requestHeaders: Headers
+  response: ExpressResponse
+  options: GatewayOptions
+  namespace: string
+  protocol: string
+  pod: string
+  port: string
+  path: string
+}
+
+export interface SimpleResponse {
+  status: number,
+  body: string,
+  headers: Headers
+}
+
+export function isSimpleResponse(obj: unknown): obj is SimpleResponse {
+  return (obj as SimpleResponse).status !== undefined
+    && (obj as SimpleResponse).body !== undefined
+    && (obj as SimpleResponse).headers !== undefined
+}
+
+export function isResponse(obj: unknown): obj is Response {
+  return (obj as Response).status !== undefined
+    && (obj as Response).statusText !== undefined
+    && (obj as Response).body !== undefined
+    && (obj as Response).headers !== undefined
 }
 
 export function isMBeanRequest(obj: unknown): obj is MBeanRequest {
@@ -173,32 +211,25 @@ export function isOptimisedCachedDomains(obj: unknown): obj is OptimisedCachedDo
     (obj as OptimisedCachedDomains).domains !== undefined
 }
 
-export function isObject(value: unknown): value is object {
-  if (! value) return false
 
-  const type = typeof value
-  return value != null && (type === 'object' || type === 'function')
+export function extractHeaders(req: ExpressRequest, excludedHeaders: string[]) {
+  const headers = new Headers()
+  for (const prop in req.headers) {
+    if (excludedHeaders.includes(prop)) continue
+
+    const value = req.header(prop)
+    if (!value || value.length === 0) continue
+
+    headers.append(prop, value)
+  }
+
+  return headers
 }
 
-export function isRecord(value: unknown): value is Record<string, unknown> {
-  return isObject(value) && (typeof value === 'object')
-}
+export function getFetchHeaders(srcHeaders: Headers): Headers {
+  const headers = new Headers(srcHeaders)
 
-export function isString(value: unknown): value is string {
-  return typeof value === 'string' || value instanceof String
-}
-
-export function toStringArray(value: unknown): string[] {
-  if (! Array.isArray(value)) return []
-
-  const strings: string[] = []
-  value.forEach(v => {
-    strings.push(v.toString())
-  })
-
-  return strings
-}
-
-export function cloneObject<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value))
+  // Ensure the body can be parsed by Express
+  headers.append('Content-Type', 'application/json')
+  return headers
 }

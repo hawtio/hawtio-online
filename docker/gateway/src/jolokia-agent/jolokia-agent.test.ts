@@ -1,14 +1,21 @@
 import request from 'supertest'
 import express from 'express'
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express-serve-static-core'
-import { expressLogger, logger } from '../logger'
 import {
   JOLOKIA_PARAMS, JOLOKIA_PATH, JOLOKIA_PORT,
   JOLOKIA_URI, NAMESPACE, testData
 } from '../gateway-test-inputs'
 
+/*
+ * Uncomment this to enable tracing of
+ * functions while running tests
+ */
+// process.env.LOG_LEVEL = 'trace'
+
+import { expressLogger, logger } from '../logger'
 import { proxyJolokiaAgent, enableRbac } from './jolokia-agent'
-import { cloneObject, isOptimisedCachedDomains } from './globals'
+import { isOptimisedCachedDomains } from './globals'
+import { cloneObject } from '../utils'
 
 const app = express()
 
@@ -149,7 +156,8 @@ function managementHandler(req: ExpressRequest, res: ExpressResponse) {
    * Provide this test server as the redirect target
    */
   const gatewayOptions = {
-    websvr: host
+    websvr: host,
+    clusterMaster: host
   }
 
   proxyJolokiaAgent(req, res, gatewayOptions)

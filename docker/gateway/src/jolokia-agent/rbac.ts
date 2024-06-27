@@ -11,9 +11,9 @@ import {
   BulkValue, Intercepted, MBeanInfoCache, MBeanOperationEntry, OptimisedCachedDomains, OptimisedJmxDomains,
   OptimisedMBeanInfo, OptimisedMBeanOperation, hasMBeanAttribute,
   hasMBeanOperation, isArgumentExecRequest, isMBeanDefinedRequest,
-  isMBeanInfoError, isOptimisedMBeanInfo, isRecord,
-  toStringArray
+  isMBeanInfoError, isOptimisedMBeanInfo
 } from "./globals"
+import { isRecord, toStringArray } from '../utils'
 
 interface JmxUnionRequest {
   type: string,

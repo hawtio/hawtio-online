@@ -1,6 +1,4 @@
-import { Request as ExpressRequest, Response as ExpressResponse } from "express-serve-static-core"
 import { logger } from '../logger'
-import { GatewayOptions } from '../constants'
 
 /*
  * Access list of uri patterns allowed to proxy to the master cluster
@@ -26,28 +24,26 @@ const masterUrlPatterns = [
 
 const excludeResources = [ 'secrets' ]
 
-export async function proxyMasterGuard(req: ExpressRequest, res: ExpressResponse, options: GatewayOptions) {
+export function proxyMasterGuard(url: string): { status: boolean, errorMsg: string } {
   let masterPatternFound = false
   let exclude = false
-  /* websocket uri will have watch param - must be included */
-  let path = req.url // request url included query params
+
+  logger.trace(`(proxyMasterGuard) ... checking url path: ${url}`)
 
   masterPatternFound = masterUrlPatterns.some(function(element) {
-    return path.match(element)
+    return url.match(element)
   })
 
   for (const keyword of excludeResources) {
-    exclude = path.includes(keyword)
+    exclude = url.includes(keyword)
     if (exclude) break
   }
 
-  if (masterPatternFound && ! exclude) {
-    path = path.replace(/\/master/, 'masterinternal')
-    res.redirect(`${options.websvr}/${path}`)
-    return
+  if (masterPatternFound && ! exclude)
+    return { status: true, errorMsg: '' }
+  else {
+    const msg = `Error (proxyMasterGuard): Access to ${url} is not permitted.`
+    logger.error(msg)
+    return { status: false, errorMsg: msg }
   }
-
-  const msg = `Error (proxyMasterGuard): Access to ${path} is not permitted.`
-  logger.error(msg)
-  res.status(502).json({ message: msg })
 }

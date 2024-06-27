@@ -16,9 +16,9 @@
     "jolokia"
   ],
   "scripts": {
-    "start:dev": "yarn start:proxy & yarn start:gateway",
-    "start:proxy": "node --env-file .env.development proxy-dev-server.js",
-    "start:gateway": "tsup --config tsup.config.dev.ts --watch",
+    "start:gateway": "yarn start:dev:proxy & yarn start:dev:gateway",
+    "start:dev:proxy": "node --env-file .env.development proxy-dev-server.js",
+    "start:dev:gateway": "tsup --config tsup.config.dev.ts --watch",
     "build": "webpack --mode production --progress --config webpack.config.prod.js",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --detectOpenHandles --watch",
@@ -27,10 +27,11 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "express-http-proxy": "^2.0.0",
     "express-pino-logger": "^7.0.0",
     "fetch-intercept": "^2.4.0",
     "helmet": "^6.0.0",
+    "http-proxy-middleware": "^3.0.0",
+    "https": "^1.0.0",
     "jolokia.js": "^2.0.1",
     "jwt-decode": "^4.0.0",
     "method-override": "^3.0.0",
