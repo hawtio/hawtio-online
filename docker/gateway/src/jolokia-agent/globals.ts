@@ -117,7 +117,7 @@ export function isMBeanOperation(obj: unknown): obj is MBeanOperation {
   if (! obj) return false
 
   return (obj as MBeanOperation).desc !== undefined
-    && (obj as MBeanOperation).ret != undefined
+    && (obj as MBeanOperation).ret !== undefined
 }
 
 export function hasMBeanOperation(obj: unknown): obj is OperationDefined {

@@ -20,7 +20,7 @@ export const testData = {
       apiVersion: 'authorization.openshift.io/v1',
       namespace: NAMESPACE,
       allowed: true,
-      reason: 'RBAC: allowed by ClusterRoleBinding \"admin\" of ClusterRole \"cluster-admin\" to User \"admin\"'
+      reason: 'RBAC: allowed by ClusterRoleBinding "admin" of ClusterRole "cluster-admin" to User "admin"'
     },
     notAllowedResponse: {
       kind: 'SubjectAccessReviewResponse',
@@ -56,9 +56,9 @@ export const testData = {
           type: 'search'
         },
         value: [
-          'org.apache.camel:context=camel-github,type=routes,name=\"commitToFiles\"',
-          'org.apache.camel:context=camel-github,type=routes,name=\"commitFilesToRest\"',
-          'org.apache.camel:context=camel-github,type=routes,name=\"restCommits\"'
+          'org.apache.camel:context=camel-github,type=routes,name="commitToFiles"',
+          'org.apache.camel:context=camel-github,type=routes,name="commitFilesToRest"',
+          'org.apache.camel:context=camel-github,type=routes,name="restCommits"'
         ],
         "status":200,
         "timestamp":1718188370
@@ -236,7 +236,7 @@ export const testData = {
             request: {
               mbean: 'org.apache.camel:context=*,type=routes,*","type":"search'
             },
-            value: ['org.apache.camel:context=SampleCamel,type=routes,name=\"cron\"","org.apache.camel:context=SampleCamel,type=routes,name=\"simple\"'],
+            value: ['org.apache.camel:context=SampleCamel,type=routes,name="cron"","org.apache.camel:context=SampleCamel,type=routes,name="simple"'],
             status: 200,
             timestamp: 1718300948
           }
@@ -264,7 +264,7 @@ export const testData = {
           request: {
             mbean: 'org.apache.camel:context=*,type=routes,*","type":"search'
           },
-          value: ['org.apache.camel:context=SampleCamel,type=routes,name=\"cron\"","org.apache.camel:context=SampleCamel,type=routes,name=\"simple\"'],
+          value: ['org.apache.camel:context=SampleCamel,type=routes,name="cron"","org.apache.camel:context=SampleCamel,type=routes,name="simple"'],
           status: 200,
           timestamp: 1718300948
         }
@@ -312,7 +312,7 @@ export const testData = {
               mbean: 'org.apache.camel:type=context',
               operation: 'dumpRoutesAsXml()'
             },
-            value: '<routes xmlns=\"http://camel.apache.org/schema/spring\">\n <route id=\"cron\">\n <from id=\"from1\" uri=\"quartz:cron?cron={{quartz.cron}}\"/>\n <setBody id=\"setBody1\">\n <constant>Hello Camel! - cron</constant>\n </setBody>\n <to id=\"to1\" uri=\"stream:out\"/>\n <to id=\"to2\" uri=\"mock:result\"/>\n </route>\n <route id=\"simple\">\n <from id=\"from2\" uri=\"quartz:simple?trigger.repeatInterval={{quartz.repeatInterval}}\"/>\n <setBody id=\"setBody2\">\n <constant>Hello Camel! - simple</constant>\n </setBody>\n <to id=\"to3\" uri=\"stream:out\"/>\n <to id=\"to4\" uri=\"mock:result\"/>\n </route>\n</routes>',
+            value: '<routes xmlns="http://camel.apache.org/schema/spring">\n <route id="cron">\n <from id="from1" uri="quartz:cron?cron={{quartz.cron}}"/>\n <setBody id="setBody1">\n <constant>Hello Camel! - cron</constant>\n </setBody>\n <to id="to1" uri="stream:out"/>\n <to id="to2" uri="mock:result"/>\n </route>\n <route id="simple">\n <from id="from2" uri="quartz:simple?trigger.repeatInterval={{quartz.repeatInterval}}"/>\n <setBody id="setBody2">\n <constant>Hello Camel! - simple</constant>\n </setBody>\n <to id="to3" uri="stream:out"/>\n <to id="to4" uri="mock:result"/>\n </route>\n</routes>',
             status: 200,
             timestamp: 1718383041
           }
@@ -325,7 +325,7 @@ export const testData = {
             mbean: 'org.apache.camel:type=context',
             operation: 'dumpRoutesAsXml()'
           },
-          value: '<routes xmlns=\"http://camel.apache.org/schema/spring\">\n <route id=\"cron\">\n <from id=\"from1\" uri=\"quartz:cron?cron={{quartz.cron}}\"/>\n <setBody id=\"setBody1\">\n <constant>Hello Camel! - cron</constant>\n </setBody>\n <to id=\"to1\" uri=\"stream:out\"/>\n <to id=\"to2\" uri=\"mock:result\"/>\n </route>\n <route id=\"simple\">\n <from id=\"from2\" uri=\"quartz:simple?trigger.repeatInterval={{quartz.repeatInterval}}\"/>\n <setBody id=\"setBody2\">\n <constant>Hello Camel! - simple</constant>\n </setBody>\n <to id=\"to3\" uri=\"stream:out\"/>\n <to id=\"to4\" uri=\"mock:result\"/>\n </route>\n</routes>',
+          value: '<routes xmlns="http://camel.apache.org/schema/spring">\n <route id="cron">\n <from id="from1" uri="quartz:cron?cron={{quartz.cron}}"/>\n <setBody id="setBody1">\n <constant>Hello Camel! - cron</constant>\n </setBody>\n <to id="to1" uri="stream:out"/>\n <to id="to2" uri="mock:result"/>\n </route>\n <route id="simple">\n <from id="from2" uri="quartz:simple?trigger.repeatInterval={{quartz.repeatInterval}}"/>\n <setBody id="setBody2">\n <constant>Hello Camel! - simple</constant>\n </setBody>\n <to id="to3" uri="stream:out"/>\n <to id="to4" uri="mock:result"/>\n </route>\n</routes>',
           status: 200,
           timestamp: 1718383041
         },

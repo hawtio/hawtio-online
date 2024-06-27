@@ -1,5 +1,5 @@
 /* jshint node: true */
-"use strict"
+
 
 // modules =================================================
 import express from 'express'

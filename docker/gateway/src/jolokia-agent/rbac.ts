@@ -41,14 +41,13 @@ const rbacRegistryEnabled = process.env['HAWTIO_ONLINE_DISABLE_RBAC_REGISTRY'] !
 
 // Expose private functions for testing
 const testing = { optimisedMBeans, identifySpecialMBean, parseProperties, decorateRBAC }
+export { testing }
 
-export default { initACL, check, intercept, isMBeanListRequired, testing }
-
-function initACL(acl: Record<string, unknown>) {
+export function initACL(acl: Record<string, unknown>) {
   ACL = acl
 }
 
-function isMBeanListRequired(request: MBeanRequest) {
+export function isMBeanListRequired(request: MBeanRequest) {
   return isCanInvokeRequest(request) || isExecRBACRegistryList(request)
 }
 
@@ -73,7 +72,7 @@ function isExecRBACRegistryList(request: MBeanRequest) {
 }
 
 // ===== intercept =========================================
-function intercept(request: MBeanRequest, role: string, mbeans: JmxDomains): Intercepted {
+export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomains): Intercepted {
   const intercepted = (value: unknown) => ({
     intercepted: true,
     request: request,
@@ -466,7 +465,7 @@ function decorateOperations(mbean: string, info: OptimisedMBeanInfo, role: strin
 
 // ===== check =============================================
 
-function check(request: MBeanRequest, role: string) {
+export function check(request: MBeanRequest, role: string) {
   let domain
   let objectName
   if (isMBeanDefinedRequest(request)) {
