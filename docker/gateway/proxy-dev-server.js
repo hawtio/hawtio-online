@@ -64,7 +64,7 @@ app.use('/master', proxy(appServerUri, {
     proxyReqOpts.headers['location-rule'] = 'MASTER'
 
     // Must have this header or express body is {}
-    proxyReqOpts.headers['Content-Type', 'application/json']
+    proxyReqOpts.headers['Content-Type'] = 'application/json'
     return proxyReqOpts
   }
 }))
@@ -115,7 +115,7 @@ app.use('/authorization', proxy(masterUri, {
   proxyReqPathResolver: (srcReq) => {
     // Preserve the /authorization
     let uri = '/authorization' + srcReq.url
-    uri = uri.replace(/\/authorization\/([^\/]+)\/(.*)/, '/apis/$1/v1/$2')
+    uri = uri.replace(/\/authorization\/([^/]+)\/(.*)/, '/apis/$1/v1/$2')
     logger.info(`New authorization uri ${uri}`)
     return uri
   },
@@ -134,7 +134,7 @@ app.use('/authorization2', proxy(masterUri, {
   proxyReqPathResolver: (srcReq) => {
     // Preserve the /authorization2
     let uri = '/authorization2' + srcReq.url
-    uri = uri.replace(/\/authorization\/([^\/]+)\/(.*)/, '/apis/$1/v1/$2')
+    uri = uri.replace(/\/authorization\/([^/]+)\/(.*)/, '/apis/$1/v1/$2')
     logger.info(`New authorization uri ${uri}`)
     return uri
   },

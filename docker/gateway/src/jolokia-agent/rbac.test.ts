@@ -1,7 +1,7 @@
 import * as yaml from 'yaml'
 import * as fs from 'fs'
-import rbac from './rbac'
-import { MBeanInfoCache, OptimisedJmxDomains, hasMBeanOperation, isOptimisedCachedDomains } from './globals'
+import * as rbac from './rbac'
+import { MBeanInfoCache, OptimisedJmxDomains, OptimisedMBeanOperations, hasMBeanOperation, isOptimisedCachedDomains } from './globals'
 
 const aclFile = fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || `${__dirname}/ACL.yaml`, 'utf8')
 const aclYaml = yaml.parse(aclFile)
@@ -141,7 +141,7 @@ describe('intercept', function () {
       },
       admin, listMBeans)
     expect(result.intercepted).toBe(true)
-    expect(hasMBeanOperation(result.response?.value))
+    expect(hasMBeanOperation(result.response?.value)).toBe(false)
   })
 
   it('should intercept optimised list MBeans requests', function () {
@@ -153,13 +153,15 @@ describe('intercept', function () {
       },
       admin, listMBeans)
     expect(result.intercepted).toBe(true)
-    expect(isOptimisedCachedDomains(result.response?.value))
+    expect(isOptimisedCachedDomains(result.response?.value)).toBe(true)
     if (isOptimisedCachedDomains(result.response?.value)) {
       const cache: MBeanInfoCache = result.response?.value.cache
-      expect(Object.getOwnPropertyNames(cache).length > 0)
+      // eslint-disable-next-line
+      expect(Object.getOwnPropertyNames(cache).length > 0).toBe(true)
 
       const domains: OptimisedJmxDomains = result.response?.value.domains
-      expect(Object.getOwnPropertyNames(domains).length > 0)
+      // eslint-disable-next-line
+      expect(Object.getOwnPropertyNames(domains).length > 0).toBe(true)
     }
   })
 
@@ -183,18 +185,20 @@ describe('optimisedMBeans', function () {
     // cache
     expect(result.cache).toBeDefined()
     expect(result.cache).not.toEqual({})
+
     Object.entries(result.cache).forEach(info => {
       expect(info[1].canInvoke).toBe(true)
-      if (info[1].op) {
-        Object.entries(info[1].op).forEach(op => {
-          var sigs = Array.isArray(op[1]) ? op[1] : [op[1]]
-          sigs.forEach(sig => {
-            expect(sig.canInvoke).toBe(true)
-          })
+      expect(info[1].op).toBeDefined()
+
+      const infoOp = info[1].op as OptimisedMBeanOperations
+      Object.entries(infoOp).forEach(op => {
+        const sigs = Array.isArray(op[1]) ? op[1] : [op[1]]
+        sigs.forEach(sig => {
+          expect(sig.canInvoke).toBe(true)
         })
-        expect(info[1].opByString).toBeDefined()
-        expect(info[1].opByString).not.toEqual({})
-      }
+      })
+      expect(info[1].opByString).toBeDefined()
+      expect(info[1].opByString).not.toEqual({})
     })
     expect(Object.keys(result.cache)).toContain('activemq.artemis:address')
     expect(Object.keys(result.cache)).toContain('activemq.artemis:queue')
@@ -205,18 +209,24 @@ describe('optimisedMBeans', function () {
     Object.entries(result.domains).forEach(domain => {
       Object.entries(domain[1]).forEach(info => {
         if (typeof info[1] === 'string') {
+          // eslint-disable-next-line
           expect(result.cache[info[1]]).toBeDefined()
         } else {
+          // eslint-disable-next-line
           expect(info[1].canInvoke).toBe(true)
         }
+
         if (info[1].op) {
           Object.entries(info[1].op).forEach(op => {
-            var sigs = Array.isArray(op[1]) ? op[1] : [op[1]]
+            const sigs = Array.isArray(op[1]) ? op[1] : [op[1]]
             sigs.forEach(sig => {
+              // eslint-disable-next-line
               expect(sig.canInvoke).toBe(true)
             })
           })
+          // eslint-disable-next-line
           expect(info[1].opByString).toBeDefined()
+          // eslint-disable-next-line
           expect(info[1].opByString).not.toEqual({})
         }
 
@@ -238,9 +248,8 @@ describe('optimisedMBeans', function () {
           let previous = ''
           while ((match = regexp.exec(info[0])) !== null) {
             const current = match[1]
-            if ((order[previous] || 0) > order[current]) {
-              fail(`${previous} < ${current} in ${info[0]}`)
-            }
+            // eslint-disable-next-line
+            expect(order[previous] || 0).toBeLessThanOrEqual(order[current])
             previous = current
           }
         }
@@ -252,9 +261,9 @@ describe('optimisedMBeans', function () {
 
 describe('parseProperties', function () {
   it('should parse properties as object', function () {
-    expect(rbac.testing.parseProperties('context=MyCamel,name=\"simple-route\",type=routes')).toEqual({
+    expect(rbac.testing.parseProperties('context=MyCamel,name="simple-route",type=routes')).toEqual({
       context: 'MyCamel',
-      name: '\"simple-route\"',
+      name: '"simple-route"',
       type: 'routes',
     })
     expect(rbac.testing.parseProperties('name=PS Old Gen,type=MemoryPool')).toEqual({
