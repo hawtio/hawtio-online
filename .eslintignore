@@ -11,8 +11,10 @@
 /**/craco.config.js
 
 jest.config.ts
-tsup.config.ts
+tsup.config*.ts
 **/webpack*.js
+
+**/proxy-dev-server.js
 
 dist/
 build/
