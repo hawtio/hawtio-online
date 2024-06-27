@@ -66,8 +66,8 @@ RUN mkdir -p /usr/share/nginx/html/online/osconsole && \
 
 COPY docker/nginx-gateway.conf.template docker/osconsole/config.sh docker/nginx.sh /
 
-COPY docker/hawtio-50x.html /usr/share/nginx/html
-COPY docker/hawtio-404.html /usr/share/nginx/html
+# Copy error pages
+COPY docker/hawtio-?0?.html /usr/share/nginx/html/
 
 # Copy licenses
 RUN mkdir -p /opt/hawtio/licenses

@@ -59,6 +59,11 @@ server {
         rewrite ^ $new redirect;
     }
 
+    error_page 403 /hawtio-403.html;
+    location = /hawtio-403.html {
+        internal;
+    }
+
     error_page 404 /hawtio-404.html;
     location = /hawtio-404.html {
         internal;
