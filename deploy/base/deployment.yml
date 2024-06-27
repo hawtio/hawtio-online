@@ -24,9 +24,9 @@ spec:
         deployment: hawtio-online
     spec:
       containers:
-        - image: quay.io/hawtio/online
+        - name: hawtio-online
+          image: quay.io/hawtio/online
           imagePullPolicy: Always
-          name: hawtio-online
           ports:
             - name: nginx
               containerPort: 8443
@@ -45,9 +45,6 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 1
-          env:
-            - name: HAWTIO_ONLINE_RBAC_ACL
-              value: /etc/hawtio/rbac/ACL.yaml
           resources:
             requests:
               cpu: "0.2"
@@ -55,6 +52,40 @@ spec:
             limits:
               cpu: "1.0"
               memory: 500Mi
+          volumeMounts:
+            - name: hawtio-online-tls-serving
+              mountPath: /etc/tls/private/serving
+        - name: hawtio-online-gateway
+          image: quay.io/hawtio/online-gateway
+          env:
+            - name: HAWTIO_ONLINE_RBAC_ACL
+              value: /etc/hawtio/rbac/ACL.yaml
+            - name: HAWTIO_ONLINE_GATEWAY_WEB_SERVER
+              value: https://localhost:8443
+            - name: HAWTIO_ONLINE_GATEWAY_SSL_KEY
+              value: /etc/tls/private/serving/tls.key
+            - name: HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE
+              value: /etc/tls/private/serving/tls.crt
+            - name: HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE_CA
+              value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          ports:
+            - name: express
+              containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: express
+              scheme: HTTPS
+            periodSeconds: 120
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: express
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 1
           volumeMounts:
             - name: hawtio-rbac
               mountPath: /etc/hawtio/rbac
