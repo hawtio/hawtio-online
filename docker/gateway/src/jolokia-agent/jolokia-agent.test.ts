@@ -175,15 +175,6 @@ beforeEach(() => {
   enableRbac(true)
 })
 
-function appGet(uri: string) {
-  return request(app)
-    .get(uri)
-    .set('location-rule', 'MANAGEMENT')
-    .set('X-Frame-Options', 'SAMEORIGIN')
-    .set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
-    .set('Content-Security-Policy', "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ")
-}
-
 function appPost(uri: string, body: Record<string, unknown> | Record<string, unknown>[]) {
   return request(app)
     .post(uri)
@@ -251,12 +242,15 @@ describe.each([
           expect(received.request).toStrictEqual(expected.request)
 
           if (rbac) {
+            // eslint-disable-next-line
             expect(isOptimisedCachedDomains(received.value)).toBe(true)
             const expDomains = Object.getOwnPropertyNames(expected.value.domains)
             const recDomains = Object.getOwnPropertyNames(received.value.domains)
+            // eslint-disable-next-line
             expect(expDomains.length).toEqual(recDomains.length)
           } else {
             // No RBAC then there is no interception or optimisation
+            // eslint-disable-next-line
             expect(expected.value.domains).toEqual(expected.value.domains)
           }
         })
@@ -323,8 +317,8 @@ describe.each([
           const expected = cloneObject(testData.jolokia.bulkRequestWithInterception.response)
 
           // Neutralise the timestamps as they are always going to be different
-          received.forEach((r: any) => r.timestamp = 0)
-          expected.forEach((r: any) => r.timestamp = 0)
+          received.forEach((r: Record<string, unknown>) => r.timestamp = 0)
+          expected.forEach((r: Record<string, unknown>) => r.timestamp = 0)
 
           expect(received).toEqual(expected)
         })
@@ -349,8 +343,10 @@ describe.each([
         .expect(expectedStatus)
         .then(res => {
           if (rbac)
+            // eslint-disable-next-line
             expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.operationWithArgumentsAndViewerRole.response))
           else
+            // eslint-disable-next-line
             expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
         })
     })
@@ -372,8 +368,10 @@ describe.each([
         .expect(expectedStatus)
         .then(res => {
           if (rbac)
+            // eslint-disable-next-line
             expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.bulkRequestWithViewerRole.response))
           else
+            // eslint-disable-next-line
             expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
         })
     })

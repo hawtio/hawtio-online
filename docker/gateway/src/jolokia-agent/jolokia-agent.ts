@@ -5,7 +5,7 @@ import { Request as ExpressRequest, Response as ExpressResponse } from 'express-
 import { Request as MBeanRequest } from 'jolokia.js'
 import { logger } from '../logger'
 import { GatewayOptions } from '../constants'
-import RBAC from './rbac'
+import * as RBAC from './rbac'
 import { InterceptedResponse, isMBeanRequest, isMBeanRequestArray, isObject } from './globals'
 
 const aclFile = fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || `${__dirname}/ACL.yaml`, 'utf8')
@@ -45,29 +45,19 @@ interface SimpleResponse {
 
 function isSimpleResponse(obj: unknown): obj is SimpleResponse {
   return (obj as SimpleResponse).status !== undefined
-    && (obj as SimpleResponse).body != undefined
-    && (obj as SimpleResponse).headers != undefined
+    && (obj as SimpleResponse).body !== undefined
+    && (obj as SimpleResponse).headers !== undefined
 }
 
 function isResponse(obj: unknown): obj is Response {
   return (obj as Response).status !== undefined
     && (obj as Response).statusText !== undefined
-    && (obj as Response).body != undefined
-    && (obj as Response).headers != undefined
+    && (obj as Response).body !== undefined
+    && (obj as Response).headers !== undefined
 }
 
 function isError(obj: unknown): obj is Error {
   return obj instanceof Error
-}
-
-interface RequestProperties {
-  type: string
-  mbean?: string
-  attribute?: string
-  value?: string
-  path?: string
-  operation?: string
-  arguments?: string[]
 }
 
 // Headers that should not be passed onto fetch sub requests
@@ -313,7 +303,7 @@ function parseRequest(agentInfo: AgentInfo): MBeanRequest | MBeanRequest[] {
       // /version
       return { type }
     default:
-      throw `Unexpected Jolokia GET request: ${agentInfo.path}`
+      throw new Error(`Unexpected Jolokia GET request: ${agentInfo.path}`)
   }
 }
 
@@ -364,7 +354,7 @@ async function handleRequestWithRole(role: string, agentInfo: AgentInfo): Promis
     const jolokiaResult = JSON.parse(jolokiaResponse.body)
 
     // Unroll intercepted requests
-    let initial: InterceptedResponse[] = []
+    const initial: InterceptedResponse[] = []
     let bulk = intercept.reduce((res, rbac) => {
       if (rbac.intercepted && rbac.response) {
         res.push(rbac.response)
