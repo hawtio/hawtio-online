@@ -3,13 +3,24 @@ import express from 'express'
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express-serve-static-core'
 import { enableRbac } from './jolokia-agent'
 import { expressLogger, logger } from './logger'
+import { cloneObject } from './utils'
 import {
   JOLOKIA_PARAMS, JOLOKIA_PATH, JOLOKIA_PORT,
   JOLOKIA_URI, NAMESPACE, testData
 } from './gateway-test-inputs'
+import { isOptimisedCachedDomains } from './jolokia-agent'
+
+/*
+ * Port used for test web server
+ */
+const WEB_PORT = 3001
+
+/*
+ * Specify the cluster master before importing gateway-api
+ */
+process.env.HAWTIO_ONLINE_GATEWAY_CLUSTER_MASTER = `http://localhost:${WEB_PORT}/master`
 
 import { gatewayServer, runningGatewayServer } from './gateway-api'
-import { cloneObject, isOptimisedCachedDomains } from './jolokia-agent/globals'
 
 /******************************************
  * T E S T   W E B   S E R V E R
@@ -20,11 +31,10 @@ export const testWebServer = express()
 // Log middleware requests
 testWebServer.use(expressLogger)
 testWebServer.use(express.json())
-testWebServer.use(express.urlencoded())
 
 // startup testWebServer at http://localhost:{WEB_PORT}
-export const runningTestWebServer = testWebServer.listen(process.env.WEB_PORT, () => {
-  logger.info('INFO: Gateway listening on port ' + process.env.WEB_PORT)
+export const runningTestWebServer = testWebServer.listen(WEB_PORT, () => {
+  logger.info(`INFO: Test web server listening on port ${WEB_PORT}`)
 })
 
 /**
@@ -95,6 +105,11 @@ function proxyHandler(req: ExpressRequest, res: ExpressResponse) {
   logger.error(msg)
   res.status(502).send({error: msg})
 }
+
+testWebServer.get('/master/*', (req, res) => {
+  res.set('Content-Type', 'application/json')
+  res.status(200).json(JSON.stringify({message: 'response from master'}))
+})
 
 testWebServer.post('/authorization*/*', (req, res) => {
   if (testData.authorization.forbidden) {
@@ -185,7 +200,7 @@ describe('/logout', () => {
   })
 
   it('logout with redirect', async () => {
-    const redirect = `http://localhost:${process.env.WEB_PORT}/online`
+    const redirect = `http://localhost:${WEB_PORT}/online`
     return request(gatewayServer)
       .get(`/logout?redirect_uri=${encodeURIComponent(redirect)}`)
       .expect(302)
@@ -203,34 +218,31 @@ describe('/master', () => {
       .get(path)
       .expect(502)
       .then(res => {
-        const msg = `Error (proxyMasterGuard): Access to ${path} is not permitted.`
-
-        const json = JSON.parse(res.text)
-        expect(json.message).toBe(msg)
+        const msg = `Error (gateway-api): Access to ${path} is not permitted.`
+        expect(res.body.message).toBe(msg)
       })
   })
 
   const endpointPaths = [
-    '/master/.well-known/oauth-authorization-server',
-    '/master/apis/apps.openshift.io/v1',
-    '/master/apis/user.openshift.io/v1/users/~',
-    '/master/apis/project.openshift.io/v1/projects/hawtio-dev',
-    '/master/api/',
-    '/master/api/v1/namespaces/hawtio-dev',
-    '/master/api/v1/namespaces/hawtio-dev/pods?watch',
-    '/master/api/v1/namespaces/openshift-config-managed/configmaps/console-public'
+    { path: '/master/.well-known/oauth-authorization-server' },
+    { path: '/master/apis/apps.openshift.io/v1' },
+    { path: '/master/apis/user.openshift.io/v1/users/~' },
+    { path: '/master/apis/project.openshift.io/v1/projects/hawtio-dev' },
+    { path: '/master/api/' },
+    { path: '/master/api/v1/namespaces/hawtio-dev' },
+    { path: '/master/api/v1/namespaces/hawtio-dev/pods?watch' },
+    { path: '/master/api/v1/namespaces/openshift-config-managed/configmaps/console-public' }
   ]
 
-  it.each(endpointPaths)('redirect to test master', async (path: string) => {
-    const redirectPath = path.replace('master', 'masterinternal')
-
+  it.each(endpointPaths)('redirect to test master $path', async ({ path }) => {
     return request(gatewayServer)
       .get(path)
-      .expect(302)
+      .expect(200)
       .then(res => {
-        const host = `http://localhost:${process.env.WEB_PORT}`
-        expect(res.get('location')).toBe(`${host}${redirectPath}`)
-        expect(res.text).toBe(`Found. Redirecting to ${host}${redirectPath}`)
+        const msg = `response from master`
+
+        const json = JSON.parse(res.body)
+        expect(json.message).toBe(msg)
       })
   })
 })
