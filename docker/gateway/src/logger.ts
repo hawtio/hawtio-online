@@ -1,5 +1,7 @@
 import pino from 'pino'
-import expressPinoLogger from 'express-pino-logger'
+import pinoHttpLogger from 'pino-http'
 
-export const logger = pino({ level: process.env.LOG_LEVEL || 'info' })
-export const expressLogger = expressPinoLogger(logger)
+const level = process.env.LOG_LEVEL || 'info'
+
+export const logger = pino({ level: level })
+export const expressLogger = pinoHttpLogger({ logger: logger })
