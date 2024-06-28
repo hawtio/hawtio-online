@@ -113,7 +113,7 @@ jolokia.Config.hawtio:
 jolokia.Discovery:
   lookupAgents: admin, viewer
   lookupAgentsWithTimeout: admin, viewer
-jolokia.ServerHandler.hawtio: 
+jolokia.ServerHandler.hawtio:
   mBeanServersInfo: admin, viewer
 
 org.apache.aries.blueprint.blueprintMetadata:
@@ -215,7 +215,7 @@ org.apache.camel.context:
   requestBodyAndHeaders: admin
   findComponents: admin, viewer
   getComponentDocumentation: admin, viewer
-  removeEndpoints:  admin
+  removeEndpoints: admin
   completeEndpointPath: admin, viewer
 org.apache.camel.endpoints:
   /is.*/: admin, viewer

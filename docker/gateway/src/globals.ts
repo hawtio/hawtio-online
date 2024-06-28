@@ -1,4 +1,4 @@
 export interface GatewayOptions {
-  websvr: string,
+  websvr: string
   clusterMaster: string
 }
