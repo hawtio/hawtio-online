@@ -3340,7 +3340,7 @@
                 }
               ],
               "ret": "void",
-              "desc": "Updates\/adds the message header (uses same type as old header value) on the suspended breakpoint at the given node id"
+              "desc": "Updates/adds the message header (uses same type as old header value) on the suspended breakpoint at the given node id"
             },
             {
               "args": [
@@ -3366,7 +3366,7 @@
                 }
               ],
               "ret": "void",
-              "desc": "Updates\/adds the message header (with a new type) on the suspended breakpoint at the given node id"
+              "desc": "Updates/adds the message header (with a new type) on the suspended breakpoint at the given node id"
             }
           ],
           "setBodyMaxChars": {
@@ -7113,7 +7113,7 @@
         "class": "org.apache.camel.management.mbean.ManagedTransformerRegistry",
         "desc": "Managed TransformerRegistry"
       },
-      "context=MyCamel,name=\"timer:\/\/foo\\?period=2000\",type=endpoints": {
+      "context=MyCamel,name=\"timer://foo\\?period=2000\",type=endpoints": {
         "op": {
           "explain": {
             "args": [
@@ -8002,7 +8002,7 @@
       }
     },
     "org.xnio": {
-      "address=\"\/0:0:0:0:0:0:0:0:8080\",provider=\"nio\",type=Xnio,worker=\"XNIO-2\"": {
+      "address=\"/0:0:0:0:0:0:0:0:8080\",provider=\"nio\",type=Xnio,worker=\"XNIO-2\"": {
         "attr": {
           "ProviderName": {
             "rw": false,
@@ -8054,7 +8054,7 @@
         "class": "org.xnio.nio.NioXnio$3",
         "desc": "Information on the management interface of the MBean"
       },
-      "address=\"\/0:0:0:0:0:0:0:0:8081\",provider=\"nio\",type=Xnio,worker=\"XNIO-1\"": {
+      "address=\"/0:0:0:0:0:0:0:0:8081\",provider=\"nio\",type=Xnio,worker=\"XNIO-1\"": {
         "attr": {
           "ProviderName": {
             "rw": false,
@@ -12726,7 +12726,7 @@
               {
                 "name": "routingTypes",
                 "type": "java.lang.String",
-                "desc": "Comma separated list of Routing Types (ANYCAST\/MULTICAST)"
+                "desc": "Comma separated list of Routing Types (ANYCAST/MULTICAST)"
               }
             ],
             "ret": "java.lang.String",
@@ -13372,7 +13372,7 @@
               {
                 "name": "routingTypes",
                 "type": "java.lang.String",
-                "desc": "Comma separated list of Routing Types (ANYCAST\/MULTICAST)"
+                "desc": "Comma separated list of Routing Types (ANYCAST/MULTICAST)"
               }
             ],
             "ret": "java.lang.String",
@@ -16301,7 +16301,7 @@
           "ClusterConnectionNames": {
             "rw": false,
             "type": "[Ljava.lang.String;",
-            "desc": "N\/A"
+            "desc": "N/A"
           },
           "Clustered": {
             "rw": false,
@@ -16671,7 +16671,7 @@
           "reload": {
             "args": [],
             "ret": "void",
-            "desc": "Re-create the acceptor with the existing configuration values. Useful, for example, for reloading key\/trust stores on acceptors which support SSL."
+            "desc": "Re-create the acceptor with the existing configuration values. Useful, for example, for reloading key/trust stores on acceptors which support SSL."
           },
           "stop": {
             "args": [],
