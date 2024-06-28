@@ -4,28 +4,38 @@ import {
   MBeanInfo,
   MBeanInfoError,
   MBeanOperation,
-  MBeanOperationArgument
+  MBeanOperationArgument,
 } from 'jolokia.js'
 import 'jolokia.js/simple'
 import {
-  BulkValue, Intercepted, MBeanInfoCache, MBeanOperationEntry, OptimisedCachedDomains, OptimisedJmxDomains,
-  OptimisedMBeanInfo, OptimisedMBeanOperation, hasMBeanAttribute,
-  hasMBeanOperation, isArgumentExecRequest, isMBeanDefinedRequest,
-  isMBeanInfoError, isOptimisedMBeanInfo
-} from "./globals"
+  BulkValue,
+  Intercepted,
+  MBeanInfoCache,
+  MBeanOperationEntry,
+  OptimisedCachedDomains,
+  OptimisedJmxDomains,
+  OptimisedMBeanInfo,
+  OptimisedMBeanOperation,
+  hasMBeanAttribute,
+  hasMBeanOperation,
+  isArgumentExecRequest,
+  isMBeanDefinedRequest,
+  isMBeanInfoError,
+  isOptimisedMBeanInfo,
+} from './globals'
 import { isRecord, toStringArray } from '../utils'
 
 interface JmxUnionRequest {
-  type: string,
-  domain?: string,
-  properties?: Record<string, string>,
-  attribute?: string | string[],
-  operation?: string,
+  type: string
+  domain?: string
+  properties?: Record<string, string>
+  attribute?: string | string[]
+  operation?: string
   arguments?: unknown[]
 }
 
 interface MBeanNamedOperation {
-  name: string,
+  name: string
   operation: MBeanOperation
 }
 
@@ -56,11 +66,17 @@ function isSearchRBACMBean(request: MBeanRequest) {
 }
 
 function isCanInvokeRequest(request: MBeanRequest) {
-  return request.type === 'exec' && request.mbean === RBAC_SEARCH_MBEAN && request.operation === 'canInvoke(java.lang.String)'
+  return (
+    request.type === 'exec' &&
+    request.mbean === RBAC_SEARCH_MBEAN &&
+    request.operation === 'canInvoke(java.lang.String)'
+  )
 }
 
 function isBulkCanInvokeRequest(request: MBeanRequest) {
-  return request.type === 'exec' && request.mbean === RBAC_SEARCH_MBEAN && request.operation === 'canInvoke(java.util.Map)'
+  return (
+    request.type === 'exec' && request.mbean === RBAC_SEARCH_MBEAN && request.operation === 'canInvoke(java.util.Map)'
+  )
 }
 
 function isListRBACRegistry(request: MBeanRequest) {
@@ -97,7 +113,6 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
   if (isCanInvokeRequest(request) && isArgumentExecRequest(request)) {
     const args: unknown[] = request.arguments || []
     if (args.length > 0) {
-
       const mbean = args[0] as string
       const i = mbean.indexOf(':')
       const domain = i === -1 ? mbean : mbean.substring(0, i)
@@ -105,7 +120,7 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
 
       // MBeanInfo
       // https://docs.oracle.com/en/java/javase/11/docs/api/java.management/javax/management/MBeanInfo.html
-      if (!mbeans || ! Object.hasOwn(mbeans, domain)) {
+      if (!mbeans || !Object.hasOwn(mbeans, domain)) {
         return intercepted(false)
       }
 
@@ -123,21 +138,26 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
           const name = entry[0]
           const opOrOps = entry[1]
           if (Array.isArray(opOrOps)) {
-            opOrOps.forEach(op => { namedOps.push({name, operation: op}) })
+            opOrOps.forEach(op => {
+              namedOps.push({ name, operation: op })
+            })
           } else {
-            namedOps.push({name, operation: opOrOps})
+            namedOps.push({ name, operation: opOrOps })
           }
         })
 
-        const res = namedOps.find(namedOp => canInvoke(mbean, operationSignature(namedOp.name, namedOp.operation.args), role))
-        if (res)
-          return intercepted(true)
+        const res = namedOps.find(namedOp =>
+          canInvoke(mbean, operationSignature(namedOp.name, namedOp.operation.args), role),
+        )
+        if (res) return intercepted(true)
       }
 
       if (hasMBeanAttribute(info)) {
         // Check attributes
-        const res = Object.entries(info.attr || [])
-          .find(attr => canInvokeGetter(mbean, attr[0], attr[1].type, role) || canInvokeSetter(mbean, attr[0], attr[1].type, role))
+        const res = Object.entries(info.attr || []).find(
+          attr =>
+            canInvokeGetter(mbean, attr[0], attr[1].type, role) || canInvokeSetter(mbean, attr[0], attr[1].type, role),
+        )
 
         return intercepted(typeof res !== 'undefined')
       }
@@ -171,7 +191,6 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
   if (rbacRegistryEnabled) {
     // Intercept client-side RBACRegistry discovery request
     if (isListRBACRegistry(request)) {
-
       return intercepted({
         class: 'io.hawt.jmx.RBACRegistry',
         desc: 'Hawtio Online RBACRegistry',
@@ -180,7 +199,7 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
             desc: 'Hawtio Online RBACRegistry - list',
             args: [],
             ret: 'java.util.Map',
-          }
+          },
         },
       })
     }
@@ -191,9 +210,9 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
     }
   }
 
-  const i =  {
+  const i = {
     intercepted: false,
-    request: request
+    request: request,
   }
 
   return i
@@ -232,8 +251,7 @@ function optimisedMBeans(mbeans: JmxDomains, role: string): OptimisedCachedDomai
     Object.entries(infos[1]).forEach(i => {
       const props = reorderProperties(domain, i[0])
       const info = i[1]
-      if (! (isMBeanInfoError(info)))
-        addMBeanInfo(cache, domains, visited, domain, props, info as OptimisedMBeanInfo)
+      if (!isMBeanInfoError(info)) addMBeanInfo(cache, domains, visited, domain, props, info as OptimisedMBeanInfo)
     })
   })
 
@@ -299,7 +317,14 @@ function toString(properties: Record<string, string>) {
     .slice(0, -1)
 }
 
-function addMBeanInfo(cache: MBeanInfoCache, domains: JmxDomains, visited: Record<string, boolean>, domain: string, props: string, mbeanInfo: OptimisedMBeanInfo) {
+function addMBeanInfo(
+  cache: MBeanInfoCache,
+  domains: JmxDomains,
+  visited: Record<string, boolean>,
+  domain: string,
+  props: string,
+  mbeanInfo: OptimisedMBeanInfo,
+) {
   const objectName = `${domain}:${props}`
   if (visited[objectName]) {
     return
@@ -335,8 +360,7 @@ function identifySpecialMBean(domain: string, props: string, mbeanInfo: MBeanInf
   }
 
   switch (domain) {
-    case 'org.apache.activemq':
-    {
+    case 'org.apache.activemq': {
       const properties = parseProperties(props)
       const destType = properties['destinationType']
       // see: org.apache.activemq.command.ActiveMQDestination.getDestinationTypeAsString()
@@ -352,8 +376,7 @@ function identifySpecialMBean(domain: string, props: string, mbeanInfo: MBeanInf
       }
       break
     }
-    case 'org.apache.activemq.artemis':
-    {
+    case 'org.apache.activemq.artemis': {
       const properties = parseProperties(props)
       const comp = properties['component']
       if (comp === 'addresses') {
@@ -479,9 +502,9 @@ export function check(request: MBeanRequest, role: string) {
     type: request.type,
     domain: domain,
     properties: objectName,
-    attribute: ('attribute' in request) ? request.attribute : undefined,
-    operation: ('operation' in request) ? request.operation : undefined,
-    arguments: ('arguments' in request) ? request.arguments : undefined,
+    attribute: 'attribute' in request ? request.attribute : undefined,
+    operation: 'operation' in request ? request.operation : undefined,
+    arguments: 'arguments' in request ? request.arguments : undefined,
   })
 }
 
@@ -522,15 +545,16 @@ function checkACL(role: string, jolokia: JmxUnionRequest, name: string) {
     } else {
       member = jolokia.operation.slice(0, -2)
     }
-  } else if (jolokia.attribute && ! Array.isArray(jolokia.attribute)) {
+  } else if (jolokia.attribute && !Array.isArray(jolokia.attribute)) {
     member = jolokia.attribute
   } else {
     member = jolokia.type.toLowerCase()
   }
 
   if (Array.isArray(acl)) {
-    const entry = acl.map(a => Object.entries(a)[0])
-      .find(e => e[0] === member || regex.test(e[0]) && new RegExp(e[0].slice(1, -1)).test(member))
+    const entry = acl
+      .map(a => Object.entries(a)[0])
+      .find(e => e[0] === member || (regex.test(e[0]) && new RegExp(e[0].slice(1, -1)).test(member)))
     if (entry) {
       return checkRoles(role, jolokia, name, entry[0], entry[1])
     }
@@ -540,7 +564,9 @@ function checkACL(role: string, jolokia: JmxUnionRequest, name: string) {
       return checkRoles(role, jolokia, name, member, acl[member])
     }
     // test regex keys
-    const entry = Object.entries(acl).filter(e => regex.test(e[0])).find(e => new RegExp(e[0].slice(1, -1)).test(member))
+    const entry = Object.entries(acl)
+      .filter(e => regex.test(e[0]))
+      .find(e => new RegExp(e[0].slice(1, -1)).test(member))
     if (entry) {
       return checkRoles(role, jolokia, name, entry[0], entry[1])
     }
@@ -567,7 +593,10 @@ function checkRoles(role: string, jolokia: JmxUnionRequest, name: string, key: s
   const denied = { allowed: false, reason: `Role '${role}' denied by '${name}[${key}]: ${roles}'` }
 
   if (typeof roles === 'string') {
-    roles = roles.split(',').map(r => r.trim()).filter(r => r)
+    roles = roles
+      .split(',')
+      .map(r => r.trim())
+      .filter(r => r)
   }
 
   if (Array.isArray(roles)) {

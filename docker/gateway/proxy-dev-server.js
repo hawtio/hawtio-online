@@ -34,21 +34,24 @@ if (!masterUri) {
 }
 
 /* Defers to the app server */
-app.use('/auth/logout', createProxyMiddleware({
-  target: appServerUri,
-  logger: logger,
-  changeOrigin: false,
-  ws: true,
-  secure: false,
-  pathRewrite: (path, req) => {
-    // Convert path to logout endpoint
-    return '/logout'
-  },
-  headers: {
-    'Content-Type': 'application/json',
-    'location-rule': 'LOGOUT'
-  }
-}))
+app.use(
+  '/auth/logout',
+  createProxyMiddleware({
+    target: appServerUri,
+    logger: logger,
+    changeOrigin: false,
+    ws: true,
+    secure: false,
+    pathRewrite: (path, req) => {
+      // Convert path to logout endpoint
+      return '/logout'
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      'location-rule': 'LOGOUT',
+    },
+  }),
+)
 
 /*
  * Defers to the app server to determine if the
@@ -57,103 +60,118 @@ app.use('/auth/logout', createProxyMiddleware({
  * 1. If permitted then it will redirect to /masterinternal
  * 2. If not permitted then it will return a 401 or 502
  */
-app.use('/master', createProxyMiddleware({
-  target: appServerUri,
-  logger: logger,
-  changeOrigin: false,
-  ws: true,
-  secure: false,
-  headers: {
-    'Content-Type': 'application/json',
-    'location-rule': 'MASTER'
-  }
-}))
+app.use(
+  '/master',
+  createProxyMiddleware({
+    target: appServerUri,
+    logger: logger,
+    changeOrigin: false,
+    ws: true,
+    secure: false,
+    headers: {
+      'Content-Type': 'application/json',
+      'location-rule': 'MASTER',
+    },
+  }),
+)
 
 /* Defers to the app server */
-app.use('/management', createProxyMiddleware({
-  target: appServerUri,
-  logger: logger,
-  changeOrigin: false,
-  ws: true,
-  secure: false,
-  pathRewrite: (path, req) => {
-    return '/management' + path
-  },
-  headers: {
-    'Content-Type': 'application/json',
-    'location-rule': 'MANAGEMENT',
-    'X-Frame-Options': 'SAMEORIGIN',
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-    'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ",
-    'Authorization': `Bearer ${masterToken}`
-  }
-}))
+app.use(
+  '/management',
+  createProxyMiddleware({
+    target: appServerUri,
+    logger: logger,
+    changeOrigin: false,
+    ws: true,
+    secure: false,
+    pathRewrite: (path, req) => {
+      return '/management' + path
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      'location-rule': 'MANAGEMENT',
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ",
+      Authorization: `Bearer ${masterToken}`,
+    },
+  }),
+)
 
 /* App server returns back to proxy to the master cluster */
-app.use('/authorization', createProxyMiddleware({
-  target: masterUri,
-  logger: logger,
-  changeOrigin: false,
-  ws: true,
-  secure: false,
-  pathRewrite: (path, req) => {
-    let uri = '/authorization' + path
-    return uri.replace(/\/authorization\/([^/]+)\/(.*)/, '/apis/$1/v1/$2')
-  },
-  headers: {
-    'Content-Type': 'application/json',
-    'location-rule': 'AUTHORIZATION',
-    'X-Frame-Options': 'SAMEORIGIN',
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-    'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ",
-    'Authorization': `Bearer ${masterToken}`
-  }
-}))
+app.use(
+  '/authorization',
+  createProxyMiddleware({
+    target: masterUri,
+    logger: logger,
+    changeOrigin: false,
+    ws: true,
+    secure: false,
+    pathRewrite: (path, req) => {
+      let uri = '/authorization' + path
+      return uri.replace(/\/authorization\/([^/]+)\/(.*)/, '/apis/$1/v1/$2')
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      'location-rule': 'AUTHORIZATION',
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ",
+      Authorization: `Bearer ${masterToken}`,
+    },
+  }),
+)
 
-app.use('/authorization2', createProxyMiddleware({
-  target: masterUri,
-  logger: logger,
-  changeOrigin: false,
-  ws: true,
-  secure: false,
-  pathRewrite: (path, req) => {
-    let uri = '/authorization2' + path
-    return uri.replace(/\/authorization2\/([^/]+)\/(.*)/, '/apis/$1/v1/$2')
-  },
-  headers: {
-    'Content-Type': 'application/json',
-    'location-rule': 'AUTHORIZATION',
-    'X-Frame-Options': 'SAMEORIGIN',
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-    'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ",
-    'Authorization': `Bearer ${masterToken}`
-  }
-}))
+app.use(
+  '/authorization2',
+  createProxyMiddleware({
+    target: masterUri,
+    logger: logger,
+    changeOrigin: false,
+    ws: true,
+    secure: false,
+    pathRewrite: (path, req) => {
+      let uri = '/authorization2' + path
+      return uri.replace(/\/authorization2\/([^/]+)\/(.*)/, '/apis/$1/v1/$2')
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      'location-rule': 'AUTHORIZATION',
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ",
+      Authorization: `Bearer ${masterToken}`,
+    },
+  }),
+)
 
-app.use('/podIP', createProxyMiddleware({
-  target: masterUri,
-  logger: logger,
-  changeOrigin: false,
-  ws: true,
-  secure: false,
-  pathRewrite: (path, req) => {
-    let uri = '/podIP' + path
-    const match = uri.match(/\/podIP\/(.+)\/(.+)/)
+app.use(
+  '/podIP',
+  createProxyMiddleware({
+    target: masterUri,
+    logger: logger,
+    changeOrigin: false,
+    ws: true,
+    secure: false,
+    pathRewrite: (path, req) => {
+      let uri = '/podIP' + path
+      const match = uri.match(/\/podIP\/(.+)\/(.+)/)
 
-    // Save the namespace for use in the proxy endpoint
-    namespace = match[1]
+      // Save the namespace for use in the proxy endpoint
+      namespace = match[1]
 
-    return uri.replace(/\/podIP\/(.+)\/(.+)/, '/api/v1/namespaces/$1/pods/$2')
-  },
-  headers: {
-    'Content-Type': 'application/json',
-    'location-rule': 'POD-IP',
-    'X-Frame-Options': 'SAMEORIGIN',
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-    'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ",
-    'Authorization': `Bearer ${masterToken}`
-  }
-}))
+      return uri.replace(/\/podIP\/(.+)\/(.+)/, '/api/v1/namespaces/$1/pods/$2')
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      'location-rule': 'POD-IP',
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ",
+      Authorization: `Bearer ${masterToken}`,
+    },
+  }),
+)
 
 /**
  * The endpoint for directly accessing the jolokia service.
@@ -162,26 +180,29 @@ app.use('/podIP', createProxyMiddleware({
  * externally to the cluster AND requires the jolokia port on
  * the target app to be exposed as a service
  */
-app.use('/proxy', createProxyMiddleware({
-  target: masterUri,
-  logger: logger,
-  changeOrigin: false,
-  ws: true,
-  secure: false,
-  pathRewrite: (path, req) => {
-    const uri = `/api/v1/namespaces/${namespace}/services/${testService}:${testServicePort}/proxy/${jolokiaPath}`
-    logger.info(`New proxy uri ${uri}`)
-    return uri
-  },
-  headers: {
-    'Content-Type': 'application/json',
-    'location-rule': 'POD-IP',
-    'X-Frame-Options': 'SAMEORIGIN',
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-    'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ",
-    'Authorization': `Bearer ${masterToken}`
-  }
-}))
+app.use(
+  '/proxy',
+  createProxyMiddleware({
+    target: masterUri,
+    logger: logger,
+    changeOrigin: false,
+    ws: true,
+    secure: false,
+    pathRewrite: (path, req) => {
+      const uri = `/api/v1/namespaces/${namespace}/services/${testService}:${testServicePort}/proxy/${jolokiaPath}`
+      logger.info(`New proxy uri ${uri}`)
+      return uri
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      'location-rule': 'POD-IP',
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ",
+      Authorization: `Bearer ${masterToken}`,
+    },
+  }),
+)
 
 /*
  * These must be declared after the use of proxy

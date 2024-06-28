@@ -1,5 +1,5 @@
 export function isObject(value: unknown): value is object {
-  if (! value) return false
+  if (!value) return false
 
   const type = typeof value
   return value != null && (type === 'object' || type === 'function')
@@ -10,7 +10,7 @@ export function cloneObject<T>(value: T): T {
 }
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
-  return isObject(value) && (typeof value === 'object')
+  return isObject(value) && typeof value === 'object'
 }
 
 export function isString(value: unknown): value is string {
@@ -18,7 +18,7 @@ export function isString(value: unknown): value is string {
 }
 
 export function toStringArray(value: unknown): string[] {
-  if (! Array.isArray(value)) return []
+  if (!Array.isArray(value)) return []
 
   const strings: string[] = []
   value.forEach(v => {

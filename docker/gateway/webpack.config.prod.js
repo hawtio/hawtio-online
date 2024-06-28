@@ -39,7 +39,7 @@ module.exports = {
           },
         },
         exclude: /node_modules|\.d\.ts$/, // this line as well
-      }
+      },
     ],
   },
 
@@ -54,7 +54,7 @@ module.exports = {
       }),
     ],
     symlinks: false,
-    cacheWithContext: false
+    cacheWithContext: false,
   },
 
   // For suppressing warnings that stop app running
@@ -71,5 +71,5 @@ module.exports = {
     new CompressionPlugin({
       threshold: 8192,
     }),
-  ]
+  ],
 }

@@ -22,17 +22,17 @@ const sslCertificateCA = process.env.HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE_CA ||
 let useHttps = false
 
 if (sslCertificate.length > 0) {
-  if (! fs.existsSync(sslKey)) {
+  if (!fs.existsSync(sslKey)) {
     logger.error(`The ssl key assigned at "${sslKey}" does not exist`)
     process.exit(1)
   }
 
-  if (! fs.existsSync(sslCertificate)) {
+  if (!fs.existsSync(sslCertificate)) {
     logger.error(`The ssl certificate assigned at "${sslCertificate}" does not exist`)
     process.exit(1)
   }
 
-  if (sslCertificateCA.length > 0 && ! fs.existsSync(sslCertificateCA)) {
+  if (sslCertificateCA.length > 0 && !fs.existsSync(sslCertificateCA)) {
     logger.error(`The ssl certificate authority assigned at "${sslCertificateCA}" does not exist`)
     process.exit(1)
   }
@@ -42,7 +42,7 @@ if (sslCertificate.length > 0) {
 
 const gatewayOptions: GatewayOptions = {
   websvr: webServer,
-  clusterMaster: clusterMaster
+  clusterMaster: clusterMaster,
 }
 
 export const gatewayServer = express()
@@ -78,7 +78,7 @@ gatewayServer.use(methodOverride('X-HTTP-Method-Override'))
  */
 gatewayServer.get('/status', (req, res) => {
   res.setHeader('Content-Type', 'application/json')
-  res.status(200).json({port: port, webServer: gatewayOptions.websvr})
+  res.status(200).json({ port: port, webServer: gatewayOptions.websvr })
 })
 
 /**
@@ -88,7 +88,7 @@ gatewayServer.get('/status', (req, res) => {
 gatewayServer.get('/logout', (req, res) => {
   let redirectUri = req.query.redirect_uri
 
-  if (! redirectUri) {
+  if (!redirectUri) {
     res.status(200).end('Acknowledge logout but nothing further to do.')
   }
 
@@ -106,42 +106,45 @@ gatewayServer.get('/logout', (req, res) => {
  * the web server breaks the connection and websockets
  * fail to startup.
  */
-gatewayServer.use('/master', createProxyMiddleware({
-  target: `${gatewayOptions.clusterMaster}`,
-  logger: logger,
-  changeOrigin: false,
-  ws: true,
-  secure: false,
-  pathFilter: (path, req) => {
-    const result = proxyMasterGuard('/master' + path)
-    return result.status
-  },
-  pathRewrite: (path, req) => {
-    return path.replace('/master', '')
-  }
-}))
+gatewayServer.use(
+  '/master',
+  createProxyMiddleware({
+    target: `${gatewayOptions.clusterMaster}`,
+    logger: logger,
+    changeOrigin: false,
+    ws: true,
+    secure: false,
+    pathFilter: (path, req) => {
+      const result = proxyMasterGuard('/master' + path)
+      return result.status
+    },
+    pathRewrite: (path, req) => {
+      return path.replace('/master', '')
+    },
+  }),
+)
 
 /**
  * Manages the connection to the jolokia server in app
  */
-gatewayServer.route('/management/*')
+gatewayServer
+  .route('/management/*')
   .get((req, res) => {
     proxyJolokiaAgent(req, res, gatewayOptions)
   })
-  .post((express.json({type: '*/json', strict: false})), (req, res) => {
+  .post(express.json({ type: '*/json', strict: false }), (req, res) => {
     proxyJolokiaAgent(req, res, gatewayOptions)
   })
 
 /**
  * Default rule for anything else sent to the server
  */
-gatewayServer.route('*')
-  .all((req, res) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.status(502).json({
-      message: `Error (gateway-api): Access to ${req.url} is not permitted.`
-    })
+gatewayServer.route('*').all((req, res) => {
+  res.setHeader('Content-Type', 'application/json')
+  res.status(502).json({
+    message: `Error (gateway-api): Access to ${req.url} is not permitted.`,
   })
+})
 
 /*
  * Must use a wildcard for json Content-Type since jolokia
@@ -151,23 +154,25 @@ gatewayServer.route('*')
  *
  * Needs to be added last to avoid being overwritten by the proxy middleware
  */
-gatewayServer.use(express.json({type: '*/json', strict: false}))
+gatewayServer.use(express.json({ type: '*/json', strict: false }))
 
 /*
  * Exports the running server for use in unit testing
  */
 export let runningGatewayServer: Server
 if (useHttps) {
-  const gatewayHttpsServer = https.createServer({
-    key: fs.readFileSync(sslKey),
-    cert: fs.readFileSync(sslCertificate),
-    ca: fs.readFileSync(sslCertificateCA),
-  }, gatewayServer)
+  const gatewayHttpsServer = https.createServer(
+    {
+      key: fs.readFileSync(sslKey),
+      cert: fs.readFileSync(sslCertificate),
+      ca: fs.readFileSync(sslCertificateCA),
+    },
+    gatewayServer,
+  )
 
   runningGatewayServer = gatewayHttpsServer.listen(port, () => {
     logger.info(`HTTPS Server running on port ${port}`)
   })
-
 } else {
   runningGatewayServer = gatewayServer.listen(port, () => {
     logger.info(`INFO: Gateway listening on port ${port}`)

@@ -1,7 +1,13 @@
 import * as yaml from 'yaml'
 import * as fs from 'fs'
 import * as rbac from './rbac'
-import { MBeanInfoCache, OptimisedJmxDomains, OptimisedMBeanOperations, hasMBeanOperation, isOptimisedCachedDomains } from './globals'
+import {
+  MBeanInfoCache,
+  OptimisedJmxDomains,
+  OptimisedMBeanOperations,
+  hasMBeanOperation,
+  isOptimisedCachedDomains,
+} from './globals'
 
 const aclFile = fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || `${__dirname}/ACL.yaml`, 'utf8')
 const aclYaml = yaml.parse(aclFile)
@@ -26,55 +32,60 @@ const viewer = 'viewer'
 
 describe('check', () => {
   it('should handle a request with viewer role', () => {
-    const result = rbac.check({
-      type: 'exec',
-      mbean: 'org.apache.camel:type=context',
-      operation: 'dumpRoutesAsXml()',
-    }, viewer)
+    const result = rbac.check(
+      {
+        type: 'exec',
+        mbean: 'org.apache.camel:type=context',
+        operation: 'dumpRoutesAsXml()',
+      },
+      viewer,
+    )
     expect(result.allowed).toBe(true)
   })
 
   it('should handle a request with arguments and no roles allowed', function () {
-    const result1 = rbac.check({
-      type: 'exec',
-      mbean: 'org.apache.karaf:type=bundle',
-      operation: 'uninstall(java.lang.String)',
-      arguments: [
-        '0',
-      ],
-    }, admin)
+    const result1 = rbac.check(
+      {
+        type: 'exec',
+        mbean: 'org.apache.karaf:type=bundle',
+        operation: 'uninstall(java.lang.String)',
+        arguments: ['0'],
+      },
+      admin,
+    )
     expect(result1.allowed).toBe(false)
-    const result2 = rbac.check({
-      type: 'exec',
-      mbean: 'org.apache.karaf:type=bundle',
-      operation: 'uninstall(java.lang.String)',
-      arguments: [
-        '0',
-      ],
-    }, viewer)
+    const result2 = rbac.check(
+      {
+        type: 'exec',
+        mbean: 'org.apache.karaf:type=bundle',
+        operation: 'uninstall(java.lang.String)',
+        arguments: ['0'],
+      },
+      viewer,
+    )
     expect(result2.allowed).toBe(false)
   })
 
   it('should handle a request with arguments and only admin allowed', function () {
-    const result1 = rbac.check({
-      type: 'exec',
-      mbean: 'org.apache.karaf:type=bundle',
-      operation: 'update(java.lang.String,java.lang.String)',
-      arguments: [
-        '50',
-        'value',
-      ],
-    }, admin)
+    const result1 = rbac.check(
+      {
+        type: 'exec',
+        mbean: 'org.apache.karaf:type=bundle',
+        operation: 'update(java.lang.String,java.lang.String)',
+        arguments: ['50', 'value'],
+      },
+      admin,
+    )
     expect(result1.allowed).toBe(true)
-    const result2 = rbac.check({
-      type: 'exec',
-      mbean: 'org.apache.karaf:type=bundle',
-      operation: 'update(java.lang.String,java.lang.String)',
-      arguments: [
-        '50',
-        'value',
-      ],
-    }, viewer)
+    const result2 = rbac.check(
+      {
+        type: 'exec',
+        mbean: 'org.apache.karaf:type=bundle',
+        operation: 'update(java.lang.String,java.lang.String)',
+        arguments: ['50', 'value'],
+      },
+      viewer,
+    )
     expect(result2.allowed).toBe(false)
   })
 })
@@ -84,9 +95,11 @@ describe('intercept', function () {
     const result = rbac.intercept(
       {
         type: 'search',
-        mbean: '*:type=security,area=jmx,*'
+        mbean: '*:type=security,area=jmx,*',
       },
-      admin, listMBeans)
+      admin,
+      listMBeans,
+    )
     expect(result.intercepted).toBe(true)
     expect(result.response?.value).toEqual(['hawtio:type=security,area=jmx,name=HawtioOnlineRBAC'])
   })
@@ -97,9 +110,11 @@ describe('intercept', function () {
         type: 'exec',
         mbean: 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC',
         operation: 'canInvoke(java.lang.String)',
-        arguments: ['java.lang:type=Memory']
+        arguments: ['java.lang:type=Memory'],
       },
-      admin, listMBeans)
+      admin,
+      listMBeans,
+    )
     expect(result.intercepted).toBe(true)
 
     // canInvoke should be true
@@ -112,23 +127,24 @@ describe('intercept', function () {
         type: 'exec',
         mbean: 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC',
         operation: 'canInvoke(java.util.Map)',
-        'arguments': [
+        arguments: [
           {
-            'java.lang:type=Memory': [
-              'gc()',
-            ],
-            'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context': [
-              'addOrUpdateRoutesFromXml(java.lang.String)',
-              'addOrUpdateRoutesFromXml(java.lang.String,boolean)',
-              'dumpStatsAsXml(boolean)',
-              'getCamelId()',
-              'getRedeliveries()',
-              'sendStringBody(java.lang.String,java.lang.String)',
-            ],
+            'java.lang:type=Memory': ['gc()'],
+            'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context':
+              [
+                'addOrUpdateRoutesFromXml(java.lang.String)',
+                'addOrUpdateRoutesFromXml(java.lang.String,boolean)',
+                'dumpStatsAsXml(boolean)',
+                'getCamelId()',
+                'getRedeliveries()',
+                'sendStringBody(java.lang.String,java.lang.String)',
+              ],
           },
         ],
       },
-      admin, listMBeans)
+      admin,
+      listMBeans,
+    )
     expect(result.intercepted).toBe(true)
     expect(result.response?.value).toBeDefined()
   })
@@ -139,7 +155,9 @@ describe('intercept', function () {
         type: 'list',
         path: 'hawtio/type=security,name=RBACRegistry',
       },
-      admin, listMBeans)
+      admin,
+      listMBeans,
+    )
     expect(result.intercepted).toBe(true)
     expect(hasMBeanOperation(result.response?.value)).toBe(false)
   })
@@ -151,7 +169,9 @@ describe('intercept', function () {
         mbean: 'hawtio:type=security,name=RBACRegistry',
         operation: 'list()',
       },
-      admin, listMBeans)
+      admin,
+      listMBeans,
+    )
     expect(result.intercepted).toBe(true)
     expect(isOptimisedCachedDomains(result.response?.value)).toBe(true)
     if (isOptimisedCachedDomains(result.response?.value)) {
@@ -172,7 +192,9 @@ describe('intercept', function () {
         mbean: 'java.lang.Memory',
         operation: 'gc()',
       },
-      admin, listMBeans)
+      admin,
+      listMBeans,
+    )
     expect(result.intercepted).toBe(false)
     expect(result.response).toBeUndefined()
   })
@@ -241,7 +263,7 @@ describe('optimisedMBeans', function () {
             address: 3,
             subcomponent: 4,
             'routing-type': 5,
-            queue: 6
+            queue: 6,
           }
           const regexp = /([^,]+)=([^,]+)+/g
           let match
@@ -255,7 +277,6 @@ describe('optimisedMBeans', function () {
         }
       })
     })
-
   })
 })
 
@@ -271,7 +292,7 @@ describe('parseProperties', function () {
       type: 'MemoryPool',
     })
     expect(rbac.testing.parseProperties('type=Memory')).toEqual({
-      type: 'Memory'
+      type: 'Memory',
     })
   })
 })

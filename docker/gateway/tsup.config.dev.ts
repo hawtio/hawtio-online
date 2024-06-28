@@ -13,5 +13,5 @@ export default defineConfig({
   platform: 'node',
   onSuccess: 'node --env-file .env.development dist/gateway-api.js',
   publicDir: 'public',
-  watch: true
+  watch: true,
 })

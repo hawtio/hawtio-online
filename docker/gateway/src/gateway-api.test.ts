@@ -4,10 +4,7 @@ import { Request as ExpressRequest, Response as ExpressResponse } from 'express-
 import { enableRbac } from './jolokia-agent'
 import { expressLogger, logger } from './logger'
 import { cloneObject } from './utils'
-import {
-  JOLOKIA_PARAMS, JOLOKIA_PATH, JOLOKIA_PORT,
-  JOLOKIA_URI, NAMESPACE, testData
-} from './gateway-test-inputs'
+import { JOLOKIA_PARAMS, JOLOKIA_PATH, JOLOKIA_PORT, JOLOKIA_URI, NAMESPACE, testData } from './gateway-test-inputs'
 import { isOptimisedCachedDomains } from './jolokia-agent'
 
 /*
@@ -20,6 +17,8 @@ const WEB_PORT = 3001
  */
 process.env.HAWTIO_ONLINE_GATEWAY_CLUSTER_MASTER = `http://localhost:${WEB_PORT}/master`
 
+// Have to have import statement come after the setting of the node property
+// eslint-disable-next-line
 import { gatewayServer, runningGatewayServer } from './gateway-api'
 
 /******************************************
@@ -42,7 +41,7 @@ export const runningTestWebServer = testWebServer.listen(WEB_PORT, () => {
  */
 function proxyHandler(req: ExpressRequest, res: ExpressResponse) {
   const parts = req.url.match(/^\/proxy\/(http|https):(.+):(\d+)\/(.*)$/)
-  if (! parts || parts.length < 5) {
+  if (!parts || parts.length < 5) {
     logger.error('Not enough jolokia URI parts')
     res.status(502).send()
     return
@@ -77,7 +76,6 @@ function proxyHandler(req: ExpressRequest, res: ExpressResponse) {
   if (req.method === 'GET') {
     // TODO handle when dealing with jolokia get requests
   } else if (req.method === 'POST') {
-
     let k: keyof typeof testData.jolokia
     for (k in testData.jolokia) {
       const td = testData.jolokia[k]
@@ -103,12 +101,12 @@ function proxyHandler(req: ExpressRequest, res: ExpressResponse) {
   // Invalid method called
   const msg = `ERROR: Proxy Handler request method not recognized: ${req.method}`
   logger.error(msg)
-  res.status(502).send({error: msg})
+  res.status(502).send({ error: msg })
 }
 
 testWebServer.get('/master/*', (req, res) => {
   res.set('Content-Type', 'application/json')
-  res.status(200).json(JSON.stringify({message: 'response from master'}))
+  res.status(200).json(JSON.stringify({ message: 'response from master' }))
 })
 
 testWebServer.post('/authorization*/*', (req, res) => {
@@ -117,10 +115,10 @@ testWebServer.post('/authorization*/*', (req, res) => {
     return
   }
 
-  if (! req.body || ! req.body.verb) {
+  if (!req.body || !req.body.verb) {
     const msg = `ERROR: No authorization body or no verb provided in authorization body`
     logger.error(msg)
-    res.status(502).send({error: msg})
+    res.status(502).send({ error: msg })
     return
   }
 
@@ -128,27 +126,26 @@ testWebServer.post('/authorization*/*', (req, res) => {
     case 'get':
       if (testData.authorization.viewerAllowed)
         res.status(200).json(JSON.stringify(testData.authorization.allowedResponse))
-      else
-        res.status(200).json(JSON.stringify(testData.authorization.notAllowedResponse))
+      else res.status(200).json(JSON.stringify(testData.authorization.notAllowedResponse))
 
       return
     case 'update':
       if (testData.authorization.adminAllowed)
         res.status(200).json(JSON.stringify(testData.authorization.allowedResponse))
-      else
-        res.status(200).json(JSON.stringify(testData.authorization.notAllowedResponse))
+      else res.status(200).json(JSON.stringify(testData.authorization.notAllowedResponse))
 
       return
   }
 
   const msg = 'ERROR: Failure part reached in authorization response'
   logger.error(msg)
-  res.status(502).send({error: msg})
+  res.status(502).send({ error: msg })
 })
 
 testWebServer.get('/podIP/*', (req, res) => res.status(201).json(JSON.stringify(testData.pod.resource)))
 
-testWebServer.route('/proxy*')
+testWebServer
+  .route('/proxy*')
   .get((req, res) => {
     proxyHandler(req, res)
   })
@@ -160,22 +157,18 @@ testWebServer.route('/proxy*')
  *            T E S T S
  ***********************************/
 
-afterAll((done) => {
+afterAll(done => {
   let total = 0
 
-  runningGatewayServer.addListener('close', function() {
-    if (total < 1)
-      ++total
-    else
-      done()
+  runningGatewayServer.addListener('close', function () {
+    if (total < 1) ++total
+    else done()
   })
   runningGatewayServer.close()
 
-  runningTestWebServer.addListener('close', function() {
-    if (total < 1)
-      ++total
-    else
-      done()
+  runningTestWebServer.addListener('close', function () {
+    if (total < 1) ++total
+    else done()
   })
   runningTestWebServer.close()
 })
@@ -231,7 +224,7 @@ describe('/master', () => {
     { path: '/master/api/' },
     { path: '/master/api/v1/namespaces/hawtio-dev' },
     { path: '/master/api/v1/namespaces/hawtio-dev/pods?watch' },
-    { path: '/master/api/v1/namespaces/openshift-config-managed/configmaps/console-public' }
+    { path: '/master/api/v1/namespaces/openshift-config-managed/configmaps/console-public' },
   ]
 
   it.each(endpointPaths)('redirect to test master $path', async ({ path }) => {
@@ -259,210 +252,205 @@ function appPost(uri: string, body: Record<string, unknown> | Record<string, unk
 }
 
 describe.each([
-    {title: 'proxyJolokiaAgentWithoutRbac', rbac: false},
-    {title: 'proxyJolokiaAgentWithRbac', rbac: true},
-  ])('$title', ({title, rbac}) => {
+  { title: 'proxyJolokiaAgentWithoutRbac', rbac: false },
+  { title: 'proxyJolokiaAgentWithRbac', rbac: true },
+])('$title', ({ title, rbac }) => {
+  const testAuth = rbac ? 'RBAC Enabled' : 'RBAC Disabled'
 
-    const testAuth = (rbac) ? 'RBAC Enabled' : 'RBAC Disabled'
+  it(`${testAuth}: Bare path`, async () => {
+    enableRbac(rbac)
+    const path = '/management/'
+    return appPost(path, testData.jolokia.search.request).expect(404)
+  })
 
-    it(`${testAuth}: Bare path`, async () => {
-      enableRbac(rbac)
-      const path = '/management/'
-      return appPost(path, testData.jolokia.search.request)
-        .expect(404)
-    })
+  it(`${testAuth}: Authorization forbidden`, async () => {
+    enableRbac(rbac)
+    testData.authorization.forbidden = true
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.search.request).expect(403)
+  })
 
-    it(`${testAuth}: Authorization forbidden`, async () => {
-      enableRbac(rbac)
-      testData.authorization.forbidden = true
-      const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
-      return appPost(path, testData.jolokia.search.request)
-        .expect(403)
-    })
+  it(`${testAuth}: Authorization not allowed`, async () => {
+    enableRbac(rbac)
+    testData.authorization.adminAllowed = false
+    testData.authorization.viewerAllowed = false
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.search.request)
+      .expect(403)
+      .then(res => {
+        expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
+      })
+  })
 
-    it(`${testAuth}: Authorization not allowed`, async () => {
-      enableRbac(rbac)
-      testData.authorization.adminAllowed = false
-      testData.authorization.viewerAllowed = false
-      const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
-      return appPost(path, testData.jolokia.search.request)
-        .expect(403)
-        .then(res => {
-          expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
-        })
-    })
+  it(`${testAuth}: Authorization Post search`, async () => {
+    enableRbac(rbac)
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.search.request)
+      .expect(200)
+      .then(res => {
+        expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.search.response))
+      })
+  })
 
-    it(`${testAuth}: Authorization Post search`, async () => {
-      enableRbac(rbac)
-      const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
-      return appPost(path, testData.jolokia.search.request)
-        .expect(200)
-        .then(res => {
-          expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.search.response))
-        })
-    })
+  it(`${testAuth}: Authorization Post registerList`, async () => {
+    enableRbac(rbac)
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.registerList.request)
+      .expect(200)
+      .then(res => {
+        const received = JSON.parse(res.text)
+        const expected = testData.jolokia.registerList.response
 
-    it(`${testAuth}: Authorization Post registerList`, async () => {
-      enableRbac(rbac)
-      const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
-      return appPost(path, testData.jolokia.registerList.request)
-        .expect(200)
-        .then(res => {
-          const received = JSON.parse(res.text)
-          const expected = testData.jolokia.registerList.response
+        expect(received.request).toStrictEqual(expected.request)
 
-          expect(received.request).toStrictEqual(expected.request)
+        if (rbac) {
+          // eslint-disable-next-line
+          expect(isOptimisedCachedDomains(received.value)).toBe(true)
+          const expDomains = Object.getOwnPropertyNames(expected.value.domains)
+          const recDomains = Object.getOwnPropertyNames(received.value.domains)
+          // eslint-disable-next-line
+          expect(expDomains.length).toEqual(recDomains.length)
+        } else {
+          // No RBAC then there is no interception or optimisation
+          // eslint-disable-next-line
+          expect(expected.value.domains).toEqual(expected.value.domains)
+        }
+      })
+  })
 
-          if (rbac) {
-            // eslint-disable-next-line
-            expect(isOptimisedCachedDomains(received.value)).toBe(true)
-            const expDomains = Object.getOwnPropertyNames(expected.value.domains)
-            const recDomains = Object.getOwnPropertyNames(received.value.domains)
-            // eslint-disable-next-line
-            expect(expDomains.length).toEqual(recDomains.length)
-          } else {
-            // No RBAC then there is no interception or optimisation
-            // eslint-disable-next-line
-            expect(expected.value.domains).toEqual(expected.value.domains)
-          }
-        })
-    })
+  it(`${testAuth}: Authorization Post canInvokeMap`, async () => {
+    enableRbac(rbac)
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.canInvokeMap.request)
+      .expect(200)
+      .then(res => {
+        const received = JSON.parse(res.text)
+        const expected = cloneObject(testData.jolokia.canInvokeMap.response)
 
-    it(`${testAuth}: Authorization Post canInvokeMap`, async () => {
-      enableRbac(rbac)
-      const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
-      return appPost(path, testData.jolokia.canInvokeMap.request)
-        .expect(200)
-        .then(res => {
-          const received = JSON.parse(res.text)
-          const expected = cloneObject(testData.jolokia.canInvokeMap.response)
+        // Neutralise the timestamps as they are always going to be different
+        received.timestamp = 0
+        expected.timestamp = 0
 
-          // Neutralise the timestamps as they are always going to be different
-          received.timestamp = 0
-          expected.timestamp = 0
+        expect(received).toEqual(expected)
+      })
+  })
 
-          expect(received).toEqual(expected)
-        })
-    })
+  it(`${testAuth}: Authorization Post canInvokeSingleAttribute`, async () => {
+    enableRbac(rbac)
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.canInvokeSingleAttribute.request)
+      .expect(200)
+      .then(res => {
+        const received = JSON.parse(res.text)
+        const expected = cloneObject(testData.jolokia.canInvokeSingleAttribute.response)
 
-    it(`${testAuth}: Authorization Post canInvokeSingleAttribute`, async () => {
-      enableRbac(rbac)
-      const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
-      return appPost(path, testData.jolokia.canInvokeSingleAttribute.request)
-        .expect(200)
-        .then(res => {
-          const received = JSON.parse(res.text)
-          const expected = cloneObject(testData.jolokia.canInvokeSingleAttribute.response)
+        // Neutralise the timestamps as they are always going to be different
+        received.timestamp = 0
+        expected.timestamp = 0
 
-          // Neutralise the timestamps as they are always going to be different
-          received.timestamp = 0
-          expected.timestamp = 0
+        expect(received).toEqual(expected)
+      })
+  })
 
-          expect(received).toEqual(expected)
-        })
-    })
+  it(`${testAuth}: Authorization Post canInvokeSingleOperation`, async () => {
+    enableRbac(rbac)
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.canInvokeSingleOperation.request)
+      .expect(200)
+      .then(res => {
+        const received = JSON.parse(res.text)
+        const expected = cloneObject(testData.jolokia.canInvokeSingleOperation.response)
 
-    it(`${testAuth}: Authorization Post canInvokeSingleOperation`, async () => {
-      enableRbac(rbac)
-      const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
-      return appPost(path, testData.jolokia.canInvokeSingleOperation.request)
-        .expect(200)
-        .then(res => {
-          const received = JSON.parse(res.text)
-          const expected = cloneObject(testData.jolokia.canInvokeSingleOperation.response)
+        // Neutralise the timestamps as they are always going to be different
+        received.timestamp = 0
+        expected.timestamp = 0
 
-          // Neutralise the timestamps as they are always going to be different
-          received.timestamp = 0
-          expected.timestamp = 0
+        expect(received).toEqual(expected)
+      })
+  })
 
-          expect(received).toEqual(expected)
-        })
-    })
+  it(`${testAuth}: Authorization Post bulkRequestWithInterception`, async () => {
+    enableRbac(rbac)
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.bulkRequestWithInterception.request)
+      .expect(200)
+      .then(res => {
+        const received = JSON.parse(res.text)
+        const expected = cloneObject(testData.jolokia.bulkRequestWithInterception.response)
 
-    it(`${testAuth}: Authorization Post bulkRequestWithInterception`, async () => {
-      enableRbac(rbac)
-      const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
-      return appPost(path, testData.jolokia.bulkRequestWithInterception.request)
-        .expect(200)
-        .then(res => {
-          const received = JSON.parse(res.text)
-          const expected = cloneObject(testData.jolokia.bulkRequestWithInterception.response)
+        // Neutralise the timestamps as they are always going to be different
+        received.forEach((r: Record<string, unknown>) => (r.timestamp = 0))
+        expected.forEach((r: Record<string, unknown>) => (r.timestamp = 0))
 
-          // Neutralise the timestamps as they are always going to be different
-          received.forEach((r: Record<string, unknown>) => r.timestamp = 0)
-          expected.forEach((r: Record<string, unknown>) => r.timestamp = 0)
+        expect(received).toEqual(expected)
+      })
+  })
 
-          expect(received).toEqual(expected)
-        })
-    })
+  it(`${testAuth}: Authorization Post operationWithArgumentsAndViewerRoleOnly`, async () => {
+    // RBAC enabled depending on test suite
+    enableRbac(rbac)
 
-    it(`${testAuth}: Authorization Post operationWithArgumentsAndViewerRoleOnly`, async () => {
-      // RBAC enabled depending on test suite
-      enableRbac(rbac)
+    // Only viewer role allowed
+    testData.authorization.adminAllowed = false
+    testData.authorization.viewerAllowed = true
 
-      // Only viewer role allowed
-      testData.authorization.adminAllowed = false
-      testData.authorization.viewerAllowed = true
+    //
+    // WithRBAC: the 'viewer' role is not allowed for this operation
+    // WithoutRBAC: the 'viewer' role is not high enough for ANY request
+    //
+    const expectedStatus = 403
 
-      //
-      // WithRBAC: the 'viewer' role is not allowed for this operation
-      // WithoutRBAC: the 'viewer' role is not high enough for ANY request
-      //
-      const expectedStatus = 403
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.operationWithArgumentsAndViewerRole.request)
+      .expect(expectedStatus)
+      .then(res => {
+        if (rbac)
+          // eslint-disable-next-line
+          expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.operationWithArgumentsAndViewerRole.response))
+        // eslint-disable-next-line
+        else expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
+      })
+  })
 
-      const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
-      return appPost(path, testData.jolokia.operationWithArgumentsAndViewerRole.request)
-        .expect(expectedStatus)
-        .then(res => {
-          if (rbac)
-            // eslint-disable-next-line
-            expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.operationWithArgumentsAndViewerRole.response))
-          else
-            // eslint-disable-next-line
-            expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
-        })
-    })
+  it(`${testAuth}: Authorization Post bulkRequestWithViewerRole`, async () => {
+    enableRbac(rbac)
 
-    it(`${testAuth}: Authorization Post bulkRequestWithViewerRole`, async () => {
-      enableRbac(rbac)
+    // Only viewer role allowed
+    testData.authorization.adminAllowed = false
+    testData.authorization.viewerAllowed = true
 
-      // Only viewer role allowed
-      testData.authorization.adminAllowed = false
-      testData.authorization.viewerAllowed = true
+    //
+    // WithoutRBAC: the 'viewer' role is not high enough for ANY request
+    //
+    const expectedStatus = rbac ? 200 : 403
 
-      //
-      // WithoutRBAC: the 'viewer' role is not high enough for ANY request
-      //
-      const expectedStatus = rbac ? 200 : 403
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.bulkRequestWithViewerRole.request)
+      .expect(expectedStatus)
+      .then(res => {
+        if (rbac)
+          // eslint-disable-next-line
+          expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.bulkRequestWithViewerRole.response))
+        // eslint-disable-next-line
+        else expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
+      })
+  })
 
-      const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
-      return appPost(path, testData.jolokia.bulkRequestWithViewerRole.request)
-        .expect(expectedStatus)
-        .then(res => {
-          if (rbac)
-            // eslint-disable-next-line
-            expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.bulkRequestWithViewerRole.response))
-          else
-            // eslint-disable-next-line
-            expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
-        })
-    })
+  it(`${testAuth}: Authorization Post requestOperationWithArgumentsAndNoRole`, async () => {
+    // RBAC enabled depending on test suite
+    enableRbac(rbac)
 
-    it(`${testAuth}: Authorization Post requestOperationWithArgumentsAndNoRole`, async () => {
-      // RBAC enabled depending on test suite
-      enableRbac(rbac)
+    // No role allowed
+    testData.authorization.adminAllowed = false
+    testData.authorization.viewerAllowed = false
 
-      // No role allowed
-      testData.authorization.adminAllowed = false
-      testData.authorization.viewerAllowed = false
+    const expectedStatus = 403
 
-      const expectedStatus = 403
-
-      const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
-      return appPost(path, testData.jolokia.requestOperationWithArgumentsAndNoRole.request)
-        .expect(expectedStatus)
-        .then(res => {
-          expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
-        })
-    })
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.requestOperationWithArgumentsAndNoRole.request)
+      .expect(expectedStatus)
+      .then(res => {
+        expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
+      })
+  })
 })
