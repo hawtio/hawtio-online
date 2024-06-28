@@ -16,9 +16,9 @@
     "jolokia"
   ],
   "scripts": {
-    "start:gateway": "yarn start:dev:proxy & yarn start:dev:gateway",
-    "start:dev:proxy": "node --env-file .env.development proxy-dev-server.js",
-    "start:dev:gateway": "tsup --config tsup.config.dev.ts --watch",
+    "start:gateway": "yarn start:gateway-dev & yarn start:gateway-server",
+    "start:gateway-dev": "node --env-file .env.development proxy-dev-server.js",
+    "start:gateway-server": "tsup --config tsup.config.dev.ts --watch",
     "build": "webpack --mode production --progress --config webpack.config.prod.js",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --detectOpenHandles --watch",
