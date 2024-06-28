@@ -5,9 +5,9 @@ metadata:
   namespace: <NAMESPACE>
 spec:
   ports:
-  - port: <JOLOKIA-PORT>
-    protocol: TCP
-    targetPort: <JOLOKIA-PORT>
+    - port: <JOLOKIA-PORT>
+      protocol: TCP
+      targetPort: <JOLOKIA-PORT>
   selector:
     app: <SELECT-POD-LABEL>
   type: ClusterIP

@@ -3,12 +3,12 @@
 A partner image, base on [node](https://nodejs.org), to the Hawtio Online image that provides support to the functions of the Hawtio Online nginx server.
 
 - The Hawtio Online nginx server will defer to the gateway's [_/master_] endpoint to check the permissability of the requested uri. If the uri is acceptable then the gateway will
-proxy to the cluster API server;
+  proxy to the cluster API server;
 - The Hawtio Online nginx server will defer to the gateway's [_/managment_] endpoint to access
-the jolokia endpoint. The result of this endpoint involves a back and forth between internal
-endpoints of both the nginx and gateway servers;
+  the jolokia endpoint. The result of this endpoint involves a back and forth between internal
+  endpoints of both the nginx and gateway servers;
 - The Hawtio Online nginx server will defer to the gateway's [_/logout_] endpoint to redirect
-to the uri's _redirect_uri_ parameter;
+  to the uri's _redirect_uri_ parameter;
 - The gateway also has a [_/status_] endpoint which provides a heartbeat capability.
 
 This image replaces the functionality originally provided by nginx njs.

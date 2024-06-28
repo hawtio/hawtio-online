@@ -1,8 +1,5 @@
 import yaml from 'yaml'
-import {
-  Request as ExpressRequest,
-  Response as ExpressResponse
-} from 'express-serve-static-core'
+import { Request as ExpressRequest, Response as ExpressResponse } from 'express-serve-static-core'
 import { jwtDecode } from 'jwt-decode'
 import * as fs from 'fs'
 import { Request as MBeanRequest } from 'jolokia.js'
@@ -10,11 +7,15 @@ import { logger } from '../logger'
 import { GatewayOptions } from '../globals'
 import { isObject, isError } from '../utils'
 import {
-  AgentInfo, InterceptedResponse, SimpleResponse,
+  AgentInfo,
+  InterceptedResponse,
+  SimpleResponse,
   extractHeaders,
   getFetchHeaders,
-  isMBeanRequest, isMBeanRequestArray, isResponse,
-  isSimpleResponse
+  isMBeanRequest,
+  isMBeanRequestArray,
+  isResponse,
+  isSimpleResponse,
 } from './globals'
 import * as RBAC from './rbac'
 
@@ -36,7 +37,14 @@ export function enableRbac(enabled: boolean) {
 }
 
 // Headers that should not be passed onto fetch sub requests
-const excludeHeaders = ['host', 'content-type', 'content-length', 'content-security-policy', 'connection', 'transfer-encoding']
+const excludeHeaders = [
+  'host',
+  'content-type',
+  'content-length',
+  'content-security-policy',
+  'connection',
+  'transfer-encoding',
+]
 
 function response(agentInfo: AgentInfo, res: SimpleResponse) {
   if (res.status === 401 && agentInfo.response.hasHeader('www-authenticate')) {
@@ -46,7 +54,7 @@ function response(agentInfo: AgentInfo, res: SimpleResponse) {
      * dialog (initiated by the 401 status & the 'www-authenticate' header) by
      * dropping the 'www-authenticate' header
      */
-     agentInfo.response.removeHeader('www-authenticate')
+    agentInfo.response.removeHeader('www-authenticate')
   }
 
   agentInfo.response.status(res.status).send(res.body)
@@ -59,8 +67,8 @@ function reject(status: number, body: Record<string, string>): Promise<SimpleRes
     status: status,
     body: body,
     headers: new Headers({
-      'Content-Type': 'application/json'
-    })
+      'Content-Type': 'application/json',
+    }),
   })
 }
 
@@ -84,7 +92,7 @@ async function selfLocalSubjectAccessReview(verb: string, agentInfo: AgentInfo):
   let body
   // When form is used, don't rely on OpenShift-specific LocalSubjectAccessReview
   if (useForm) {
-    api = "authorization.k8s.io"
+    api = 'authorization.k8s.io'
     body = {
       kind: 'LocalSubjectAccessReview',
       apiVersion: 'authorization.k8s.io/v1',
@@ -98,11 +106,11 @@ async function selfLocalSubjectAccessReview(verb: string, agentInfo: AgentInfo):
           resource: 'pods',
           name: agentInfo.pod,
           namespace: agentInfo.namespace,
-        }
-      }
+        },
+      },
     }
   } else {
-    api = "authorization.openshift.io"
+    api = 'authorization.openshift.io'
     body = {
       kind: 'LocalSubjectAccessReview',
       apiVersion: 'authorization.openshift.io/v1',
@@ -124,7 +132,7 @@ async function selfLocalSubjectAccessReview(verb: string, agentInfo: AgentInfo):
   const response = await fetch(authUri, {
     method: 'POST',
     body: json,
-    headers: getFetchHeaders(agentInfo.requestHeaders)
+    headers: getFetchHeaders(agentInfo.requestHeaders),
   })
 
   return response
@@ -139,7 +147,7 @@ async function getPodIP(agentInfo: AgentInfo): Promise<string> {
 
   const res = await fetch(podIPUri, {
     method: 'GET',
-    headers: getFetchHeaders(agentInfo.requestHeaders)
+    headers: getFetchHeaders(agentInfo.requestHeaders),
   })
   if (!res.ok) {
     return Promise.reject(res)
@@ -150,7 +158,11 @@ async function getPodIP(agentInfo: AgentInfo): Promise<string> {
   return data.status.podIP
 }
 
-async function callJolokiaAgent(podIP: string, agentInfo: AgentInfo, nonInterceptedMBeans?: Record<string, unknown> | Record<string, unknown>[]): Promise<SimpleResponse> {
+async function callJolokiaAgent(
+  podIP: string,
+  agentInfo: AgentInfo,
+  nonInterceptedMBeans?: Record<string, unknown> | Record<string, unknown>[],
+): Promise<SimpleResponse> {
   logger.trace('(jolokia-agent) callJolokiaAgent ...')
 
   const encodedPath = encodeURI(agentInfo.path)
@@ -160,13 +172,13 @@ async function callJolokiaAgent(podIP: string, agentInfo: AgentInfo, nonIntercep
   let response: Response
   if (method === 'GET') {
     response = await fetch(agentUri, {
-      headers: getFetchHeaders(agentInfo.requestHeaders)
+      headers: getFetchHeaders(agentInfo.requestHeaders),
     })
   } else {
     response = await fetch(agentUri, {
       method: method,
       body: JSON.stringify(nonInterceptedMBeans),
-      headers: getFetchHeaders(agentInfo.requestHeaders)
+      headers: getFetchHeaders(agentInfo.requestHeaders),
     })
   }
 
@@ -178,7 +190,7 @@ async function callJolokiaAgent(podIP: string, agentInfo: AgentInfo, nonIntercep
   return {
     status: response.status,
     headers: response.headers,
-    body: data
+    body: data,
   }
 }
 
@@ -203,7 +215,9 @@ function parseRequest(agentInfo: AgentInfo): MBeanRequest | MBeanRequest[] {
       return body
     }
 
-    throw new Error(`Unrecognised Jolokia POST request body (neither mbeanRequest nor MBeanRequestArray): ${JSON.stringify(body)}`)
+    throw new Error(
+      `Unrecognised Jolokia POST request body (neither mbeanRequest nor MBeanRequestArray): ${JSON.stringify(body)}`,
+    )
   }
 
   // GET method
@@ -216,8 +230,7 @@ function parseRequest(agentInfo: AgentInfo): MBeanRequest | MBeanRequest[] {
 
   // Jolokia-specific escaping rules (!*) are not taken care of right now
   switch (type) {
-    case 'read':
-    {
+    case 'read': {
       // /read/<mbean name>/<attribute name>/<inner path>
       const args = argsOrInner.split('/')
       const mbean = args[0]
@@ -225,8 +238,7 @@ function parseRequest(agentInfo: AgentInfo): MBeanRequest | MBeanRequest[] {
       // inner-path not supported
       return { type, mbean, attribute }
     }
-    case 'write':
-    {
+    case 'write': {
       // /write/<mbean name>/<attribute name>/<value>/<inner path>
       const args = argsOrInner.split('/')
       const mbean = args[0]
@@ -235,8 +247,7 @@ function parseRequest(agentInfo: AgentInfo): MBeanRequest | MBeanRequest[] {
       // inner-path not supported
       return { type, mbean, attribute, value }
     }
-    case 'exec':
-    {
+    case 'exec': {
       // /exec/<mbean name>/<operation name>/<arg1>/<arg2>/....
       const args = argsOrInner.split('/')
       const mbean = args[0]
@@ -244,14 +255,12 @@ function parseRequest(agentInfo: AgentInfo): MBeanRequest | MBeanRequest[] {
       const opArgs = args.slice(2)
       return { type, mbean, operation, arguments: opArgs }
     }
-    case 'search':
-    {
+    case 'search': {
       // /search/<pattern>
       const mbean = argsOrInner
       return { type, mbean }
     }
-    case 'list':
-    {
+    case 'list': {
       // /list/<inner path>
       const innerPath = argsOrInner
       return { type, path: innerPath }
@@ -273,10 +282,10 @@ async function listMBeans(podIP: string, agentInfo: AgentInfo): Promise<Record<s
   const response = await fetch(uri, {
     method: 'POST',
     body: JSON.stringify({ type: 'list' }),
-    headers: getFetchHeaders(agentInfo.requestHeaders)
+    headers: getFetchHeaders(agentInfo.requestHeaders),
   })
 
-  if (! response.ok) {
+  if (!response.ok) {
     return Promise.reject(response)
   }
 
@@ -297,8 +306,7 @@ async function handleRequestWithRole(role: string, agentInfo: AgentInfo): Promis
     const podIP = await getPodIP(agentInfo)
 
     let mbeans = {}
-    if (mbeanListRequired)
-      mbeans = await listMBeans(podIP, agentInfo)
+    if (mbeanListRequired) mbeans = await listMBeans(podIP, agentInfo)
 
     // Check each requested mbean that it is allowed by RBAC given the role
     const rbac = mbeanRequest.map(r => RBAC.check(r, role))
@@ -362,7 +370,7 @@ async function handleRequestWithRole(role: string, agentInfo: AgentInfo): Promis
 
     const rbac = RBAC.check(mbeanRequest, role)
     if (!rbac.allowed) {
-      return reject(403, {reason: rbac.reason})
+      return reject(403, { reason: rbac.reason })
     }
 
     const intercepted = RBAC.intercept(mbeanRequest, role, mbeans)
@@ -370,7 +378,7 @@ async function handleRequestWithRole(role: string, agentInfo: AgentInfo): Promis
       return {
         status: intercepted.response?.status || 502,
         body: JSON.stringify(intercepted.response),
-        headers: new Headers()
+        headers: new Headers(),
       }
     }
 
@@ -385,7 +393,7 @@ async function proxyJolokiaAgentWithRbac(agentInfo: AgentInfo): Promise<SimpleRe
   if (!response.ok) {
     return Promise.reject({
       status: response.status,
-      body: response.body
+      body: response.body,
     })
   }
 
@@ -418,14 +426,14 @@ async function proxyJolokiaAgentWithRbac(agentInfo: AgentInfo): Promise<SimpleRe
   return handleRequestWithRole(role, agentInfo)
 }
 
-async function proxyJolokiaAgentWithoutRbac(agentInfo: AgentInfo) : Promise<SimpleResponse> {
+async function proxyJolokiaAgentWithoutRbac(agentInfo: AgentInfo): Promise<SimpleResponse> {
   logger.trace('(jolokia-agent) proxyJolokiaAgentWithoutRbac ....')
 
   // Only requests impersonating a user granted the `update` verb on for the pod
   // hosting the Jolokia endpoint is authorized
   const response = await selfLocalSubjectAccessReview('update', agentInfo)
   if (!response.ok) {
-    return reject(response.status, {reason: `Authorization was rejected: ${response.statusText}`})
+    return reject(response.status, { reason: `Authorization was rejected: ${response.statusText}` })
   }
 
   logger.trace('(jolokia-agent) Passed selfLocalSubjectAccessReview')
@@ -447,9 +455,9 @@ export function proxyJolokiaAgent(req: ExpressRequest, res: ExpressResponse, opt
 
   const parts = req.url.match(/\/management\/namespaces\/(.+)\/pods\/(http|https):(.+):(\d+)\/(.*)/)
   if (!parts) {
-    return reject(404, {reason: 'URL not recognized'})
-      .catch((error) => {
-        response({
+    return reject(404, { reason: 'URL not recognized' }).catch(error => {
+      response(
+        {
           request: req,
           requestHeaders: extractHeaders(req, excludeHeaders),
           response: res,
@@ -459,8 +467,10 @@ export function proxyJolokiaAgent(req: ExpressRequest, res: ExpressResponse, opt
           pod: '',
           port: '',
           path: '',
-        }, error)
-      })
+        },
+        error,
+      )
+    })
   }
 
   const agentInfo = {
@@ -476,7 +486,7 @@ export function proxyJolokiaAgent(req: ExpressRequest, res: ExpressResponse, opt
   }
 
   return (isRbacEnabled ? proxyJolokiaAgentWithRbac(agentInfo) : proxyJolokiaAgentWithoutRbac(agentInfo))
-    .then((res) => response(agentInfo, res))
+    .then(res => response(agentInfo, res))
     .catch(error => {
       let simpleResponse
       if (isSimpleResponse(error)) {
@@ -484,26 +494,24 @@ export function proxyJolokiaAgent(req: ExpressRequest, res: ExpressResponse, opt
       } else if (isResponse(error)) {
         simpleResponse = {
           status: error.status,
-          body: (!error.body) ? error.statusText : error.body,
-          headers: new Headers()
+          body: !error.body ? error.statusText : error.body,
+          headers: new Headers(),
         }
       } else if (isError(error)) {
         let body
-        if (isObject(error.message))
-          body = JSON.stringify(error.message)
-        else
-          body = `{error: "${error.message}"}`
+        if (isObject(error.message)) body = JSON.stringify(error.message)
+        else body = `{error: "${error.message}"}`
 
         simpleResponse = {
           status: 502,
           body: body,
-          headers: new Headers()
+          headers: new Headers(),
         }
       } else {
         simpleResponse = {
-          status: (!error.status) ? 502 : error.status,
-          body: (!error.body) ? error.statusText : error.body,
-          headers: new Headers()
+          status: !error.status ? 502 : error.status,
+          body: !error.body ? error.statusText : error.body,
+          headers: new Headers(),
         }
       }
 

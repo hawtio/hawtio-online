@@ -43,10 +43,7 @@
             "op": {},
             "not": {
               "javax.management.MBeanServerNotification": {
-                "types": [
-                  "JMX.mbean.unregistered",
-                  "JMX.mbean.registered"
-                ],
+                "types": ["JMX.mbean.unregistered", "JMX.mbean.registered"],
                 "name": "javax.management.MBeanServerNotification",
                 "desc": "Notifications sent by the MBeanServerDelegate MBean"
               }
@@ -356,9 +353,7 @@
             },
             "not": {
               "javax.management.AttributeChangeNotification": {
-                "types": [
-                  "jmx.attribute.change"
-                ],
+                "types": ["jmx.attribute.change"],
                 "name": "javax.management.AttributeChangeNotification",
                 "desc": "Notifies if the RecordingState has changed for one of the recordings, for example if a recording starts or stops"
               }
@@ -394,9 +389,7 @@
             "op": {},
             "not": {
               "javax.management.Notification": {
-                "types": [
-                  "com.sun.management.gc.notification"
-                ],
+                "types": ["com.sun.management.gc.notification"],
                 "name": "javax.management.Notification",
                 "desc": "GC Notification"
               }
@@ -1140,9 +1133,7 @@
             "op": {},
             "not": {
               "javax.management.Notification": {
-                "types": [
-                  "com.sun.management.gc.notification"
-                ],
+                "types": ["com.sun.management.gc.notification"],
                 "name": "javax.management.Notification",
                 "desc": "GC Notification"
               }
@@ -2371,9 +2362,7 @@
             },
             "not": {
               "javax.management.Notification": {
-                "types": [
-                  "jmx.mbean.info.changed"
-                ],
+                "types": ["jmx.mbean.info.changed"],
                 "name": "javax.management.Notification",
                 "desc": "Diagnostic Framework Notification"
               }
