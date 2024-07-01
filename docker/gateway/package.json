@@ -47,7 +47,7 @@
     "@types/jquery": "^3.5.29",
     "@types/js-yaml": "^4.0.9",
     "@types/method-override": "^0.0.35",
-    "@types/node": "^18.19.31",
+    "@types/node": "^20.14.9",
     "@types/pino-multi-stream": "^5.1.6",
     "@types/supertest": "^6.0.2",
     "babel-jest": "^29.6.1",
@@ -70,7 +70,7 @@
   "packageManager": "yarn@4.3.1",
   "engines": {
     "yarn": ">=4.3.1",
-    "node": ">=18"
+    "node": ">=20"
   },
   "publishConfig": {
     "access": "private"
