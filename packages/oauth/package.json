@@ -58,7 +58,7 @@
   "packageManager": "yarn@4.3.1",
   "engines": {
     "yarn": ">=4.3.1",
-    "node": ">=18"
+    "node": ">=20"
   },
   "publishConfig": {
     "access": "restricted"
