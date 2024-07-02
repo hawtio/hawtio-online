@@ -76,6 +76,18 @@ endef
 
 #
 # Macro for editing kustomization to define
+# the image reference
+#
+# Parameter: directory of the kustomization.yaml
+#
+define set-kustomize-gateway-image
+	$(if $(filter $(GATEWAY_IMAGE_NAME),$(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_VERSION)),,\
+		@cd $(1) || exit 1 && \
+			$(KUSTOMIZE) edit set image $(GATEWAY_IMAGE_NAME)=$(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_VERSION))
+endef
+
+#
+# Macro for editing kustomization to define
 # the namespace
 #
 # Parameter: directory of the kustomization.yaml
@@ -150,13 +162,14 @@ endif
 #=== Calls kubectl
 #
 #* PARAMETERS:
-#** CLUSTER_TYPE:        Set the cluster type to install on [ openshift | k8s ]
-#** MODE:                Set the mode of installation [ cluster | namespace ]
-#** NAMESPACE:           Set the namespace for the resources
-#** HAWTCONFIG:          Set whether to use configmap as hawtconfig.json [ true | false ] (true by default)
-#** CUSTOM_IMAGE:        Set a custom image to install from
-#** CUSTOM_VERSION:      Set a custom version to install from
-#** OS_CONSOLE_URL:      Set the location URL of the openshift console (only used in 'openshift' mode)
+#** CLUSTER_TYPE:          Set the cluster type to install on [ openshift | k8s ]
+#** MODE:                  Set the mode of installation [ cluster | namespace ]
+#** NAMESPACE:             Set the namespace for the resources
+#** HAWTCONFIG:            Set whether to use configmap as hawtconfig.json [ true | false ] (true by default)
+#** CUSTOM_IMAGE:          Set a custom image to install from
+#** CUSTOM_GATEWAY_IMAGE:  Set a custom gateway image to install from
+#** CUSTOM_VERSION:        Set a custom version to install from
+#** OS_CONSOLE_URL:        Set the location URL of the openshift console (only used in 'openshift' mode)
 #** DRY_RUN:             Print the resources to be applied instead of applying them [ true | false ]
 #
 #---
@@ -165,6 +178,8 @@ install: kustomize kubectl
 	@$(call set-kustomize-namespace, $(CLUSTER_TYPE)/$(MODE))
 # Set the image reference of the kustomization
 	@$(call set-kustomize-image,$(CLUSTER_TYPE)/$(MODE))
+# Set the gateway image reference of the kustomization
+	@$(call set-kustomize-gateway-image,$(CLUSTER_TYPE)/$(MODE))
 # Configure use of hawtconfig configmap
 	@$(MAKE) -s .hawtconfig
 # Set the console url on openshift, if specified
@@ -209,8 +224,8 @@ endif
 #=== Calls check-admin
 #
 #* PARAMETERS:
-#** CLUSTER_TYPE:        Set the cluster type to install on [ openshift | k8s ] - must be openshift as not applicable to kubernetes
-#** NAMESPACE:           Set the namespace for the secret
+#** CLUSTER_TYPE:          Set the cluster type to install on [ openshift | k8s ] - must be openshift as not applicable to kubernetes
+#** NAMESPACE:             Set the namespace for the secret
 #
 #---
 generate-proxying: check-admin
@@ -228,8 +243,8 @@ endif
 #=== Calls check-admin
 #
 #* PARAMETERS:
-#** CLUSTER_TYPE:        Set the cluster type to install on [ openshift | k8s ] - must be kubernetes as not applicable to openshift
-#** NAMESPACE:           Set the namespace for the secret
+#** CLUSTER_TYPE:          Set the cluster type to install on [ openshift | k8s ] - must be kubernetes as not applicable to openshift
+#** NAMESPACE:             Set the namespace for the secret
 #
 #---
 generate-serving: check-admin
@@ -247,8 +262,8 @@ endif
 #=== Calls check-admin
 #
 #* PARAMETERS:
-#** CLUSTER_TYPE:        Set the cluster type - must be openshift as not applicable to kubernetes
-#** MODE:                Set the mode of installation [ cluster | namespace ]
+#** CLUSTER_TYPE:          Set the cluster type - must be openshift as not applicable to kubernetes
+#** MODE:                  Set the mode of installation [ cluster | namespace ]
 #
 #---
 cluster-auth-client: check-admin
@@ -271,9 +286,9 @@ endif
 #=== Cluster-admin privileges are required.
 #
 #* PARAMETERS:
-#** CLUSTER_TYPE:   Set the cluster type to install on [ openshift | k8s ]
-#** MODE:           Set the mode of installation [ cluster | namespace ]
-#** NAMESPACE:      Set the namespace to uninstall the resources from
+#** CLUSTER_TYPE:     Set the cluster type to install on [ openshift | k8s ]
+#** MODE:             Set the mode of installation [ cluster | namespace ]
+#** NAMESPACE:        Set the namespace to uninstall the resources from
 #** UNINSTALL_ALL:  Uninstall all resources including crds and cluster roles installed by setup-cluster [true|false]
 #** DRY_RUN:        Print the resources to be applied instead of applying them [true|false]
 #

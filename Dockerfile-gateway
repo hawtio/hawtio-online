@@ -1,0 +1,46 @@
+FROM node:20-alpine as builder
+
+WORKDIR /hawtio-online-gateway
+
+COPY yarn.lock ./
+COPY .yarnrc.yml ./
+COPY .yarn/plugins .yarn/plugins
+COPY .yarn/releases .yarn/releases
+COPY docker/gateway/package.json ./
+COPY docker/gateway/webpack.config.prod.js ./
+COPY docker/gateway/tsconfig.json ./
+COPY docker/gateway/src ./src/
+COPY docker/gateway/public ./public/
+
+RUN yarn install
+RUN yarn build
+
+#====================================================
+
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10
+
+#
+# The user id
+#
+ENV NODE_USER 999
+
+ENV NODE_MAJOR_VERSION 20
+ENV GATEWAY_DIR=/opt/hawtio-online-gateway
+
+RUN microdnf -y module enable nodejs:20
+RUN microdnf repoquery nodejs
+RUN microdnf -y install --setopt=tsflags=nodocs nodejs && microdnf clean all
+
+COPY --from=builder /hawtio-online-gateway/dist ${GATEWAY_DIR}/
+COPY docker/gateway/env.product ${GATEWAY_DIR}/
+
+#
+# Finalize permissions for nginx files
+#
+RUN chown -R ${NODE_USER} ${GATEWAY_DIR}
+
+USER ${NODE_USER}
+
+EXPOSE 3000
+
+CMD ["node", "--enable-source-maps", "--env-file=/opt/hawtio-online-gateway/env.product", "/opt/hawtio-online-gateway/gateway-api.js"]
