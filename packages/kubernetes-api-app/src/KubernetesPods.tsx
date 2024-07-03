@@ -8,7 +8,7 @@ import {
   PanelMain,
   PanelMainBody,
 } from '@patternfly/react-core'
-import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
+import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 
 type KubePodsProps = {
   pods: KubePod[]
@@ -19,7 +19,7 @@ export const KubernetesPods: React.FunctionComponent<KubePodsProps> = (props: Ku
     <Panel isScrollable>
       <PanelMain>
         <PanelMainBody>
-          <TableComposable key='breakpoints' aria-label='Breakpoints table' variant='compact'>
+          <Table key='breakpoints' aria-label='Breakpoints table' variant='compact'>
             <Thead>
               <Tr>
                 <Th>Name</Th>
@@ -62,7 +62,7 @@ export const KubernetesPods: React.FunctionComponent<KubePodsProps> = (props: Ku
                 </Tr>
               ))}
             </Tbody>
-          </TableComposable>
+          </Table>
         </PanelMainBody>
       </PanelMain>
     </Panel>

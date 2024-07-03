@@ -1,6 +1,6 @@
 import React from 'react'
 import { usePlugins, DEFAULT_APP_NAME, useHawtconfig, useUser } from '@hawtio/react'
-import { backgroundImages, hawtioLogo } from './img'
+import { background, hawtioLogo } from './img'
 import { ListItem, ListVariant, LoginFooterItem, LoginPage } from '@patternfly/react-core'
 import { log } from '@hawtio/online-oauth'
 import { AuthLoadingPage } from './AuthLoadingPage'
@@ -60,7 +60,7 @@ export const AuthLoginPage: React.FunctionComponent = () => {
 
   return (
     <LoginPage
-      backgroundImgSrc={backgroundImages}
+      backgroundImgSrc={background}
       brandImgSrc={appLogo}
       brandImgAlt={appName}
       loginTitle={title}

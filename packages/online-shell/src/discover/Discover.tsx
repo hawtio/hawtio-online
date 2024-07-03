@@ -14,6 +14,7 @@ import {
   PanelMain,
   PanelMainBody,
   Title,
+  EmptyStateHeader,
 } from '@patternfly/react-core'
 import { CubesIcon } from '@patternfly/react-icons'
 import { HawtioLoadingCard } from '@hawtio/react'
@@ -74,10 +75,11 @@ export const Discover: React.FunctionComponent = () => {
 
         {discoverGroups.length + discoverPods.length === 0 && (
           <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel='h1' size='lg'>
-              No Hawtio Containers
-            </Title>
+            <EmptyStateHeader
+              titleText='No Hawtio Containers'
+              icon={<EmptyStateIcon icon={CubesIcon} />}
+              headingLevel='h1'
+            />
             <EmptyStateBody>
               There are no containers running with a port configured whose name is <code>jolokia</code>.
             </EmptyStateBody>

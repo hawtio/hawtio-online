@@ -21,7 +21,7 @@ export const ConsoleLink: React.FunctionComponent<PropsWithChildren<ConsoleLinkP
   return (
     <React.Fragment>
       {url && (
-        <Button component='a' href={url.toString()} target='_blank' variant='link' isInline className='console-link'>
+        <Button href={url.toString()} target='_blank' variant='link' isInline className='console-link'>
           {props.children}
         </Button>
       )}
