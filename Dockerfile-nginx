@@ -12,13 +12,13 @@ RUN yarn install
 RUN yarn build
 
 # Build stage to extract envsubst
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10 as envsubst
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4 as envsubst
 
 RUN microdnf -y install gettext
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
 
-ENV NGINX_VERSION 1.20.2-1.el8
+ENV NGINX_VERSION 1.20.2-1.el9
 
 LABEL name="nginxinc/nginx" \
     vendor="NGINX Inc." \
