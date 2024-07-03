@@ -5,7 +5,7 @@ export const AuthLoadingPage: React.FunctionComponent = () => (
   <Page>
     <Bullseye>
       <div style={{ justifyContent: 'center' }}>
-        <Spinner diameter='60px' isSVG aria-label='Loading Hawtio' />
+        <Spinner diameter='60px' aria-label='Loading Hawtio' />
 
         <TextContent>
           <Text className={'--pf-global--Color--200'} component={TextVariants.h3}>

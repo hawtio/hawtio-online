@@ -1,18 +1,19 @@
 import React, { useRef, useState, ChangeEvent, MouseEvent, useContext, ReactNode } from 'react'
 import {
   Button,
+  MenuToggle,
+  MenuToggleElement,
   SearchInput,
-  Select,
-  SelectDirection,
-  SelectOption,
-  SelectOptionObject,
-  SelectVariant,
   Toolbar,
   ToolbarContent,
   ToolbarFilter,
   ToolbarGroup,
   ToolbarItem,
+  SelectList,
+  Select,
+  SelectOption,
 } from '@patternfly/react-core'
+
 import { LongArrowAltUpIcon, LongArrowAltDownIcon } from '@patternfly/react-icons'
 import { DiscoverContext } from './context'
 import { DiscoverItem, TypeFilter } from './globals'
@@ -44,7 +45,7 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
   const [filterInputPlaceholder, setFilterInputPlaceholder] = useState<string>(defaultFilterInputPlaceholder)
 
   // Ref for toggle of sort type Select control
-  const sortTypeToggleRef = useRef<HTMLButtonElement | null>()
+  useRef<HTMLButtonElement | null>()
   // The type of sort to be created - chosen by the Select control
   const [sortType, setSortType] = useState(headers[0] ?? '')
   // Flag to determine whether the Sort Select control is open or closed
@@ -58,21 +59,13 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
     setFilterInput('')
   }
 
-  const onSelectFilterType = (
-    event: ChangeEvent<Element> | MouseEvent<Element>,
-    value: string | SelectOptionObject,
-    isPlaceholder?: boolean,
-  ) => {
-    if (isPlaceholder || !value) return
+  const onSelectFilterType = (_event?: ChangeEvent<Element> | MouseEvent<Element>, value?: string | number) => {
+    if (!value) return
 
     setFilterType(value as string)
     setFilterInputPlaceholder('Filter by ' + value + ' ...')
     setIsFilterTypeOpen(false)
     filterTypeToggleRef?.current?.focus()
-  }
-
-  const onSelectFilterTypeToggle = (isOpen: boolean) => {
-    setIsFilterTypeOpen(isOpen)
   }
 
   const filterChips = (): string[] => {
@@ -108,20 +101,12 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
     setFilters(remaining)
   }
 
-  const onSelectSortType = (
-    event: ChangeEvent<Element> | MouseEvent<Element>,
-    value: string | SelectOptionObject,
-    isPlaceholder?: boolean,
-  ) => {
-    if (isPlaceholder || !value) return
+  const onSelectSortType = (_event?: MouseEvent<Element>, value?: string | number) => {
+    if (!value) return
 
     setSortType(value as string)
     setIsSortTypeOpen(false)
     filterTypeToggleRef?.current?.focus()
-  }
-
-  const onSelectSortTypeToggle = (isOpen: boolean) => {
-    setIsSortTypeOpen(isOpen)
   }
 
   const compareDiscoverItems = (item1: DiscoverItem, item2: DiscoverItem) => {
@@ -158,19 +143,25 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
         <ToolbarGroup variant='filter-group'>
           <ToolbarItem>
             <Select
-              toggleRef={() => filterTypeToggleRef}
-              variant={SelectVariant.single}
               id='select-filter-type'
               aria-label='select-filter-type'
-              onToggle={onSelectFilterTypeToggle}
+              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                <MenuToggle ref={toggleRef} onClick={() => setIsFilterTypeOpen(!isFilterTypeOpen)}>
+                  {filterType}
+                </MenuToggle>
+              )}
               onSelect={onSelectFilterType}
-              selections={filterType}
+              selected={filterType}
               isOpen={isFilterTypeOpen}
-              direction={SelectDirection.down}
+              onOpenChange={setIsFilterTypeOpen}
             >
-              {headers.map((name, index) => (
-                <SelectOption key={name + '-' + index} value={name} />
-              ))}
+              <SelectList>
+                {headers.map((name, index) => (
+                  <SelectOption key={name + '-' + index} value={name}>
+                    {name}
+                  </SelectOption>
+                ))}
+              </SelectList>
             </Select>
           </ToolbarItem>
           <ToolbarFilter
@@ -194,20 +185,31 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
         <ToolbarGroup variant='icon-button-group'>
           <ToolbarItem>
             <Select
-              toggleRef={() => sortTypeToggleRef}
-              variant={SelectVariant.single}
+              // variant={SelectVariant.single}
               id='select-sort-type'
               aria-label='select-sort-type'
-              onToggle={onSelectSortTypeToggle}
-              onSelect={onSelectSortType}
-              selections={sortType}
+              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                <MenuToggle
+                  disabled={discoverGroups.length + discoverPods.length <= 1}
+                  ref={toggleRef}
+                  onClick={() => setIsSortTypeOpen(!isSortTypeOpen)}
+                >
+                  {sortType}
+                </MenuToggle>
+              )}
+              selected={sortType}
               isOpen={isSortTypeOpen}
-              direction={SelectDirection.down}
-              isDisabled={discoverGroups.length + discoverPods.length <= 1}
+              onOpenChange={setIsSortTypeOpen}
+              onSelect={onSelectSortType}
+              // direction={SelectDirection.down}
             >
-              {headers.map((name, index) => (
-                <SelectOption key={name + '-' + index} value={name} />
-              ))}
+              <SelectList>
+                {headers.map((name, index) => (
+                  <SelectOption key={name + '-' + index} value={name}>
+                    {name}
+                  </SelectOption>
+                ))}
+              </SelectList>
             </Select>
           </ToolbarItem>
           <ToolbarItem>

@@ -3,10 +3,13 @@ import {
   Button,
   Dropdown,
   DropdownItem,
-  DropdownToggle,
+  DropdownList,
+  MenuToggle,
+  MenuToggleElement,
   NotificationBadge,
   NotificationBadgeVariant,
 } from '@patternfly/react-core'
+
 import { mgmtService } from '@hawtio/online-management-api'
 import { DiscoverPod } from './globals'
 import './Discover.css'
@@ -22,10 +25,6 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
   const mgmtError = props.pod.mPod?.getManagementError()
 
   const [isOpen, setIsOpen] = React.useState(false)
-
-  const onConnectToggle = (isOpen: boolean) => {
-    setIsOpen(isOpen)
-  }
 
   const onFocus = () => {
     const element = document.getElementById('toggle-initial-selection')
@@ -77,25 +76,29 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
         <Dropdown
           className='connect-button-dropdown'
           onSelect={onSelect}
-          toggle={
-            <DropdownToggle id='toggle-initial-selection' toggleVariant='primary' onToggle={onConnectToggle}>
+          onOpenChange={setIsOpen}
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle id='toggle-initial-selection' ref={toggleRef} onClick={() => setIsOpen(!isOpen)}>
               Connect
-            </DropdownToggle>
-          }
+            </MenuToggle>
+          )}
           isOpen={isOpen}
-          dropdownItems={connectionNames.map((connectionName, index) => {
-            return (
-              <DropdownItem
-                key={`${props.pod.uid}-container-${index}`}
-                component='button'
-                isDisabled={disableContainerButton()}
-                onClick={() => onConnect(connectionName)}
-              >
-                {connectionName.replace(`${props.pod.name}-`, '')}
-              </DropdownItem>
-            )
-          })}
-        />
+        >
+          <DropdownList>
+            {connectionNames.map((connectionName, index) => {
+              return (
+                <DropdownItem
+                  key={`${props.pod.uid}-container-${index}`}
+                  component='button'
+                  isDisabled={disableContainerButton()}
+                  onClick={() => onConnect(connectionName)}
+                >
+                  {connectionName.replace(`${props.pod.name}-`, '')}
+                </DropdownItem>
+              )
+            })}{' '}
+          </DropdownList>
+        </Dropdown>
       )}
     </React.Fragment>
   )

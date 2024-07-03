@@ -51,7 +51,7 @@ export const FormAuthLoginForm: React.FunctionComponent = () => {
       helperText={loginFailedMessage}
       helperTextIcon={<ExclamationCircleIcon />}
       tokenValue={token}
-      onChangeToken={setToken}
+      onChangeToken={(_event, value) => setToken(value)}
       isValidToken={isValidToken}
       onLoginButtonClick={onLoginButtonClick}
       loginButtonLabel='Log in'

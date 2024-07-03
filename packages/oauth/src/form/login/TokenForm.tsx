@@ -8,6 +8,7 @@ import {
   Button,
   ValidatedOptions,
   InputGroup,
+  InputGroupItem,
 } from '@patternfly/react-core'
 import { EyeSlashIcon } from '@patternfly/react-icons'
 import { EyeIcon } from '@patternfly/react-icons'
@@ -28,7 +29,7 @@ export interface TokenFormProps extends Omit<React.HTMLProps<HTMLFormElement>, '
   /** Value for the token */
   tokenValue?: string
   /** Function that handles the onChange event for the token */
-  onChangeToken?: (value: string, event: React.FormEvent<HTMLInputElement>) => void
+  onChangeToken?: (event: React.FormEvent<HTMLInputElement>, value: string) => void
   /** Flag indicating if the token is valid */
   isValidToken?: boolean
   /** Flag indicating if the user can toggle hiding the token */
@@ -83,25 +84,20 @@ export const TokenForm: React.FunctionComponent<TokenFormProps> = ({
 
   return (
     <Form className={className} {...props}>
-      <FormHelperText isError={!isValidToken} isHidden={!showHelperText} icon={helperTextIcon}>
-        {helperText}
-      </FormHelperText>
-      <FormGroup
-        label={tokenLabel}
-        isRequired
-        validated={isValidToken ? ValidatedOptions.default : ValidatedOptions.error}
-        fieldId='pf-login-token-id'
-      >
+      <FormHelperText>{helperText}</FormHelperText>
+      <FormGroup label={tokenLabel} isRequired fieldId='pf-login-token-id'>
         {isShowTokenEnabled && (
           <InputGroup>
             {tokenInput}
-            <Button
-              variant='control'
-              onClick={() => setTokenHidden(!tokenHidden)}
-              aria-label={tokenHidden ? showTokenAriaLabel : hideTokenAriaLabel}
-            >
-              {tokenHidden ? <EyeIcon /> : <EyeSlashIcon />}
-            </Button>
+            <InputGroupItem>
+              <Button
+                variant='control'
+                onClick={() => setTokenHidden(!tokenHidden)}
+                aria-label={tokenHidden ? showTokenAriaLabel : hideTokenAriaLabel}
+              >
+                {tokenHidden ? <EyeIcon /> : <EyeSlashIcon />}
+              </Button>
+            </InputGroupItem>
           </InputGroup>
         )}
         {!isShowTokenEnabled && tokenInput}

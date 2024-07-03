@@ -1,15 +1,10 @@
 import routeImg from './camel-route.svg'
 
 type CamelImageIconProps = {
-  size: number
-} & typeof defaultImageIconProps
-
-const defaultImageIconProps = {
-  size: 16,
+  size?: number
 }
 
 export const CamelRouteIcon = (props: CamelImageIconProps) => {
-  return <img src={routeImg} width={props.size + 'px'} height={props.size + 'px'} alt='camel-route' />
+  const { size = 16 } = props
+  return <img src={routeImg} width={size + 'px'} height={size + 'px'} alt='camel-route' />
 }
-
-CamelRouteIcon.defaultProps = defaultImageIconProps
