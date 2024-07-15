@@ -59,7 +59,7 @@
     "jest-watch-typeahead": "^2.2.2",
     "source-map-loader": "^5.0.0",
     "supertest": "^7.0.0",
-    "ts-jest": "^29.1.2",
+    "ts-jest": "^29.2.2",
     "ts-loader": "^9.5.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "tsup": "^8.1.0",
