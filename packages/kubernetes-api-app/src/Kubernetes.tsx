@@ -1,4 +1,3 @@
-import { isK8ApiRegistered, k8Api, k8Service } from '@hawtio/online-kubernetes-api'
 import React, { useRef, useEffect, useState } from 'react'
 import {
   Alert,
@@ -20,16 +19,28 @@ import {
   MastheadContent,
   Label,
   Button,
+  Tabs,
+  Tab,
+  TabTitleText,
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
-import { KubernetesClient } from './KubernetesClient'
 import { useUser, userService } from '@hawtio/react'
+import {
+  K8Actions, isK8ApiRegistered, k8Api, k8Service,
+  KubeProject, KubePodsByProject
+} from '@hawtio/online-kubernetes-api'
+import { KubernetesProjectPods } from './KubernetesProjectPods'
+import { KubernetesProjects } from './KubernetesProjects'
 
 export const Kubernetes: React.FunctionComponent = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>()
   const { username, userLoaded } = useUser()
+
+  const [projects, setProjects] = useState<KubeProject[]>([])
+  const [podsByProject, setPodsByProject] = useState<KubePodsByProject>({})
+  const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0)
 
   useEffect(() => {
     setIsLoading(true)
@@ -50,7 +61,18 @@ export const Kubernetes: React.FunctionComponent = () => {
 
       if (k8Service.hasError()) {
         setError(k8Service.error)
+        return
       }
+
+      k8Service.on(K8Actions.CHANGED, () => {
+        const projects = k8Service.getProjects()
+        setProjects([...projects]) // must use spread to ensure update
+
+        // Ensure that update is carried out on nested objects
+        // by using assign to create new object
+        const podsByProject: KubePodsByProject = k8Service.getPods()
+        setPodsByProject(Object.assign({}, podsByProject))
+      })
     }
 
     checkLoading()
@@ -93,6 +115,13 @@ export const Kubernetes: React.FunctionComponent = () => {
     )
   }
 
+  const handleTabClick = (
+    event: React.MouseEvent<unknown> | React.KeyboardEvent | MouseEvent,
+    tabIndex: string | number,
+  ) => {
+    setActiveTabKey(tabIndex)
+  }
+
   return (
     <Card>
       <CardTitle>
@@ -119,39 +148,55 @@ export const Kubernetes: React.FunctionComponent = () => {
         </Masthead>
 
         <Panel>
-          <PanelHeader>API Properties</PanelHeader>
+          <PanelHeader>
+            <Title headingLevel='h1'>Kubernetes Client</Title>
+          </PanelHeader>
           <Divider />
           <PanelMain>
             <PanelMainBody>
-              <DescriptionList isHorizontal>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Kubernetes Master</DescriptionListTerm>
-                  <DescriptionListDescription>{k8Api.masterUri()}</DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Is Openshift?</DescriptionListTerm>
-                  <DescriptionListDescription>{k8Api.isOpenshift ? 'true' : 'false'}</DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Cluster Console</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {k8Api.consoleUri ? <a href={k8Api.consoleUri}>{k8Api.consoleUri}</a> : '<not found>'}
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>Kubernetes Config</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    <pre>{JSON.stringify(k8Api.oAuthProfile, null, 2)}</pre>
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-              </DescriptionList>
+              <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox>
+                <Tab eventKey={0} title={<TabTitleText>API Properties</TabTitleText>}>
+                  <Panel>
+                    <PanelMain>
+                      <PanelMainBody>
+                        <DescriptionList isHorizontal>
+                          <DescriptionListGroup>
+                            <DescriptionListTerm>Kubernetes Master</DescriptionListTerm>
+                            <DescriptionListDescription>{k8Api.masterUri()}</DescriptionListDescription>
+                          </DescriptionListGroup>
+                          <DescriptionListGroup>
+                            <DescriptionListTerm>Is Openshift?</DescriptionListTerm>
+                            <DescriptionListDescription>{k8Api.isOpenshift ? 'true' : 'false'}</DescriptionListDescription>
+                          </DescriptionListGroup>
+                          <DescriptionListGroup>
+                            <DescriptionListTerm>Cluster Console</DescriptionListTerm>
+                            <DescriptionListDescription>
+                              {k8Api.consoleUri ? <a href={k8Api.consoleUri}>{k8Api.consoleUri}</a> : '<not found>'}
+                            </DescriptionListDescription>
+                          </DescriptionListGroup>
+                          <DescriptionListGroup>
+                            <DescriptionListTerm>Kubernetes Config</DescriptionListTerm>
+                            <DescriptionListDescription>
+                              <pre>{JSON.stringify(k8Api.oAuthProfile, null, 2)}</pre>
+                            </DescriptionListDescription>
+                          </DescriptionListGroup>
+                        </DescriptionList>
+                      </PanelMainBody>
+                    </PanelMain>
+                  </Panel>
+                </Tab>
+                <Tab eventKey={1} title={<TabTitleText>Pods</TabTitleText>}>
+                  <KubernetesProjectPods podsByProject={podsByProject} />
+                </Tab>
+                {projects.length > 0 && (
+                  <Tab eventKey={2} title={<TabTitleText>Projects</TabTitleText>}>
+                    <KubernetesProjects projects={projects} />
+                  </Tab>
+                )}
+              </Tabs>
             </PanelMainBody>
           </PanelMain>
         </Panel>
-
-        <Divider />
-
-        <KubernetesClient />
       </CardBody>
     </Card>
   )
