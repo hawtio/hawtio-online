@@ -1,6 +1,6 @@
 import { KubeObject, KubeObjectList } from '../globals'
 import { fetchPath, SimpleResponse } from '../utils'
-import { log, WSHandler } from './globals'
+import { log, WSHandler, POLLING_INTERVAL } from './globals'
 import { compare } from './support'
 
 /*
@@ -9,7 +9,7 @@ import { compare } from './support'
 export class ObjectPoller<T extends KubeObject> {
   private _lastFetch: KubeObject[]
   private _connected = false
-  private _interval = 5000
+  private _interval = POLLING_INTERVAL
   private retries = 0
   private tCancel?: NodeJS.Timeout
 
@@ -36,8 +36,6 @@ export class ObjectPoller<T extends KubeObject> {
         }
 
         const kObjList: KubeObjectList<T> = JSON.parse(data)
-
-        log.debug(this.handler.kind, 'fetched data:', data)
         const items = kObjList && kObjList.items ? kObjList.items : []
         const result = compare(this._lastFetch, items)
         this._lastFetch = items
@@ -47,6 +45,9 @@ export class ObjectPoller<T extends KubeObject> {
             const event = {
               data: JSON.stringify({
                 type: action.toUpperCase(),
+                metadata: {
+                  continue: kObjList.metadata.continue
+                },
                 object: item,
               }),
             }
@@ -55,10 +56,9 @@ export class ObjectPoller<T extends KubeObject> {
         }
 
         this.handler.list.initialize()
-        //log.debug("Result:", result)
         if (this._connected) {
           this.tCancel = setTimeout(() => {
-            log.debug(this.handler.kind, 'polling')
+            log.debug(this.handler.kind, 'polling', this.restURL)
             this.doGet()
           }, this._interval)
         }
@@ -72,11 +72,13 @@ export class ObjectPoller<T extends KubeObject> {
           log.info(this.handler.kind, '- Failed to poll objects, user is not authorized')
           return
         }
-        if (this.retries >= 3) {
-          log.debug(this.handler.kind, '- Out of retries, stopping polling, error:', err)
+        if (response?.status === 410 || this.retries >= 3) {
+          const msgDetail = response?.status === 410 ? '410 Response' : 'Out of retries'
+          log.debug(this.handler.kind, `- ${msgDetail}, stopping polling, error:`, err)
+
           this.stop()
           if (this.handler.error) {
-            this.handler.error(err)
+            this.handler.error(err, response)
           }
         } else {
           this.retries = this.retries + 1
@@ -103,7 +105,7 @@ export class ObjectPoller<T extends KubeObject> {
     this._connected = false
     log.debug(this.handler.kind, '- disconnecting')
     if (this.tCancel) {
-      log.debug(this.handler.kind, '- cancelling polling')
+      log.debug(this.handler.kind, '- cancelling polling', this.restURL)
       clearTimeout(this.tCancel)
       this.tCancel = undefined
     }
