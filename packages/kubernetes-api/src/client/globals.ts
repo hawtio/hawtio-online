@@ -1,11 +1,13 @@
 import { Logger } from '@hawtio/react'
-import { KubeObject } from '../globals'
+import { KubeSearchMetadata, KubeObject } from '../globals'
 import { WatchActions, WatchTypes } from '../model'
+import { SimpleResponse } from '../utils'
 
 export const log = Logger.get('hawtio-online-k8s-objects')
 
 // Allow clients to add other types to force polling under whatever circumstances
 export const pollingOnly = [WatchTypes.IMAGE_STREAM_TAGS]
+export const POLLING_INTERVAL = 60000
 
 export const UNKNOWN_VALUE = '<unknown>'
 export const NO_KIND = 'No kind in supplied options'
@@ -27,11 +29,13 @@ export interface KOptions extends Record<string, unknown> {
   success?: (objs: KubeObject[]) => void
   error?: ErrorDataCallback
   urlFunction?: (options: KOptions) => string
+  nsLimit?: number
+  continueRef?: string
 }
 
-export type ProcessDataCallback<T extends KubeObject> = (data: T[]) => void
+export type ProcessDataCallback<T extends KubeObject> = (data: T[], metadata?: KubeSearchMetadata) => void
 
-export type ErrorDataCallback = (err: Error) => void
+export type ErrorDataCallback = (err: Error, response?: SimpleResponse) => void
 
 export interface Collection<T extends KubeObject> {
   options: KOptions
@@ -70,15 +74,14 @@ export interface ObjectList<T extends KubeObject> {
 export interface WSHandler<T extends KubeObject> {
   connected: boolean
   kind: string
+  metadata: { count: number }
   list: ObjectList<T>
   collection: Collection<T>
   error: ErrorDataCallback | undefined
   connect(): void
-  send(data: string | KubeObject): void
   onOpen(event: Event): void
   onMessage(event: MessageEvent | { data: string }): void
   onError(event: Event): void
-  shouldClose(event: Event): boolean
   onClose(event: CloseEvent): void
   destroy(): void
 }

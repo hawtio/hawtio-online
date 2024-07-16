@@ -2,8 +2,11 @@ import { KubeObject } from '../globals'
 import { CompareResult } from './globals'
 import { equals } from '../helpers'
 
-export function getKey(kind: string, namespace?: string) {
-  return namespace ? namespace + '-' + kind : kind
+export function getKey(kind: string, namespace?: string, continueRef?: string) {
+  let key: string = kind
+  key = namespace ? namespace + '-' + key : key
+  key = continueRef ? continueRef + '-' + key : key
+  return key
 }
 
 export function compare(old: KubeObject[], _new: KubeObject[]): CompareResult<KubeObject> {

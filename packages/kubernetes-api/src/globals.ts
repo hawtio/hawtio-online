@@ -1,6 +1,6 @@
 import { Logger } from '@hawtio/react'
 import { NamespaceSpec, NamespaceStatus, Pod } from 'kubernetes-types/core/v1'
-import { ObjectMeta } from 'kubernetes-types/meta/v1'
+import { ListMeta, ObjectMeta } from 'kubernetes-types/meta/v1'
 
 export const pluginName = 'hawtio-online-k8s-api'
 export const log = Logger.get(pluginName)
@@ -28,7 +28,9 @@ export interface KubeObject extends Record<string, unknown> {
   spec?: unknown
 }
 
-export interface KubeObjectList<T extends KubeObject> extends KubeObject {
+export interface KubeObjectList<T extends KubeObject> {
+  kind?: string
+  metadata: ListMeta
   items: T[]
 }
 
@@ -40,12 +42,35 @@ export type KubeProject = KubeObject & {
   status?: NamespaceStatus
 }
 
+export type KubePodsOrError = {
+  pods: KubePod[]
+  error?: Error
+}
+
+export type KubePodsByProject = { [key: string]: KubePodsOrError }
+
+export interface KubeSearchMetadata {
+  count: number
+  continue?: string
+}
+
+export interface PagingMetadata {
+  hasPrevious: () => boolean,
+  hasNext: () => boolean,
+  previous: () => void,
+  next: () => void
+}
+
+export type KMetadataByProject = { [namespace: string]: PagingMetadata }
+
 /*
  * States emitted by the Kubernetes Service
  */
 export enum K8Actions {
   CHANGED = 'CHANGED',
 }
+
+export const JOLOKIA_PORT_QUERY = '$.spec.containers[*].ports[?(@.name=="jolokia")]'
 
 export type {
   NamespaceSpec,
