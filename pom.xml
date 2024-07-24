@@ -59,7 +59,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
           <execution>
-            <id>dist</id>
+            <id>hawtio-online-dist</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
@@ -67,7 +67,20 @@
             <configuration>
               <ignoreMissingDescriptor>false</ignoreMissingDescriptor>
               <descriptors>
-                <descriptor>src/assembly/site-dist.xml</descriptor>
+                <descriptor>src/assembly/hawtio-online-dist.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+          <execution>
+            <id>hawtio-gateway-dist</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <ignoreMissingDescriptor>false</ignoreMissingDescriptor>
+              <descriptors>
+                <descriptor>src/assembly/hawtio-gateway-dist.xml</descriptor>
               </descriptors>
             </configuration>
           </execution>

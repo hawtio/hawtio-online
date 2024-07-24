@@ -15,14 +15,21 @@
    limitations under the License.
 -->
 <assembly>
-    <id>dist</id>
+    <id>hawtio-gateway-dist</id>
     <formats>
         <format>tar.gz</format>
     </formats>
     <includeBaseDirectory>False</includeBaseDirectory>
+    <files>
+        <file>
+          <source>${project.basedir}/docker/gateway/env.product</source>
+          <outputDirectory>/</outputDirectory>
+          <fileMode>0644</fileMode>
+        </file>
+    </files>
     <fileSets>
         <fileSet>
-            <directory>${project.basedir}/packages/online-shell/build</directory>
+            <directory>${project.basedir}/docker/gateway/dist</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
                 <include>**</include>

@@ -35,7 +35,7 @@ COPY --from=builder /hawtio-online-gateway/dist ${GATEWAY_DIR}/
 COPY docker/gateway/env.product ${GATEWAY_DIR}/
 
 #
-# Finalize permissions for nginx files
+# Finalize permissions for node files
 #
 RUN chown -R ${NODE_USER} ${GATEWAY_DIR}
 
