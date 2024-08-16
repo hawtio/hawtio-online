@@ -1,5 +1,5 @@
-import { PagingMetadata } from "./globals"
-import { isObject, isString } from "./utils"
+import { PagingMetadata } from './globals'
+import { isObject, isString } from './utils'
 
 export interface PagingRef {
   count: number
@@ -7,7 +7,7 @@ export interface PagingRef {
 }
 
 export class PagingMetadataImpl implements PagingMetadata {
-  private _current: number = 0
+  private _current = 0
   private pagingRefs: PagingRef[] = []
 
   private numPages(): number {
@@ -24,49 +24,44 @@ export class PagingMetadataImpl implements PagingMetadata {
   }
 
   hasContinue(): boolean {
-    if (this.numPages() <= this._current)
-      return false
+    if (this.numPages() <= this._current) return false
 
     const pagingRef = this.pagingRefs[this._current]
     return this.isContinueRef(pagingRef.continue)
   }
 
-  continue(): string|undefined {
-    if (this.numPages() <= this._current)
-      return undefined
+  continue(): string | undefined {
+    if (this.numPages() <= this._current) return undefined
 
     const pagingRef = this.pagingRefs[this._current]
     return pagingRef.continue
   }
 
   setContinue(continueRef?: string) {
-    if (this.numPages() <= this._current)
-      return
+    if (this.numPages() <= this._current) return
 
     const pagingRef = this.pagingRefs[this._current]
     pagingRef.continue = continueRef
   }
 
   refresh() {
-    if (this.numPages() <= this._current)
-      return
+    if (this.numPages() <= this._current) return
 
     const pagingRef = this.pagingRefs[this._current]
     pagingRef.count = -1
 
     // Retain the continueRef since that was set by previous to current
 
-    if ((this._current + 1) < this.numPages()) {
+    if (this._current + 1 < this.numPages()) {
       // Remove all next paging refs as they are potentially out-of-date
-      this.pagingRefs = this.pagingRefs.slice(0, (this._current + 1))
+      this.pagingRefs = this.pagingRefs.slice(0, this._current + 1)
     }
   }
 
-  resolveContinue(count: number, required: number, continueRef: string|undefined): string|undefined {
-    if (! this.isContinueRef(continueRef))
-      return undefined
+  resolveContinue(count: number, required: number, continueRef: string | undefined): string | undefined {
+    if (!this.isContinueRef(continueRef)) return undefined
 
-    const enoughPods = (required - count) === 0
+    const enoughPods = required - count === 0
     if (!enoughPods) {
       // Not enough pods were found to satisfy the required number
       // so need to return the continueRef to find some more
@@ -93,7 +88,7 @@ export class PagingMetadataImpl implements PagingMetadata {
     return undefined
   }
 
-  addPage(count: number, required: number, continueRef: string|undefined): string|undefined {
+  addPage(count: number, required: number, continueRef: string | undefined): string | undefined {
     const pagingRefLen = this.pagingRefs.push({ count: count })
     this._current = pagingRefLen - 1
 
@@ -103,16 +98,14 @@ export class PagingMetadataImpl implements PagingMetadata {
   count(index?: number): number {
     if (!index) index = this._current
 
-    if (this.numPages() <= index)
-      return -1
+    if (this.numPages() <= index) return -1
 
     const pagingRef = this.pagingRefs[index]
     return pagingRef.count
   }
 
   setCount(count: number) {
-    if (this.numPages() <= this._current)
-      return
+    if (this.numPages() <= this._current) return
 
     const pagingRef = this.pagingRefs[this._current]
     pagingRef.count = count
@@ -121,8 +114,7 @@ export class PagingMetadataImpl implements PagingMetadata {
   continueRef(index?: number): string | undefined {
     if (!index) index = this._current
 
-    if (this.numPages() <= index)
-      return undefined
+    if (this.numPages() <= index) return undefined
 
     const pagingRef = this.pagingRefs[index]
     return pagingRef.continue
@@ -141,15 +133,13 @@ export class PagingMetadataImpl implements PagingMetadata {
   previous() {
     if (this._current === 0) return
 
-    if (! this.hasPrevious())
-      return
+    if (!this.hasPrevious()) return
 
     --this._current
   }
 
   hasNext(): boolean {
-    if (this.numPages() <= this._current + 1)
-      return false
+    if (this.numPages() <= this._current + 1) return false
 
     const nextRef = this.pagingRefs[this._current + 1]
     return isObject(nextRef) && this.isContinueRef(nextRef.continue)
@@ -159,11 +149,9 @@ export class PagingMetadataImpl implements PagingMetadata {
    * Moves current forward 1 to get the next paging metadata
    */
   next() {
-    if (this._current === (this.numPages() - 1))
-      return
+    if (this._current === this.numPages() - 1) return
 
-    if (! this.hasNext())
-      return
+    if (!this.hasNext()) return
 
     ++this._current
   }

@@ -1,199 +1,218 @@
 import jsonpath from 'jsonpath'
-import { JOLOKIA_PORT_QUERY, KubeObject, KubePod, PagingMetadata } from "../globals"
+import { JOLOKIA_PORT_QUERY, KubeObject, KubePod, Paging } from "../globals"
 import { WatchTypes } from "../model"
-import { SimpleResponse, isObject, isString } from "../utils"
-import { PagingMetadataImpl } from '../paging-metadata-impl'
-import { Collection, KOptions, ProcessDataCallback } from './globals'
+import { isObject } from "../utils"
+import { Watched, KOptions, ProcessDataCallback } from './globals'
 import { clientFactory } from './client-factory'
 
-export type NamespaceClientCallback = (jolokiaPods: KubePod[], pagingMetadata: PagingMetadata, error?: Error) => void
+export type NamespaceClientCallback = (jolokiaPods: KubePod[], error?: Error) => void
 
 export interface Client<T extends KubeObject> {
-  collection: Collection<T>
+  watched: Watched<T>
   watch: ProcessDataCallback<T>
 }
 
-interface PodsResult {
-  id: number
-  podsClient: Client<KubePod>
-  jolokiaPods: KubePod[]
+interface PodWatcher {
+  client: Client<KubePod>
+  jolokiaPod: KubePod | undefined
 }
 
-interface PodsResults {
-  [key: string]: PodsResult
+interface PodWatchers {
+  [key: string]: PodWatcher
 }
 
-export class NamespaceClient {
-  private _namespace
-  private _limit
-  private _pagingMetadata: PagingMetadataImpl
-  private _podsResults: PodsResults = {}
-  private _callback: NamespaceClientCallback
+export class NamespaceClient implements Paging {
 
-  constructor(namespace: string, limit: number, callback: NamespaceClientCallback, pagingMetadata?: PagingMetadata) {
-    this._namespace = namespace
-    this._limit = limit
-    this._callback = callback
-    if (isObject(pagingMetadata)) {
-      this._pagingMetadata = pagingMetadata as PagingMetadataImpl
-      /*
-       * 2 use-cases:
-       * - 1. First Execution of pods in namespace so current is uninitialized
-       * - 2. PagingRef returned to by using Prev/Next so need to refresh except
-       *      for continueRef
-       */
-       this._pagingMetadata.refresh()
+  private _current = 0
+  private _podList: Set<string> = new Set<string>()
+  private _podWatchers: PodWatchers = {}
+  private _nsWatcher?: Client<KubePod>
+  private _refreshing = 0
 
-    } else {
-      // pagingMetadata never been defined for the namespace
-      this._pagingMetadata = new PagingMetadataImpl()
-    }
+  constructor(private _namespace: string, private _limit: number, private _callback: NamespaceClientCallback) {
   }
 
-  /*
-   * Updates the paging metadata with the results of the pod search
-   */
-  private updatePaging(iteration: number, jolokiaPods: KubePod[], limit: number, continueRef?: string): string|undefined {
-    if (! this._pagingMetadata.pageSelected()) {
-      // current page not yet defined in pagingMetadata (1st execution)
-      // Add paging reference for the current query of pods
-      return this._pagingMetadata.addPage(jolokiaPods.length, limit, continueRef)
+  private handleError(error: Error, name?: string) {
+    let cbError = error
+    if (name) {
+      cbError = new Error(`Failed to connect to pod ${name}`)
+      cbError.cause = error
     }
 
-    // current page already defined so update with latest information
-
-    if (iteration === 0) {
-      // As the 1st iteration, store the count of the number of pods
-      this._pagingMetadata.setCount(jolokiaPods.length)
-    }
-
-    return this._pagingMetadata.resolveContinue(jolokiaPods.length, limit, continueRef)
+    this._callback(this.getJolokiaPods(), cbError)
   }
 
-  private handleError(iteration: number, error: Error, response: SimpleResponse|undefined) {
-    console.log('Error: pods_watch error', error)
-
-    if (isObject(response) && response.status === 410) {
-      console.log('Renewing gone connection 410: ', iteration)
-      // Need to renew the continueRef property given the continue in the response
-
-      if (iteration === 0 && this._pagingMetadata.hasContinue()) {
-        console.log('Refreshing iteration 0')
-        // The first execution used a continue ref that is now invalid
-        let continueRef
-        if (response.data) {
-          const dataObj = JSON.parse(response.data)
-          continueRef = dataObj?.metadata?.continue
-        }
-
-        console.log('Old continueRef: ', this._pagingMetadata.continue())
-        console.log('New continueRef: ', continueRef)
-        this._pagingMetadata.setContinue(continueRef)
-      }
-
-      // Destroy the pod results
-      this.destroy()
-      // Refresh the metadata
-      this._pagingMetadata.refresh()
-      // Restart the execution
-      this.execute()
-    } else {
-      // Some other error has occurred
-      this._callback([], this._pagingMetadata, error)
-
-      // Destroy the polling connections
-      this.destroy()
-    }
-  }
-
-  initPodOptions(iteration: number, limit: number, continueRef: string|undefined): KOptions {
+  private initPodOptions(kind: string, name?: string): KOptions {
     const podOptions: KOptions = {
-      kind: WatchTypes.PODS,
+      kind: kind,
+      name: name,
       namespace: this._namespace,
-      nsLimit: limit,
-      error: (err: Error, response?: SimpleResponse) => { this.handleError(iteration, err, response)}
+      error: (err: Error) => { this.handleError(err, name)}
     }
-
-    /*
-     * See if a continue reference is needed and add to podOptions
-     * The query requires a continue reference in order to start the search
-     * at the correct index of the pod list
-     */
-    if (isString(continueRef) && continueRef.length > 0)
-      podOptions.continueRef = continueRef
 
     return podOptions
   }
 
-  private executeInternal(iteration: number, limit: number, podOptions: KOptions) {
+  private createPodWatchers() {
+    if (this._podList.size === 0 || this._current >= this._podList.size)
+      return
 
-    // Query the namespace for pods
-    const pods_client = clientFactory.create<KubePod>(podOptions)
-    const pods_watch = pods_client.watch((pods, resultMetadata) => {
-      const jolokiaPods = pods.filter(pod => jsonpath.query(pod, JOLOKIA_PORT_QUERY).length > 0)
+    const podNames = Array.from(this._podList).sort().slice(this._current, (this._current + this._limit))
 
-      // Add the found jolokia pods
-      const podResult = this._podsResults[iteration.toString()]
-      if (isObject(podResult))
-        podResult.jolokiaPods = [...jolokiaPods]
+    // Remove watchers for pods not in the slice of the sorted list
+    Object.entries(this._podWatchers)
+      .filter(([name, _]) => { return (! podNames.includes(name)) })
+      .forEach(([name, podWatcher]) => {
+        clientFactory.destroy(podWatcher.client.watched, podWatcher.client.watch)
+        delete this._podWatchers[name]
+      })
+
+    this._refreshing = podNames.length
+    podNames.forEach(name => {
+      // Already watching this pod
+      if (isObject(this._podWatchers[name])) {
+        this._refreshing--
+        return
+      }
+
+      // Set up new watcher for this pod
+      const _podClient = clientFactory.create<KubePod>(this.initPodOptions(WatchTypes.PODS, name))
+      const _podWatcher = _podClient.watch((podList) => {
+        if (this._refreshing > 0) this._refreshing--
+
+        if (podList.length === 0) return
+
+        // podList should only contain 1 pod (due to name)
+        this._podWatchers[name].jolokiaPod = podList[0]
+
+        if (this._refreshing === 0) {
+          // Limit callback to final watch returning
+          this._callback(this.getJolokiaPods())
+        }
+      })
 
       /*
-       * If a continueRef is returned then it means that
-       * not enough jolokia pods were found to match the limit but
-       * that there are more pods available to be fetched and tested.
-       * So prepare another execution to fetch another set of pods
+       * Pod is part of the current page so connect its pod watcher
        */
-      const continueRef = this.updatePaging(iteration, jolokiaPods, limit, resultMetadata?.continue)
-      if (isString(continueRef)) {
-        const newLimit = limit - jolokiaPods.length
-        const newOptions = this.initPodOptions((iteration + 1), newLimit, continueRef)
-        this.executeInternal((iteration + 1), newLimit, newOptions)
-      } else {
-        /*
-         * Execution is completed so return the callback.
-         * Should be called just once from the main execute call and not
-         * any subsequent chained executions
-         */
-        this._callback(this.getJolokiaPods(), this._pagingMetadata)
+      _podClient.connect()
+
+      this._podWatchers[name] = {
+        client: {
+          watch: _podWatcher,
+          watched: _podClient
+        },
+        jolokiaPod: undefined
       }
     })
+  }
 
-    pods_client.connect()
+  isConnected(): boolean {
+    return isObject(this._nsWatcher) && this._nsWatcher.watched.connected
+  }
 
-    this._podsResults[iteration.toString()] = {
-      id: iteration,
-      podsClient: {
-        collection: pods_client,
-        watch: pods_watch,
-      },
-      jolokiaPods: []
+  connect() {
+    if (this.isConnected()) return
+
+    const _nsClient = clientFactory.create<KubePod>(this.initPodOptions(WatchTypes.PODS))
+    const _nsWatch = _nsClient.watch((pods) => {
+      /*
+       * Filter out any non-jolokia pods immediately and add
+       * the applicable pods to the pod name list
+       */
+      const podNames: string[] = []
+      pods
+        .filter(pod => jsonpath.query(pod, JOLOKIA_PORT_QUERY).length > 0)
+        .forEach(pod => {
+          const name = pod.metadata?.name || undefined
+          if (! name) return
+
+          podNames.push(name)
+        })
+
+      // Initialise the sorted set list of pod names
+      this._podList = new Set(podNames.sort())
+
+      // Create the first set of pod watchers
+      this.createPodWatchers()
+    })
+
+    /*
+     * Track any changes to the namespace
+     * Deleted pods will be removed from the pod list and pod watchers disposed of
+     * Added pods will be inserted into the pod list and pod watchers will be created
+     * when the page they appear in is required
+     */
+    _nsClient.connect()
+
+    this._nsWatcher = {
+      watch: _nsWatch,
+      watched: _nsClient
     }
   }
 
-  execute() {
-    const podOptions = this.initPodOptions(0, this._limit, this._pagingMetadata.continueRef())
-    this.executeInternal(0, this._limit, podOptions)
-  }
-
+  /*
+   * Collection of jolokia pods returned is an aggregate of the
+   * pods currently been watched by the pod watchers
+   */
   getJolokiaPods() {
     const pods: KubePod[] = []
-    for (const pr of Object.values(this._podsResults)) {
-      pods.push(...pr.jolokiaPods)
+    for (const pw of Object.values(this._podWatchers)) {
+      if (! pw.jolokiaPod) continue
+
+      pods.push(pw.jolokiaPod)
     }
 
     return pods
   }
 
   destroy() {
-    if (Object.values(this._podsResults).length === 0)
-      return
-
-    for (const pr of Object.values(this._podsResults)) {
-      const pods_client = pr.podsClient
-      clientFactory.destroy(pods_client.collection, pods_client.watch)
-      pr.jolokiaPods = []
+    if (isObject(this._nsWatcher)) {
+      clientFactory.destroy(this._nsWatcher.watched, this._nsWatcher.watch)
+      delete this._nsWatcher
     }
 
-    this._podsResults = {}
+    for (const pr of Object.values(this._podWatchers)) {
+      const pods_client = pr.client
+      clientFactory.destroy(pods_client.watched, pods_client.watch)
+      delete pr.jolokiaPod
+    }
+    this._podWatchers = {}
+  }
+
+  hasPrevious(): boolean {
+    return this._current > 0
+  }
+
+  previous() {
+    if (this._current === 0) return
+
+    // Ensure current never goes below 0
+    this._current = Math.max(this._current - this._limit, 0)
+
+    /*
+     * If already connected then recreate the pod watchers
+     * according to the new position of _current
+     */
+    if (this.isConnected())
+      this.createPodWatchers()
+  }
+
+  hasNext(): boolean {
+    const nextPage = this._current + this._limit
+    return nextPage < this._podList.size
+  }
+
+  next() {
+    const nextPage = this._current + this._limit
+    if (nextPage >= this._podList.size) return
+
+    this._current = nextPage
+
+    /*
+     * If already connected then recreate the pod watchers
+     * according to the new position of _current
+     */
+    if (this.isConnected())
+      this.createPodWatchers()
   }
 }

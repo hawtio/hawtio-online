@@ -1,7 +1,7 @@
 import { KubeObject } from '../globals'
 import { ClientInstance } from './client-instance'
 import { CollectionImpl } from './collection'
-import { log, Collection, KOptions, ClientFactory, ProcessDataCallback } from './globals'
+import { log, Watched, KOptions, ClientFactory, ProcessDataCallback } from './globals'
 import { getKey } from './support'
 
 /*
@@ -10,8 +10,8 @@ import { getKey } from './support'
 export class ClientFactoryImpl implements ClientFactory {
   private _clients: Record<string, unknown> = {}
 
-  create<T extends KubeObject>(options: KOptions): Collection<T> {
-    const key = getKey(options.kind, options.namespace, options.continueRef)
+  create<T extends KubeObject>(options: KOptions): Watched<T> {
+    const key = getKey(options.kind, options.namespace, options.name)
     if (this._clients[key]) {
       const client = this._clients[key] as ClientInstance<T>
       client.addRef()
@@ -26,18 +26,11 @@ export class ClientFactoryImpl implements ClientFactory {
     }
   }
 
-  destroy<T extends KubeObject>(client: Collection<T>, ...handles: Array<ProcessDataCallback<T>>) {
+  destroy<T extends KubeObject>(client: Watched<T>, ...handles: Array<ProcessDataCallback<T>>) {
     handles.forEach(handle => {
       client.unwatch(handle)
     })
     const key = client.getKey()
-
-    console.log(`XXX destroying client with key: ${key}`)
-    console.log(`XXX Number of clients: `, Object.getOwnPropertyNames(this._clients).length)
-    for (const key of Object.getOwnPropertyNames(this._clients)) {
-      console.log(`XXX client keys: ${key}`)
-    }
-
     if (this._clients[key]) {
       const c = this._clients[key] as ClientInstance<T>
       c.removeRef()
@@ -46,13 +39,7 @@ export class ClientFactoryImpl implements ClientFactory {
         delete this._clients[key]
         c.destroy()
         log.debug('Destroyed client for key:', key)
-      } else {
-        console.log('Not destroying client because key ref count too high: ', key, c.refCount)
       }
-    }
-
-    for (const key of Object.getOwnPropertyNames(this._clients)) {
-      console.log(`XXX Remaining client keys: ${key}`)
     }
   }
 }

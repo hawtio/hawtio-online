@@ -1,15 +1,15 @@
 import { KubeObject } from '../globals'
-import { Collection } from './globals'
+import { Watched } from './globals'
 
 /*
  * Manages references to collection instances to allow them to be shared between views
  */
 export class ClientInstance<T extends KubeObject> {
   private _refCount = 0
-  private _collection: Collection<T>
+  private _watched: Watched<T>
 
-  constructor(_collection: Collection<T>) {
-    this._collection = _collection
+  constructor(_watched: Watched<T>) {
+    this._watched = _watched
   }
 
   get refCount() {
@@ -25,7 +25,7 @@ export class ClientInstance<T extends KubeObject> {
   }
 
   get collection() {
-    return this._collection
+    return this._watched
   }
 
   disposable() {
@@ -33,7 +33,7 @@ export class ClientInstance<T extends KubeObject> {
   }
 
   destroy() {
-    this._collection.destroy()
-    // delete this._collection
+    this._watched.destroy()
+    // delete this._watched
   }
 }

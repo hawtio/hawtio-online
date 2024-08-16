@@ -10,6 +10,7 @@ export const pollingOnly = [WatchTypes.IMAGE_STREAM_TAGS]
 export const POLLING_INTERVAL = 60000
 
 export const UNKNOWN_VALUE = '<unknown>'
+export const UNKNOWN_NAME_VALUE = 'unknown'
 export const NO_KIND = 'No kind in supplied options'
 export const NO_OBJECT = 'No object in supplied options'
 export const NO_OBJECTS = 'No objects in list object'
@@ -22,6 +23,7 @@ export interface CompareResult<T> {
 
 export interface KOptions extends Record<string, unknown> {
   kind: string
+  name?: string
   namespace?: string
   apiVersion?: string
   labelSelector?: string
@@ -30,14 +32,13 @@ export interface KOptions extends Record<string, unknown> {
   error?: ErrorDataCallback
   urlFunction?: (options: KOptions) => string
   nsLimit?: number
-  continueRef?: string
 }
 
 export type ProcessDataCallback<T extends KubeObject> = (data: T[], metadata?: KubeSearchMetadata) => void
 
 export type ErrorDataCallback = (err: Error, response?: SimpleResponse) => void
 
-export interface Collection<T extends KubeObject> {
+export interface Watched<T extends KubeObject> {
   options: KOptions
   kind: string
   wsURL: string
@@ -74,9 +75,8 @@ export interface ObjectList<T extends KubeObject> {
 export interface WSHandler<T extends KubeObject> {
   connected: boolean
   kind: string
-  metadata: { count: number }
   list: ObjectList<T>
-  collection: Collection<T>
+  watched: Watched<T>
   error: ErrorDataCallback | undefined
   connect(): void
   onOpen(event: Event): void
@@ -87,6 +87,6 @@ export interface WSHandler<T extends KubeObject> {
 }
 
 export interface ClientFactory {
-  create<T extends KubeObject>(options: KOptions, namespace?: string): Collection<T>
-  destroy<T extends KubeObject>(client: Collection<T>, ...handles: Array<ProcessDataCallback<T>>): void
+  create<T extends KubeObject>(options: KOptions, namespace?: string): Watched<T>
+  destroy<T extends KubeObject>(client: Watched<T>, ...handles: Array<ProcessDataCallback<T>>): void
 }
