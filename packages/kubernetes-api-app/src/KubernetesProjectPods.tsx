@@ -18,7 +18,6 @@ type KubePodsProps = {
 }
 
 export const KubernetesProjectPods: React.FunctionComponent<KubePodsProps> = (props: KubePodsProps) => {
-
   const [expanded, setExpanded] = useState('')
 
   const onToggle = (id: string) => {
@@ -34,30 +33,29 @@ export const KubernetesProjectPods: React.FunctionComponent<KubePodsProps> = (pr
       <PanelMain className='paginated-panel'>
         <PanelMainBody>
           <Accordion asDefinitionList>
-            {
-              Object.entries<KubePodsOrError>(props.podsByProject).map(([project, podsOrError]) => (
-                <AccordionItem key={project}>
-                  <AccordionToggle onClick={() => { onToggle(`project-${project}-toggle`) }}
-                    isExpanded={expanded === `project-${project}-toggle`}
-                    id={`project-${project}-toggle`}
-                  >
-                    {project}
-                  </AccordionToggle>
-                  <AccordionContent id={`project-${project}-expand`} isHidden={expanded !== `project-${project}-toggle`}>
-                    {isError(podsOrError.error) && (
-                      <Label color="red" icon={<InfoCircleIcon/>}>
-                        {podsOrError.error.message}
-                      </Label>
-                    )}
-                    {!podsOrError.error && (
-                      <KubernetesPaginatedPods
-                        key={project} project={project}
-                        pods={podsOrError.pods} />
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
-              ))
-            }
+            {Object.entries<KubePodsOrError>(props.podsByProject).map(([project, podsOrError]) => (
+              <AccordionItem key={project}>
+                <AccordionToggle
+                  onClick={() => {
+                    onToggle(`project-${project}-toggle`)
+                  }}
+                  isExpanded={expanded === `project-${project}-toggle`}
+                  id={`project-${project}-toggle`}
+                >
+                  {project}
+                </AccordionToggle>
+                <AccordionContent id={`project-${project}-expand`} isHidden={expanded !== `project-${project}-toggle`}>
+                  {isError(podsOrError.error) && (
+                    <Label color='red' icon={<InfoCircleIcon />}>
+                      {podsOrError.error.message}
+                    </Label>
+                  )}
+                  {!podsOrError.error && (
+                    <KubernetesPaginatedPods key={project} project={project} pods={podsOrError.pods} />
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
           </Accordion>
         </PanelMainBody>
       </PanelMain>

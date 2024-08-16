@@ -22,12 +22,17 @@ import {
   Tabs,
   Tab,
   TabTitleText,
+  NumberInput,
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
 import { useUser, userService } from '@hawtio/react'
 import {
-  K8Actions, isK8ApiRegistered, k8Api, k8Service,
-  KubeProject, KubePodsByProject
+  K8Actions,
+  isK8ApiRegistered,
+  k8Api,
+  k8Service,
+  KubeProject,
+  KubePodsByProject,
 } from '@hawtio/online-kubernetes-api'
 import { KubernetesProjectPods } from './KubernetesProjectPods'
 import { KubernetesProjects } from './KubernetesProjects'
@@ -122,6 +127,12 @@ export const Kubernetes: React.FunctionComponent = () => {
     setActiveTabKey(tabIndex)
   }
 
+  const onChangeNSLimit = (event: React.FormEvent<HTMLInputElement>) => {
+    const value = (event.target as HTMLInputElement).value
+    const nsLimit: number = value === '' ? 3 : +value
+    k8Service.namespaceLimit = nsLimit
+  }
+
   return (
     <Card>
       <CardTitle>
@@ -154,6 +165,29 @@ export const Kubernetes: React.FunctionComponent = () => {
           <Divider />
           <PanelMain>
             <PanelMainBody>
+              <Panel>
+                <PanelHeader>
+                  <Title headingLevel='h4'>Pods in Namespace Limit</Title>
+                </PanelHeader>
+                <PanelMain>
+                  <PanelMainBody>
+                    <NumberInput
+                      inputName='Pods in Namespace Limit'
+                      unit='Pods'
+                      inputAriaLabel='Pods in Namespace Limit NumberInput'
+                      minusBtnAriaLabel='NSPodsMinus1'
+                      plusBtnAriaLabel='NSPodsPlus1'
+                      value={k8Service.namespaceLimit}
+                      onMinus={() => (k8Service.namespaceLimit = k8Service.namespaceLimit - 1)}
+                      onPlus={() => (k8Service.namespaceLimit = k8Service.namespaceLimit + 1)}
+                      onChange={onChangeNSLimit}
+                    />
+                  </PanelMainBody>
+                </PanelMain>
+              </Panel>
+
+              <Divider />
+
               <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox>
                 <Tab eventKey={0} title={<TabTitleText>API Properties</TabTitleText>}>
                   <Panel>
@@ -166,7 +200,9 @@ export const Kubernetes: React.FunctionComponent = () => {
                           </DescriptionListGroup>
                           <DescriptionListGroup>
                             <DescriptionListTerm>Is Openshift?</DescriptionListTerm>
-                            <DescriptionListDescription>{k8Api.isOpenshift ? 'true' : 'false'}</DescriptionListDescription>
+                            <DescriptionListDescription>
+                              {k8Api.isOpenshift ? 'true' : 'false'}
+                            </DescriptionListDescription>
                           </DescriptionListGroup>
                           <DescriptionListGroup>
                             <DescriptionListTerm>Cluster Console</DescriptionListTerm>
