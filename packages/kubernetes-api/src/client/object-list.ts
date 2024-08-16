@@ -7,7 +7,7 @@ import { debounce } from '../utils'
 import { log, ObjectList, ProcessDataCallback } from './globals'
 
 /**
- *  Manages the array of k8s objects for a client instance
+ *  Manages the k8s object(s) for a client instance
  **/
 export class ObjectListImpl<T extends KubeObject> extends EventEmitter implements ObjectList<T> {
   triggerChangedEvent = debounce(() => {

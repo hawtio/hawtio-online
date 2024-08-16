@@ -13,9 +13,9 @@ export function isEmpty(obj: object): boolean {
   return Object.keys(obj).length === 0
 }
 
-export function hasProperty(obj: object|undefined, property: string): boolean {
-  if (! obj) return false
-  return obj.hasOwnProperty(property)
+export function hasProperty(obj: object | undefined, property: string): boolean {
+  if (!obj) return false
+  return Object.hasOwn(obj, property)
 }
 
 export function isArray<T>(obj: T | T[]): obj is T[] {

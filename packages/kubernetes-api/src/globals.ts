@@ -49,19 +49,12 @@ export type KubePodsOrError = {
 
 export type KubePodsByProject = { [key: string]: KubePodsOrError }
 
-export interface KubeSearchMetadata {
-  count: number
-  continue?: string
+export interface Paging {
+  hasPrevious: (namespace?: string) => boolean
+  hasNext: (namespace?: string) => boolean
+  previous: (namespace?: string) => void
+  next: (namespace?: string) => void
 }
-
-export interface PagingMetadata {
-  hasPrevious: () => boolean,
-  hasNext: () => boolean,
-  previous: () => void,
-  next: () => void
-}
-
-export type KMetadataByProject = { [namespace: string]: PagingMetadata }
 
 /*
  * States emitted by the Kubernetes Service

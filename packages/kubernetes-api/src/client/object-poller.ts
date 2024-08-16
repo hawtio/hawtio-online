@@ -1,7 +1,7 @@
-import { KubeObject, KubeObjectList } from '../globals'
-import { fetchPath, SimpleResponse } from '../utils'
+import { KubeObject } from '../globals'
+import { fetchPath, hasProperty, SimpleResponse } from '../utils'
 import { log, WSHandler, POLLING_INTERVAL } from './globals'
-import { compare } from './support'
+import { compare, isKubeObject } from './support'
 
 /*
  * Manages polling the server for objects that don't support websocket connections
@@ -35,8 +35,14 @@ export class ObjectPoller<T extends KubeObject> {
           return
         }
 
-        const kObjList: KubeObjectList<T> = JSON.parse(data)
-        const items = kObjList && kObjList.items ? kObjList.items : []
+        const objectOrList = JSON.parse(data)
+        const items: T[] = []
+        if (hasProperty(objectOrList, 'items')) {
+          items.push(...objectOrList.items)
+        } else if (isKubeObject(objectOrList)) {
+          items.push(objectOrList as T)
+        }
+
         const result = compare(this._lastFetch, items)
         this._lastFetch = items
 
@@ -45,9 +51,6 @@ export class ObjectPoller<T extends KubeObject> {
             const event = {
               data: JSON.stringify({
                 type: action.toUpperCase(),
-                metadata: {
-                  continue: kObjList.metadata.continue
-                },
                 object: item,
               }),
             }
