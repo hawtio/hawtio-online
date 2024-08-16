@@ -1,7 +1,7 @@
 import jsonpath from 'jsonpath'
-import { JOLOKIA_PORT_QUERY, KubeObject, KubePod, Paging } from "../globals"
-import { WatchTypes } from "../model"
-import { isObject } from "../utils"
+import { JOLOKIA_PORT_QUERY, KubeObject, KubePod, Paging } from '../globals'
+import { WatchTypes } from '../model'
+import { isObject } from '../utils'
 import { Watched, KOptions, ProcessDataCallback } from './globals'
 import { clientFactory } from './client-factory'
 
@@ -22,15 +22,17 @@ interface PodWatchers {
 }
 
 export class NamespaceClient implements Paging {
-
   private _current = 0
   private _podList: Set<string> = new Set<string>()
   private _podWatchers: PodWatchers = {}
   private _nsWatcher?: Client<KubePod>
   private _refreshing = 0
+  private _limit = 3
 
-  constructor(private _namespace: string, private _limit: number, private _callback: NamespaceClientCallback) {
-  }
+  constructor(
+    private _namespace: string,
+    private _callback: NamespaceClientCallback,
+  ) {}
 
   private handleError(error: Error, name?: string) {
     let cbError = error
@@ -47,21 +49,26 @@ export class NamespaceClient implements Paging {
       kind: kind,
       name: name,
       namespace: this._namespace,
-      error: (err: Error) => { this.handleError(err, name)}
+      error: (err: Error) => {
+        this.handleError(err, name)
+      },
     }
 
     return podOptions
   }
 
   private createPodWatchers() {
-    if (this._podList.size === 0 || this._current >= this._podList.size)
-      return
+    if (this._podList.size === 0 || this._current >= this._podList.size) return
 
-    const podNames = Array.from(this._podList).sort().slice(this._current, (this._current + this._limit))
+    const podNames = Array.from(this._podList)
+      .sort()
+      .slice(this._current, this._current + this._limit)
 
     // Remove watchers for pods not in the slice of the sorted list
     Object.entries(this._podWatchers)
-      .filter(([name, _]) => { return (! podNames.includes(name)) })
+      .filter(([name, _]) => {
+        return !podNames.includes(name)
+      })
       .forEach(([name, podWatcher]) => {
         clientFactory.destroy(podWatcher.client.watched, podWatcher.client.watch)
         delete this._podWatchers[name]
@@ -77,7 +84,7 @@ export class NamespaceClient implements Paging {
 
       // Set up new watcher for this pod
       const _podClient = clientFactory.create<KubePod>(this.initPodOptions(WatchTypes.PODS, name))
-      const _podWatcher = _podClient.watch((podList) => {
+      const _podWatcher = _podClient.watch(podList => {
         if (this._refreshing > 0) this._refreshing--
 
         if (podList.length === 0) return
@@ -99,9 +106,9 @@ export class NamespaceClient implements Paging {
       this._podWatchers[name] = {
         client: {
           watch: _podWatcher,
-          watched: _podClient
+          watched: _podClient,
         },
-        jolokiaPod: undefined
+        jolokiaPod: undefined,
       }
     })
   }
@@ -110,11 +117,14 @@ export class NamespaceClient implements Paging {
     return isObject(this._nsWatcher) && this._nsWatcher.watched.connected
   }
 
-  connect() {
+  connect(limit: number) {
     if (this.isConnected()) return
 
+    this._limit = limit > 1 ? limit : 1
+    this._current = 0
+
     const _nsClient = clientFactory.create<KubePod>(this.initPodOptions(WatchTypes.PODS))
-    const _nsWatch = _nsClient.watch((pods) => {
+    const _nsWatch = _nsClient.watch(pods => {
       /*
        * Filter out any non-jolokia pods immediately and add
        * the applicable pods to the pod name list
@@ -124,7 +134,7 @@ export class NamespaceClient implements Paging {
         .filter(pod => jsonpath.query(pod, JOLOKIA_PORT_QUERY).length > 0)
         .forEach(pod => {
           const name = pod.metadata?.name || undefined
-          if (! name) return
+          if (!name) return
 
           podNames.push(name)
         })
@@ -146,7 +156,7 @@ export class NamespaceClient implements Paging {
 
     this._nsWatcher = {
       watch: _nsWatch,
-      watched: _nsClient
+      watched: _nsClient,
     }
   }
 
@@ -157,7 +167,7 @@ export class NamespaceClient implements Paging {
   getJolokiaPods() {
     const pods: KubePod[] = []
     for (const pw of Object.values(this._podWatchers)) {
-      if (! pw.jolokiaPod) continue
+      if (!pw.jolokiaPod) continue
 
       pods.push(pw.jolokiaPod)
     }
@@ -193,8 +203,7 @@ export class NamespaceClient implements Paging {
      * If already connected then recreate the pod watchers
      * according to the new position of _current
      */
-    if (this.isConnected())
-      this.createPodWatchers()
+    if (this.isConnected()) this.createPodWatchers()
   }
 
   hasNext(): boolean {
@@ -212,7 +221,6 @@ export class NamespaceClient implements Paging {
      * If already connected then recreate the pod watchers
      * according to the new position of _current
      */
-    if (this.isConnected())
-      this.createPodWatchers()
+    if (this.isConnected()) this.createPodWatchers()
   }
 }

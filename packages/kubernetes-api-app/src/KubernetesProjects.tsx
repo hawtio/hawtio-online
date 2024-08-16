@@ -20,7 +20,6 @@ type KubeProjectProps = {
 }
 
 export const KubernetesProjects: React.FunctionComponent<KubeProjectProps> = (props: KubeProjectProps) => {
-
   const [expanded, setExpanded] = useState('')
 
   const onToggle = (id: string) => {
@@ -38,13 +37,19 @@ export const KubernetesProjects: React.FunctionComponent<KubeProjectProps> = (pr
           <Accordion asDefinitionList>
             {props.projects.map(project => (
               <AccordionItem key={project.metadata?.name}>
-                <AccordionToggle onClick={() => { onToggle(`project-${project.metadata?.name}-toggle`) }}
+                <AccordionToggle
+                  onClick={() => {
+                    onToggle(`project-${project.metadata?.name}-toggle`)
+                  }}
                   isExpanded={expanded === `project-${project.metadata?.name}-toggle`}
                   id={`project-${project.metadata?.name}-toggle`}
                 >
                   {project.metadata?.name}
                 </AccordionToggle>
-                <AccordionContent id={`project-${project.metadata?.name}-expand`} isHidden={expanded !== `project-${project.metadata?.name}-toggle`}>
+                <AccordionContent
+                  id={`project-${project.metadata?.name}-expand`}
+                  isHidden={expanded !== `project-${project.metadata?.name}-toggle`}
+                >
                   <Table key='breakpoints' aria-label='Breakpoints table' variant='compact'>
                     <Thead>
                       <Tr>

@@ -15,7 +15,7 @@ import {
   Title,
   Toolbar,
   ToolbarContent,
-  ToolbarItem
+  ToolbarItem,
 } from '@patternfly/react-core'
 import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 import { KubePod, k8Service } from '@hawtio/online-kubernetes-api'
@@ -26,7 +26,6 @@ type KubePagePodsProps = {
 }
 
 export const KubernetesPaginatedPods: React.FunctionComponent<KubePagePodsProps> = (props: KubePagePodsProps) => {
-
   const prevPods = () => {
     // Should refresh from 2 components up
     k8Service.previous(props.project)
@@ -42,33 +41,27 @@ export const KubernetesPaginatedPods: React.FunctionComponent<KubePagePodsProps>
       <PanelHeader>
         <Toolbar id='pagination-toolbar-items' className='paginated-pods-toolbar-content' isSticky>
           <ToolbarContent>
-          <ToolbarItem>
-            <Button variant='control' onClick={() => prevPods()}
-              isDisabled={! k8Service.hasPrevious(props.project)}
-            >
-              &lt;&lt; Previous
-            </Button>
-          </ToolbarItem>
-          <ToolbarItem>
-            <Button variant='control' onClick={() => nextPods()}
-              isDisabled={! k8Service.hasNext(props.project)}
-            >
-              Next &gt;&gt;
-            </Button>
-          </ToolbarItem>
-        </ToolbarContent>
+            <ToolbarItem>
+              <Button variant='control' onClick={() => prevPods()} isDisabled={!k8Service.hasPrevious(props.project)}>
+                &lt;&lt; Previous
+              </Button>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button variant='control' onClick={() => nextPods()} isDisabled={!k8Service.hasNext(props.project)}>
+                Next &gt;&gt;
+              </Button>
+            </ToolbarItem>
+          </ToolbarContent>
         </Toolbar>
       </PanelHeader>
       <PanelMain>
         <PanelMainBody>
           {props.pods.length === 0 && (
             <EmptyState variant={EmptyStateVariant.xs}>
-              <Title headingLevel="h4" size="md">
+              <Title headingLevel='h4' size='md'>
                 No jolokia pods found
               </Title>
-              <EmptyStateBody>
-                Pods were retrieved but none have a jolokia port.
-              </EmptyStateBody>
+              <EmptyStateBody>Pods were retrieved but none have a jolokia port.</EmptyStateBody>
             </EmptyState>
           )}
 
