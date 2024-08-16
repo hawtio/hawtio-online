@@ -1,5 +1,5 @@
 import { ServiceSpec } from 'kubernetes-types/core/v1'
-import { K8S_EXT_PREFIX, KubeSearchMetadata, KubeObject } from '../globals'
+import { K8S_EXT_PREFIX, KubeObject } from '../globals'
 import {} from '../kubernetes-service'
 import { fetchPath, FetchPathCallback, isFunction, joinPaths } from '../utils'
 import { getClusterIP, getName, getNamespace, namespaced, prefixForKind, toCollectionName, wsUrl } from '../helpers'
@@ -8,13 +8,13 @@ import { k8Api } from '../init'
 import {
   log,
   UNKNOWN_VALUE,
-  Collection,
   KOptions,
   ObjectList,
   WSHandler,
   ProcessDataCallback,
   ErrorDataCallback,
   POLLING_INTERVAL,
+  Watched,
 } from './globals'
 import { ObjectListImpl } from './object-list'
 import { WSHandlerImpl } from './ws-handler'
@@ -23,11 +23,10 @@ import { getKey } from './support'
 /*
  * Implements the external API for working with k8s collections of objects
  */
-export class CollectionImpl<T extends KubeObject> implements Collection<T> {
+export class CollectionImpl<T extends KubeObject> implements Watched<T> {
   private _namespace?: string
   private _path: string
   private _apiVersion: string
-  private metadata: KubeSearchMetadata
   private list: ObjectList<T>
   private handler: WSHandler<T>
   private _isOpenshift: boolean
@@ -41,6 +40,7 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
 
     const pref = this.getPrefix()
 
+    // /apis/apps/v1/namespaces/{namespace}/pods/{name}
     if (this._namespace) {
       this._path = joinPaths(pref, 'namespaces', this._namespace, this.kind)
     } else {
@@ -52,9 +52,6 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
     this.handler = new WSHandlerImpl(this)
     const list = (this.list = new ObjectListImpl(_options.kind, _options.namespace))
     this.handler.list = list
-
-    const metadata = (this.metadata = { count: -1 })
-    this.handler.metadata = metadata
   }
 
   get oAuthToken(): string {
@@ -78,16 +75,17 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
       url = new URL(joinPaths(k8Api.masterUri(), this._path))
     }
 
-    if (this.options.nsLimit !== undefined) {
-      url.searchParams.append('limit', `${this.options.nsLimit}`)
-    }
-
-    if (this.options.continueRef !== undefined) {
-      url.searchParams.append('continue', this.options.continueRef)
-    }
-
     if (this.options.labelSelector) {
       url.searchParams.append('labelSelector', this.options.labelSelector)
+    }
+
+    if (this.options.name) {
+      /*
+       * Must add fieldSelector to pin it to a singular entity.
+       * Has to be done this way to allow for watch parameter to be added.
+       * See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#read-operations-pod-v1-core
+       */
+      url.searchParams.append('fieldSelector', `metadata.name=${this.options.name}`)
     }
 
     return url
@@ -118,6 +116,15 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
       url = wsUrl(urlStr)
     }
 
+    if (this.options.name) {
+      /*
+       * Must add fieldSelector to pin it to the singular entity.
+       * Has to be done this way to allow for watch parameter to be added.
+       * See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#read-operations-pod-v1-core
+       */
+      url.searchParams.append('fieldSelector', `metadata.name=${this.options.name}`)
+    }
+
     url.searchParams.append('watch', 'true')
 
     if (this.options.labelSelector) {
@@ -127,7 +134,7 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
   }
 
   getKey() {
-    return getKey(this.kind, this._namespace, this._options.continueRef)
+    return getKey(this.kind, this._namespace, this._options.name)
   }
 
   get wsURL() {
@@ -170,7 +177,7 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
       this.list.doOnce(WatchActions.INIT, cb)
     } else {
       setTimeout(() => {
-        cb(this.list.objects, this.metadata)
+        cb(this.list.objects)
       }, 10)
     }
   }
@@ -229,15 +236,15 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
     if (this.list.initialized) {
       setTimeout(() => {
         log.debug(this.kind, 'passing existing objects:', this.list.objects)
-        cb(this.list.objects, this.metadata)
+        cb(this.list.objects)
       }, POLLING_INTERVAL)
     }
     log.debug(this.kind, 'adding watch callback:', cb)
 
-    this.list.doOn(WatchActions.ANY, ((data: T[]) => {
+    this.list.doOn(WatchActions.ANY, (data: T[]) => {
       log.debug(this.kind, 'got data:', data)
-      cb(data, this.metadata)
-    }))
+      cb(data)
+    })
     return cb
   }
 
@@ -287,7 +294,7 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
         success: data => {
           try {
             const response = JSON.parse(data)
-            cb(response, this.metadata)
+            cb(response)
           } catch (err) {
             log.error(err)
             if (error && err instanceof Error) {
@@ -330,7 +337,7 @@ export class CollectionImpl<T extends KubeObject> implements Collection<T> {
         success: data => {
           try {
             const response = JSON.parse(data)
-            cb(response, this.metadata)
+            cb(response)
           } catch (err) {
             log.error(err)
             if (error && err instanceof Error) {

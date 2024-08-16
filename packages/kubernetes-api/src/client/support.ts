@@ -2,11 +2,21 @@ import { KubeObject } from '../globals'
 import { CompareResult } from './globals'
 import { equals } from '../helpers'
 
-export function getKey(kind: string, namespace?: string, continueRef?: string) {
+export function getKey(kind: string, namespace?: string, name?: string) {
   let key: string = kind
   key = namespace ? namespace + '-' + key : key
-  key = continueRef ? continueRef + '-' + key : key
+  key = name ? name + '-' + key : key
   return key
+}
+
+export function isKubeObject(obj: unknown): obj is KubeObject {
+  if (!obj) return false
+
+  return (
+    (obj as KubeObject).kind !== undefined &&
+    (obj as KubeObject).metadata !== undefined &&
+    (obj as KubeObject).spec !== undefined
+  )
 }
 
 export function compare(old: KubeObject[], _new: KubeObject[]): CompareResult<KubeObject> {

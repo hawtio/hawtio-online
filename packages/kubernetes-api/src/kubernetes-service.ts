@@ -11,19 +11,18 @@ import {
 import { WatchTypes } from './model'
 import { isError, pathGet } from './utils'
 import { clientFactory, log, Client, NamespaceClient } from './client'
-import { K8Actions, KMetadataByProject, KubePod, KubePodsByProject, KubeProject, PagingMetadata } from './globals'
+import { K8Actions, KubePod, KubePodsByProject, KubeProject, Paging } from './globals'
 import { k8Api } from './init'
 
-export class KubernetesService extends EventEmitter {
+export class KubernetesService extends EventEmitter implements Paging {
   private _loading = 0
   private _initialized = false
   private _error: Error | null = null
   private _oAuthProfile: UserProfile | null = null
   private projects: KubeProject[] = []
-  private metadataByProject: KMetadataByProject = {}
   private podsByProject: KubePodsByProject = {}
   private projects_client: Client<KubeProject> | null = null
-  private namespaceClients: { [namespace: string]: NamespaceClient} = {}
+  private namespace_clients: { [namespace: string]: NamespaceClient } = {}
 
   private _nsLimit = 3
 
@@ -56,19 +55,11 @@ export class KubernetesService extends EventEmitter {
   }
 
   private initNamespaceClient(namespace: string) {
-
-    /*
-     * When called for first query pagingMetadata is undefined.
-     * When called after findNextPods then pagingMetadata is defined and
-     * current has moved to 'next' page containing a continueRef
-     */
-    const pagingMetadata = this.metadataByProject[namespace]
-    const cb = (jolokiaPods: KubePod[], pagingMetadata: PagingMetadata, error?: Error) => {
-      this._loading--
+    const cb = (jolokiaPods: KubePod[], error?: Error) => {
+      this._loading = this._loading > 0 ? this._loading-- : 0
 
       if (isError(error)) {
         this.podsByProject[namespace] = { pods: [], error: error }
-        console.log(this.podsByProject[namespace])
         this.emit(K8Actions.CHANGED)
         return
       }
@@ -77,33 +68,17 @@ export class KubernetesService extends EventEmitter {
       for (const jpod of jolokiaPods) {
         const pos = projectPods.findIndex(pod => pod.metadata?.uid === jpod.metadata?.uid)
         if (pos > -1) {
-          // replace the pod - not sure we need to ...?
           projectPods.splice(pos, 1)
         }
         projectPods.push(jpod)
       }
 
-      this.metadataByProject[namespace] = pagingMetadata
-
-      if (projectPods.length > 0) {
-        this.podsByProject[namespace] = { pods: projectPods }
-      } else {
-        // No jolokia pods but need to check whether we continue to list the namespace
-        if (! pagingMetadata.hasPrevious() && !pagingMetadata.hasNext()) {
-          // No other pods to query so okay to delete this namespace
-          delete this.podsByProject[namespace]
-        } else {
-          // This namespace has either previous pods or next pods
-          // so keep to allow for retrieving other pages
-          this.podsByProject[namespace] = { pods: [] }
-        }
-      }
-
+      this.podsByProject[namespace] = { pods: projectPods }
       this.emit(K8Actions.CHANGED)
     }
 
-    this.namespaceClients[namespace] = new NamespaceClient(namespace, this._nsLimit, cb, pagingMetadata)
-    this.namespaceClients[namespace].execute()
+    this.namespace_clients[namespace] = new NamespaceClient(namespace, this._nsLimit, cb)
+    this.namespace_clients[namespace].connect()
   }
 
   private initNamespaceConfig(profile: UserProfile) {
@@ -142,7 +117,7 @@ export class KubernetesService extends EventEmitter {
       // handle delete projects
       filtered = this.projects.filter(project => !projects.some(p => p.metadata?.uid === project.metadata?.uid))
       for (const project of filtered) {
-        this.namespaceClients[project.metadata?.name as string].destroy()
+        this.namespace_clients[project.metadata?.name as string].destroy()
       }
 
       this.projects.splice(0, this.projects.length) // clear the array
@@ -150,7 +125,7 @@ export class KubernetesService extends EventEmitter {
       this._loading--
     })
 
-    this.projects_client = { collection: projects_client, watch: projects_watch }
+    this.projects_client = { watched: projects_client, watch: projects_watch }
     projects_client.connect()
   }
 
@@ -196,11 +171,6 @@ export class KubernetesService extends EventEmitter {
     return mode === this._oAuthProfile?.metadataValue(HAWTIO_MODE_KEY)
   }
 
-  getMetadata(): KMetadataByProject {
-    this.checkInitOrError()
-    return this.metadataByProject
-  }
-
   getPods(): KubePodsByProject {
     this.checkInitOrError()
     return this.podsByProject
@@ -219,10 +189,10 @@ export class KubernetesService extends EventEmitter {
   disconnect() {
     this.checkInitOrError()
     if (this.is(HawtioMode.Cluster) && this.projects_client) {
-      clientFactory.destroy(this.projects_client.collection, this.projects_client.watch)
+      clientFactory.destroy(this.projects_client.watched, this.projects_client.watch)
     }
 
-    Object.values(this.namespaceClients).forEach(client => {
+    Object.values(this.namespace_clients).forEach(client => {
       client.destroy()
     })
   }
@@ -309,27 +279,39 @@ export class KubernetesService extends EventEmitter {
     return reason || 'unknown'
   }
 
-  findPrevPods(namespace: string) {
-    const namespaceClient = this.namespaceClients[namespace]
-    if (! namespaceClient) return
+  hasPrevious(namespace?: string): boolean {
+    if (!namespace) return false
 
-    const pagingMetadata = this.metadataByProject[namespace]
-    if (!pagingMetadata) return
+    const namespaceClient = this.namespace_clients[namespace]
+    if (! namespaceClient) return false
 
-    namespaceClient.destroy()
-    pagingMetadata.previous()
-    this.initNamespaceClient(namespace)
+    return this.namespace_clients[namespace].hasPrevious()
   }
 
-  findNextPods(namespace: string) {
-    const namespaceClient = this.namespaceClients[namespace]
+  previous(namespace?: string) {
+    if (!namespace) return
+
+    const namespaceClient = this.namespace_clients[namespace]
     if (! namespaceClient) return
 
-    const pagingMetadata = this.metadataByProject[namespace]
-    if (!pagingMetadata) return
+    this.namespace_clients[namespace].previous()
+  }
 
-    namespaceClient.destroy()
-    pagingMetadata.next()
-    this.initNamespaceClient(namespace)
+  hasNext(namespace?: string): boolean {
+    if (!namespace) return false
+
+    const namespaceClient = this.namespace_clients[namespace]
+    if (! namespaceClient) return false
+
+    return this.namespace_clients[namespace].hasNext()
+  }
+
+  next(namespace?: string) {
+    if (!namespace) return
+
+    const namespaceClient = this.namespace_clients[namespace]
+    if (! namespaceClient) return
+
+    this.namespace_clients[namespace].next()
   }
 }
