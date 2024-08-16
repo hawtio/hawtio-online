@@ -7,5 +7,5 @@
 }
 
 .paginated-pods-toolbar-content .pf-c-toolbar__content-section {
-  justify-content: space-between
+  justify-content: space-between;
 }

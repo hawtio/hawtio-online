@@ -77,8 +77,8 @@ export class KubernetesService extends EventEmitter implements Paging {
       this.emit(K8Actions.CHANGED)
     }
 
-    this.namespace_clients[namespace] = new NamespaceClient(namespace, this._nsLimit, cb)
-    this.namespace_clients[namespace].connect()
+    this.namespace_clients[namespace] = new NamespaceClient(namespace, cb)
+    this.namespace_clients[namespace].connect(this._nsLimit)
   }
 
   private initNamespaceConfig(profile: UserProfile) {
@@ -103,8 +103,7 @@ export class KubernetesService extends EventEmitter implements Paging {
     })
 
     this._loading++
-    const projects_watch = projects_client.watch((projects) => {
-
+    const projects_watch = projects_client.watch(projects => {
       // subscribe to pods update for new projects
       let filtered = projects.filter(project => !this.projects.some(p => p.metadata?.uid === project.metadata?.uid))
       for (const project of filtered) {
@@ -165,6 +164,13 @@ export class KubernetesService extends EventEmitter implements Paging {
 
   set namespaceLimit(limit: number) {
     this._nsLimit = limit
+
+    Object.values(this.namespace_clients).forEach(client => {
+      client.destroy()
+
+      // Pause for half a second before re-connecting with the new limit
+      setTimeout(() => client.connect(this._nsLimit), 100)
+    })
   }
 
   is(mode: HawtioMode): boolean {
@@ -283,7 +289,7 @@ export class KubernetesService extends EventEmitter implements Paging {
     if (!namespace) return false
 
     const namespaceClient = this.namespace_clients[namespace]
-    if (! namespaceClient) return false
+    if (!namespaceClient) return false
 
     return this.namespace_clients[namespace].hasPrevious()
   }
@@ -292,7 +298,7 @@ export class KubernetesService extends EventEmitter implements Paging {
     if (!namespace) return
 
     const namespaceClient = this.namespace_clients[namespace]
-    if (! namespaceClient) return
+    if (!namespaceClient) return
 
     this.namespace_clients[namespace].previous()
   }
@@ -301,7 +307,7 @@ export class KubernetesService extends EventEmitter implements Paging {
     if (!namespace) return false
 
     const namespaceClient = this.namespace_clients[namespace]
-    if (! namespaceClient) return false
+    if (!namespaceClient) return false
 
     return this.namespace_clients[namespace].hasNext()
   }
@@ -310,7 +316,7 @@ export class KubernetesService extends EventEmitter implements Paging {
     if (!namespace) return
 
     const namespaceClient = this.namespace_clients[namespace]
-    if (! namespaceClient) return
+    if (!namespaceClient) return
 
     this.namespace_clients[namespace].next()
   }
