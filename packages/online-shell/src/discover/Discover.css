@@ -6,6 +6,11 @@
   justify-content: end;
 }
 
+.pf-v5-c-menu__item a {
+  text-decoration: none;
+  color: unset;
+}
+
 .online-header-toolbar-dropdown {
   border: none;
 }
