@@ -23,11 +23,14 @@ export class ManagementService extends EventEmitter {
     uids: new Set<string>(),
   }
 
+  private _jolokiaPolling = 15000
+  private _pollingHandle?: NodeJS.Timeout
+
   constructor() {
     super()
 
     k8Service.on(K8Actions.CHANGED, () => this.initialize())
-    setInterval(() => this.pollManagementData(), 10000)
+    this.schedulePolling()
   }
 
   async initialize(): Promise<boolean> {
@@ -71,6 +74,12 @@ export class ManagementService extends EventEmitter {
     // At least first pass of the pods has been completed
     this._initialized = true
     return this._initialized
+  }
+
+  private schedulePolling() {
+    if(this._pollingHandle) clearInterval(this._pollingHandle)
+
+    this._pollingHandle = setInterval(() => this.pollManagementData(), this._jolokiaPolling)
   }
 
   private preMgmtUpdate() {
@@ -167,6 +176,16 @@ export class ManagementService extends EventEmitter {
 
   get initialized(): boolean {
     return this._initialized
+  }
+
+  get jolokiaPollingInterval() {
+    return this._jolokiaPolling
+  }
+
+  set jolokiaPollingInterval(jolokiaPolling: number) {
+    this._jolokiaPolling = jolokiaPolling
+    console.log('ZZZ Set polling to ', this._jolokiaPolling)
+    this.schedulePolling()
   }
 
   hasError() {
