@@ -2222,7 +2222,7 @@ __metadata:
     jest-watch-typeahead: "npm:^2.2.2"
     jquery: "npm:^3.7.0"
     jsonpath: "npm:^1.1.1"
-    kubernetes-types: "npm:^1.29.0"
+    kubernetes-types: "npm:^1.30.0"
     replace: "npm:^1.2.2"
     ts-jest: "npm:^29.1.2"
     ts-node: "npm:^10.9.2"
@@ -10709,10 +10709,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kubernetes-types@npm:^1.29.0":
-  version: 1.29.0
-  resolution: "kubernetes-types@npm:1.29.0"
-  checksum: 10/e75e360a9a744d93bb5eb57fa23a901911014f8e56859d9b2afcebfc85e6796317710f10674923cceae9394554774f45bb5f534780554f4e24530f95efcee3cf
+"kubernetes-types@npm:^1.30.0":
+  version: 1.30.0
+  resolution: "kubernetes-types@npm:1.30.0"
+  checksum: 10/df8343def274b9e7fc8fbe2e00811fc9a025565ffd780c8cf14e5438ba1b1ecd8cb6953d056f0234ec063b9a2c88eb580bd7d5a31a0e2687c40912d184041190
   languageName: node
   linkType: hard
 
