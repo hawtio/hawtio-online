@@ -1,4 +1,4 @@
-import { isMgmtApiRegistered, mgmtService, ManagedPod, MgmtActions } from '@hawtio/online-management-api'
+import { isMgmtApiRegistered, mgmtService, MgmtActions, ManagedProjects } from '@hawtio/online-management-api'
 import React, { useRef, useEffect, useState } from 'react'
 import {
   Alert,
@@ -11,6 +11,7 @@ import {
   Label,
   Masthead,
   MastheadContent,
+  NumberInput,
   Panel,
   PanelHeader,
   PanelMain,
@@ -24,7 +25,8 @@ import {
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
 import { useUser, userService } from '@hawtio/react'
-import { ManagementPods } from './ManagementPods'
+import { ManagementProjects } from './ManagementProjects'
+import { k8Service } from '@hawtio/online-kubernetes-api'
 
 export const Management: React.FunctionComponent = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -32,7 +34,11 @@ export const Management: React.FunctionComponent = () => {
   const [error, setError] = useState<Error | null>()
   const { username, userLoaded } = useUser()
 
-  const [pods, setPods] = useState<ManagedPod[]>([])
+  const [managedProjects, setManagedProjects] = useState<ManagedProjects>({})
+  const [changed] = useState<number>(0)
+
+  const [nsValue, setNSValue] = useState<number>(3)
+  const [pollingValue, setPollingValue] = useState<number>(15)
 
   useEffect(() => {
     setIsLoading(true)
@@ -52,7 +58,9 @@ export const Management: React.FunctionComponent = () => {
       }
 
       mgmtService.on(MgmtActions.UPDATED, () => {
-        setPods([...mgmtService.pods]) // Use spread to ensure react updates the state
+        // Ensure that update is carried out on nested objects
+        // by using assign to create new object
+        setManagedProjects(Object.assign({}, mgmtService.projects))
       })
     }
 
@@ -96,6 +104,26 @@ export const Management: React.FunctionComponent = () => {
     )
   }
 
+  const onChangeNSLimit = (event: React.FormEvent<HTMLInputElement>) => {
+    const value = (event.target as HTMLInputElement).value
+    const nsLimit: number = value === '' ? 3 : +value
+    setNSValue(nsLimit)
+
+    setTimeout(() => {
+      k8Service.namespaceLimit = nsLimit
+    }, 200)
+  }
+
+  const onChangePolling = (event: React.FormEvent<HTMLInputElement>) => {
+    const value = (event.target as HTMLInputElement).value
+    const polling: number = value === '' ? 15 : +value
+    setPollingValue(polling)
+
+    setTimeout(() => {
+      mgmtService.jolokiaPollingInterval = polling * 1000
+    }, 200)
+  }
+
   return (
     <Card>
       <CardTitle>
@@ -121,7 +149,7 @@ export const Management: React.FunctionComponent = () => {
           </MastheadContent>
         </Masthead>
 
-        {pods.length === 0 && (
+        {Object.keys(managedProjects).length === 0 && (
           <Panel>
             <Divider />
 
@@ -139,13 +167,57 @@ export const Management: React.FunctionComponent = () => {
           </Panel>
         )}
 
-        {pods.length > 0 && (
+        {Object.keys(managedProjects).length > 0 && (
           <Panel>
-            <PanelHeader>API Properties</PanelHeader>
+            <PanelHeader>Pods</PanelHeader>
             <Divider />
             <PanelMain>
               <PanelMainBody>
-                <ManagementPods pods={pods} />
+                <Panel>
+                  <PanelHeader>
+                    <Title headingLevel='h4'>Pods in Namespace Limit</Title>
+                  </PanelHeader>
+                  <PanelMain>
+                    <PanelMainBody>
+                      <NumberInput
+                        inputName='Pods in Namespace Limit'
+                        unit='Pods'
+                        inputAriaLabel='Pods in Namespace Limit NumberInput'
+                        minusBtnAriaLabel='NSPodsMinus1'
+                        plusBtnAriaLabel='NSPodsPlus1'
+                        value={nsValue}
+                        onMinus={() => (k8Service.namespaceLimit = k8Service.namespaceLimit - 1)}
+                        onPlus={() => (k8Service.namespaceLimit = k8Service.namespaceLimit + 1)}
+                        onChange={onChangeNSLimit}
+                      />
+                    </PanelMainBody>
+                  </PanelMain>
+                </Panel>
+
+                <Panel>
+                  <PanelHeader>
+                    <Title headingLevel='h4'>Jolokia Polling Interval</Title>
+                  </PanelHeader>
+                  <PanelMain>
+                    <PanelMainBody>
+                      <NumberInput
+                        inputName='Jolokia Polling Interval'
+                        unit='seconds'
+                        inputAriaLabel='Jolokia Polling Interval NumberInput'
+                        minusBtnAriaLabel='JPollMinus1'
+                        plusBtnAriaLabel='JPollPlus1'
+                        value={pollingValue}
+                        onMinus={() => (mgmtService.jolokiaPollingInterval = mgmtService.jolokiaPollingInterval - 1000)}
+                        onPlus={() => (mgmtService.jolokiaPollingInterval = mgmtService.jolokiaPollingInterval + 1000)}
+                        onChange={onChangePolling}
+                      />
+                    </PanelMainBody>
+                  </PanelMain>
+                </Panel>
+
+                <Divider />
+
+                <ManagementProjects projects={managedProjects} changed={changed} />
               </PanelMainBody>
             </PanelMain>
           </Panel>

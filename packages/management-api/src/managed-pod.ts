@@ -5,9 +5,17 @@ import Jolokia, {
 } from 'jolokia.js'
 import 'jolokia.js/simple'
 import $ from 'jquery'
-import { log } from './globals'
+import { TypeFilter, log } from './globals'
 import jsonpath from 'jsonpath'
-import { k8Api, KubePod, k8Service, ObjectMeta, PodStatus, joinPaths, PodSpec } from '@hawtio/online-kubernetes-api'
+import {
+  k8Api,
+  KubePod,
+  ObjectMeta,
+  PodStatus,
+  joinPaths,
+  PodSpec,
+  JOLOKIA_PORT_QUERY,
+} from '@hawtio/online-kubernetes-api'
 import { ParseResult, isJolokiaVersionResponseType, jolokiaResponseParse } from './jolokia-response-utils'
 import { eventService } from '@hawtio/react'
 
@@ -67,9 +75,9 @@ export class ManagedPod {
 
   private _fingerprint = 1234
 
-  constructor(public pod: KubePod) {
-    this.jolokiaPort = this.extractPort(pod)
-    this.jolokiaPath = ManagedPod.getJolokiaPath(pod, this.jolokiaPort) || ''
+  constructor(public kubePod: KubePod) {
+    this.jolokiaPort = this.extractPort(kubePod)
+    this.jolokiaPath = ManagedPod.getJolokiaPath(kubePod, this.jolokiaPort) || ''
     this.jolokia = this.createJolokia()
   }
 
@@ -98,15 +106,19 @@ export class ManagedPod {
     return joinPaths(window.location.origin, path)
   }
 
+  newJolokiaPath(newPort: number) {
+    return ManagedPod.getJolokiaPath(this.kubePod, newPort) || ''
+  }
+
   private extractPort(pod: KubePod): number {
-    const ports = jsonpath.query(pod, k8Service.jolokiaPortQuery)
+    const ports = jsonpath.query(pod, JOLOKIA_PORT_QUERY)
     if (!ports || ports.length === 0) return ManagedPod.DEFAULT_JOLOKIA_PORT
     return ports[0].containerPort || ManagedPod.DEFAULT_JOLOKIA_PORT
   }
 
   private createJolokia() {
     if (!this.jolokiaPath || this.jolokiaPath.length === 0) {
-      throw new Error(`Failed to find jolokia path for pod ${this.pod.metadata?.uid}`)
+      throw new Error(`Failed to find jolokia path for pod ${this.kubePod.metadata?.uid}`)
     }
 
     const options = { ...DEFAULT_JOLOKIA_OPTIONS }
@@ -115,27 +127,27 @@ export class ManagedPod {
     return new Jolokia(options)
   }
 
-  getKind(): string | undefined {
-    return this.pod.kind
+  get kind(): string | undefined {
+    return this.kubePod.kind
   }
 
-  getMetadata(): ObjectMeta | undefined {
-    return this.pod.metadata
+  get metadata(): ObjectMeta | undefined {
+    return this.kubePod.metadata
   }
 
-  getSpec(): PodSpec | undefined {
-    return this.pod.spec
+  get spec(): PodSpec | undefined {
+    return this.kubePod.spec
   }
 
-  getStatus(): PodStatus | undefined {
-    return this.pod.status
+  get status(): PodStatus | undefined {
+    return this.kubePod.status
   }
 
-  getManagement(): Management {
+  get management(): Management {
     return this._management
   }
 
-  getManagementError(): Error | null {
+  get mgmtError(): Error | null {
     if (!this._management.status.error) return null
 
     return new Error(`${this._management.status.error.message} (${this._management.status.error.code})`)
@@ -145,7 +157,7 @@ export class ManagedPod {
     this._management.status.error = { code, message }
   }
 
-  getErrorPolling(): ErrorPolling {
+  get errorPolling(): ErrorPolling {
     return this._errorPolling
   }
 
@@ -174,7 +186,7 @@ export class ManagedPod {
    * Returns the new fingerprint
    */
   private calcFingerprint(): number {
-    const s = JSON.stringify({ management: this.getManagement(), data: this.pod })
+    const s = JSON.stringify({ management: this.management, data: this.kubePod })
 
     /* Save the fingerprint for the next update iteration */
     this._fingerprint = this.hash(s)
@@ -195,14 +207,14 @@ export class ManagedPod {
         .done((data: string, textStatus: string, xhr: JQueryXHR) => {
           if (xhr.status !== 200) {
             this.setManagementError(xhr.status, textStatus)
-            reject(this.getManagementError())
+            reject(this.mgmtError)
             return
           }
 
           const result: ParseResult<JolokiaResponse> = jolokiaResponseParse(data)
           if (result.hasError) {
             this.setManagementError(500, result.error)
-            reject(this.getManagementError())
+            reject(this.mgmtError)
             return
           }
 
@@ -213,13 +225,13 @@ export class ManagedPod {
             resolve(this.jolokiaPath)
           } else {
             this.setManagementError(500, 'Detected jolokia but cannot determine agent or version')
-            reject(this.getManagementError())
+            reject(this.mgmtError)
           }
         })
         .fail((xhr: JQueryXHR, _: string, error: string) => {
           const msg = `Jolokia Connect Error - ${error ?? xhr.statusText}`
           this.setManagementError(xhr.status, msg)
-          reject(this.getManagementError())
+          reject(this.mgmtError)
         })
     })
   }
@@ -234,17 +246,36 @@ export class ManagedPod {
       },
       error: error => {
         this.setManagementError(error.status, error.error)
-        failCb(this.getManagementError() as Error)
+        failCb(this.mgmtError as Error)
       },
     })
   }
 
   errorNotify() {
-    const name = this.getMetadata()?.name || '<unknown>'
-    const mgmtError = this.getManagementError()
+    const name = this.metadata?.name || '<unknown>'
+    const mgmtError = this.mgmtError
     if (mgmtError) {
       const msg = `${name}: ${mgmtError.message}`
       eventService.notify({ type: 'danger', message: msg })
     }
+  }
+
+  filter(filter: TypeFilter): boolean {
+    const metadata = this.metadata
+    if (!metadata) return false
+
+    type KubeObjKey = keyof typeof metadata
+    const podProp = metadata[filter.type.toLowerCase() as KubeObjKey] as string
+
+    // Want to filter on this property but value
+    // is null so filter fails
+    if (!podProp) return false
+
+    // values is tested as OR
+    for (const value of filter.values) {
+      if (podProp.toLowerCase().includes(value.toLowerCase())) return true
+    }
+
+    return false
   }
 }
