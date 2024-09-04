@@ -1,3 +1,11 @@
 #root {
   height: 100%;
 }
+
+.paginated-panel {
+  max-height: 60vh !important;
+}
+
+.paginated-pods-toolbar-content .pf-c-toolbar__content-section {
+  justify-content: space-between;
+}
