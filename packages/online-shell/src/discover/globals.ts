@@ -5,11 +5,6 @@ export const pluginPath = '/discover'
 export const pluginName = 'hawtio-online-discover'
 export const log = Logger.get(pluginName)
 
-export interface TypeFilter {
-  type: string
-  value: string
-}
-
 export enum DiscoverType {
   Group = 0,
   Pod = 1,
@@ -24,7 +19,6 @@ export interface DiscoverItem {
 
 export interface DiscoverGroup extends DiscoverItem {
   replicas: DiscoverPod[]
-  expanded: boolean
   config?: string
   version?: string
   statefulset?: string

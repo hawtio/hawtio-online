@@ -22,7 +22,7 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
   props: DiscoverPodConnectProps,
 ) => {
   const connectionNames: string[] = mgmtService.refreshConnections(props.pod.mPod)
-  const mgmtError = props.pod.mPod?.getManagementError()
+  const mgmtError = props.pod.mPod?.mgmtError
 
   const [isOpen, setIsOpen] = React.useState(false)
 
@@ -39,7 +39,7 @@ export const DiscoverPodConnect: React.FunctionComponent<DiscoverPodConnectProps
   const disableContainerButton = (): boolean => {
     return (
       mgmtService.podStatus(props.pod.mPod) !== 'Running' ||
-      !props.pod.mPod.getManagement().status.managed ||
+      !props.pod.mPod.management.status.managed ||
       connectionNames.length === 0 ||
       mgmtError !== null
     )

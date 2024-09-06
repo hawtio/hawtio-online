@@ -15,11 +15,11 @@ import {
 } from '@patternfly/react-core'
 
 import { LongArrowAltUpIcon, LongArrowAltDownIcon } from '@patternfly/react-icons'
+import { TypeFilterType, TypeFilter, typeFilterTypeValueOf } from '@hawtio/online-management-api'
 import { DiscoverContext } from './context'
-import { DiscoverItem, TypeFilter } from './globals'
+import { DiscoverProject } from './discover-project'
 
 const defaultFilterInputPlaceholder = 'Filter by Name...'
-const headers = ['Name', 'Namespace']
 
 interface SortOrder {
   id: string
@@ -29,14 +29,42 @@ interface SortOrder {
 const ascending: SortOrder = { id: 'ascending', icon: <LongArrowAltUpIcon /> }
 const descending: SortOrder = { id: 'descending', icon: <LongArrowAltDownIcon /> }
 
+interface SortMetaType {
+  id: string
+  order: SortOrder
+}
+
+type FilterMeta = {
+  [name: string]: TypeFilterType
+}
+
+type SortMeta = {
+  [name: string]: SortMetaType
+}
+
+const filterMeta: FilterMeta = {
+  name: TypeFilterType.NAME,
+  namespace: TypeFilterType.NAMESPACE,
+}
+
+const sortMeta: SortMeta = {
+  name: {
+    id: 'Name',
+    order: ascending,
+  },
+  namespace: {
+    id: 'Namespace',
+    order: ascending,
+  },
+}
+
 export const DiscoverToolbar: React.FunctionComponent = () => {
-  const { discoverGroups, setDiscoverGroups, discoverPods, setDiscoverPods, filters, setFilters } =
-    useContext(DiscoverContext)
+  const { discoverProjects, setDiscoverProjects, filters, setFilters } = useContext(DiscoverContext)
   // Ref for toggle of filter type Select control
   const filterTypeToggleRef = useRef<HTMLButtonElement | null>()
 
   // The type of filter to be created - chosen by the Select control
-  const [filterType, setFilterType] = useState(headers[0] ?? '')
+  const [filterType, setFilterType] = useState<TypeFilterType>(filterMeta.name)
   // Flag to determine whether the Filter Select control is open or closed
   const [isFilterTypeOpen, setIsFilterTypeOpen] = useState(false)
   // The text value of the filter to be created
@@ -47,11 +75,11 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
   // Ref for toggle of sort type Select control
   useRef<HTMLButtonElement | null>()
   // The type of sort to be created - chosen by the Select control
-  const [sortType, setSortType] = useState(headers[0] ?? '')
+  const [sortType, setSortType] = useState(sortMeta.name.id || '')
   // Flag to determine whether the Sort Select control is open or closed
   const [isSortTypeOpen, setIsSortTypeOpen] = useState(false)
   // Icon showing the sort
-  const [sortOrder, setSortOrder] = useState<SortOrder>(ascending)
+  const [sortOrder, setSortOrder] = useState<SortOrder>(sortMeta.name.order)
 
   const clearFilters = () => {
     const emptyFilters: TypeFilter[] = []
@@ -62,16 +90,18 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
   const onSelectFilterType = (_event?: ChangeEvent<Element> | MouseEvent<Element>, value?: string | number) => {
     if (!value) return
 
-    setFilterType(value as string)
-    setFilterInputPlaceholder('Filter by ' + value + ' ...')
+    const type = typeFilterTypeValueOf(`${value}`)
+    setFilterType(type as TypeFilterType)
+    setFilterInputPlaceholder('Filter by ' + value.toString() + ' ...')
     setIsFilterTypeOpen(false)
     filterTypeToggleRef?.current?.focus()
   }
 
   const filterChips = (): string[] => {
     const chips: string[] = []
+
     filters.forEach(filter => {
-      chips.push(filter.type + ':' + filter.value)
+      Array.from(filter.values).map(v => chips.push(filter.type + ':' + v))
     })
 
     return chips
@@ -82,20 +112,31 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
 
     if (!filterType) return
 
-    const filter = {
-      type: filterType.toLowerCase(),
-      value: value,
+    const newFilters = [...filters]
+
+    const typeFilter = newFilters.filter(f => f.type === filterType)
+    if (typeFilter.length === 0) {
+      const filter: TypeFilter = {
+        type: filterType,
+        values: new Set([value]),
+      }
+      newFilters.push(filter)
+    } else {
+      typeFilter[0].values.add(value)
     }
 
-    if (filters.includes(filter)) return
-
-    const newFilters = filters.concat(filter)
     setFilters(newFilters)
   }
 
   const deleteFilter = (filterChip: string) => {
     const remaining = filters.filter(filter => {
-      return filterChip !== filter.type + ':' + filter.value
+      const [typeId, value] = filterChip.split(':')
+      const type = typeFilterTypeValueOf(typeId)
+
+      if (filter.type !== type) return true
+
+      filter.values.delete(value)
+      return filter.values.size > 0
     })
 
     setFilters(remaining)
@@ -104,37 +145,38 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
   const onSelectSortType = (_event?: MouseEvent<Element>, value?: string | number) => {
     if (!value) return
 
+    // Updates the sort type either Name or Namespace
     setSortType(value as string)
+
+    // Updates the sort order to whichever the sort type is set to
+    setSortOrder(value === sortMeta.name.id ? sortMeta.name.order : sortMeta.namespace.order)
     setIsSortTypeOpen(false)
     filterTypeToggleRef?.current?.focus()
   }
 
-  const compareDiscoverItems = (item1: DiscoverItem, item2: DiscoverItem) => {
-    let value = 0
-
-    type FilterKey = keyof typeof item1 // name or namespace
-
-    const item1Prop = item1[sortType.toLowerCase() as FilterKey] as string
-    const item2Prop = item2[sortType.toLowerCase() as FilterKey] as string
-
-    value = item1Prop.localeCompare(item2Prop)
-    if (sortOrder === ascending) value *= -1
-
-    return value
-  }
-
   const sortItems = () => {
-    const sortedGroups = [...discoverGroups]
-    const sortedPods = [...discoverPods]
+    const sortedProjects = [...discoverProjects]
+    const newSortOrder = sortOrder === ascending ? descending : ascending
 
-    sortedGroups.sort(compareDiscoverItems)
-    sortedPods.sort(compareDiscoverItems)
+    switch (sortType) {
+      case sortMeta.name.id:
+        // Sorting via name
+        sortMeta.name.order = newSortOrder
+        sortedProjects.forEach(project => {
+          project.sort(newSortOrder === ascending ? 1 : -1)
+        })
+        break
+      case sortMeta.namespace.id:
+        // Sorting via namespace
+        sortMeta.namespace.order = newSortOrder
+        sortedProjects.sort((ns1: DiscoverProject, ns2: DiscoverProject) => {
+          let value = ns1.name.localeCompare(ns2.name)
+          return newSortOrder === descending ? (value *= -1) : value
+        })
+    }
 
-    setDiscoverGroups(sortedGroups)
-    setDiscoverPods(sortedPods)
-
-    if (sortOrder === ascending) setSortOrder(descending)
-    else setSortOrder(ascending)
+    setDiscoverProjects(sortedProjects)
+    setSortOrder(newSortOrder)
   }
 
   return (
@@ -156,11 +198,12 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
               onOpenChange={setIsFilterTypeOpen}
             >
               <SelectList>
-                {headers.map((name, index) => (
-                  <SelectOption key={name + '-' + index} value={name}>
-                    {name}
-                  </SelectOption>
-                ))}
+                <SelectOption key={filterMeta.name + '-0'} value={filterMeta.name}>
+                  {filterMeta.name}
+                </SelectOption>
+                <SelectOption key={filterMeta.namespace + '-0'} value={filterMeta.namespace}>
+                  {filterMeta.namespace}
+                </SelectOption>
               </SelectList>
             </Select>
           </ToolbarItem>
@@ -190,7 +233,7 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
               aria-label='select-sort-type'
               toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
                 <MenuToggle
-                  disabled={discoverGroups.length + discoverPods.length <= 1}
+                  disabled={Object.values(discoverProjects).length <= 1}
                   ref={toggleRef}
                   onClick={() => setIsSortTypeOpen(!isSortTypeOpen)}
                 >
@@ -201,14 +244,14 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
               isOpen={isSortTypeOpen}
               onOpenChange={setIsSortTypeOpen}
               onSelect={onSelectSortType}
-              // direction={SelectDirection.down}
             >
               <SelectList>
-                {headers.map((name, index) => (
-                  <SelectOption key={name + '-' + index} value={name}>
-                    {name}
-                  </SelectOption>
-                ))}
+                <SelectOption key={sortMeta.name.id + '-0'} value={sortMeta.name.id}>
+                  {sortMeta.name.id}
+                </SelectOption>
+                <SelectOption key={sortMeta.namespace.id + '-0'} value={sortMeta.namespace.id}>
+                  {sortMeta.namespace.id}
+                </SelectOption>
               </SelectList>
             </Select>
           </ToolbarItem>
@@ -217,7 +260,7 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
               variant='control'
               aria-label='Sort'
               onClick={sortItems}
-              isDisabled={discoverGroups.length + discoverPods.length <= 1}
+              isDisabled={Object.values(discoverProjects).length <= 1}
             >
               {sortOrder.icon}
             </Button>

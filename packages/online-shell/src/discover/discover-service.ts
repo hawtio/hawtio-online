@@ -1,6 +1,7 @@
-import { OwnerReference } from '@hawtio/online-kubernetes-api'
-import { ManagedPod, mgmtService } from '@hawtio/online-management-api'
-import { DiscoverGroup, DiscoverPod, DiscoverType, TypeFilter } from './globals'
+import { mgmtService, MPodsByUid, TypeFilterType, TypeFilter } from '@hawtio/online-management-api'
+import { DiscoverPod } from './globals'
+import { DiscoverProject, DiscoverProjects } from './discover-project'
+import { ManagedProject } from '@hawtio/online-management-api'
 
 export enum ViewType {
   listView = 'listView',
@@ -8,155 +9,91 @@ export enum ViewType {
 }
 
 class DiscoverService {
-  private discoverGroups: DiscoverGroup[] = []
-  private discoverPods: DiscoverPod[] = []
+  private discoverProjects: DiscoverProjects = {}
 
-  private recordValue(values: Record<string, string> | undefined, key: string): string | undefined {
-    if (!values) return undefined
-    return values[key]
-  }
-
-  private toDiscoverGroup(
-    pod: ManagedPod,
-    owner: OwnerReference,
-    replicas: ManagedPod[],
-    expanded: boolean,
-  ): DiscoverGroup {
-    const discoverReplicas = [pod, ...replicas].map(replica => this.createDiscoverPod(replica))
-    return {
-      type: DiscoverType.Group,
-      name: owner.name,
-      uid: owner.uid,
-      namespace: pod.getMetadata()?.namespace || '<unknown>',
-      replicas: discoverReplicas || [],
-      expanded: expanded,
-      config: this.recordValue(pod.getMetadata()?.annotations, 'openshift.io/deployment-config.name'),
-      version: this.recordValue(pod.getMetadata()?.annotations, 'openshift.io/deployment-config.latest-version'),
-      statefulset: this.recordValue(pod.getMetadata()?.labels, 'statefulset.kubernetes.io/pod-name'),
+  filterAndGroupPods(filters: TypeFilter[]): DiscoverProject[] {
+    /*
+     * Find all the namespace filters and reduce them together
+     */
+    const nsFilters = filters.filter(f => f.type === TypeFilterType.NAMESPACE)
+    let nsFilter: TypeFilter | undefined
+    if (nsFilters.length === 0) nsFilter = undefined
+    else {
+      nsFilter = nsFilters.reduceRight((accumulator, currentValue, currentIndex, array) => {
+        currentValue.values.forEach(v => accumulator.values.add(v))
+        return accumulator
+      })
     }
-  }
 
-  private createDiscoverPod(pod: ManagedPod): DiscoverPod {
-    return {
-      type: DiscoverType.Pod,
-      name: pod.getMetadata()?.name || '<unknown>',
-      uid: pod.getMetadata()?.uid || '<unknown>',
-      namespace: pod.getMetadata()?.namespace || '<unknown>',
-      labels: pod.getMetadata()?.labels || {},
-      annotations: pod.getMetadata()?.annotations || {},
-      mPod: pod,
-    }
-  }
+    const podFilters = filters.filter(f => f.type === TypeFilterType.NAME)
 
-  private podOwner(pod: ManagedPod): OwnerReference | null {
-    const metadata = pod.getMetadata()
-    if (!metadata || !metadata.ownerReferences) return null
+    const filteredProjects: ManagedProject[] = []
 
-    if (metadata.ownerReferences.length === 0) return null
-
-    return metadata.ownerReferences[0]
-  }
-
-  private podsWithOwner(remainingPods: ManagedPod[], ownerRef: OwnerReference): ManagedPod[] {
-    if (!remainingPods) return []
-
-    return remainingPods.filter(pod => {
-      const oRef = this.podOwner(pod)
-      return oRef?.uid === ownerRef.uid
-    })
-  }
-
-  private groupPodsByDeployment(pods: ManagedPod[]) {
-    const discoverPods: DiscoverPod[] = []
-    const discoverGroups: DiscoverGroup[] = []
-
-    for (let i = 0; i < pods.length; ++i) {
-      const pod = pods[i]
-      const ownerRef = this.podOwner(pod)
-
-      if (!ownerRef || !ownerRef?.uid) {
-        discoverPods.push(this.createDiscoverPod(pod))
-        continue
+    Object.values(mgmtService.projects).forEach(mgmtProject => {
+      if (!nsFilter) {
+        filteredProjects.push(mgmtProject)
+        return
       }
 
-      const groups = discoverGroups.filter(group => group.uid === ownerRef.uid)
-      if (groups.length > 0) continue // pod already processed into a display group
-
       /*
-       * Pod has an owner uid but not yet processed
+       * Namespace filter values will be tested as an OR filter
+       * This corresponds to Patternfly design guidelines that
+       * "[...] there is an "AND" relationship between facets,
+       *  and an "OR" relationship between values."
+       * (https://www.patternfly.org/patterns/filters/design-guidelines/#filter-group)
        */
-
-      // find pods with same owner uid as this one
-      const remainingPods = i < pods.length - 1 ? pods.slice(i + 1) : []
-      const replicas = this.podsWithOwner(remainingPods, ownerRef)
-
-      const oldDiscoverGroups = this.discoverGroups.filter(group => {
-        return (
-          group.uid === pod.getMetadata()?.uid &&
-          group.namespace === pod.getMetadata()?.namespace &&
-          group.name === ownerRef?.name
-        )
-      })
-
-      // Determine if group previously expanded
-      const expanded = oldDiscoverGroups.length > 0 ? oldDiscoverGroups[0].expanded : true
-
-      discoverGroups.push(this.toDiscoverGroup(pod, ownerRef, replicas, expanded))
-    }
-
-    this.discoverGroups = discoverGroups
-    this.discoverPods = discoverPods
-  }
-
-  private applyFilter(filter: TypeFilter, pod: ManagedPod): boolean {
-    if (!pod.getMetadata()) return false
-
-    const metadata = pod.getMetadata()
-    if (!metadata) return false
-
-    type KubeObjKey = keyof typeof metadata
-
-    const podProp = metadata[filter.type.toLowerCase() as KubeObjKey] as string
-
-    // Want to filter on this property but value
-    // is null so filter fails
-    if (!podProp) return false
-
-    return podProp.toLowerCase().includes(filter.value.toLowerCase())
-  }
-
-  filterAndGroupPods(theFilters: TypeFilter[]): [discoverGroups: DiscoverGroup[], discoverPods: DiscoverPod[]] {
-    const pods: ManagedPod[] = mgmtService.pods || []
-
-    let filtered = pods
-    if (theFilters && theFilters.length > 0) {
-      filtered = pods.filter(pod => {
-        let status = true
-        for (const filter of theFilters) {
-          if (!this.applyFilter(filter, pod)) {
-            // service fails filter so return
-            status = false
-            break
-          }
-
-          // service passes this filter so continue
+      let exclude = true
+      nsFilter.values.forEach(v => {
+        if (mgmtProject.name.includes(v)) {
+          filteredProjects.push(mgmtProject)
+          exclude = false
         }
-        return status
       })
-    }
 
-    this.groupPodsByDeployment(filtered)
+      if (exclude) {
+        /*
+         * By removing any projects that do not correspond to the namespace
+         * filter we are effectively doing an AND test with the name filter below
+         *
+         * ie. if the project fails the namespace filter then it should not
+         *     even be tested against the name filter
+         */
+        delete this.discoverProjects[mgmtProject.name]
+      }
+    })
 
-    /**
-     * Notify event service of any errors in the groups and pods
-     */
-    this.discoverGroups.flatMap(discoverGroup =>
-      discoverGroup.replicas.map(discoverPod => discoverPod.mPod.errorNotify()),
-    )
+    filteredProjects.forEach(mgmtProject => {
+      const podsByUid: MPodsByUid = mgmtProject.pods
 
-    this.discoverPods.map(discoverPod => discoverPod.mPod.errorNotify())
+      const filtered = Object.values(podsByUid).filter(pod => {
+        if (podFilters.length === 0) return true
 
-    return [this.discoverGroups, this.discoverPods]
+        for (const f of podFilters) {
+          if (pod.filter(f)) {
+            return true // Include as it conforms to at least one filter
+          }
+        }
+
+        return false
+      })
+
+      if (filtered.length === 0) {
+        // Remove the project as no longer contains any pods
+        if (this.discoverProjects[mgmtProject.name]) {
+          delete this.discoverProjects[mgmtProject.name]
+        }
+        return
+      }
+
+      if (!this.discoverProjects[mgmtProject.name]) {
+        const discoverProject = new DiscoverProject(mgmtProject.name, filtered)
+        this.discoverProjects[mgmtProject.name] = discoverProject
+      } else {
+        this.discoverProjects[mgmtProject.name].refresh(filtered)
+      }
+    })
+
+    return Object.values(this.discoverProjects)
   }
 
   getStatus(pod: DiscoverPod): string {
