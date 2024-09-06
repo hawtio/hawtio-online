@@ -38,6 +38,14 @@
   font-style: italic;
 }
 
+.discover-loading-compact {
+  margin-top: 0 !important;
+}
+
+.discover-loading-compact div {
+  padding: 0;
+}
+
 .discover-group-label {
   text-align: left;
   color: rgb(117, 117, 117);

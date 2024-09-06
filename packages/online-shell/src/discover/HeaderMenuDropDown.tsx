@@ -1,24 +1,29 @@
 import React, { ReactNode, useEffect, useState } from 'react'
-import { ThIcon } from '@patternfly/react-icons'
-import { ConsoleLink, ConsoleType } from '../console'
-import { ManagedPod, MgmtActions, mgmtService } from '@hawtio/online-management-api'
+import { CubesIcon, ThIcon, UsersIcon } from '@patternfly/react-icons'
 import {
   Divider,
   Dropdown,
   DropdownGroup,
   DropdownItem,
   DropdownList,
+  Menu,
+  MenuContent,
+  MenuGroup,
+  MenuItem,
+  MenuList,
   MenuToggle,
   MenuToggleElement,
 } from '@patternfly/react-core'
+import { ManagedProject, MgmtActions, mgmtService } from '@hawtio/online-management-api'
+import { ConsoleLink, ConsoleType } from '../console'
 
 export const HeaderMenuDropDown: React.FunctionComponent = () => {
-  const [pods, setPods] = useState<ManagedPod[]>(mgmtService.pods)
-  const [isOpen, setIsOpen] = useState(false)
+  const [projects, setProjects] = useState<ManagedProject[]>(Object.values(mgmtService.projects))
+  const [isOpen, setIsOpen] = React.useState<boolean>(false)
 
   useEffect(() => {
     mgmtService.on(MgmtActions.UPDATED, () => {
-      setPods([...mgmtService.pods])
+      setProjects([...Object.values(mgmtService.projects)])
     })
   }, [])
 
@@ -32,36 +37,65 @@ export const HeaderMenuDropDown: React.FunctionComponent = () => {
     onFocus()
   }
 
-  const podEntries = (): ReactNode => (
-    <DropdownGroup label='Containers' key='header-menu-dropdown-pod-group'>
+  const podEntries = (project: ManagedProject): ReactNode => {
+    return Object.values(project.pods).map(pod => {
+      const connNames = mgmtService.refreshConnections(pod)
+      return connNames.map(connName => (
+        <MenuList key={`header-menu-dropdown-pod-${connName}-menu-list`}>
+          <MenuItem
+            key={`header-menu-dropdown-pod-${connName}-menu-list-item`}
+            itemId={`header-menu-dropdown-pod-${connName}`}
+            component='button'
+            onClick={() => mgmtService.connect(connName)}
+            value={connName}
+            icon={<CubesIcon aria-hidden />}
+          >
+            {connName}
+          </MenuItem>
+        </MenuList>
+      ))
+    })
+  }
+
+  const projectItems = (
+    <DropdownGroup label='Projects' key='header-menu-dropdown-pod-group'>
       <DropdownList>
-        {pods.map(pod => {
-          const connNames = mgmtService.refreshConnections(pod)
-          return connNames.map(connName => (
+        {projects.map(project => {
+          return (
             <DropdownItem
-              key={`header-menu-dropdown-pod-${connName}`}
-              component='button'
-              onClick={() => mgmtService.connect(connName)}
-              value={connName}
+              key={`project-${project.name}`}
+              itemId={`project-${project.name}`}
+              icon={<UsersIcon aria-hidden />}
+              direction='down'
+              flyoutMenu={
+                <Menu id={`project-${project.name}-pod-menu`} isScrollable>
+                  <MenuGroup label='Containers' key='header-menu-dropdown-pod-group'>
+                    {podEntries(project)}
+                  </MenuGroup>
+                </Menu>
+              }
             >
-              {connName}
+              {project.name}
             </DropdownItem>
-          ))
+          )
         })}
       </DropdownList>
     </DropdownGroup>
   )
 
-  const dropdownItems = [
-    <DropdownList key='header-menu-dropdown-list'>
-      <DropdownItem key='header-menu-dropdown-os-action' description='Open the cluster console' component='button'>
-        <ConsoleLink type={ConsoleType.console}>Cluster Console</ConsoleLink>
-      </DropdownItem>
-    </DropdownList>,
-
-    <Divider key='header-menu-dropdown-separator' />,
-    podEntries(),
-  ]
+  const menu = (
+    <Menu id='header-menu-dropdown-root-menu' containsFlyout>
+      <MenuContent>
+        <MenuList>
+          <MenuItem itemId='open-cluster-console-item' description='Open the cluster console' component='button'>
+            <ConsoleLink type={ConsoleType.console}>Cluster Console</ConsoleLink>
+          </MenuItem>
+          <Divider key='header-menu-dropdown-separator' />
+          {projectItems}
+        </MenuList>
+      </MenuContent>
+    </Menu>
+  )
 
   return (
     <Dropdown
@@ -74,6 +108,7 @@ export const HeaderMenuDropDown: React.FunctionComponent = () => {
           variant={'plain'}
           ref={toggleRef}
           onClick={() => setIsOpen(!isOpen)}
+          isExpanded={isOpen}
         >
           <ThIcon />
         </MenuToggle>
@@ -81,7 +116,7 @@ export const HeaderMenuDropDown: React.FunctionComponent = () => {
       isOpen={isOpen}
       onOpenChange={setIsOpen}
     >
-      {dropdownItems}
+      {menu}
     </Dropdown>
   )
 }

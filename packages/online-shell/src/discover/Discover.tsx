@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Alert,
   Card,
@@ -6,39 +6,50 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  List,
   PageSection,
   PageSectionVariants,
-  Panel,
-  PanelHeader,
-  PanelMain,
-  PanelMainBody,
   Title,
   EmptyStateHeader,
+  Tabs,
+  TabTitleText,
+  Tab,
 } from '@patternfly/react-core'
 import { CubesIcon } from '@patternfly/react-icons'
-import { HawtioLoadingCard } from '@hawtio/react'
 import { discoverService } from './discover-service'
 import { DiscoverToolbar } from './DiscoverToolbar'
 import { DiscoverContext, useDisplayItems } from './context'
-import { DiscoverGroupList } from './DiscoverGroupList'
-import { DiscoverPodItem } from './DiscoverPodItem'
+import { DiscoverProjectContent } from './DiscoverProjectContent'
+import { DiscoverLoadingPanel } from './DiscoverLoadingPanel'
 
 export const Discover: React.FunctionComponent = () => {
-  const { error, isLoading, discoverGroups, setDiscoverGroups, discoverPods, setDiscoverPods, filters, setFilters } =
+  const { error, isLoading, refreshing, setRefreshing, discoverProjects, setDiscoverProjects, filters, setFilters } =
     useDisplayItems()
+  const [activeTabKey, setActiveTabKey] = React.useState<string>('')
+
+  const handleTabClick = (
+    event: React.MouseEvent<unknown> | React.KeyboardEvent | MouseEvent,
+    tabIndex: string | number,
+  ) => {
+    setActiveTabKey(`${tabIndex}`)
+  }
+
+  useEffect(() => {
+    if (isLoading || error || discoverProjects.length === 0) return
+
+    setActiveTabKey(activeKey => {
+      if (activeKey.length === 0) return discoverProjects[0].name
+
+      const projects = discoverProjects.filter(p => p.name === activeKey)
+      if (projects.length === 0) return discoverProjects[0].name // active key no longer in projects
+
+      return activeKey
+    })
+  }, [isLoading, error, discoverProjects, filters])
 
   if (isLoading) {
     return (
       <PageSection variant={PageSectionVariants.light}>
-        <Panel className='discover-loading'>
-          <PanelHeader>Waiting for Hawtio Containers ...</PanelHeader>
-          <PanelMain>
-            <PanelMainBody>
-              <HawtioLoadingCard />
-            </PanelMainBody>
-          </PanelMain>
-        </Panel>
+        <DiscoverLoadingPanel />
       </PageSection>
     )
   }
@@ -63,17 +74,17 @@ export const Discover: React.FunctionComponent = () => {
 
       <DiscoverContext.Provider
         value={{
-          discoverGroups,
-          setDiscoverGroups,
-          discoverPods,
-          setDiscoverPods,
+          refreshing,
+          setRefreshing,
+          discoverProjects,
+          setDiscoverProjects,
           filters,
           setFilters,
         }}
       >
         <DiscoverToolbar />
 
-        {discoverGroups.length + discoverPods.length === 0 && (
+        {discoverProjects.length === 0 && (
           <EmptyState>
             <EmptyStateHeader
               titleText='No Hawtio Containers'
@@ -86,14 +97,18 @@ export const Discover: React.FunctionComponent = () => {
           </EmptyState>
         )}
 
-        {discoverGroups.length > 0 && <DiscoverGroupList />}
-
-        {discoverPods.length > 0 && (
-          <List isBordered={true} iconSize='large'>
-            {discoverPods.map(pod => {
-              return <DiscoverPodItem pod={pod} key={pod.uid} />
-            })}
-          </List>
+        {discoverProjects.length > 0 && (
+          <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox>
+            {discoverProjects.map(discoverProject => (
+              <Tab
+                eventKey={discoverProject.name}
+                title={<TabTitleText>{discoverProject.name}</TabTitleText>}
+                key={`discover-project-${discoverProject.name}`}
+              >
+                <DiscoverProjectContent project={discoverProject} />
+              </Tab>
+            ))}
+          </Tabs>
         )}
       </DiscoverContext.Provider>
     </PageSection>
