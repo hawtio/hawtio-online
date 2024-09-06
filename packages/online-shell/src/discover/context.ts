@@ -1,7 +1,7 @@
 import { createContext, useCallback, useEffect, useRef, useState } from 'react'
-import { MgmtActions, isMgmtApiRegistered, mgmtService } from '@hawtio/online-management-api'
+import { MgmtActions, isMgmtApiRegistered, mgmtService, TypeFilter } from '@hawtio/online-management-api'
 import { discoverService } from './discover-service'
-import { DiscoverGroup, DiscoverPod, TypeFilter } from './globals'
+import { DiscoverProject } from './discover-project'
 
 type UpdateListener = () => void
 
@@ -13,19 +13,19 @@ export function useDisplayItems() {
   const updateListenerRef = useRef<UpdateListener>()
 
   const [isLoading, setIsLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(true)
   const [error, setError] = useState<Error | null>()
-  const [discoverGroups, setDiscoverGroups] = useState<DiscoverGroup[]>([])
-  const [discoverPods, setDiscoverPods] = useState<DiscoverPod[]>([])
+  const [discoverProjects, setDiscoverProjects] = useState<DiscoverProject[]>([])
 
   // Set of filters created by filter control and displayed as chips
   const [filters, setFilters] = useState<TypeFilter[]>([])
 
   const organisePods = useCallback(() => {
-    const [discoverGroups, discoverPods] = discoverService.filterAndGroupPods(filters)
-    setDiscoverGroups([...discoverGroups])
-    setDiscoverPods([...discoverPods])
+    const discoverProjects = discoverService.filterAndGroupPods(filters)
+    setDiscoverProjects([...discoverProjects])
 
     setIsLoading(false)
+    setRefreshing(false)
   }, [filters])
 
   useEffect(() => {
@@ -34,6 +34,7 @@ export function useDisplayItems() {
       if (mgmtService.hasError()) {
         setError(mgmtService.error)
         setIsLoading(false)
+        setRefreshing(false)
         return
       }
 
@@ -45,6 +46,7 @@ export function useDisplayItems() {
       organisePods()
 
       const updateListener = () => {
+        setRefreshing(true)
         organisePods()
       }
 
@@ -61,25 +63,25 @@ export function useDisplayItems() {
     }
   }, [organisePods])
 
-  return { error, isLoading, discoverGroups, setDiscoverGroups, discoverPods, setDiscoverPods, filters, setFilters }
+  return { error, isLoading, refreshing, setRefreshing, discoverProjects, setDiscoverProjects, filters, setFilters }
 }
 
 type DiscoverContext = {
-  discoverGroups: DiscoverGroup[]
-  setDiscoverGroups: (items: DiscoverGroup[]) => void
-  discoverPods: DiscoverPod[]
-  setDiscoverPods: (items: DiscoverPod[]) => void
+  refreshing: boolean
+  setRefreshing: (refresh: boolean) => void
+  discoverProjects: DiscoverProject[]
+  setDiscoverProjects: (projects: DiscoverProject[]) => void
   filters: TypeFilter[]
   setFilters: (filters: TypeFilter[]) => void
 }
 
 export const DiscoverContext = createContext<DiscoverContext>({
-  discoverGroups: [],
-  setDiscoverGroups: () => {
+  refreshing: false,
+  setRefreshing: (refresh: boolean) => {
     // no-op
   },
-  discoverPods: [],
-  setDiscoverPods: () => {
+  discoverProjects: [],
+  setDiscoverProjects: () => {
     // no-op
   },
   filters: [],
