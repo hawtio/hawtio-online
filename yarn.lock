@@ -1990,7 +1990,7 @@ __metadata:
     jest-extended: "npm:^4.0.0"
     jest-fetch-mock: "npm:^3.0.3"
     jest-watch-typeahead: "npm:^2.2.2"
-    jolokia.js: "npm:^2.0.1"
+    jolokia.js: "npm:^2.1.2"
     jwt-decode: "npm:^4.0.0"
     method-override: "npm:^3.0.0"
     pino: "npm:^8.6.1"
@@ -2142,7 +2142,7 @@ __metadata:
     jest-extended: "npm:^4.0.0"
     jest-fetch-mock: "npm:^3.0.3"
     jest-watch-typeahead: "npm:^2.2.2"
-    jolokia.js: "npm:^2.0.1"
+    jolokia.js: "npm:^2.1.2"
     jquery: "npm:^3.7.0"
     jsonpath: "npm:^1.1.1"
     replace: "npm:^1.2.2"
@@ -10242,23 +10242,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jolokia.js@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "jolokia.js@npm:2.0.1"
-  dependencies:
-    jquery: "npm:^3.7.1"
-  peerDependencies:
-    cubism: ^1.6.0
-    jsdom: ^22.1.0
-  peerDependenciesMeta:
-    cubism:
-      optional: true
-    jsdom:
-      optional: true
-  checksum: 10/2286502549a51a0df6e6151d4d117ccdc4cd5c26965121ac58a954de64ff43437083c05aa1b1769581d7840d07c67f0f27152e77355d27e30fac4a6e13f89903
-  languageName: node
-  linkType: hard
-
 "jolokia.js@npm:^2.0.3":
   version: 2.0.3
   resolution: "jolokia.js@npm:2.0.3"
@@ -10273,6 +10256,13 @@ __metadata:
     jsdom:
       optional: true
   checksum: 10/0410a7563b5a2fb2b947309ff0fe863bd5df4ec4acf52e8184df8f92765b707a89398ad94aac138965911abf7639821ced8c4116b8a9fbf9e3f8c60fca1a9982
+  languageName: node
+  linkType: hard
+
+"jolokia.js@npm:^2.1.2":
+  version: 2.1.2
+  resolution: "jolokia.js@npm:2.1.2"
+  checksum: 10/66a15131f64547895604ea24cfc4d54cd562c9d9896505edf42890d65e62a3d71af75bc953085ef9b32080af318e7c026f63be187aad2ce767afd5281099aabd
   languageName: node
   linkType: hard
 
