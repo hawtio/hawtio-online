@@ -2237,7 +2237,7 @@ __metadata:
     eslint-config-prettier: "npm:^9.1.0"
     eslint-config-react-app: "npm:^7.0.1"
     eslint-plugin-react-hooks: "npm:^4.6.2"
-    jasmine: "npm:^5.1.0"
+    jasmine: "npm:^5.3.0"
     prettier: "npm:3.3.3"
   languageName: unknown
   linkType: soft
@@ -9710,22 +9710,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jasmine-core@npm:~5.1.0":
-  version: 5.1.1
-  resolution: "jasmine-core@npm:5.1.1"
-  checksum: 10/f8236c5f916dc70e2d5af1a229e374f3d3aac7046ef66e4c972c48977f0dce769f8b557fc1dcdc71589d3a9633368a6a682da09bd15672d435172c298e252a84
+"jasmine-core@npm:~5.3.0":
+  version: 5.3.0
+  resolution: "jasmine-core@npm:5.3.0"
+  checksum: 10/8d1f78d82d8368588000638cf99d0faa362d12962816501bb9294f3d015c402747d12a32c8a8649b07839230a5f18d0731a3f237c7bf952c3116566dd0a4e537
   languageName: node
   linkType: hard
 
-"jasmine@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "jasmine@npm:5.1.0"
+"jasmine@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "jasmine@npm:5.3.0"
   dependencies:
     glob: "npm:^10.2.2"
-    jasmine-core: "npm:~5.1.0"
+    jasmine-core: "npm:~5.3.0"
   bin:
     jasmine: bin/jasmine.js
-  checksum: 10/f7de7ff57a6f3cfde9094a73cac768d5e951e94c954f7fb24cf33b3b112c352daddc64e042b84fa1b99919acc5339774409e30bfc6e53f97829a7882dfc11896
+  checksum: 10/9d61c40e1c50a0a5c77432b05b88f7143224ab883c8d95c901095c7da5f2c0c8c134ef04726136f241acf14fd31e4c1932373070e88a924158b3b215f085800a
   languageName: node
   linkType: hard
 
