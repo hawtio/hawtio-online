@@ -290,7 +290,7 @@ export class ManagementService extends EventEmitter {
   }
 
   private connectionKeyName(pod: ManagedPod, container: Container) {
-    return `${pod.getMetadata()?.name}-${container.name}`
+    return `${pod.getMetadata()?.namespace}-${pod.getMetadata()?.name}-${container.name}`
   }
 
   refreshConnections(pod: ManagedPod): string[] {
