@@ -43,6 +43,7 @@ export type KubeProject = KubeObject & {
 }
 
 export type KubePodsOrError = {
+  total: number
   pods: KubePod[]
   error?: Error
 }
@@ -50,10 +51,13 @@ export type KubePodsOrError = {
 export type KubePodsByProject = { [key: string]: KubePodsOrError }
 
 export interface Paging {
+  first: (namespace?: string) => void
   hasPrevious: (namespace?: string) => boolean
-  hasNext: (namespace?: string) => boolean
   previous: (namespace?: string) => void
+  hasNext: (namespace?: string) => boolean
   next: (namespace?: string) => void
+  last: (namespace?: string) => void
+  page: (pageIdx: number, namespace?: string) => void
 }
 
 /*
