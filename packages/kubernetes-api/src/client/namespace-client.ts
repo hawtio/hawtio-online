@@ -5,7 +5,7 @@ import { isObject } from '../utils'
 import { Watched, KOptions, ProcessDataCallback } from './globals'
 import { clientFactory } from './client-factory'
 
-export type NamespaceClientCallback = (jolokiaPods: KubePod[], error?: Error) => void
+export type NamespaceClientCallback = (jolokiaPods: KubePod[], jolokiaTotal: number, error?: Error) => void
 
 export interface Client<T extends KubeObject> {
   watched: Watched<T>
@@ -41,7 +41,7 @@ export class NamespaceClient implements Paging {
       cbError.cause = error
     }
 
-    this._callback(this.getJolokiaPods(), cbError)
+    this._callback(this.getJolokiaPods(), this._podList.size, cbError)
   }
 
   private initPodOptions(kind: string, name?: string): KOptions {
@@ -94,7 +94,7 @@ export class NamespaceClient implements Paging {
 
         if (this._refreshing === 0) {
           // Limit callback to final watch returning
-          this._callback(this.getJolokiaPods())
+          this._callback(this.getJolokiaPods(), this._podList.size)
         }
       })
 
@@ -189,6 +189,19 @@ export class NamespaceClient implements Paging {
     this._podWatchers = {}
   }
 
+  first() {
+    if (this._current === 0) return
+
+    // Ensure current never goes below 0
+    this._current = 0
+
+    /*
+     * If already connected then recreate the pod watchers
+     * according to the new position of _current
+     */
+    if (this.isConnected()) this.createPodWatchers()
+  }
+
   hasPrevious(): boolean {
     return this._current > 0
   }
@@ -216,6 +229,41 @@ export class NamespaceClient implements Paging {
     if (nextPage >= this._podList.size) return
 
     this._current = nextPage
+
+    /*
+     * If already connected then recreate the pod watchers
+     * according to the new position of _current
+     */
+    if (this.isConnected()) this.createPodWatchers()
+  }
+
+  last() {
+    let remainder = this._podList.size % this._limit
+    remainder = (remainder === 0) ? this._limit : remainder
+
+    this._current = this._podList.size - remainder
+
+    /*
+     * If already connected then recreate the pod watchers
+     * according to the new position of _current
+     */
+    if (this.isConnected()) this.createPodWatchers()
+  }
+
+  /**
+   * pageIdx: parameter representing a page index of the form (podList.size / limit)
+   */
+  page(pageIdx: number) {
+     this._current = this._limit * (pageIdx - 1)
+     if (this._current > this._podList.size) {
+       // Navigate to last page if bigger than podList size
+       this.last()
+       return
+     } else if (this._current < 0) {
+       // Navigate to first page if index is somehow -ve
+       this.first()
+       return
+     }
 
     /*
      * If already connected then recreate the pod watchers

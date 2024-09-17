@@ -14,6 +14,7 @@ export class DiscoverProject {
 
   constructor(
     private projectName: string,
+    private totalPods: number,
     mgmtPods: ManagedPod[],
   ) {
     this.refresh(mgmtPods)
@@ -109,6 +110,10 @@ export class DiscoverProject {
 
   get name(): string {
     return this.projectName
+  }
+
+  get podsTotal(): number {
+    return this.totalPods
   }
 
   get pods(): DiscoverPod[] {

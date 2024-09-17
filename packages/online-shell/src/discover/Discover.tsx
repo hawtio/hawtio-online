@@ -102,7 +102,7 @@ export const Discover: React.FunctionComponent = () => {
             {discoverProjects.map(discoverProject => (
               <Tab
                 eventKey={discoverProject.name}
-                title={<TabTitleText>{discoverProject.name}</TabTitleText>}
+                title={<TabTitleText>{`${discoverProject.name} (${discoverProject.podsTotal})`}</TabTitleText>}
                 key={`discover-project-${discoverProject.name}`}
               >
                 <DiscoverProjectContent project={discoverProject} />

@@ -55,11 +55,11 @@ export class KubernetesService extends EventEmitter implements Paging {
   }
 
   private initNamespaceClient(namespace: string) {
-    const cb = (jolokiaPods: KubePod[], error?: Error) => {
+    const cb = (jolokiaPods: KubePod[], jolokiaTotal: number, error?: Error) => {
       this._loading = this._loading > 0 ? this._loading-- : 0
 
       if (isError(error)) {
-        this.podsByProject[namespace] = { pods: [], error: error }
+        this.podsByProject[namespace] = { total: jolokiaTotal, pods: [], error: error }
         this.emit(K8Actions.CHANGED)
         return
       }
@@ -73,7 +73,7 @@ export class KubernetesService extends EventEmitter implements Paging {
         projectPods.push(jpod)
       }
 
-      this.podsByProject[namespace] = { pods: projectPods }
+      this.podsByProject[namespace] = { total: jolokiaTotal, pods: projectPods }
       this.emit(K8Actions.CHANGED)
     }
 
@@ -285,6 +285,16 @@ export class KubernetesService extends EventEmitter implements Paging {
     return reason || 'unknown'
   }
 
+
+  first(namespace?: string) {
+    if (!namespace) return
+
+    const namespaceClient = this.namespace_clients[namespace]
+    if (!namespaceClient) return
+
+    this.namespace_clients[namespace].first()
+  }
+
   hasPrevious(namespace?: string): boolean {
     if (!namespace) return false
 
@@ -319,5 +329,23 @@ export class KubernetesService extends EventEmitter implements Paging {
     if (!namespaceClient) return
 
     this.namespace_clients[namespace].next()
+  }
+
+  last(namespace?: string) {
+    if (!namespace) return
+
+    const namespaceClient = this.namespace_clients[namespace]
+    if (!namespaceClient) return
+
+    this.namespace_clients[namespace].last()
+  }
+
+  page(pageIdx: number, namespace?: string) {
+    if (!namespace) return
+
+    const namespaceClient = this.namespace_clients[namespace]
+    if (!namespaceClient) return
+
+    this.namespace_clients[namespace].page(pageIdx)
   }
 }

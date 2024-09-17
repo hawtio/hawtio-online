@@ -68,6 +68,7 @@ export class ManagementService extends EventEmitter implements Paging {
 
         // Project may have an error
         mgmtProject.error = kPodsOrError
+        mgmtProject.podTotal = kPodsOrError.total
         mgmtProject.pods = kPodsOrError.pods
       })
 
@@ -213,22 +214,6 @@ export class ManagementService extends EventEmitter implements Paging {
 
   get projects(): ManagedProjects {
     return this._managedProjects
-  }
-
-  hasPrevious(project?: string): boolean {
-    return k8Service.hasPrevious(project)
-  }
-
-  hasNext(project?: string): boolean {
-    return k8Service.hasNext(project)
-  }
-
-  previous(project?: string) {
-    k8Service.previous(project)
-  }
-
-  next(project?: string) {
-    k8Service.next(project)
   }
 
   podStatus(pod: ManagedPod): string {
@@ -380,5 +365,36 @@ export class ManagementService extends EventEmitter implements Paging {
     }
 
     connectService.connect(connection)
+  }
+
+  /********************
+   * Paging interface
+   ********************/
+  hasPrevious(project?: string): boolean {
+    return k8Service.hasPrevious(project)
+  }
+
+  hasNext(project?: string): boolean {
+    return k8Service.hasNext(project)
+  }
+
+  first(project?: string) {
+    k8Service.first(project)
+  }
+
+  previous(project?: string) {
+    k8Service.previous(project)
+  }
+
+  next(project?: string) {
+    k8Service.next(project)
+  }
+
+  last(project?: string) {
+    k8Service.last(project)
+  }
+
+  page(pageIdx: number, project?: string) {
+    k8Service.page(pageIdx, project)
   }
 }
