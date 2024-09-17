@@ -5,11 +5,20 @@ import { ManagedPod } from './managed-pod'
 export class ManagedProject {
   private _error?: Error
   private podsByUid: MPodsByUid = {}
+  private _podTotal: number = 0
 
   constructor(private _name: string) {}
 
   get name(): string {
     return this._name
+  }
+
+  get podTotal(): number {
+    return this._podTotal
+  }
+
+  set podTotal(podTotal: number) {
+    this._podTotal = podTotal
   }
 
   get error(): Error | undefined {

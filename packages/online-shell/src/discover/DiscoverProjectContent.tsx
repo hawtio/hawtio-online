@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import {
   Button,
   List,
+  Pagination,
   Panel,
   PanelHeader,
   PanelMain,
@@ -17,6 +18,7 @@ import { DiscoverPodItem } from './DiscoverPodItem'
 import { mgmtService } from '@hawtio/online-management-api'
 import { DiscoverLoadingPanel } from './DiscoverLoadingPanel'
 import { DiscoverContext } from './context'
+import { k8Service } from '@hawtio/online-kubernetes-api'
 
 interface DiscoverProjectCntProps {
   project: DiscoverProject
@@ -26,23 +28,36 @@ export const DiscoverProjectContent: React.FunctionComponent<DiscoverProjectCntP
   props: DiscoverProjectCntProps,
 ) => {
   const { refreshing, setRefreshing } = useContext(DiscoverContext)
+  const [page, setPage] = React.useState(1)
 
-  const hasPrevPods = (): boolean => {
-    return mgmtService.hasPrevious(props.project.name)
+  const firstPods = (page: number) => {
+    setPage(page)
+    setRefreshing(true)
+    mgmtService.first(props.project.name)
   }
 
-  const prevPods = () => {
+  const prevPods = (page: number) => {
+    setPage(page)
     setRefreshing(true)
     mgmtService.previous(props.project.name)
   }
 
-  const hasNextPods = (): boolean => {
-    return mgmtService.hasNext(props.project.name)
-  }
-
-  const nextPods = () => {
+  const nextPods = (page: number) => {
+    setPage(page)
     setRefreshing(true)
     mgmtService.next(props.project.name)
+  }
+
+  const lastPods = (page: number) => {
+    setPage(page)
+    setRefreshing(true)
+    mgmtService.last(props.project.name)
+  }
+
+  const pagePods = (page: number) => {
+    setPage(page)
+    setRefreshing(true)
+    mgmtService.page(page, props.project.name)
   }
 
   return (
@@ -52,25 +67,19 @@ export const DiscoverProjectContent: React.FunctionComponent<DiscoverProjectCntP
           <ToolbarContent>
             <ToolbarGroup variant='button-group' align={{ default: 'alignLeft' }}>
               <ToolbarItem>
-                <Button variant='control' onClick={() => prevPods()} isDisabled={!hasPrevPods()}>
-                  &lt;&lt; Previous
-                </Button>
-              </ToolbarItem>
-            </ToolbarGroup>
-
-            {refreshing && (
-              <ToolbarGroup isOverflowContainer>
-                <ToolbarItem widths={{ default: '100%' }}>
-                  <DiscoverLoadingPanel compact={true} />
-                </ToolbarItem>
-              </ToolbarGroup>
-            )}
-
-            <ToolbarGroup variant='button-group' align={{ default: 'alignRight' }}>
-              <ToolbarItem>
-                <Button variant='control' onClick={() => nextPods()} isDisabled={!hasNextPods()}>
-                  Next &gt;&gt;
-                </Button>
+                <Pagination
+                  widgetId="pagination-toolbar"
+                  isLastFullPageShown
+                  itemCount={props.project.podsTotal}
+                  perPageOptions={[{title: `${k8Service.namespaceLimit}`, value: k8Service.namespaceLimit}]}
+                  perPage={k8Service.namespaceLimit}
+                  page={page}
+                  onSetPage={(_, page) => pagePods(page)}
+                  onFirstClick={(_, page) => firstPods(page)}
+                  onPreviousClick={(_, page) => prevPods(page)}
+                  onNextClick={(_, page) => nextPods(page)}
+                  onLastClick={(_, page) => lastPods(page)}
+                />
               </ToolbarItem>
             </ToolbarGroup>
           </ToolbarContent>
@@ -78,14 +87,27 @@ export const DiscoverProjectContent: React.FunctionComponent<DiscoverProjectCntP
       </PanelHeader>
       <PanelMain>
         <PanelMainBody>
-          {props.project.groups.length > 0 && <DiscoverGroupList groups={props.project.groups} />}
 
-          {props.project.pods.length > 0 && (
-            <List isBordered={true} iconSize='large'>
-              {props.project.pods.map(pod => {
-                return <DiscoverPodItem pod={pod} key={pod.uid} />
-              })}
-            </List>
+          {refreshing && (
+            <ToolbarGroup isOverflowContainer>
+              <ToolbarItem widths={{ default: '100%' }}>
+                <DiscoverLoadingPanel compact={true} />
+              </ToolbarItem>
+            </ToolbarGroup>
+          )}
+
+          {! refreshing && (
+            <React.Fragment>
+              {props.project.groups.length > 0 && <DiscoverGroupList groups={props.project.groups} />}
+
+              {props.project.pods.length > 0 && (
+                <List isBordered={true} iconSize='large'>
+                  {props.project.pods.map(pod => {
+                    return <DiscoverPodItem pod={pod} key={pod.uid} />
+                  })}
+                </List>
+              )}
+            </React.Fragment>
           )}
         </PanelMainBody>
       </PanelMain>

@@ -86,7 +86,7 @@ class DiscoverService {
       }
 
       if (!this.discoverProjects[mgmtProject.name]) {
-        const discoverProject = new DiscoverProject(mgmtProject.name, filtered)
+        const discoverProject = new DiscoverProject(mgmtProject.name, mgmtProject.podTotal, filtered)
         this.discoverProjects[mgmtProject.name] = discoverProject
       } else {
         this.discoverProjects[mgmtProject.name].refresh(filtered)
