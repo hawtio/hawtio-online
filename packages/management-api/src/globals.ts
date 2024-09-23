@@ -15,24 +15,3 @@ export enum MgmtActions {
 export type MPodsByUid = { [uid: string]: ManagedPod }
 
 export type ManagedProjects = { [key: string]: ManagedProject }
-
-export enum TypeFilterType {
-  NAME = 'Name',
-  NAMESPACE = 'Namespace',
-}
-
-export function typeFilterTypeValueOf(str: string): TypeFilterType | undefined {
-  switch (str) {
-    case TypeFilterType.NAME:
-      return TypeFilterType.NAME
-    case TypeFilterType.NAMESPACE:
-      return TypeFilterType.NAMESPACE
-    default:
-      return undefined
-  }
-}
-
-export type TypeFilter = {
-  type: TypeFilterType
-  values: Set<string>
-}

@@ -43,7 +43,7 @@ export type KubeProject = KubeObject & {
 }
 
 export type KubePodsOrError = {
-  total: number
+  fullPodCount: number
   pods: KubePod[]
   error?: Error
 }

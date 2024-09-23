@@ -1,23 +1,22 @@
 import { ManagedPod } from '@hawtio/online-management-api'
-import { DiscoverGroup, DiscoverPod, DiscoverType } from './globals'
 import { OwnerReference } from '@hawtio/online-kubernetes-api'
+import { DiscoverGroup, DiscoverPod, DiscoverType } from './globals'
 
 export type DiscoverProjects = {
   [name: string]: DiscoverProject
 }
 
-type SortOrderType = 1 | -1
-
 export class DiscoverProject {
   private discoverGroups: DiscoverGroup[] = []
   private discoverPods: DiscoverPod[] = []
+  private _fullPodCount = 0
 
   constructor(
     private projectName: string,
-    private totalPods: number,
+    fullPodCount: number,
     mgmtPods: ManagedPod[],
   ) {
-    this.refresh(mgmtPods)
+    this.refresh(fullPodCount, mgmtPods)
   }
 
   private podOwner(pod: ManagedPod): OwnerReference | null {
@@ -68,7 +67,7 @@ export class DiscoverProject {
     return values[key]
   }
 
-  refresh(pods: ManagedPod[]) {
+  refresh(fullPodCount: number, pods: ManagedPod[]) {
     const discoverPods: DiscoverPod[] = []
     const discoverGroups: DiscoverGroup[] = []
 
@@ -97,6 +96,7 @@ export class DiscoverProject {
 
     this.discoverGroups = discoverGroups
     this.discoverPods = discoverPods
+    this._fullPodCount = fullPodCount
 
     /**
      * Notify event service of any errors in the groups and pods
@@ -112,8 +112,8 @@ export class DiscoverProject {
     return this.projectName
   }
 
-  get podsTotal(): number {
-    return this.totalPods
+  get fullPodCount(): number {
+    return this._fullPodCount
   }
 
   get pods(): DiscoverPod[] {
@@ -122,15 +122,5 @@ export class DiscoverProject {
 
   get groups(): DiscoverGroup[] {
     return this.discoverGroups
-  }
-
-  sort(sortOrder: SortOrderType) {
-    this.discoverGroups.sort((a: DiscoverGroup, b: DiscoverGroup) => {
-      return a.name.localeCompare(b.name) * sortOrder
-    })
-
-    this.discoverPods.sort((a: DiscoverPod, b: DiscoverPod) => {
-      return a.name.localeCompare(b.name) * sortOrder
-    })
   }
 }
