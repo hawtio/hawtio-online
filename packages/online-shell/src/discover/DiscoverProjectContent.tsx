@@ -1,6 +1,5 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import {
-  Button,
   List,
   Pagination,
   Panel,
@@ -12,13 +11,13 @@ import {
   ToolbarGroup,
   ToolbarItem,
 } from '@patternfly/react-core'
-import { DiscoverProject } from './discover-project'
+import { k8Service } from '@hawtio/online-kubernetes-api'
+import { mgmtService } from '@hawtio/online-management-api'
 import { DiscoverGroupList } from './DiscoverGroupList'
 import { DiscoverPodItem } from './DiscoverPodItem'
-import { mgmtService } from '@hawtio/online-management-api'
 import { DiscoverLoadingPanel } from './DiscoverLoadingPanel'
 import { DiscoverContext } from './context'
-import { k8Service } from '@hawtio/online-kubernetes-api'
+import { DiscoverProject } from './discover-project'
 
 interface DiscoverProjectCntProps {
   project: DiscoverProject
@@ -29,6 +28,21 @@ export const DiscoverProjectContent: React.FunctionComponent<DiscoverProjectCntP
 ) => {
   const { refreshing, setRefreshing } = useContext(DiscoverContext)
   const [page, setPage] = React.useState(1)
+
+  useEffect(() => {
+    if (refreshing) return
+
+    setPage(prev => {
+      const pagedPods = prev * k8Service.namespaceLimit
+      const nextPagePods = props.project.fullPodCount + k8Service.namespaceLimit
+
+      /*
+       * If filtering has caused the fullPodCount to decrease
+       * below the (page * limit) total then reset back to 1
+       */
+      return pagedPods > nextPagePods ? 1 : prev
+    })
+  }, [refreshing, props.project.fullPodCount])
 
   const firstPods = (page: number) => {
     setPage(page)
@@ -68,10 +82,10 @@ export const DiscoverProjectContent: React.FunctionComponent<DiscoverProjectCntP
             <ToolbarGroup variant='button-group' align={{ default: 'alignLeft' }}>
               <ToolbarItem>
                 <Pagination
-                  widgetId="pagination-toolbar"
+                  widgetId='pagination-toolbar'
                   isLastFullPageShown
-                  itemCount={props.project.podsTotal}
-                  perPageOptions={[{title: `${k8Service.namespaceLimit}`, value: k8Service.namespaceLimit}]}
+                  itemCount={props.project.fullPodCount}
+                  perPageOptions={[{ title: `${k8Service.namespaceLimit}`, value: k8Service.namespaceLimit }]}
                   perPage={k8Service.namespaceLimit}
                   page={page}
                   onSetPage={(_, page) => pagePods(page)}
@@ -87,7 +101,6 @@ export const DiscoverProjectContent: React.FunctionComponent<DiscoverProjectCntP
       </PanelHeader>
       <PanelMain>
         <PanelMainBody>
-
           {refreshing && (
             <ToolbarGroup isOverflowContainer>
               <ToolbarItem widths={{ default: '100%' }}>
@@ -96,7 +109,7 @@ export const DiscoverProjectContent: React.FunctionComponent<DiscoverProjectCntP
             </ToolbarGroup>
           )}
 
-          {! refreshing && (
+          {!refreshing && (
             <React.Fragment>
               {props.project.groups.length > 0 && <DiscoverGroupList groups={props.project.groups} />}
 

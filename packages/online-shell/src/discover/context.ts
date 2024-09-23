@@ -1,5 +1,6 @@
 import { createContext, useCallback, useEffect, useRef, useState } from 'react'
-import { MgmtActions, isMgmtApiRegistered, mgmtService, TypeFilter } from '@hawtio/online-management-api'
+import { TypeFilter } from '@hawtio/online-kubernetes-api'
+import { MgmtActions, isMgmtApiRegistered, mgmtService } from '@hawtio/online-management-api'
 import { discoverService } from './discover-service'
 import { DiscoverProject } from './discover-project'
 
@@ -17,16 +18,16 @@ export function useDisplayItems() {
   const [error, setError] = useState<Error | null>()
   const [discoverProjects, setDiscoverProjects] = useState<DiscoverProject[]>([])
 
-  // Set of filters created by filter control and displayed as chips
-  const [filters, setFilters] = useState<TypeFilter[]>([])
+  // type filter created by filter control and displayed as chips
+  const [filter, setFilter] = useState<TypeFilter>(new TypeFilter())
 
   const organisePods = useCallback(() => {
-    const discoverProjects = discoverService.filterAndGroupPods(filters)
+    const discoverProjects = discoverService.groupPods()
     setDiscoverProjects([...discoverProjects])
 
     setIsLoading(false)
     setRefreshing(false)
-  }, [filters])
+  }, [])
 
   useEffect(() => {
     const waitLoading = async () => {
@@ -63,7 +64,7 @@ export function useDisplayItems() {
     }
   }, [organisePods])
 
-  return { error, isLoading, refreshing, setRefreshing, discoverProjects, setDiscoverProjects, filters, setFilters }
+  return { error, isLoading, refreshing, setRefreshing, discoverProjects, setDiscoverProjects, filter, setFilter }
 }
 
 type DiscoverContext = {
@@ -71,8 +72,8 @@ type DiscoverContext = {
   setRefreshing: (refresh: boolean) => void
   discoverProjects: DiscoverProject[]
   setDiscoverProjects: (projects: DiscoverProject[]) => void
-  filters: TypeFilter[]
-  setFilters: (filters: TypeFilter[]) => void
+  filter: TypeFilter
+  setFilter: (filter: TypeFilter) => void
 }
 
 export const DiscoverContext = createContext<DiscoverContext>({
@@ -84,8 +85,8 @@ export const DiscoverContext = createContext<DiscoverContext>({
   setDiscoverProjects: () => {
     // no-op
   },
-  filters: [],
-  setFilters: () => {
+  filter: new TypeFilter(),
+  setFilter: () => {
     // no-op
   },
 })

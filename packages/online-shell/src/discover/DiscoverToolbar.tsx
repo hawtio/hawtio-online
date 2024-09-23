@@ -15,51 +15,55 @@ import {
 } from '@patternfly/react-core'
 
 import { LongArrowAltUpIcon, LongArrowAltDownIcon } from '@patternfly/react-icons'
-import { TypeFilterType, TypeFilter, typeFilterTypeValueOf } from '@hawtio/online-management-api'
+import { TypeFilterType, TypeFilter, typeFilterTypeValueOf, SortOrder } from '@hawtio/online-kubernetes-api'
+import { mgmtService } from '@hawtio/online-management-api'
 import { DiscoverContext } from './context'
 import { DiscoverProject } from './discover-project'
 
 const defaultFilterInputPlaceholder = 'Filter by Name...'
 
-interface SortOrder {
-  id: string
+enum SortType {
+  NAME = 'Name',
+  NAMESPACE = 'Namespace',
+}
+
+function sortTypeValueOf(str: string): SortType | undefined {
+  switch (str) {
+    case SortType.NAME:
+      return SortType.NAME
+    case SortType.NAMESPACE:
+      return SortType.NAMESPACE
+    default:
+      return undefined
+  }
+}
+
+interface SortOrderIcon {
+  type: SortOrder
   icon: ReactNode
 }
 
-const ascending: SortOrder = { id: 'ascending', icon: <LongArrowAltUpIcon /> }
-const descending: SortOrder = { id: 'descending', icon: <LongArrowAltDownIcon /> }
+const ascending: SortOrderIcon = { type: SortOrder.ASC, icon: <LongArrowAltUpIcon /> }
+const descending: SortOrderIcon = { type: SortOrder.DESC, icon: <LongArrowAltDownIcon /> }
 
-interface SortMetaType {
-  id: string
-  order: SortOrder
-}
-
-type FilterMeta = {
-  [name: string]: TypeFilterType
-}
-
-type SortMeta = {
-  [name: string]: SortMetaType
-}
-
-const filterMeta: FilterMeta = {
+const filterMeta = {
   name: TypeFilterType.NAME,
   namespace: TypeFilterType.NAMESPACE,
 }
 
-const sortMeta: SortMeta = {
+const sortMeta = {
   name: {
-    id: 'Name',
-    order: ascending,
+    id: SortType.NAME,
+    orderIcon: ascending,
   },
   namespace: {
-    id: 'Namespace',
-    order: ascending,
+    id: SortType.NAMESPACE,
+    orderIcon: ascending,
   },
 }
 
 export const DiscoverToolbar: React.FunctionComponent = () => {
-  const { discoverProjects, setDiscoverProjects, filters, setFilters } = useContext(DiscoverContext)
+  const { discoverProjects, setDiscoverProjects, filter, setFilter, setRefreshing } = useContext(DiscoverContext)
   // Ref for toggle of filter type Select control
   const filterTypeToggleRef = useRef<HTMLButtonElement | null>()
 
@@ -73,18 +77,23 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
   const [filterInputPlaceholder, setFilterInputPlaceholder] = useState<string>(defaultFilterInputPlaceholder)
 
   // Ref for toggle of sort type Select control
-  useRef<HTMLButtonElement | null>()
+  const sortTypeToggleRef = useRef<HTMLButtonElement | null>()
   // The type of sort to be created - chosen by the Select control
-  const [sortType, setSortType] = useState(sortMeta.name.id || '')
+  const [sortType, setSortType] = useState<SortType>(sortMeta.name.id || '')
   // Flag to determine whether the Sort Select control is open or closed
   const [isSortTypeOpen, setIsSortTypeOpen] = useState(false)
   // Icon showing the sort
-  const [sortOrder, setSortOrder] = useState<SortOrder>(sortMeta.name.order)
+  const [sortOrderIcon, setSortOrderIcon] = useState<SortOrderIcon>(sortMeta.name.orderIcon)
+
+  const callMgmtFilter = (filter: TypeFilter) => {
+    setRefreshing(true)
+    setFilter(filter)
+    mgmtService.filter(filter)
+  }
 
   const clearFilters = () => {
-    const emptyFilters: TypeFilter[] = []
-    setFilters(emptyFilters)
     setFilterInput('')
+    callMgmtFilter(new TypeFilter())
   }
 
   const onSelectFilterType = (_event?: ChangeEvent<Element> | MouseEvent<Element>, value?: string | number) => {
@@ -100,9 +109,9 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
   const filterChips = (): string[] => {
     const chips: string[] = []
 
-    filters.forEach(filter => {
-      Array.from(filter.values).map(v => chips.push(filter.type + ':' + v))
-    })
+    filter.nsValues.map(v => chips.push(TypeFilterType.NAMESPACE + ':' + v))
+
+    filter.nameValues.map(v => chips.push(TypeFilterType.NAME + ':' + v))
 
     return chips
   }
@@ -112,71 +121,89 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
 
     if (!filterType) return
 
-    const newFilters = [...filters]
+    const newTypeFilter = new TypeFilter(filter.nsValues, filter.nameValues)
 
-    const typeFilter = newFilters.filter(f => f.type === filterType)
-    if (typeFilter.length === 0) {
-      const filter: TypeFilter = {
-        type: filterType,
-        values: new Set([value]),
-      }
-      newFilters.push(filter)
-    } else {
-      typeFilter[0].values.add(value)
+    switch (filterType) {
+      case TypeFilterType.NAME:
+        newTypeFilter.addNameValue(value)
+        break
+      case TypeFilterType.NAMESPACE:
+        newTypeFilter.addNSValue(value)
     }
 
-    setFilters(newFilters)
+    callMgmtFilter(newTypeFilter)
   }
 
   const deleteFilter = (filterChip: string) => {
-    const remaining = filters.filter(filter => {
-      const [typeId, value] = filterChip.split(':')
-      const type = typeFilterTypeValueOf(typeId)
+    const [typeId, value] = filterChip.split(':')
+    const filterType = typeFilterTypeValueOf(typeId)
+    const newTypeFilter = new TypeFilter(filter.nsValues, filter.nameValues)
 
-      if (filter.type !== type) return true
+    switch (filterType) {
+      case TypeFilterType.NAME:
+        newTypeFilter.deleteNameValue(value)
+        break
+      case TypeFilterType.NAMESPACE:
+        newTypeFilter.deleteNSValue(value)
+    }
 
-      filter.values.delete(value)
-      return filter.values.size > 0
-    })
-
-    setFilters(remaining)
+    callMgmtFilter(newTypeFilter)
   }
 
   const onSelectSortType = (_event?: MouseEvent<Element>, value?: string | number) => {
     if (!value) return
 
     // Updates the sort type either Name or Namespace
-    setSortType(value as string)
+    const type = sortTypeValueOf(`${value}`)
+    setSortType(type as SortType)
 
     // Updates the sort order to whichever the sort type is set to
-    setSortOrder(value === sortMeta.name.id ? sortMeta.name.order : sortMeta.namespace.order)
+    setSortOrderIcon(value === sortMeta.name.id ? sortMeta.name.orderIcon : sortMeta.namespace.orderIcon)
     setIsSortTypeOpen(false)
-    filterTypeToggleRef?.current?.focus()
+    sortTypeToggleRef?.current?.focus()
+  }
+
+  const isSortButtonEnabled = () => {
+    switch (sortType) {
+      case SortType.NAMESPACE:
+        return Object.values(discoverProjects).length > 1
+      case SortType.NAME:
+        return discoverProjects.filter(discoverProject => discoverProject.fullPodCount > 1).length > 0
+      default:
+        return true // enable by default
+    }
   }
 
   const sortItems = () => {
-    const sortedProjects = [...discoverProjects]
-    const newSortOrder = sortOrder === ascending ? descending : ascending
+    const newSortOrderIcon = sortOrderIcon === ascending ? descending : ascending
+    setSortOrderIcon(newSortOrderIcon)
 
     switch (sortType) {
-      case sortMeta.name.id:
-        // Sorting via name
-        sortMeta.name.order = newSortOrder
-        sortedProjects.forEach(project => {
-          project.sort(newSortOrder === ascending ? 1 : -1)
-        })
-        break
-      case sortMeta.namespace.id:
-        // Sorting via namespace
-        sortMeta.namespace.order = newSortOrder
+      case SortType.NAMESPACE: {
+        const sortedProjects = [...discoverProjects]
+        /*
+         * Sorting via namespace requires simply moving around the
+         * tabs in the UI
+         */
+        sortMeta.namespace.orderIcon = newSortOrderIcon.type === SortOrder.ASC ? ascending : descending
+
         sortedProjects.sort((ns1: DiscoverProject, ns2: DiscoverProject) => {
           let value = ns1.name.localeCompare(ns2.name)
-          return newSortOrder === descending ? (value *= -1) : value
+          return newSortOrderIcon === descending ? (value *= -1) : value
         })
-    }
 
-    setDiscoverProjects(sortedProjects)
-    setSortOrder(newSortOrder)
+        setDiscoverProjects(sortedProjects)
+        break
+      }
+      case SortType.NAME:
+        /*
+         * Resorting the pod names required going back to k8 level
+         * in order to correctly sort all pods and get back the right
+         * set according to the paging limit
+         */
+        setRefreshing(true)
+        mgmtService.sort(newSortOrderIcon.type)
+    }
   }
 
   return (
@@ -225,18 +252,14 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
             />
           </ToolbarFilter>
         </ToolbarGroup>
+        <ToolbarItem variant='separator' />
         <ToolbarGroup variant='icon-button-group'>
           <ToolbarItem>
             <Select
-              // variant={SelectVariant.single}
               id='select-sort-type'
               aria-label='select-sort-type'
               toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                <MenuToggle
-                  disabled={Object.values(discoverProjects).length <= 1}
-                  ref={toggleRef}
-                  onClick={() => setIsSortTypeOpen(!isSortTypeOpen)}
-                >
+                <MenuToggle ref={toggleRef} onClick={() => setIsSortTypeOpen(!isSortTypeOpen)}>
                   {sortType}
                 </MenuToggle>
               )}
@@ -256,13 +279,8 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
             </Select>
           </ToolbarItem>
           <ToolbarItem>
-            <Button
-              variant='control'
-              aria-label='Sort'
-              onClick={sortItems}
-              isDisabled={Object.values(discoverProjects).length <= 1}
-            >
-              {sortOrder.icon}
+            <Button variant='control' aria-label='Sort' onClick={sortItems} isDisabled={!isSortButtonEnabled()}>
+              {sortOrderIcon.icon}
             </Button>
           </ToolbarItem>
         </ToolbarGroup>

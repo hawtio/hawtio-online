@@ -13,6 +13,8 @@ import { isError, pathGet } from './utils'
 import { clientFactory, log, Client, NamespaceClient } from './client'
 import { K8Actions, KubePod, KubePodsByProject, KubeProject, Paging } from './globals'
 import { k8Api } from './init'
+import { TypeFilter } from './filter'
+import { SortOrder } from './sort'
 
 export class KubernetesService extends EventEmitter implements Paging {
   private _loading = 0
@@ -25,6 +27,8 @@ export class KubernetesService extends EventEmitter implements Paging {
   private namespace_clients: { [namespace: string]: NamespaceClient } = {}
 
   private _nsLimit = 3
+  private _typeFilter?: TypeFilter
+  private _sortOrder?: SortOrder
 
   async initialize(): Promise<boolean> {
     if (this._initialized) return this._initialized
@@ -55,11 +59,13 @@ export class KubernetesService extends EventEmitter implements Paging {
   }
 
   private initNamespaceClient(namespace: string) {
-    const cb = (jolokiaPods: KubePod[], jolokiaTotal: number, error?: Error) => {
+    const cb = (jolokiaPods: KubePod[], fullPodCount: number, error?: Error) => {
+      log.debug(`[KubeService ${namespace}]: callback: fullPodCount: ${fullPodCount}`, 'jolokia pods: ', jolokiaPods)
+
       this._loading = this._loading > 0 ? this._loading-- : 0
 
       if (isError(error)) {
-        this.podsByProject[namespace] = { total: jolokiaTotal, pods: [], error: error }
+        this.podsByProject[namespace] = { fullPodCount: fullPodCount, pods: [], error: error }
         this.emit(K8Actions.CHANGED)
         return
       }
@@ -73,7 +79,11 @@ export class KubernetesService extends EventEmitter implements Paging {
         projectPods.push(jpod)
       }
 
-      this.podsByProject[namespace] = { total: jolokiaTotal, pods: projectPods }
+      if (projectPods.length === 0) delete this.podsByProject[namespace]
+      else {
+        this.podsByProject[namespace] = { fullPodCount: fullPodCount, pods: projectPods }
+      }
+
       this.emit(K8Actions.CHANGED)
     }
 
@@ -285,12 +295,38 @@ export class KubernetesService extends EventEmitter implements Paging {
     return reason || 'unknown'
   }
 
+  /*****************************
+   * Filtering and Sort support
+   *****************************/
+  sort(order: SortOrder) {
+    this._sortOrder = order
 
+    Object.values(this.namespace_clients).forEach(client => {
+      client.sort(order)
+    })
+  }
+
+  filter(typeFilter: TypeFilter) {
+    this._typeFilter = new TypeFilter(typeFilter.nsValues, typeFilter.nameValues)
+
+    Object.values(this.namespace_clients).forEach(client => {
+      client.filter(typeFilter)
+    })
+  }
+
+  /********************
+   * Paging interface
+   ********************/
   first(namespace?: string) {
     if (!namespace) return
 
-    const namespaceClient = this.namespace_clients[namespace]
-    if (!namespaceClient) return
+    const nsClient = this.namespace_clients[namespace]
+    if (!nsClient) return
+
+    if (!nsClient.isConnected) {
+      log.warn(`k8 Service cannot page on disconnected namespace ${namespace}`)
+      return
+    }
 
     this.namespace_clients[namespace].first()
   }
@@ -298,8 +334,10 @@ export class KubernetesService extends EventEmitter implements Paging {
   hasPrevious(namespace?: string): boolean {
     if (!namespace) return false
 
-    const namespaceClient = this.namespace_clients[namespace]
-    if (!namespaceClient) return false
+    const nsClient = this.namespace_clients[namespace]
+    if (!nsClient) return false
+
+    if (!nsClient.isConnected) return false
 
     return this.namespace_clients[namespace].hasPrevious()
   }
@@ -307,8 +345,13 @@ export class KubernetesService extends EventEmitter implements Paging {
   previous(namespace?: string) {
     if (!namespace) return
 
-    const namespaceClient = this.namespace_clients[namespace]
-    if (!namespaceClient) return
+    const nsClient = this.namespace_clients[namespace]
+    if (!nsClient) return
+
+    if (!nsClient.isConnected) {
+      log.warn(`k8 Service cannot page on disconnected namespace ${namespace}`)
+      return
+    }
 
     this.namespace_clients[namespace].previous()
   }
@@ -316,8 +359,10 @@ export class KubernetesService extends EventEmitter implements Paging {
   hasNext(namespace?: string): boolean {
     if (!namespace) return false
 
-    const namespaceClient = this.namespace_clients[namespace]
-    if (!namespaceClient) return false
+    const nsClient = this.namespace_clients[namespace]
+    if (!nsClient) return false
+
+    if (!nsClient.isConnected) return false
 
     return this.namespace_clients[namespace].hasNext()
   }
@@ -325,8 +370,13 @@ export class KubernetesService extends EventEmitter implements Paging {
   next(namespace?: string) {
     if (!namespace) return
 
-    const namespaceClient = this.namespace_clients[namespace]
-    if (!namespaceClient) return
+    const nsClient = this.namespace_clients[namespace]
+    if (!nsClient) return
+
+    if (!nsClient.isConnected) {
+      log.warn(`k8 Service cannot page on disconnected namespace ${namespace}`)
+      return
+    }
 
     this.namespace_clients[namespace].next()
   }
@@ -334,8 +384,13 @@ export class KubernetesService extends EventEmitter implements Paging {
   last(namespace?: string) {
     if (!namespace) return
 
-    const namespaceClient = this.namespace_clients[namespace]
-    if (!namespaceClient) return
+    const nsClient = this.namespace_clients[namespace]
+    if (!nsClient) return
+
+    if (!nsClient.isConnected) {
+      log.warn(`k8 Service cannot page on disconnected namespace ${namespace}`)
+      return
+    }
 
     this.namespace_clients[namespace].last()
   }
@@ -343,8 +398,13 @@ export class KubernetesService extends EventEmitter implements Paging {
   page(pageIdx: number, namespace?: string) {
     if (!namespace) return
 
-    const namespaceClient = this.namespace_clients[namespace]
-    if (!namespaceClient) return
+    const nsClient = this.namespace_clients[namespace]
+    if (!nsClient) return
+
+    if (!nsClient.isConnected) {
+      log.warn(`k8 Service cannot page on disconnected namespace ${namespace}`)
+      return
+    }
 
     this.namespace_clients[namespace].page(pageIdx)
   }
