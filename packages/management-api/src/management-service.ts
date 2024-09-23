@@ -10,6 +10,8 @@ import {
   debounce,
   KubePodsByProject,
   Paging,
+  SortOrder,
+  TypeFilter,
 } from '@hawtio/online-kubernetes-api'
 import { ManagedProjects, MgmtActions, log } from './globals'
 import { ManagedProject } from './managed-project'
@@ -32,6 +34,7 @@ export class ManagementService extends EventEmitter implements Paging {
     fireUpdate: false,
     uids: new Set<string>(),
   }
+  private _orderingAndFiltering = false
 
   private _jolokiaPolling = 15000
   private _pollingHandle?: NodeJS.Timeout
@@ -55,6 +58,20 @@ export class ManagementService extends EventEmitter implements Paging {
     if (!this.hasError()) {
       const kPodsByProject: KubePodsByProject = k8Service.getPods()
 
+      /*
+       * Delete any projects no longer contained in the k8 service
+       */
+      Object.keys(this._managedProjects)
+        .filter(ns => !Object.keys(kPodsByProject).includes(ns))
+        .forEach(ns => {
+          /* Flag this project to be removed in the update */
+          this._managedProjects[ns].pods = []
+          this._managedProjects[ns].fullPodCount = 0
+        })
+
+      /*
+       * Update the remaining projects
+       */
       Object.entries(kPodsByProject).forEach(([project, kPodsOrError]) => {
         /*
          * Either project has never been seen before so initialise
@@ -68,8 +85,8 @@ export class ManagementService extends EventEmitter implements Paging {
 
         // Project may have an error
         mgmtProject.error = kPodsOrError
-        mgmtProject.podTotal = kPodsOrError.total
         mgmtProject.pods = kPodsOrError.pods
+        mgmtProject.fullPodCount = kPodsOrError.fullPodCount
       })
 
       // let's kick a polling cycle
@@ -90,7 +107,7 @@ export class ManagementService extends EventEmitter implements Paging {
   private preMgmtUpdate() {
     /* Reset the update queue */
     this.updateQueue.uids.clear()
-    this.updateQueue.fireUpdate = false
+    this.updateQueue.fireUpdate = this._orderingAndFiltering
 
     // Add all the uids to the queue
     Object.values(this._managedProjects)
@@ -103,10 +120,17 @@ export class ManagementService extends EventEmitter implements Paging {
       this.updateQueue.uids.delete(emitter.uid)
     }
 
-    /* If the emitter should fire then update the queue */
-    this.updateQueue.fireUpdate = emitter.fireUpdate ? emitter.fireUpdate : this.updateQueue.fireUpdate
+    /*
+     * If not already set to fire then check whether
+     * the emitter should fire then update the queue
+     */
+    if (!this.updateQueue.fireUpdate)
+      this.updateQueue.fireUpdate = emitter.fireUpdate ? emitter.fireUpdate : this.updateQueue.fireUpdate
 
-    if (this.updateQueue.fireUpdate && this.updateQueue.uids.size === 0) this.emit(MgmtActions.UPDATED)
+    if (this.updateQueue.fireUpdate && this.updateQueue.uids.size === 0) {
+      this._orderingAndFiltering = false // reset ready for next time
+      this.emit(MgmtActions.UPDATED)
+    }
   }
 
   private async mgmtUpdate() {
@@ -126,6 +150,7 @@ export class ManagementService extends EventEmitter implements Paging {
       const mPodsByUid = managedProject.pods
 
       if (Object.entries(mPodsByUid).length === 0) {
+        delete this._managedProjects[managedProject.name]
         this.emitUpdate({ fireUpdate: true })
         continue
       }
@@ -365,6 +390,19 @@ export class ManagementService extends EventEmitter implements Paging {
     }
 
     connectService.connect(connection)
+  }
+
+  /********************
+   * Filtering & Sort support
+   ********************/
+  filter(typeFilter: TypeFilter) {
+    this._orderingAndFiltering = true
+    k8Service.filter(typeFilter)
+  }
+
+  sort(sortOrder: SortOrder) {
+    this._orderingAndFiltering = true
+    k8Service.sort(sortOrder)
   }
 
   /********************

@@ -5,7 +5,7 @@ import Jolokia, {
 } from 'jolokia.js'
 import 'jolokia.js/simple'
 import $ from 'jquery'
-import { TypeFilter, log } from './globals'
+import { log } from './globals'
 import jsonpath from 'jsonpath'
 import {
   k8Api,
@@ -258,24 +258,5 @@ export class ManagedPod {
       const msg = `${name}: ${mgmtError.message}`
       eventService.notify({ type: 'danger', message: msg })
     }
-  }
-
-  filter(filter: TypeFilter): boolean {
-    const metadata = this.metadata
-    if (!metadata) return false
-
-    type KubeObjKey = keyof typeof metadata
-    const podProp = metadata[filter.type.toLowerCase() as KubeObjKey] as string
-
-    // Want to filter on this property but value
-    // is null so filter fails
-    if (!podProp) return false
-
-    // values is tested as OR
-    for (const value of filter.values) {
-      if (podProp.toLowerCase().includes(value.toLowerCase())) return true
-    }
-
-    return false
   }
 }

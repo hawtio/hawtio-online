@@ -3,26 +3,22 @@ import {
   Alert,
   Card,
   CardBody,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
   PageSection,
   PageSectionVariants,
   Title,
-  EmptyStateHeader,
   Tabs,
   TabTitleText,
   Tab,
 } from '@patternfly/react-core'
-import { CubesIcon } from '@patternfly/react-icons'
 import { discoverService } from './discover-service'
 import { DiscoverToolbar } from './DiscoverToolbar'
 import { DiscoverContext, useDisplayItems } from './context'
 import { DiscoverProjectContent } from './DiscoverProjectContent'
 import { DiscoverLoadingPanel } from './DiscoverLoadingPanel'
+import { DiscoverEmptyContent } from './DiscoverEmptyContent'
 
 export const Discover: React.FunctionComponent = () => {
-  const { error, isLoading, refreshing, setRefreshing, discoverProjects, setDiscoverProjects, filters, setFilters } =
+  const { error, isLoading, refreshing, setRefreshing, discoverProjects, setDiscoverProjects, filter, setFilter } =
     useDisplayItems()
   const [activeTabKey, setActiveTabKey] = React.useState<string>('')
 
@@ -44,7 +40,7 @@ export const Discover: React.FunctionComponent = () => {
 
       return activeKey
     })
-  }, [isLoading, error, discoverProjects, filters])
+  }, [isLoading, error, discoverProjects, filter])
 
   if (isLoading) {
     return (
@@ -78,31 +74,20 @@ export const Discover: React.FunctionComponent = () => {
           setRefreshing,
           discoverProjects,
           setDiscoverProjects,
-          filters,
-          setFilters,
+          filter,
+          setFilter,
         }}
       >
         <DiscoverToolbar />
 
-        {discoverProjects.length === 0 && (
-          <EmptyState>
-            <EmptyStateHeader
-              titleText='No Hawtio Containers'
-              icon={<EmptyStateIcon icon={CubesIcon} />}
-              headingLevel='h1'
-            />
-            <EmptyStateBody>
-              There are no containers running with a port configured whose name is <code>jolokia</code>.
-            </EmptyStateBody>
-          </EmptyState>
-        )}
+        {discoverProjects.length === 0 && <DiscoverEmptyContent />}
 
         {discoverProjects.length > 0 && (
           <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox>
             {discoverProjects.map(discoverProject => (
               <Tab
                 eventKey={discoverProject.name}
-                title={<TabTitleText>{`${discoverProject.name} (${discoverProject.podsTotal})`}</TabTitleText>}
+                title={<TabTitleText>{`${discoverProject.name} (${discoverProject.fullPodCount})`}</TabTitleText>}
                 key={`discover-project-${discoverProject.name}`}
               >
                 <DiscoverProjectContent project={discoverProject} />
