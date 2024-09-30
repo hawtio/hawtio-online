@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useRef, useState } from 'react'
-import { TypeFilter } from '@hawtio/online-kubernetes-api'
+import { TypeFilter, SortOrder } from '@hawtio/online-kubernetes-api'
 import { MgmtActions, isMgmtApiRegistered, mgmtService } from '@hawtio/online-management-api'
 import { discoverService } from './discover-service'
 import { DiscoverProject } from './discover-project'
@@ -20,14 +20,15 @@ export function useDisplayItems() {
 
   // type filter created by filter control and displayed as chips
   const [filter, setFilter] = useState<TypeFilter>(new TypeFilter())
+  const [podOrder, setPodOrder] = useState<SortOrder>()
 
   const organisePods = useCallback(() => {
-    const discoverProjects = discoverService.groupPods()
+    const discoverProjects = discoverService.groupPods(podOrder)
     setDiscoverProjects([...discoverProjects])
 
     setIsLoading(false)
     setRefreshing(false)
-  }, [])
+  }, [podOrder])
 
   useEffect(() => {
     const waitLoading = async () => {
@@ -64,7 +65,18 @@ export function useDisplayItems() {
     }
   }, [organisePods])
 
-  return { error, isLoading, refreshing, setRefreshing, discoverProjects, setDiscoverProjects, filter, setFilter }
+  return {
+    error,
+    isLoading,
+    refreshing,
+    setRefreshing,
+    discoverProjects,
+    setDiscoverProjects,
+    filter,
+    setFilter,
+    podOrder,
+    setPodOrder,
+  }
 }
 
 type DiscoverContext = {
@@ -74,6 +86,8 @@ type DiscoverContext = {
   setDiscoverProjects: (projects: DiscoverProject[]) => void
   filter: TypeFilter
   setFilter: (filter: TypeFilter) => void
+  podOrder?: SortOrder
+  setPodOrder: (podOrder: SortOrder) => void
 }
 
 export const DiscoverContext = createContext<DiscoverContext>({
@@ -87,6 +101,10 @@ export const DiscoverContext = createContext<DiscoverContext>({
   },
   filter: new TypeFilter(),
   setFilter: () => {
+    // no-op
+  },
+  podOrder: undefined,
+  setPodOrder: () => {
     // no-op
   },
 })
