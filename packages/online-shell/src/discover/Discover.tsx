@@ -18,8 +18,18 @@ import { DiscoverLoadingPanel } from './DiscoverLoadingPanel'
 import { DiscoverEmptyContent } from './DiscoverEmptyContent'
 
 export const Discover: React.FunctionComponent = () => {
-  const { error, isLoading, refreshing, setRefreshing, discoverProjects, setDiscoverProjects, filter, setFilter } =
-    useDisplayItems()
+  const {
+    error,
+    isLoading,
+    refreshing,
+    setRefreshing,
+    discoverProjects,
+    setDiscoverProjects,
+    filter,
+    setFilter,
+    podOrder,
+    setPodOrder,
+  } = useDisplayItems()
   const [activeTabKey, setActiveTabKey] = React.useState<string>('')
 
   const handleTabClick = (
@@ -76,6 +86,8 @@ export const Discover: React.FunctionComponent = () => {
           setDiscoverProjects,
           filter,
           setFilter,
+          podOrder,
+          setPodOrder,
         }}
       >
         <DiscoverToolbar />

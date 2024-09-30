@@ -1,5 +1,5 @@
 import { ManagedPod } from '@hawtio/online-management-api'
-import { OwnerReference } from '@hawtio/online-kubernetes-api'
+import { OwnerReference, SortOrder } from '@hawtio/online-kubernetes-api'
 import { DiscoverGroup, DiscoverPod, DiscoverType } from './globals'
 
 export type DiscoverProjects = {
@@ -15,8 +15,9 @@ export class DiscoverProject {
     private projectName: string,
     fullPodCount: number,
     mgmtPods: ManagedPod[],
+    podOrder?: SortOrder,
   ) {
-    this.refresh(fullPodCount, mgmtPods)
+    this.refresh(fullPodCount, mgmtPods, podOrder)
   }
 
   private podOwner(pod: ManagedPod): OwnerReference | null {
@@ -67,7 +68,7 @@ export class DiscoverProject {
     return values[key]
   }
 
-  refresh(fullPodCount: number, pods: ManagedPod[]) {
+  refresh(fullPodCount: number, pods: ManagedPod[], podOrder?: SortOrder) {
     const discoverPods: DiscoverPod[] = []
     const discoverGroups: DiscoverGroup[] = []
 
@@ -94,8 +95,32 @@ export class DiscoverProject {
       discoverGroups.push(this.toDiscoverGroup(pod, ownerRef, replicas))
     }
 
-    this.discoverGroups = discoverGroups
-    this.discoverPods = discoverPods
+    if (!podOrder) {
+      // No sort order
+      this.discoverGroups = discoverGroups
+      this.discoverPods = discoverPods
+    } else {
+      // Sort order imposed so sort groups, pods-in-groups and pods
+      const sortPodFn = (pod1: DiscoverPod, pod2: DiscoverPod) => {
+        const name1 = pod1.mPod.metadata?.name || ''
+        const name2 = pod2.mPod.metadata?.name || ''
+
+        let value = name1.localeCompare(name2)
+        return podOrder === SortOrder.DESC ? (value *= -1) : value
+      }
+
+      this.discoverGroups = discoverGroups.sort((grp1: DiscoverGroup, grp2: DiscoverGroup) => {
+        let value = grp1.name.localeCompare(grp2.name)
+        return podOrder === SortOrder.DESC ? (value *= -1) : value
+      })
+
+      this.discoverGroups.forEach(group => {
+        group.replicas = group.replicas.sort(sortPodFn)
+      })
+
+      this.discoverPods = discoverPods.sort(sortPodFn)
+    }
+
     this._fullPodCount = fullPodCount
 
     /**

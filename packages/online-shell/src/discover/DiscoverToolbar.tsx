@@ -63,7 +63,8 @@ const sortMeta = {
 }
 
 export const DiscoverToolbar: React.FunctionComponent = () => {
-  const { discoverProjects, setDiscoverProjects, filter, setFilter, setRefreshing } = useContext(DiscoverContext)
+  const { discoverProjects, setDiscoverProjects, filter, setFilter, setRefreshing, setPodOrder } =
+    useContext(DiscoverContext)
   // Ref for toggle of filter type Select control
   const filterTypeToggleRef = useRef<HTMLButtonElement | null>()
 
@@ -201,6 +202,7 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
          * in order to correctly sort all pods and get back the right
          * set according to the paging limit
          */
+        setPodOrder(newSortOrderIcon.type)
         setRefreshing(true)
         mgmtService.sort(newSortOrderIcon.type)
     }
