@@ -23,6 +23,7 @@
     "build": "yarn build:webpack",
     "build:webpack": "webpack --mode production --progress --config webpack.config.prod.js --output-public-path='/online/' --env PACKAGE_VERSION=$npm_package_version",
     "test": "jest --watchAll=false --passWithNoTests",
+    "test:watch": "jest --watch",
     "test:coverage": "yarn test --coverage",
     "analyze:webpack:dev": "webpack --mode development --analyze --progress --config webpack.config.dev.js --output-public-path='/online/'",
     "analyze:webpack:prod": "webpack --mode production --analyze --progress --config webpack.config.prod.js --output-public-path='/online/'"
