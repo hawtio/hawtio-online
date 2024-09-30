@@ -29,7 +29,7 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
     return this._list || new ObjectListImpl<T>()
   }
 
-  get watched() {
+  get watched(): Watched<T> {
     return this._watched
   }
 
@@ -216,11 +216,11 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
             this.socket = this.createWebSocket(wsURL)
             this.setHandlers(this, this.socket)
           } else {
-            log.info('No wsURL for kind: ' + this.watched.kind)
+            log.info('No wsURL for kind: ', this.watched.kind)
           }
         }
 
-        log.debug('Fetching initial collection of object from web socket: ' + this.watched.restURL)
+        log.debug('Fetching initial collection of object from web socket: ', this.watched.restURL)
 
         fetchPath(this.watched.restURL, {
           success: (data: string) => {

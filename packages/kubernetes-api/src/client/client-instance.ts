@@ -8,8 +8,8 @@ export class ClientInstance<T extends KubeObject> {
   private _refCount = 0
   private _watched: Watched<T>
 
-  constructor(_watched: Watched<T>) {
-    this._watched = _watched
+  constructor(watched: Watched<T>) {
+    this._watched = watched
   }
 
   get refCount() {

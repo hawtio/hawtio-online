@@ -14,7 +14,21 @@ export async function isK8ApiRegistered(): Promise<boolean> {
   return await registerK8Api()
 }
 
-export * from './globals'
+export {
+  K8Actions,
+  JOLOKIA_PORT_QUERY
+} from './globals'
+
+export type {
+  Paging,
+  KubeObject, KubeObjectList,
+  KubePod, KubeProject, KubePodsOrError, KubePodsByProject,
+  NamespaceSpec, NamespaceStatus,
+  Pod, PodCondition, PodSpec, PodStatus,
+  Container, ContainerPort, ContainerStatus,
+  ObjectMeta, OwnerReference
+} from './globals'
+
 export * from './filter'
 export * from './sort'
 export { k8Api, k8Service } from './init'

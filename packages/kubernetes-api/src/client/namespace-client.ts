@@ -14,12 +14,12 @@ export interface Client<T extends KubeObject> {
   watch: ProcessDataCallback<T>
 }
 
-interface PodWatcher {
+export interface PodWatcher {
   client: Client<KubePod>
-  jolokiaPod: KubePod | undefined
+  jolokiaPod?: KubePod
 }
 
-interface PodWatchers {
+export interface PodWatchers {
   [key: string]: PodWatcher
 }
 
@@ -264,6 +264,18 @@ export class NamespaceClient implements Paging {
       if (!pw.jolokiaPod) continue
 
       pods.push(pw.jolokiaPod)
+    }
+
+    if (this._sortOrder) {
+      const sortFn = (pod1: KubePod, pod2: KubePod) => {
+        const name1 = pod1.metadata?.name || ''
+        const name2 = pod2.metadata?.name || ''
+
+        let value = name1.localeCompare(name2)
+        return this._sortOrder === SortOrder.DESC ? (value *= -1) : value
+      }
+
+      return pods.sort(sortFn)
     }
 
     return pods
