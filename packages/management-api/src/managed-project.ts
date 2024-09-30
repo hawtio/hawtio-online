@@ -1,5 +1,5 @@
-import { KubePod, KubePodsOrError, hasProperty, isError, log } from '@hawtio/online-kubernetes-api'
-import { MPodsByUid } from './globals'
+import { KubePod, KubePodsOrError, hasProperty, isError } from '@hawtio/online-kubernetes-api'
+import { MPodsByUid, log } from './globals'
 import { ManagedPod } from './managed-pod'
 
 export class ManagedProject {

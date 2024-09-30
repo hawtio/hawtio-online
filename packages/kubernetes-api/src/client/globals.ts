@@ -1,5 +1,5 @@
 import { Logger } from '@hawtio/react'
-import { KubeSearchMetadata, KubeObject } from '../globals'
+import { KubeObject } from '../globals'
 import { WatchActions, WatchTypes } from '../model'
 import { SimpleResponse } from '../utils'
 
@@ -34,7 +34,7 @@ export interface KOptions extends Record<string, unknown> {
   nsLimit?: number
 }
 
-export type ProcessDataCallback<T extends KubeObject> = (data: T[], metadata?: KubeSearchMetadata) => void
+export type ProcessDataCallback<T extends KubeObject> = (data: T[]) => void
 
 export type ErrorDataCallback = (err: Error, response?: SimpleResponse) => void
 

@@ -35,7 +35,7 @@ export class KubernetesService extends EventEmitter implements Paging {
 
     try {
       this._oAuthProfile = await getActiveProfile()
-      if (!this._oAuthProfile) throw new Error('Cannot initialize k8 API due to no active OAuth profile')
+      if (!this._oAuthProfile) throw new Error('Cannot initialize k8s API due to no active OAuth profile')
 
       if (this._oAuthProfile.hasError()) throw this._oAuthProfile.getError()
 
@@ -49,7 +49,7 @@ export class KubernetesService extends EventEmitter implements Paging {
 
       this._initialized = true
     } catch (error) {
-      log.error('k8 Service cannot complete initialisation due to: ', error)
+      log.error('k8s Service cannot complete initialisation due to: ', error)
       if (error instanceof Error) this._error = error
       else this._error = new Error('Unknown error during initialisation')
     }
@@ -143,7 +143,7 @@ export class KubernetesService extends EventEmitter implements Paging {
   }
 
   private checkInitOrError() {
-    if (!this.initialized) throw new Error('k8 Service is not intialized')
+    if (!this.initialized) throw new Error('k8s Service is not intialized')
 
     if (this.hasError()) throw this._error
 
@@ -324,7 +324,7 @@ export class KubernetesService extends EventEmitter implements Paging {
     if (!nsClient) return
 
     if (!nsClient.isConnected) {
-      log.warn(`k8 Service cannot page on disconnected namespace ${namespace}`)
+      log.warn(`k8s Service cannot page on disconnected namespace ${namespace}`)
       return
     }
 
@@ -349,7 +349,7 @@ export class KubernetesService extends EventEmitter implements Paging {
     if (!nsClient) return
 
     if (!nsClient.isConnected) {
-      log.warn(`k8 Service cannot page on disconnected namespace ${namespace}`)
+      log.warn(`k8s Service cannot page on disconnected namespace ${namespace}`)
       return
     }
 
@@ -374,7 +374,7 @@ export class KubernetesService extends EventEmitter implements Paging {
     if (!nsClient) return
 
     if (!nsClient.isConnected) {
-      log.warn(`k8 Service cannot page on disconnected namespace ${namespace}`)
+      log.warn(`k8s Service cannot page on disconnected namespace ${namespace}`)
       return
     }
 
@@ -388,7 +388,7 @@ export class KubernetesService extends EventEmitter implements Paging {
     if (!nsClient) return
 
     if (!nsClient.isConnected) {
-      log.warn(`k8 Service cannot page on disconnected namespace ${namespace}`)
+      log.warn(`k8s Service cannot page on disconnected namespace ${namespace}`)
       return
     }
 
@@ -402,7 +402,7 @@ export class KubernetesService extends EventEmitter implements Paging {
     if (!nsClient) return
 
     if (!nsClient.isConnected) {
-      log.warn(`k8 Service cannot page on disconnected namespace ${namespace}`)
+      log.warn(`k8s Service cannot page on disconnected namespace ${namespace}`)
       return
     }
 
