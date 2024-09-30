@@ -1,0 +1,31 @@
+{
+  "apiVersion": "v1",
+  "kind": "Namespace",
+  "metadata": {
+    "annotations": {
+      "openshift.io/description": "",
+      "openshift.io/display-name": "",
+      "openshift.io/requester": "kubeadmin",
+      "openshift.io/sa.scc.mcs": "s0:c26,c10",
+      "openshift.io/sa.scc.supplemental-groups": "1000670000/10000",
+      "openshift.io/sa.scc.uid-range": "1000670000/10000"
+    },
+    "creationTimestamp": "2024-09-11T12:46:04Z",
+    "labels": {
+      "kubernetes.io/metadata.name": "quarkus",
+      "pod-security.kubernetes.io/audit": "restricted",
+      "pod-security.kubernetes.io/audit-version": "v1.24",
+      "pod-security.kubernetes.io/warn": "restricted",
+      "pod-security.kubernetes.io/warn-version": "v1.24"
+    },
+    "name": "quarkus",
+    "resourceVersion": "5080231",
+    "uid": "b6890d1c-f4f2-4ed9-b4a7-27d47a5b636c"
+  },
+  "spec": {
+    "finalizers": ["kubernetes"]
+  },
+  "status": {
+    "phase": "Active"
+  }
+}

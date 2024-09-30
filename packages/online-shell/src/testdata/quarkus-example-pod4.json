@@ -1,0 +1,235 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "annotations": {
+      "alpha.image.policy.openshift.io/resolve-names": "*",
+      "app.openshift.io/vcs-uri": "\u003c\u003cunknown\u003e\u003e",
+      "app.quarkus.io/build-timestamp": "2024-09-13 - 13:24:59 +0000",
+      "app.quarkus.io/commit-id": "6bf09e9862327624ebce91365ae3a9d8c7f56d9c",
+      "app.quarkus.io/quarkus-version": "3.14.2",
+      "k8s.ovn.org/pod-networks": "{\"default\":{\"ip_addresses\":[\"10.217.0.148/23\"],\"mac_address\":\"0a:58:0a:d9:00:94\",\"gateway_ips\":[\"10.217.0.1\"],\"routes\":[{\"dest\":\"10.217.0.0/22\",\"nextHop\":\"10.217.0.1\"},{\"dest\":\"10.217.4.0/23\",\"nextHop\":\"10.217.0.1\"},{\"dest\":\"100.64.0.0/16\",\"nextHop\":\"10.217.0.1\"}],\"ip_address\":\"10.217.0.148/23\",\"gateway_ip\":\"10.217.0.1\"}}",
+      "k8s.v1.cni.cncf.io/network-status": "[{\n    \"name\": \"ovn-kubernetes\",\n    \"interface\": \"eth0\",\n    \"ips\": [\n        \"10.217.0.148\"\n    ],\n    \"mac\": \"0a:58:0a:d9:00:94\",\n    \"default\": true,\n    \"dns\": {}\n}]",
+      "openshift.io/scc": "restricted-v2",
+      "seccomp.security.alpha.kubernetes.io/pod": "runtime/default"
+    },
+    "creationTimestamp": "2024-09-13T13:26:38Z",
+    "generateName": "quarkus-helloworld-55944c8fbb-",
+    "labels": {
+      "app.kubernetes.io/managed-by": "quarkus",
+      "app.kubernetes.io/name": "quarkus-helloworld",
+      "app.kubernetes.io/version": "1.0.0-SNAPSHOT",
+      "app.openshift.io/runtime": "quarkus",
+      "pod-template-hash": "55944c8fff"
+    },
+    "name": "quarkus-helloworld-zzzzzzzzzz-eeeeee",
+    "namespace": "quarkus",
+    "ownerReferences": [
+      {
+        "apiVersion": "apps/v1",
+        "blockOwnerDeletion": true,
+        "controller": true,
+        "kind": "ReplicaSet",
+        "name": "quarkus-helloworld-55944c8fbb",
+        "uid": "0e3d0595-018b-4f34-ae71-c437bbec3448"
+      }
+    ],
+    "resourceVersion": "5304757",
+    "uid": "a0000000-15c0-4ba0-b7e4-5e2d4ce222222"
+  },
+  "spec": {
+    "containers": [
+      {
+        "env": [
+          {
+            "name": "JAVA_OPTS_APPEND",
+            "value": "-javaagent:lib/main/org.jolokia.jolokia-agent-jvm-2.1.0-javaagent.jar=protocol=https,host=*,port=8778,useSslClientAuthentication=true,caCert=/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt,clientPrincipal.1=cn=hawtio-online.hawtio.svc,extendedClientCheck=true,discoveryEnabled=false"
+          }
+        ],
+        "image": "image-registry.openshift-image-registry.svc:5000/quarkus/quarkus-helloworld@sha256:a3acea0dd811f72a0519903226b4abcd9c5359f796c1aba8d82da12f4ccb1585",
+        "imagePullPolicy": "Always",
+        "name": "quarkus-helloworld",
+        "ports": [
+          {
+            "containerPort": 8778,
+            "name": "jolokia",
+            "protocol": "TCP"
+          }
+        ],
+        "resources": {},
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": ["ALL"]
+          },
+          "runAsNonRoot": true,
+          "runAsUser": 1000670000
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File",
+        "volumeMounts": [
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-tvfpg",
+            "readOnly": true
+          }
+        ]
+      }
+    ],
+    "dnsPolicy": "ClusterFirst",
+    "enableServiceLinks": true,
+    "imagePullSecrets": [
+      {
+        "name": "default-dockercfg-lghf9"
+      }
+    ],
+    "nodeName": "crc",
+    "preemptionPolicy": "PreemptLowerPriority",
+    "priority": 0,
+    "restartPolicy": "Always",
+    "schedulerName": "default-scheduler",
+    "securityContext": {
+      "fsGroup": 1000670000,
+      "seLinuxOptions": {
+        "level": "s0:c26,c10"
+      },
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "serviceAccount": "default",
+    "serviceAccountName": "default",
+    "terminationGracePeriodSeconds": 30,
+    "tolerations": [
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/not-ready",
+        "operator": "Exists",
+        "tolerationSeconds": 300
+      },
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/unreachable",
+        "operator": "Exists",
+        "tolerationSeconds": 300
+      }
+    ],
+    "volumes": [
+      {
+        "name": "kube-api-access-tvfpg",
+        "projected": {
+          "defaultMode": 420,
+          "sources": [
+            {
+              "serviceAccountToken": {
+                "expirationSeconds": 3607,
+                "path": "token"
+              }
+            },
+            {
+              "configMap": {
+                "items": [
+                  {
+                    "key": "ca.crt",
+                    "path": "ca.crt"
+                  }
+                ],
+                "name": "kube-root-ca.crt"
+              }
+            },
+            {
+              "downwardAPI": {
+                "items": [
+                  {
+                    "fieldRef": {
+                      "apiVersion": "v1",
+                      "fieldPath": "metadata.namespace"
+                    },
+                    "path": "namespace"
+                  }
+                ]
+              }
+            },
+            {
+              "configMap": {
+                "items": [
+                  {
+                    "key": "service-ca.crt",
+                    "path": "service-ca.crt"
+                  }
+                ],
+                "name": "openshift-service-ca.crt"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2024-09-12T13:26:42Z",
+        "status": "True",
+        "type": "PodReadyToStartContainers"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2024-09-12T13:26:38Z",
+        "status": "True",
+        "type": "Initialized"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2024-09-12T13:26:42Z",
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2024-09-12T13:26:42Z",
+        "status": "True",
+        "type": "ContainersReady"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2024-09-12T13:26:38Z",
+        "status": "True",
+        "type": "PodScheduled"
+      }
+    ],
+    "containerStatuses": [
+      {
+        "containerID": "cri-o://e4ed61c9b0bd04f85092d9bd4dbfdf17ecd509568a660905304cbe8c7fe295f1",
+        "image": "image-registry.openshift-image-registry.svc:5000/quarkus/quarkus-helloworld@sha256:a3acea0dd811f72a0519903226b4abcd9c5359f796c1aba8d82da12f4ccb1585",
+        "imageID": "image-registry.openshift-image-registry.svc:5000/quarkus/quarkus-helloworld@sha256:a3acea0dd811f72a0519903226b4abcd9c5359f796c1aba8d82da12f4ccb1585",
+        "lastState": {},
+        "name": "quarkus-helloworld",
+        "ready": true,
+        "restartCount": 0,
+        "started": true,
+        "state": {
+          "running": {
+            "startedAt": "2024-09-12T13:26:42Z"
+          }
+        }
+      }
+    ],
+    "hostIP": "192.168.126.11",
+    "hostIPs": [
+      {
+        "ip": "192.168.126.11"
+      }
+    ],
+    "phase": "Running",
+    "podIP": "10.217.0.148",
+    "podIPs": [
+      {
+        "ip": "10.217.0.148"
+      }
+    ],
+    "qosClass": "BestEffort",
+    "startTime": "2024-09-12T13:26:38Z"
+  }
+}

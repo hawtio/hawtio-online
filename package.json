@@ -44,6 +44,7 @@
     "gen:proxying": "./scripts/generate-proxying.sh",
     "gen:serving": "./scripts/generate-serving.sh",
     "test": "yarn workspaces foreach -v -Aipt --exclude @hawtio/online-root --exclude \"@hawtio/*-app\" run test",
+    "test:watch": "yarn workspaces foreach -v -Aipt --exclude @hawtio/online-root --exclude \"@hawtio/*-app\" run test:watch",
     "deploy:k8s:namespace": "./scripts/kube-apply.sh deploy/k8s/namespace/",
     "deploy:k8s:cluster": "./scripts/kube-apply.sh deploy/k8s/cluster/",
     "deploy:openshift:namespace": "./scripts/kube-apply.sh deploy/openshift/namespace/",
