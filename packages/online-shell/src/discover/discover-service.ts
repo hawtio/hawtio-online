@@ -1,6 +1,7 @@
 import { mgmtService, ManagedPod } from '@hawtio/online-management-api'
 import { DiscoverPod } from './globals'
 import { DiscoverProject, DiscoverProjects } from './discover-project'
+import { SortOrder } from '@hawtio/online-kubernetes-api'
 
 export enum ViewType {
   listView = 'listView',
@@ -10,17 +11,19 @@ export enum ViewType {
 class DiscoverService {
   private discoverProjects: DiscoverProjects = {}
 
-  groupPods(): DiscoverProject[] {
+  groupPods(podOrder?: SortOrder): DiscoverProject[] {
     const projectNames: string[] = []
+
     Object.values(mgmtService.projects).forEach(mgmtProject => {
       const pods: ManagedPod[] = Object.values(mgmtProject.pods)
+
       projectNames.push(mgmtProject.name)
 
       if (!this.discoverProjects[mgmtProject.name]) {
-        const discoverProject = new DiscoverProject(mgmtProject.name, mgmtProject.fullPodCount, pods)
+        const discoverProject = new DiscoverProject(mgmtProject.name, mgmtProject.fullPodCount, pods, podOrder)
         this.discoverProjects[mgmtProject.name] = discoverProject
       } else {
-        this.discoverProjects[mgmtProject.name].refresh(mgmtProject.fullPodCount, pods)
+        this.discoverProjects[mgmtProject.name].refresh(mgmtProject.fullPodCount, pods, podOrder)
       }
     })
 
