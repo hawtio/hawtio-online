@@ -1911,12 +1911,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-svg-core@npm:^6.5.2":
-  version: 6.5.2
-  resolution: "@fortawesome/fontawesome-svg-core@npm:6.5.2"
+"@fortawesome/fontawesome-common-types@npm:6.6.0":
+  version: 6.6.0
+  resolution: "@fortawesome/fontawesome-common-types@npm:6.6.0"
+  checksum: 10/2c730897466fa3b9ae01a4d0943e24fffbc5cbeb4fdae3df044e49619e52763a431d5d5324e9c607995ab36f3dcc90a45958b44020b23b5e148fb66e3b668875
+  languageName: node
+  linkType: hard
+
+"@fortawesome/fontawesome-svg-core@npm:^6.6.0":
+  version: 6.6.0
+  resolution: "@fortawesome/fontawesome-svg-core@npm:6.6.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": "npm:6.5.2"
-  checksum: 10/03cc6d9662f2014e2fbbf47e9678a6a21108edeb78ff551207eeb12404daa8bfa5c6dd30a474d3fca897e856ff4b45d35261bb445fc30994c46d91783722684d
+    "@fortawesome/fontawesome-common-types": "npm:6.6.0"
+  checksum: 10/b13afc5aed1598bcba86ad93fc413ecbcfdb4310015c72cfe205b18d7a1c0534e3ebacd6db49fae2e0240af15593b2281ad3dbeb9e85fc41d6de281142f030f1
   languageName: node
   linkType: hard
 
@@ -2246,7 +2253,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hawtio/online-shell@workspace:packages/online-shell"
   dependencies:
-    "@fortawesome/fontawesome-svg-core": "npm:^6.5.2"
+    "@fortawesome/fontawesome-svg-core": "npm:^6.6.0"
     "@fortawesome/free-brands-svg-icons": "npm:^6.5.2"
     "@fortawesome/free-solid-svg-icons": "npm:^6.5.2"
     "@fortawesome/react-fontawesome": "npm:^0.2.0"
