@@ -2244,7 +2244,6 @@ __metadata:
     eslint-config-prettier: "npm:^9.1.0"
     eslint-config-react-app: "npm:^7.0.1"
     eslint-plugin-react-hooks: "npm:^4.6.2"
-    jasmine: "npm:^5.1.0"
     prettier: "npm:3.3.3"
   languageName: unknown
   linkType: soft
@@ -9804,25 +9803,6 @@ __metadata:
   bin:
     jake: bin/cli.js
   checksum: 10/3be324708f99f031e0aec49ef8fd872eb4583cbe8a29a0c875f554f6ac638ee4ea5aa759bb63723fd54f77ca6d7db851eaa78353301734ed3700db9cb109a0cd
-  languageName: node
-  linkType: hard
-
-"jasmine-core@npm:~5.1.0":
-  version: 5.1.1
-  resolution: "jasmine-core@npm:5.1.1"
-  checksum: 10/f8236c5f916dc70e2d5af1a229e374f3d3aac7046ef66e4c972c48977f0dce769f8b557fc1dcdc71589d3a9633368a6a682da09bd15672d435172c298e252a84
-  languageName: node
-  linkType: hard
-
-"jasmine@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "jasmine@npm:5.1.0"
-  dependencies:
-    glob: "npm:^10.2.2"
-    jasmine-core: "npm:~5.1.0"
-  bin:
-    jasmine: bin/jasmine.js
-  checksum: 10/f7de7ff57a6f3cfde9094a73cac768d5e951e94c954f7fb24cf33b3b112c352daddc64e042b84fa1b99919acc5339774409e30bfc6e53f97829a7882dfc11896
   languageName: node
   linkType: hard
 
