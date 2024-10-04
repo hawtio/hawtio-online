@@ -35,7 +35,7 @@
     "jolokia.js": "^2.0.1",
     "jquery": "^3.7.0",
     "jsonpath": "^1.1.1",
-    "superstruct": "^1.0.4",
+    "superstruct": "^2.0.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
