@@ -1,12 +1,11 @@
 import {
-  Request as MBeanRequest,
+  JolokiaRequest as MBeanRequest,
   JmxDomains,
   MBeanInfo,
   MBeanInfoError,
   MBeanOperation,
   MBeanOperationArgument,
 } from 'jolokia.js'
-import 'jolokia.js/simple'
 import {
   BulkValue,
   Intercepted,
@@ -19,6 +18,7 @@ import {
   hasMBeanAttribute,
   hasMBeanOperation,
   isArgumentExecRequest,
+  isMBeanAttribute,
   isMBeanDefinedRequest,
   isMBeanInfoError,
   isOptimisedMBeanInfo,
@@ -154,10 +154,12 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
 
       if (hasMBeanAttribute(info)) {
         // Check attributes
-        const res = Object.entries(info.attr || []).find(
-          attr =>
-            canInvokeGetter(mbean, attr[0], attr[1].type, role) || canInvokeSetter(mbean, attr[0], attr[1].type, role),
-        )
+        const res = Object.entries(info.attr || []).find(([key, attr]) => {
+          return (
+            isMBeanAttribute(attr) &&
+            (canInvokeGetter(mbean, key, attr.type, role) || canInvokeSetter(mbean, key, attr.type, role))
+          )
+        })
 
         return intercepted(typeof res !== 'undefined')
       }
