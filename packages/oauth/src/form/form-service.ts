@@ -150,8 +150,8 @@ export class FormService implements OAuthProtoService {
     }
 
     log.debug('Set authorization header to Openshift auth token for AJAX requests')
+    // eslint-disable-next-line
     const beforeSend = (xhr: JQueryXHR, settings: JQueryAjaxSettings) => {
-      // eslint-disable-line
       // Set bearer token is used
       xhr.setRequestHeader('Authorization', `Bearer ${this.userProfile.getToken()}`)
 
