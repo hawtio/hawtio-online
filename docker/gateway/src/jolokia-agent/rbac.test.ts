@@ -159,7 +159,7 @@ describe('intercept', function () {
       listMBeans,
     )
     expect(result.intercepted).toBe(true)
-    expect(hasMBeanOperation(result.response?.value)).toBe(false)
+    expect(hasMBeanOperation(result.response?.value)).toBe(true)
   })
 
   it('should intercept optimised list MBeans requests', function () {

@@ -1,11 +1,9 @@
-import Jolokia, {
-  BaseRequestOptions,
-  Response as JolokiaResponse,
-  VersionResponse as JolokiaVersionResponse,
+import {
+  JolokiaErrorResponse,
+  JolokiaSuccessResponse,
+  VersionResponseValue as JolokiaVersionResponseValue,
 } from 'jolokia.js'
-import 'jolokia.js/simple'
-import $ from 'jquery'
-import { log } from './globals'
+import { eventService } from '@hawtio/react'
 import jsonpath from 'jsonpath'
 import {
   k8Api,
@@ -16,15 +14,8 @@ import {
   PodSpec,
   JOLOKIA_PORT_QUERY,
 } from '@hawtio/online-kubernetes-api'
+import { log } from './globals'
 import { ParseResult, isJolokiaVersionResponseType, jolokiaResponseParse } from './jolokia-response-utils'
-import { eventService } from '@hawtio/react'
-
-const DEFAULT_JOLOKIA_OPTIONS: BaseRequestOptions = {
-  method: 'post',
-  mimeType: 'application/json',
-  canonicalNaming: false,
-  ignoreErrors: true,
-} as const
 
 export type Management = {
   status: {
@@ -56,7 +47,6 @@ export class ManagedPod {
 
   readonly jolokiaPort: number
   readonly jolokiaPath: string
-  readonly jolokia: Jolokia
 
   private _management: Management = {
     status: {
@@ -78,7 +68,6 @@ export class ManagedPod {
   constructor(public kubePod: KubePod) {
     this.jolokiaPort = this.extractPort(kubePod)
     this.jolokiaPath = ManagedPod.getJolokiaPath(kubePod, this.jolokiaPort) || ''
-    this.jolokia = this.createJolokia()
   }
 
   static getAnnotation(pod: KubePod, name: string, defaultValue: string): string {
@@ -114,17 +103,6 @@ export class ManagedPod {
     const ports = jsonpath.query(pod, JOLOKIA_PORT_QUERY)
     if (!ports || ports.length === 0) return ManagedPod.DEFAULT_JOLOKIA_PORT
     return ports[0].containerPort || ManagedPod.DEFAULT_JOLOKIA_PORT
-  }
-
-  private createJolokia() {
-    if (!this.jolokiaPath || this.jolokiaPath.length === 0) {
-      throw new Error(`Failed to find jolokia path for pod ${this.kubePod.metadata?.uid}`)
-    }
-
-    const options = { ...DEFAULT_JOLOKIA_OPTIONS }
-    options.url = this.jolokiaPath
-
-    return new Jolokia(options)
   }
 
   get kind(): string | undefined {
@@ -199,56 +177,75 @@ export class ManagedPod {
 
   async probeJolokiaUrl(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      $.ajax({
-        url: `${this.jolokiaPath}version`,
-        method: 'GET',
-        dataType: 'text',
-      })
-        .done((data: string, textStatus: string, xhr: JQueryXHR) => {
-          if (xhr.status !== 200) {
-            this.setManagementError(xhr.status, textStatus)
+      const path = `${this.jolokiaPath}version`
+      fetch(path)
+        .then(async (response: Response) => {
+          if (!response.ok) {
+            log.debug('Using URL:', path, 'assuming it could be an agent but got return code:', response.status)
+            this.setManagementError(response.status, response.statusText)
             reject(this.mgmtError)
             return
           }
 
-          const result: ParseResult<JolokiaResponse> = jolokiaResponseParse(data)
-          if (result.hasError) {
-            this.setManagementError(500, result.error)
-            reject(this.mgmtError)
-            return
-          }
+          try {
+            const result: ParseResult<JolokiaSuccessResponse | JolokiaErrorResponse> =
+              await jolokiaResponseParse(response)
+            if (result.hasError) {
+              this.setManagementError(500, result.error)
+              reject(this.mgmtError)
+              return
+            }
 
-          const jsonResponse: JolokiaResponse = result.parsed
-          if (isJolokiaVersionResponseType(jsonResponse.value)) {
-            const versionResponse = jsonResponse.value as JolokiaVersionResponse
+            const jsonResponse: JolokiaSuccessResponse = result.parsed as JolokiaSuccessResponse
+            if (!isJolokiaVersionResponseType(jsonResponse.value)) {
+              this.setManagementError(500, 'Detected jolokia but cannot determine agent or version')
+              reject(this.mgmtError)
+              return
+            }
+
+            const versionResponse = jsonResponse.value as JolokiaVersionResponseValue
             log.debug('Found jolokia agent at:', this.jolokiaPath, 'details:', versionResponse.agent)
             resolve(this.jolokiaPath)
-          } else {
-            this.setManagementError(500, 'Detected jolokia but cannot determine agent or version')
+          } catch (e) {
+            // Parse error should mean redirect to html
+            const msg = `Jolokia Connect Error - ${e ?? response.statusText}`
+            this.setManagementError(response.status, msg)
             reject(this.mgmtError)
           }
         })
-        .fail((xhr: JQueryXHR, _: string, error: string) => {
-          const msg = `Jolokia Connect Error - ${error ?? xhr.statusText}`
-          this.setManagementError(xhr.status, msg)
+        .catch(error => {
+          this.setManagementError(error.status, error.error)
           reject(this.mgmtError)
         })
     })
   }
 
   search(successCb: () => void, failCb: (error: Error) => void) {
-    this.jolokia.search('org.apache.camel:context=*,type=routes,*', {
+    const body = {
+      type: 'search',
+      mbean: 'org.apache.camel:context=*,type=routes,*',
+    }
+
+    fetch(`${this.jolokiaPath}?ignoreErrors=true&canonicalNaming=false&mimeType=application/json`, {
       method: 'post',
-      success: (routes: string[]) => {
+      body: JSON.stringify(body),
+    })
+      .then(async (response: Response) => {
+        if (!response.ok) {
+          return Promise.reject(response)
+        }
+
+        const data = await response.json()
+        const routes = data.value as string[]
+
         this._management.status.error = undefined
         this._management.camel.routes_count = routes.length
         successCb()
-      },
-      error: error => {
+      })
+      .catch(error => {
         this.setManagementError(error.status, error.error)
-        failCb(this.mgmtError as Error)
-      },
-    })
+        failCb(error)
+      })
   }
 
   errorNotify() {
