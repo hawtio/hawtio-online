@@ -92,7 +92,8 @@ type DiscoverContext = {
 
 export const DiscoverContext = createContext<DiscoverContext>({
   refreshing: false,
-  setRefreshing: (refresh: boolean) => { // eslint-disable-line
+  setRefreshing: (refresh: boolean) => {
+    // eslint-disable-line
     // no-op
   },
   discoverProjects: [],
