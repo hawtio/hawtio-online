@@ -1,6 +1,5 @@
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express-serve-static-core'
-import { MBeanInfo, MBeanInfoError, MBeanAttribute, MBeanOperation, Request as MBeanRequest } from 'jolokia.js'
-import 'jolokia.js/simple'
+import { MBeanInfo, MBeanInfoError, MBeanAttribute, MBeanOperation, JolokiaRequest as MBeanRequest } from 'jolokia.js'
 import { GatewayOptions } from 'src/globals'
 
 export interface BulkValue {
@@ -51,7 +50,7 @@ export interface OptimisedMBeanInfo extends Omit<MBeanInfo, 'attr' | 'op'> {
 }
 
 interface OperationDefined {
-  op: MBeanOperation
+  op: Record<string, MBeanOperation | MBeanOperation[]>
 }
 
 interface AttributeDefined {
@@ -156,13 +155,23 @@ export function isMBeanOperation(obj: unknown): obj is MBeanOperation {
 export function hasMBeanOperation(obj: unknown): obj is OperationDefined {
   if (!obj) return false
 
-  return isMBeanOperation((obj as OperationDefined).op) && (obj as OperationDefined)?.op !== undefined
+  return (obj as OperationDefined).op !== undefined
 }
 
 export function hasMBeanAttribute(obj: unknown): obj is AttributeDefined {
   if (!obj) return false
 
   return (obj as AttributeDefined)?.attr !== undefined
+}
+
+export function isMBeanAttribute(obj: unknown): obj is MBeanAttribute {
+  if (!obj) return false
+
+  return (
+    (obj as MBeanAttribute).desc !== undefined &&
+    (obj as MBeanAttribute).type !== undefined &&
+    (obj as MBeanAttribute).rw !== undefined
+  )
 }
 
 export function isArgumentExecRequest(obj: unknown): obj is ExecMBeanRequest {
@@ -177,14 +186,14 @@ export function hasArguments(obj: unknown): obj is ArgumentRequest {
   return isArgumentExecRequest(obj) && (obj as ArgumentRequest).arguments !== undefined
 }
 
-export function isMBeanInfo(obj: MBeanInfo | MBeanInfoError): obj is MBeanInfo {
-  if (!obj) return false
+export function isMBeanInfo(obj: string | MBeanInfo | MBeanInfoError): obj is MBeanInfo {
+  if (!obj || typeof obj === 'string') return false
 
   return (obj as MBeanInfo).desc !== undefined
 }
 
-export function isMBeanInfoError(obj: MBeanInfo | MBeanInfoError): obj is MBeanInfoError {
-  if (!obj) return false
+export function isMBeanInfoError(obj: string | MBeanInfo | MBeanInfoError): obj is MBeanInfoError {
+  if (!obj || typeof obj === 'string') return false
 
   return (obj as MBeanInfoError).error !== undefined
 }
