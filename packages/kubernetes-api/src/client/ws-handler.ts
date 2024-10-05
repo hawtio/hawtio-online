@@ -100,8 +100,8 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
     if (this.socket) this.socket.send(data)
   }
 
+  // eslint-disable-next-line
   shouldClose(event: Event): boolean {
-    // eslint-disable-line
     if (this.destroyed && this.socket && this.socket.readyState === WebSocket.OPEN) {
       log.debug(
         'Connection destroyed but still receiving messages, closing websocket, kind:',
@@ -112,8 +112,8 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
       try {
         log.debug('Closing websocket for kind:', this.watched.kind)
         this.socket.close()
+        // eslint-disable-next-line
       } catch (err) {
-        // eslint-disable-line
         // nothing to do, assume it's already closed
       }
       return true
@@ -269,8 +269,8 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
         log.debug('Closing websocket for kind:', this.watched.kind, 'namespace:', this.watched.namespace)
         this.socket.close()
         log.debug('Close called on websocket for kind:', this.watched.kind, 'namespace:', this.watched.namespace)
+        // eslint-disable-next-line
       } catch (err) {
-        // eslint-disable-line
         // nothing to do, assume it's already closed
       }
     }
