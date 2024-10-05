@@ -1,8 +1,7 @@
-import { hawtio, HawtioPlugin } from '@hawtio/react'
+import { hawtio, HawtioPlugin, preferencesRegistry } from '@hawtio/react'
 import { pluginPath } from './globals'
 import { Discover } from './Discover'
 import { HeaderMenuDropDown } from './HeaderMenuDropDown'
-import { preferencesRegistry } from '@hawtio/react'
 import { DiscoverPreferences } from './DiscoverPreferences'
 
 const pluginId = 'discover'

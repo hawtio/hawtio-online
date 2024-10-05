@@ -145,7 +145,7 @@ app
  * Handler function for management route
  */
 function managementHandler(req: ExpressRequest, res: ExpressResponse) {
-  const host = `http://${req.header('host')}` || ''
+  const host = `http://${req.header('host') || ''}`
 
   /*
    * Provide this test server as the redirect target
@@ -193,6 +193,7 @@ function appPost(uri: string, body: Record<string, unknown> | Record<string, unk
 describe.each([
   { title: 'proxyJolokiaAgentWithoutRbac', rbac: false },
   { title: 'proxyJolokiaAgentWithRbac', rbac: true },
+// eslint-disable-next-line
 ])('$title', ({ title, rbac }) => {
   const testAuth = rbac ? 'RBAC Enabled' : 'RBAC Disabled'
 
@@ -243,15 +244,12 @@ describe.each([
         expect(received.request).toStrictEqual(expected.request)
 
         if (rbac) {
-          // eslint-disable-next-line
           expect(isOptimisedCachedDomains(received.value)).toBe(true)
           const expDomains = Object.getOwnPropertyNames(expected.value.domains)
           const recDomains = Object.getOwnPropertyNames(received.value.domains)
-          // eslint-disable-next-line
           expect(expDomains.length).toEqual(recDomains.length)
         } else {
           // No RBAC then there is no interception or optimisation
-          // eslint-disable-next-line
           expect(expected.value.domains).toEqual(expected.value.domains)
         }
       })
@@ -344,9 +342,7 @@ describe.each([
       .expect(expectedStatus)
       .then(res => {
         if (rbac)
-          // eslint-disable-next-line
           expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.operationWithArgumentsAndViewerRole.response))
-        // eslint-disable-next-line
         else expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
       })
   })
@@ -368,9 +364,7 @@ describe.each([
       .expect(expectedStatus)
       .then(res => {
         if (rbac)
-          // eslint-disable-next-line
           expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.bulkRequestWithViewerRole.response))
-        // eslint-disable-next-line
         else expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
       })
   })

@@ -1,11 +1,10 @@
 import request from 'supertest'
 import express from 'express'
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express-serve-static-core'
-import { enableRbac } from './jolokia-agent'
+import { enableRbac, isOptimisedCachedDomains } from './jolokia-agent'
 import { expressLogger, logger } from './logger'
 import { cloneObject } from './utils'
 import { JOLOKIA_PARAMS, JOLOKIA_PATH, JOLOKIA_PORT, JOLOKIA_URI, NAMESPACE, testData } from './gateway-test-inputs'
-import { isOptimisedCachedDomains } from './jolokia-agent'
 
 /*
  * Port used for test web server
@@ -254,6 +253,7 @@ function appPost(uri: string, body: Record<string, unknown> | Record<string, unk
 describe.each([
   { title: 'proxyJolokiaAgentWithoutRbac', rbac: false },
   { title: 'proxyJolokiaAgentWithRbac', rbac: true },
+// eslint-disable-next-line
 ])('$title', ({ title, rbac }) => {
   const testAuth = rbac ? 'RBAC Enabled' : 'RBAC Disabled'
 
@@ -304,15 +304,12 @@ describe.each([
         expect(received.request).toStrictEqual(expected.request)
 
         if (rbac) {
-          // eslint-disable-next-line
           expect(isOptimisedCachedDomains(received.value)).toBe(true)
           const expDomains = Object.getOwnPropertyNames(expected.value.domains)
           const recDomains = Object.getOwnPropertyNames(received.value.domains)
-          // eslint-disable-next-line
           expect(expDomains.length).toEqual(recDomains.length)
         } else {
           // No RBAC then there is no interception or optimisation
-          // eslint-disable-next-line
           expect(expected.value.domains).toEqual(expected.value.domains)
         }
       })
@@ -405,9 +402,7 @@ describe.each([
       .expect(expectedStatus)
       .then(res => {
         if (rbac)
-          // eslint-disable-next-line
           expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.operationWithArgumentsAndViewerRole.response))
-        // eslint-disable-next-line
         else expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
       })
   })
@@ -429,9 +424,7 @@ describe.each([
       .expect(expectedStatus)
       .then(res => {
         if (rbac)
-          // eslint-disable-next-line
           expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.bulkRequestWithViewerRole.response))
-        // eslint-disable-next-line
         else expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
       })
   })

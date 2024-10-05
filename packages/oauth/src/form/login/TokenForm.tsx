@@ -10,8 +10,7 @@ import {
   InputGroup,
   InputGroupItem,
 } from '@patternfly/react-core'
-import { EyeSlashIcon } from '@patternfly/react-icons'
-import { EyeIcon } from '@patternfly/react-icons'
+import { EyeSlashIcon, EyeIcon } from '@patternfly/react-icons'
 
 export interface TokenFormProps extends Omit<React.HTMLProps<HTMLFormElement>, 'ref'> {
   /** Flag to indicate if the first dropdown item should not gain initial focus */
@@ -47,11 +46,8 @@ export interface TokenFormProps extends Omit<React.HTMLProps<HTMLFormElement>, '
 }
 
 export const TokenForm: React.FunctionComponent<TokenFormProps> = ({
-  noAutoFocus = false,
   className = '',
-  showHelperText = false,
   helperText = null,
-  helperTextIcon = null,
   tokenLabel = 'Token',
   tokenValue = '',
   onChangeToken = () => {
