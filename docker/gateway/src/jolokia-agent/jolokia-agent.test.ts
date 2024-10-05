@@ -193,7 +193,7 @@ function appPost(uri: string, body: Record<string, unknown> | Record<string, unk
 describe.each([
   { title: 'proxyJolokiaAgentWithoutRbac', rbac: false },
   { title: 'proxyJolokiaAgentWithRbac', rbac: true },
-// eslint-disable-next-line
+  // eslint-disable-next-line
 ])('$title', ({ title, rbac }) => {
   const testAuth = rbac ? 'RBAC Enabled' : 'RBAC Disabled'
 
@@ -363,8 +363,7 @@ describe.each([
     return appPost(path, testData.jolokia.bulkRequestWithViewerRole.request)
       .expect(expectedStatus)
       .then(res => {
-        if (rbac)
-          expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.bulkRequestWithViewerRole.response))
+        if (rbac) expect(res.text).toStrictEqual(JSON.stringify(testData.jolokia.bulkRequestWithViewerRole.response))
         else expect(res.text).toStrictEqual(JSON.stringify(testData.authorization.notAllowedResponse))
       })
   })

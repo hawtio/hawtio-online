@@ -1,4 +1,13 @@
-import { KubeObject, KubePod, K8S_PREFIX, K8S_API_VERSION, K8S_EXT_PREFIX, K8S_EXT_VERSION, OS_PREFIX, OS_API_VERSION } from './globals'
+import {
+  KubeObject,
+  KubePod,
+  K8S_PREFIX,
+  K8S_API_VERSION,
+  K8S_EXT_PREFIX,
+  K8S_EXT_VERSION,
+  OS_PREFIX,
+  OS_API_VERSION,
+} from './globals'
 import { PodStatus } from 'kubernetes-types/core/v1'
 import { WatchTypes, NamespacedTypes, ExtensionTypes, KindTypes } from './model'
 import { joinPaths } from './utils/urls'
