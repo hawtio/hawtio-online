@@ -176,11 +176,9 @@ describe('intercept', function () {
     expect(isOptimisedCachedDomains(result.response?.value)).toBe(true)
     if (isOptimisedCachedDomains(result.response?.value)) {
       const cache: MBeanInfoCache = result.response?.value.cache
-      // eslint-disable-next-line
       expect(Object.getOwnPropertyNames(cache).length > 0).toBe(true)
 
       const domains: OptimisedJmxDomains = result.response?.value.domains
-      // eslint-disable-next-line
       expect(Object.getOwnPropertyNames(domains).length > 0).toBe(true)
     }
   })
@@ -231,10 +229,8 @@ describe('optimisedMBeans', function () {
     Object.entries(result.domains).forEach(domain => {
       Object.entries(domain[1]).forEach(info => {
         if (typeof info[1] === 'string') {
-          // eslint-disable-next-line
           expect(result.cache[info[1]]).toBeDefined()
         } else {
-          // eslint-disable-next-line
           expect(info[1].canInvoke).toBe(true)
         }
 
@@ -242,13 +238,10 @@ describe('optimisedMBeans', function () {
           Object.entries(info[1].op).forEach(op => {
             const sigs = Array.isArray(op[1]) ? op[1] : [op[1]]
             sigs.forEach(sig => {
-              // eslint-disable-next-line
               expect(sig.canInvoke).toBe(true)
             })
           })
-          // eslint-disable-next-line
           expect(info[1].opByString).toBeDefined()
-          // eslint-disable-next-line
           expect(info[1].opByString).not.toEqual({})
         }
 
@@ -270,7 +263,6 @@ describe('optimisedMBeans', function () {
           let previous = ''
           while ((match = regexp.exec(info[0])) !== null) {
             const current = match[1]
-            // eslint-disable-next-line
             expect(order[previous] || 0).toBeLessThanOrEqual(order[current])
             previous = current
           }

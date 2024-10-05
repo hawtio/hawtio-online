@@ -114,11 +114,13 @@ gatewayServer.use(
     changeOrigin: false,
     ws: true,
     secure: false,
-    pathFilter: (path, req) => {
+    // eslint-disable-next-line
+    pathFilter: (path, _) => {
       const result = proxyMasterGuard('/master' + path)
       return result.status
     },
-    pathRewrite: (path, req) => {
+    // eslint-disable-next-line
+    pathRewrite: (path, _) => {
       return path.replace('/master', '')
     },
   }),

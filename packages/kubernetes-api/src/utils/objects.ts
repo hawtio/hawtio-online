@@ -26,7 +26,7 @@ export function isError(obj: unknown): obj is Error {
   return obj instanceof Error
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function isFunction(value: unknown): value is Function {
   return typeof value === 'function'
 }

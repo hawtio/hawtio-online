@@ -88,21 +88,14 @@ describe('discover-project', () => {
     expect(dp.groups.length).toBe(3)
     dp.groups.forEach((group, idx) => {
       if (idx === 0) {
-        // eslint-disable-next-line jest/no-conditional-expect
         expect(group.replicas.length).toBe(2)
-        // eslint-disable-next-line jest/no-conditional-expect
         expect(group.replicas.filter(pod => pod.name === mPods[0].metadata?.name).length).toBe(1)
-        // eslint-disable-next-line jest/no-conditional-expect
         expect(group.replicas.filter(pod => pod.name === mPods[3].metadata?.name).length).toBe(1)
       } else if (idx === 1) {
-        // eslint-disable-next-line jest/no-conditional-expect
         expect(group.replicas.length).toBe(1)
-        // eslint-disable-next-line jest/no-conditional-expect
         expect(group.replicas.filter(pod => pod.name === mPods[1].metadata?.name).length).toBe(1)
       } else if (idx === 2) {
-        // eslint-disable-next-line jest/no-conditional-expect
         expect(group.replicas.length).toBe(1)
-        // eslint-disable-next-line jest/no-conditional-expect
         expect(group.replicas.filter(pod => pod.name === mPods[2].metadata?.name).length).toBe(1)
       }
     })
@@ -135,13 +128,11 @@ describe('discover-project', () => {
 
       switch (group.name) {
         case owner1Name: {
-          // eslint-disable-next-line jest/no-conditional-expect
           expect(group.replicas.length).toBe(2)
           const posOfPod1 = group.replicas.findIndex(pod => pod.name === mPods[0].metadata?.name)
           const posOfPod4 = group.replicas.findIndex(pod => pod.name === mPods[3].metadata?.name)
 
           // Sort order is descending by name so pod1 should be latter in array than pod4
-          // eslint-disable-next-line jest/no-conditional-expect
           expect(posOfPod1 > posOfPod4).toBeTruthy()
           break
         }

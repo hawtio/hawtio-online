@@ -48,6 +48,7 @@ class MockCollectionImpl {
     return watchCb
   }
 
+  // eslint-disable-next-line
   unwatch(cb: ProcessDataCallback<KubeObject>) {
     // no-op
   }
@@ -88,6 +89,7 @@ describe('namespace-client', () => {
   })
 
   test('getNamespace', () => {
+    // eslint-disable-next-line
     const cb = (_: KubePod[], __: number) => {
       // Nothing to do
     }
@@ -97,6 +99,7 @@ describe('namespace-client', () => {
   })
 
   test('not-connected-emptyJolokiaPods', () => {
+    // eslint-disable-next-line
     const cb = (_: KubePod[], __: number) => {
       // Nothing to do
     }
@@ -279,6 +282,7 @@ describe('namespace-client', () => {
     let firstCallbackComplete = false
 
     // Callback used for the namespace client - use done() to restrict the test
+    // eslint-disable-next-line
     const cb = (jolokiaPods: KubePod[], fullPodCount: number) => {
       if (!firstCallbackComplete) {
         /*
