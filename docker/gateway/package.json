@@ -29,7 +29,7 @@
     "express": "^4.21.0",
     "fetch-intercept": "^2.4.0",
     "helmet": "^6.0.0",
-    "http-proxy-middleware": "^3.0.2",
+    "http-proxy-middleware": "^3.0.3",
     "https": "^1.0.0",
     "jolokia.js": "^2.1.7",
     "jwt-decode": "^4.0.0",
