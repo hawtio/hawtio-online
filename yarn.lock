@@ -2036,7 +2036,7 @@ __metadata:
     method-override: "npm:^3.0.0"
     pino: "npm:^9.4.0"
     pino-http: "npm:^10.1.0"
-    pino-pretty: "npm:^11.2.1"
+    pino-pretty: "npm:^11.2.2"
     source-map-loader: "npm:^5.0.0"
     supertest: "npm:^7.0.0"
     ts-jest: "npm:^29.2.5"
@@ -12834,9 +12834,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino-pretty@npm:^11.2.1":
-  version: 11.2.1
-  resolution: "pino-pretty@npm:11.2.1"
+"pino-pretty@npm:^11.2.2":
+  version: 11.2.2
+  resolution: "pino-pretty@npm:11.2.2"
   dependencies:
     colorette: "npm:^2.0.7"
     dateformat: "npm:^4.6.3"
@@ -12854,7 +12854,7 @@ __metadata:
     strip-json-comments: "npm:^3.1.1"
   bin:
     pino-pretty: bin.js
-  checksum: 10/e53bc52e73512f8add5a6f58f4e7be6ae06e2ba71f4e1bf694ee5307b97ff8f9586b554464b3dc684f088282cfd646642836816c4b3238b7d14ae3de1e903d8a
+  checksum: 10/4a6409da8d7402f6134f0ce7da704e1c39b9f0bc9c2be815ddc5091f97962ee65eec677828c2570b5875e0d8562229a6274a542f25327cbfeeea1d6b20ab21e5
   languageName: node
   linkType: hard
 
