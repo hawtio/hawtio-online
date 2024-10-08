@@ -35,12 +35,12 @@ export class ObjectListImpl<T extends KubeObject> extends EventEmitter implement
       this.on(WatchActions.ANY, objects => {
         log.debug(this.kind, 'changed:', objects)
       })
-      // eslint-disable-next-line
+
       this.on(WatchActions.INIT, objects => {
         log.debug(this.kind, 'initialized')
       })
     }
-    // eslint-disable-next-line
+
     this.on(WatchActions.ANY, objects => {
       this.initialize()
     })

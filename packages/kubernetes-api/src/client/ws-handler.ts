@@ -100,7 +100,6 @@ export class WSHandlerImpl<T extends KubeObject> implements WSHandler<T> {
     if (this.socket) this.socket.send(data)
   }
 
-  // eslint-disable-next-line
   shouldClose(event: Event): boolean {
     if (this.destroyed && this.socket && this.socket.readyState === WebSocket.OPEN) {
       log.debug(
