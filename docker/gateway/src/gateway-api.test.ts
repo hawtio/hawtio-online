@@ -253,7 +253,6 @@ function appPost(uri: string, body: Record<string, unknown> | Record<string, unk
 describe.each([
   { title: 'proxyJolokiaAgentWithoutRbac', rbac: false },
   { title: 'proxyJolokiaAgentWithRbac', rbac: true },
-  // eslint-disable-next-line
 ])('$title', ({ title, rbac }) => {
   const testAuth = rbac ? 'RBAC Enabled' : 'RBAC Disabled'
 

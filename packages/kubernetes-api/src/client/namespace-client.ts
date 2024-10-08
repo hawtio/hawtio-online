@@ -124,7 +124,7 @@ export class NamespaceClient implements Paging {
      * Remove watchers for pods not in the slice of the filtered/sorted list
      */
     Object.entries(this._podWatchers)
-      .filter(([name, _]) => !pagedPods.includes(name)) // eslint-disable-line
+      .filter(([name, _]) => !pagedPods.includes(name))
       .forEach(([name, podWatcher]) => {
         log.debug(`[NamespaceClient ${this._namespace}]: deleting pod watcher [${name}]`)
 

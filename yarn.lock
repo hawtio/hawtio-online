@@ -1880,6 +1880,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eslint/compat@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@eslint/compat@npm:1.2.0"
+  peerDependencies:
+    eslint: ^9.10.0
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  checksum: 10/4896c417c1f197a6e9cc12592a661f0d91d73bdbb936785555c5bb81d2359a59fe90aac2422e7ce525e9dd5bb13227cbfec1263f9263591ccca200e9038057bf
+  languageName: node
+  linkType: hard
+
 "@eslint/config-array@npm:^0.18.0":
   version: 0.18.0
   resolution: "@eslint/config-array@npm:0.18.0"
@@ -2107,7 +2119,6 @@ __metadata:
     "@types/jsonpath": "npm:^0.2.4"
     "@types/node": "npm:^20.14.9"
     babel-jest: "npm:^29.6.1"
-    eslint-config-react-app: "npm:^7.0.1"
     eventemitter3: "npm:^5.0.1"
     jest: "npm:^29.6.1"
     jest-environment-jsdom: "npm:^29.6.1"
@@ -2176,7 +2187,6 @@ __metadata:
     "@types/jquery": "npm:^3.5.30"
     "@types/jsonpath": "npm:^0.2.4"
     babel-jest: "npm:^29.6.1"
-    eslint-config-react-app: "npm:^7.0.1"
     eventemitter3: "npm:^5.0.1"
     jest: "npm:^29.6.1"
     jest-environment-jsdom: "npm:^29.6.1"
@@ -2271,6 +2281,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hawtio/online-root@workspace:."
   dependencies:
+    "@eslint/compat": "npm:^1.2.0"
     "@eslint/js": "npm:^9.12.0"
     compression-webpack-plugin: "npm:^11.1.0"
     concurrently: "npm:^8.2.2"
@@ -2280,6 +2291,7 @@ __metadata:
     eslint-config-react-app: "npm:^7.0.1"
     eslint-plugin-import: "npm:^2.31.0"
     eslint-plugin-react-hooks: "npm:^4.6.2"
+    eslint-plugin-testing-library: "npm:^6.3.0"
     prettier: "npm:3.3.3"
     typescript-eslint: "npm:^8.8.0"
   languageName: unknown
@@ -8056,6 +8068,17 @@ __metadata:
   peerDependencies:
     eslint: ^7.5.0 || ^8.0.0
   checksum: 10/3b2f010b13fbffd9a2018815cdca7edfce64523d9263ed376b33bdc43fca297100dab755a40f5b8be0f8e76b44bc7883590acfa9016fbff20888d9ee67f964d0
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-testing-library@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "eslint-plugin-testing-library@npm:6.3.0"
+  dependencies:
+    "@typescript-eslint/utils": "npm:^5.58.0"
+  peerDependencies:
+    eslint: ^7.5.0 || ^8.0.0
+  checksum: 10/192b112f84f90cc7eee28965b3e7792e8d4cda71aa29690d8180f1ae9cd0e8d6a8851ee992d37285a76750f8638c04e76f768e1885168f060ca169b72ac9ec6c
   languageName: node
   linkType: hard
 

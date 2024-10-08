@@ -42,7 +42,6 @@ class FormAuthLoginService {
     fetchPath<void>(
       joinPaths(masterUri, 'api'),
       {
-        // eslint-disable-next-line
         success: async (_: string) => {
           log.debug('Connected to master uri api')
           callback.success()
