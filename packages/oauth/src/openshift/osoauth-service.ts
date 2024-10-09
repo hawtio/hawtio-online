@@ -36,6 +36,7 @@ interface UserObject {
 
 interface Headers {
   Authorization: string
+  'Content-Type': string
   'X-XSRF-TOKEN'?: string
 }
 
@@ -120,8 +121,10 @@ export class OSOAuthService implements OAuthProtoService {
           this.doLogout(config)
         }
 
+        // Include any requestConfig headers to ensure they are retained
         let headers: Headers = {
           Authorization: `Bearer ${this.userProfile.getToken()}`,
+          'Content-Type': 'application/json',
         }
 
         // For CSRF protection with Spring Security
@@ -134,7 +137,15 @@ export class OSOAuthService implements OAuthProtoService {
           }
         }
 
-        return [url, { headers, ...requestConfig }]
+        /*
+         * if requestConfig exists and already has a set of headers
+         */
+        if (requestConfig && requestConfig.headers) {
+          headers = { ...requestConfig.headers, ...headers }
+        }
+
+        // headers must be 2nd so that it overwrites headers property in requestConfig
+        return [url, { ...requestConfig, headers }]
       },
     })
   }

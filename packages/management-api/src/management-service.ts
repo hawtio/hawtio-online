@@ -1,6 +1,6 @@
 import { EventEmitter } from 'eventemitter3'
 import { ManagedPod } from './managed-pod'
-import { Connection, Connections, connectService } from '@hawtio/react'
+import { Connection, ConnectionTestResult, Connections, connectService, eventService } from '@hawtio/react'
 import {
   k8Service,
   k8Api,
@@ -389,7 +389,32 @@ export class ManagementService extends EventEmitter implements Paging {
       return
     }
 
-    connectService.connect(connection)
+    connectService
+      .testConnection(connection)
+      .then((result: ConnectionTestResult) => {
+        if (result.status !== 'reachable') {
+          const msg = `There was a problem connecting to the jolokia service ${connectName}`
+          log.error(msg)
+          eventService.notify({ type: 'danger', message: msg })
+          return
+        }
+
+        if (result.message.includes('auth failed')) {
+          const msg = `A problem occurred with authentication while trying to connect to the jolokia service ${connectName}`
+          log.error(msg)
+          eventService.notify({ type: 'danger', message: msg })
+          return
+        }
+
+        connectService.connect(connection)
+      })
+      .catch(error => {
+        const msg = `A problem occurred while trying to connect to the jolokia service ${connectName}`
+        log.error(msg)
+        log.error(error)
+        eventService.notify({ type: 'danger', message: msg })
+        return
+      })
   }
 
   /********************
