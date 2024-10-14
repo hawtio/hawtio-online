@@ -66,6 +66,9 @@ RUN mkdir -p /usr/share/nginx/html/online/osconsole && \
 
 COPY docker/nginx-gateway.conf.template docker/osconsole/config.sh docker/nginx.sh /
 
+# Copy include directory
+COPY docker/includes /etc/nginx/includes
+
 # Copy error pages
 COPY docker/hawtio-?0?.html /usr/share/nginx/html/
 

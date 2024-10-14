@@ -42,15 +42,7 @@ server {
       return 444;
     }
 
-    # Prevent click jacking attacks
-    add_header X-Frame-Options "SAMEORIGIN";
-
-    # Ensure only https is used for this server
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-
-    # Govern what content can be loaded by the server and from where
-    # Click jacking prevention to be used in addition to X-Frame-Options
-    add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
+    include /etc/nginx/includes/security-headers-common.conf;
 
     # Only accept newer ssl protocols
     ssl_protocols TLSv1.2 TLSv1.3;
@@ -79,22 +71,8 @@ server {
           return 200 "Acknowledge logout but nothing further to do";
         }
 
-        # Do not specify "storage" as local storage contains persistent data such as
-        # preferences and connections but without credentials.
-        add_header Clear-Site-Data "\"cache\", \"cookies\"";
-        add_header Cache-Control "no-store";
-
-        # Prevent click jacking attacks
-        # Note: must be re-declared since other headers have been added
-        add_header X-Frame-Options "SAMEORIGIN";
-
-        # Ensure only https is used for this server
-        # Note: must be re-declared since other headers have been added
-        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-
-        # Govern what content can be loaded by the server and from where
-        # Click jacking prevention to be used in addition to X-Frame-Options
-        add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
+        include /etc/nginx/includes/clear-storage-headers.conf;
+        include /etc/nginx/includes/security-headers-common.conf;
 
         proxy_pass                    https://localhost:${HAWTIO_ONLINE_GATEWAY_APP_PORT}/logout;
         proxy_pass_request_headers    on;
@@ -112,18 +90,7 @@ server {
     location /online {
         add_header location-rule ONLINE always;
 
-        # Prevent click jacking attacks
-        # Note: must be re-declared since other headers have been added
-        add_header X-Frame-Options "SAMEORIGIN";
-
-        # Ensure only https is used for this server
-        # Note: must be re-declared since other headers have been added
-        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-
-        # Govern what content can be loaded by the server and from where
-        # Click jacking prevention to be used in addition to X-Frame-Options
-        # Requires allowing inline-styles and inline data objects (svg imgs)
-        add_header Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; frame-ancestors 'self'; form-action 'self'; ";
+        include /etc/nginx/includes/security-headers-online.conf;
 
         alias     /usr/share/nginx/html/online;
         try_files $uri$args $uri /online/index.html;
@@ -138,17 +105,7 @@ server {
     location ~ ^/master/(.*) {
         add_header                    location-rule MASTER always;
 
-        # Prevent click jacking attacks
-        # Note: must be re-declared since other headers have been added
-        add_header X-Frame-Options "SAMEORIGIN";
-
-        # Ensure only https is used for this server
-        # Note: must be re-declared since other headers have been added
-        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-
-        # Govern what content can be loaded by the server and from where
-        # Click jacking prevention to be used in addition to X-Frame-Options
-        add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
+        include /etc/nginx/includes/security-headers-common.conf;
 
         proxy_pass                    https://localhost:${HAWTIO_ONLINE_GATEWAY_APP_PORT}/master/$1$is_args$args;
         proxy_pass_request_headers    on;
@@ -165,17 +122,7 @@ server {
     location /management {
         add_header                    location-rule MANAGEMENT always;
 
-        # Prevent click jacking attacks
-        # Note: must be re-declared since other headers have been added
-        add_header X-Frame-Options "SAMEORIGIN";
-
-        # Ensure only https is used for this server
-        # Note: must be re-declared since other headers have been added
-        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-
-        # Govern what content can be loaded by the server and from where
-        # Click jacking prevention to be used in addition to X-Frame-Options
-        add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'self'; form-action 'self'; ";
+        include /etc/nginx/includes/security-headers-common.conf;
 
         proxy_pass                    https://localhost:${HAWTIO_ONLINE_GATEWAY_APP_PORT}/management;
         proxy_pass_request_headers    on;
