@@ -1,8 +1,6 @@
-import { hawtio, HawtioPlugin, preferencesRegistry } from '@hawtio/react'
+import { hawtio, HawtioPlugin, connectService } from '@hawtio/react'
 import { pluginPath } from './globals'
 import { Discover } from './Discover'
-import { HeaderMenuDropDown } from './HeaderMenuDropDown'
-import { DiscoverPreferences } from './DiscoverPreferences'
 
 const pluginId = 'discover'
 const pluginTitle = 'Discover'
@@ -13,9 +11,10 @@ export const discover: HawtioPlugin = () => {
     title: pluginTitle,
     path: pluginPath,
     component: Discover,
-    headerItems: [{ component: HeaderMenuDropDown, universal: true }],
-    isActive: async () => true,
+    isActive: async () => {
+      // Only active is there is NO current connection
+      const connection = await connectService.getCurrentConnection()
+      return !connection
+    },
   })
-
-  preferencesRegistry.add(pluginId, pluginTitle, DiscoverPreferences)
 }
