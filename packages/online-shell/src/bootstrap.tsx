@@ -18,6 +18,7 @@ import ReactDOM from 'react-dom/client'
 import { discover } from './discover'
 import { reportWebVitals } from './reportWebVitals'
 import { HAWTIO_ONLINE_VERSION } from './constants'
+import { discoverCore } from './discover-core'
 
 configManager.addProductInfo('Hawtio Online', HAWTIO_ONLINE_VERSION)
 
@@ -38,7 +39,10 @@ springboot()
 
 // Register kubernetes & management - only then complete hawtio bootstrap
 isMgmtApiRegistered().then(() => {
-  // Register discover plugin
+  // Register discover-core plugin
+  discoverCore()
+
+  // Register discover UI plugin
   discover()
 
   // Bootstrap Hawtio
