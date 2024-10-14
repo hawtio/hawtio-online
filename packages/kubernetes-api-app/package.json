@@ -23,7 +23,7 @@
     "mini-css-extract-plugin": "2.9.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.1",
+    "react-router-dom": "^6.27.0",
     "typescript": "^5.4.5",
     "web-vitals": "^4.2.3"
   },
