@@ -24,6 +24,7 @@ import {
   isOptimisedMBeanInfo,
 } from './globals'
 import { isRecord, toStringArray } from '../utils'
+import { logger } from '../logger'
 
 interface JmxUnionRequest {
   type: string
@@ -511,6 +512,8 @@ export function check(request: MBeanRequest, role: string) {
 }
 
 function checkACLs(role: string, jolokia: JmxUnionRequest) {
+  logger.trace(`Checking ACLs for role ${role} on request ${jolokia.type}`)
+
   let rbac
   // lookup ACL by domain and type
   if (jolokia.properties && jolokia.properties.type) {
@@ -536,6 +539,8 @@ function checkACLs(role: string, jolokia: JmxUnionRequest) {
 }
 
 function checkACL(role: string, jolokia: JmxUnionRequest, name: string) {
+  logger.trace(`Checking ACL for role ${role} on request ${jolokia.type} named ${name}`)
+
   const acl = ACL[name]
   if (!acl) {
     return null
@@ -553,10 +558,17 @@ function checkACL(role: string, jolokia: JmxUnionRequest, name: string) {
     member = jolokia.type.toLowerCase()
   }
 
+  logger.trace(`Checking ACL member: ${member}`)
+
   if (Array.isArray(acl)) {
+    logger.trace(`Checking ACL isArray: ${acl}`)
+
     const entry = acl
       .map(a => Object.entries(a)[0])
-      .find(e => e[0] === member || (regex.test(e[0]) && new RegExp(e[0].slice(1, -1)).test(member)))
+      .find(e => {
+        if (e[0] === member) return true
+        return regex.test(e[0]) && new RegExp(e[0].slice(1, -1)).test(member)
+      })
     if (entry) {
       return checkRoles(role, jolokia, name, entry[0], entry[1])
     }
@@ -591,8 +603,16 @@ function checkACL(role: string, jolokia: JmxUnionRequest, name: string) {
 }
 
 function checkRoles(role: string, jolokia: JmxUnionRequest, name: string, key: string, roles: unknown) {
-  const allowed = { allowed: true, reason: `Role '${role}' allowed by '${name}[${key}]: ${roles}'` }
-  const denied = { allowed: false, reason: `Role '${role}' denied by '${name}[${key}]: ${roles}'` }
+  logger.trace(`CheckRoles role: ${role} name: ${name} key: ${key} roles ${roles} jolokia {type: ${jolokia.type}}`)
+
+  const allowed = {
+    allowed: true,
+    reason: `Role '${role}' allowed by '${name}[${key}]: ${roles}' for request {type: ${jolokia.type}, domain: ${jolokia.domain}}`,
+  }
+  const denied = {
+    allowed: false,
+    reason: `Role '${role}' denied by '${name}[${key}]: ${roles}' for request {type: ${jolokia.type}, domain: ${jolokia.domain}}`,
+  }
 
   if (typeof roles === 'string') {
     roles = roles
