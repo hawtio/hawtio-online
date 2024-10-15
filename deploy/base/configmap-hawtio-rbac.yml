@@ -1,3 +1,8 @@
+#
+# This file should be kept in sync with
+# /docker/gateway/public/ACL.yml
+#
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -59,6 +64,7 @@ data:
     # Default, generic rules, declared as an ordered map, so that the most specific keys
     # are tested first.
     default:
+      - version: admin, viewer
       - list: admin, viewer
       - read: admin, viewer
       - search: admin, viewer
