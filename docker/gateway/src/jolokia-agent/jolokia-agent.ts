@@ -57,6 +57,11 @@ function response(agentInfo: AgentInfo, res: SimpleResponse) {
     agentInfo.response.removeHeader('www-authenticate')
   }
 
+  /*
+   * Ensure that the response content-type is json
+   */
+  agentInfo.response.setHeader('content-type', 'application/json')
+
   agentInfo.response.status(res.status).send(res.body)
 }
 

@@ -1,10 +1,12 @@
 const express = require('express')
 const { createProxyMiddleware } = require('http-proxy-middleware')
 const pino = require('pino')
-const expressPinoLogger = require('express-pino-logger')
+const pinoHttpLogger = require('pino-http')
 
-const logger = pino({ level: process.env.LOG_LEVEL || 'info' })
-const expressLogger = expressPinoLogger(logger)
+const level = process.env.LOG_LEVEL || 'info'
+
+const logger = pino({ level: level })
+const expressLogger = pinoHttpLogger({ logger: logger })
 
 const app = express()
 app.use(expressLogger)

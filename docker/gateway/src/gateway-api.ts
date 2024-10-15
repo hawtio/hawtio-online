@@ -134,7 +134,7 @@ gatewayServer
   .get((req, res) => {
     proxyJolokiaAgent(req, res, gatewayOptions)
   })
-  .post(express.json({ type: '*/json', strict: false }), (req, res) => {
+  .post(express.json({ type: '*/json', limit: '50mb', strict: false }), (req, res) => {
     proxyJolokiaAgent(req, res, gatewayOptions)
   })
 
@@ -156,7 +156,8 @@ gatewayServer.route('*').all((req, res) => {
  *
  * Needs to be added last to avoid being overwritten by the proxy middleware
  */
-gatewayServer.use(express.json({ type: '*/json', strict: false }))
+gatewayServer.use(express.json({ type: '*/json', limit: '50mb', strict: false }))
+gatewayServer.use(express.urlencoded({ extended: false }))
 
 /*
  * Exports the running server for use in unit testing
