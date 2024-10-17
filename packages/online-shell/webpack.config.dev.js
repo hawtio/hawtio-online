@@ -260,6 +260,7 @@ module.exports = (env, argv) => {
           }
 
           if (!response.ok) {
+            console.log(`Error (dev-server): response was not ok`, response, await response.text())
             res.status(response.status).send(response.statusText)
           } else {
             var data
