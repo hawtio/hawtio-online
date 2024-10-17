@@ -22,7 +22,7 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
 #
 # The user id
 #
-ENV NODE_USER 999
+ENV NODE_USER 9999
 
 ENV NODE_MAJOR_VERSION 20
 ENV GATEWAY_DIR=/opt/hawtio-online-gateway
@@ -33,14 +33,20 @@ RUN microdnf -y install --setopt=tsflags=nodocs nodejs && microdnf clean all
 
 COPY --from=builder /hawtio-online-gateway/dist ${GATEWAY_DIR}/
 COPY docker/gateway/env.product ${GATEWAY_DIR}/
+COPY docker/gateway/gateway.sh ${GATEWAY_DIR}/
 
 #
-# Finalize permissions for nginx files
+# Finalize permissions for gateway files
 #
+RUN useradd -ms /bin/sh -u ${NODE_USER} gateway
 RUN chown -R ${NODE_USER} ${GATEWAY_DIR}
+RUN chmod 755 ${GATEWAY_DIR}/gateway.sh
+
+# Allow the environment to be updated by arbitrary image user
+RUN chmod 666 ${GATEWAY_DIR}/env.product
 
 USER ${NODE_USER}
 
 EXPOSE 3000
 
-CMD ["node", "--enable-source-maps", "--env-file=/opt/hawtio-online-gateway/env.product", "/opt/hawtio-online-gateway/gateway-api.js"]
+CMD ["/opt/hawtio-online-gateway/gateway.sh"]
