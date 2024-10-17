@@ -21,6 +21,24 @@ No additional effort should be required to install the gateway image from the [d
 
 Should there be a need to create a custom, development, version then the environment variable, `CUSTOM_GATEWAY_IMAGE` can be populated to change the image. However, bear in mind that the version of this image should always be the same as the hawtio online image so populating `CUSTOM_VERSION` will also require a latter image with that version.
 
+### Logging of the Deployment
+
+By default, the logging level of the gateway container log is set to 'info'. Should more
+information be required then this can be modified to either 'debug' or 'trace' by adding
+the environment variable `HAWTIO_ONLINE_GATEWAY_LOG_LEVEL` to the deployment:
+
+- `kubectl/oc edit deployment hawtio-online`: Open the deployment resource for editing
+- Add the environment variable `HAWTIO_ONLINE_GATEWAY_LOG_LEVEL` with the preferred level
+  to the `hawtio-online-gateway` container:
+  ```
+  - env:
+    - name: HAWTIO_ONLINE_RBAC_ACL
+    ...
+    - name: HAWTIO_ONLINE_GATEWAY_LOG_LEVEL
+      value: trace
+  ```
+- Save the edit and await the re-deployment of the pod.
+
 ## Development
 
 The project file for the gateway provides the following commands that will aid in development and testing of the image:
