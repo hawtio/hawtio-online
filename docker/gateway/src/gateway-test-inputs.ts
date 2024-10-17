@@ -289,7 +289,8 @@ export const testData = {
         arguments: ['50', 'value'],
       },
       response: {
-        reason: "Role 'viewer' denied by 'org.apache.karaf.bundle[update]: admin'",
+        reason:
+          "Role 'viewer' denied by 'org.apache.karaf.bundle[update]: admin' for request {type: exec, domain: org.apache.karaf}",
       },
     },
     bulkRequestWithViewerRole: {
@@ -346,7 +347,7 @@ export const testData = {
             operation: 'gc()',
           },
           status: 403,
-          reason: "Role 'viewer' denied by 'java.lang.Memory[gc]: admin'",
+          reason: "Role 'viewer' denied by 'java.lang.Memory[gc]: admin' for request {type: exec, domain: java.lang}",
         },
       ],
     },
@@ -358,7 +359,8 @@ export const testData = {
         arguments: ['0'],
       },
       response: {
-        reason: "Role 'viewer' denied by 'org.apache.karaf.bundle[update]: admin'",
+        reason:
+          "Role 'viewer' denied by 'org.apache.karaf.bundle[update]: admin' for request {type: exec, domain: org.apache.karaf}",
       },
     },
   },
