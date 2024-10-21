@@ -23,6 +23,7 @@ type LoginOptions = {
 
 interface Headers {
   Authorization: string
+  'Content-Type': string
   'X-XSRF-TOKEN'?: string
 }
 
@@ -122,11 +123,13 @@ export class FormService implements OAuthProtoService {
 
     log.debug('Intercept Fetch API to attach auth token to authorization header')
     this.fetchUnregister = fetchIntercept.register({
-      request: (url, config) => {
+      request: (url, requestConfig) => {
         log.debug('Fetch intercepted for oAuth authentication')
 
+        // Include any requestConfig headers to ensure they are retained
         let headers: Headers = {
           Authorization: `Bearer ${this.userProfile.getToken()}`,
+          'Content-Type': 'application/json',
         }
 
         // For CSRF protection with Spring Security
@@ -139,7 +142,15 @@ export class FormService implements OAuthProtoService {
           }
         }
 
-        return [url, { headers, ...config }]
+        /*
+         * if requestConfig exists and already has a set of headers
+         */
+        if (requestConfig && requestConfig.headers) {
+          headers = { ...requestConfig.headers, ...headers }
+        }
+
+        // headers must be 2nd so that it overwrites headers property in requestConfig
+        return [url, { ...requestConfig, headers }]
       },
     })
   }

@@ -6,6 +6,7 @@ const historyApiFallback = require('connect-history-api-fallback')
 const path = require('path')
 const url = require('url')
 const dotenv = require('dotenv')
+const express = require('express')
 const { common } = require('./webpack.config.common.js')
 
 // this will update the process.env with environment variables in .env file
@@ -121,6 +122,15 @@ module.exports = (env, argv) => {
           throw new Error('webpack-dev-server is not defined')
         }
 
+        /*
+         * Ensure that dev server properly handles json in request body
+         * Important to keep a high limit as the default of 100kb can be
+         * exceeded by request bodies resulting in the parser transmitting
+         * an empty body.
+         */
+        devServer.app.use(express.json({ type: '*/json', limit: '50mb', strict: false }))
+        devServer.app.use(express.urlencoded({ extended: false }))
+
         // Redirect / or /${publicPath} to /${publicPath}/
         devServer.app.get('/', (_, res) => res.redirect(`${publicPath}/`))
         devServer.app.get(`/${publicPath}$`, (_, res) => res.redirect(`${publicPath}/`))
@@ -193,15 +203,74 @@ module.exports = (env, argv) => {
         }
 
         /* Redirects from management alias path to full master path */
-        const management = (req, res, next) => {
+        const management = async (req, res, next) => {
           const url = /\/management\/namespaces\/(.+)\/pods\/(http|https):([^/]+)\/(.+)/
           const match = req.originalUrl.match(url)
           const redirectPath = `/master/api/v1/namespaces/${match[1]}/pods/${match[2]}:${match[3]}/proxy/${match[4]}`
-          if (match) {
-            // 307 - post redirect
-            res.redirect(307, redirectPath)
-          } else {
+          if (!match) {
             next()
+          }
+
+          /*
+           * Redirect will no longer work since fetch is being used by
+           * jolokia instead and request contains Content-Length header.
+           * So perform a sub-request instead on master to return the
+           * correct response
+           */
+          const origin = `http://localhost:${devPort}`
+          const uri = `${origin}${redirectPath}`
+
+          /*
+           * Ensure the authorization token is passed to the sub request
+           */
+          const headers = new Headers({
+            Authorization: req.get('Authorization'),
+          })
+
+          let response
+          if (req.method === 'GET') {
+            response = await fetch(uri, {
+              method: req.method,
+              headers: headers,
+            })
+          } else {
+            const body = req.body
+            const isEmptyObject = typeof body === 'object' && Object.keys(body).length === 0
+            const isEmptyArray = Array.isArray(body) && body.length === 0
+
+            let msg
+            if (!body) {
+              msg = `Error (dev-server): undefined body found in POST request ${redirectPath}`
+              console.warn(msg, body)
+            } else if (isEmptyArray) {
+              msg = `Error (dev-server): empty body array found in POST request ${redirectPath}`
+              console.warn(msg, body)
+            } else if (isEmptyObject) {
+              msg = `Error (dev-server): empty body object found in POST request ${redirectPath}`
+              console.warn(msg, body)
+            } else {
+              console.log(`Body in request ${redirectPath} to be passed to master`, body)
+            }
+
+            response = await fetch(uri, {
+              method: req.method,
+              body: JSON.stringify(body),
+              headers: headers,
+            })
+          }
+
+          if (!response.ok) {
+            res.status(response.status).send(response.statusText)
+          } else {
+            var data
+            try {
+              data = await response.json()
+            } catch (error) {
+              console.error('Error (dev-server): error response from master: ', error)
+              data = await response.text()
+            }
+
+            res.status(response.status).send(data)
           }
         }
 
