@@ -2024,7 +2024,7 @@ __metadata:
     "@types/cors": "npm:^2.8.17"
     "@types/express": "npm:^4.17.21"
     "@types/jest": "npm:^29.5.12"
-    "@types/jquery": "npm:^3.5.29"
+    "@types/jquery": "npm:^3.5.31"
     "@types/js-yaml": "npm:^4.0.9"
     "@types/method-override": "npm:^0.0.35"
     "@types/node": "npm:^20.14.9"
@@ -2115,7 +2115,7 @@ __metadata:
     "@hawtio/react": "npm:^1.5.0"
     "@testing-library/jest-dom": "npm:^6.5.0"
     "@types/jest": "npm:^29.5.12"
-    "@types/jquery": "npm:^3.5.30"
+    "@types/jquery": "npm:^3.5.31"
     "@types/jsonpath": "npm:^0.2.4"
     "@types/node": "npm:^20.14.9"
     babel-jest: "npm:^29.6.1"
@@ -2184,7 +2184,7 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": "npm:^1.5.0"
     "@types/jest": "npm:^29.5.12"
-    "@types/jquery": "npm:^3.5.29"
+    "@types/jquery": "npm:^3.5.31"
     "@types/jsonpath": "npm:^0.2.4"
     babel-jest: "npm:^29.6.1"
     eventemitter3: "npm:^5.0.1"
@@ -2255,7 +2255,7 @@ __metadata:
     "@hawtio/react": "npm:^1.5.0"
     "@thumbmarkjs/thumbmarkjs": "npm:^0.14.8"
     "@types/jest": "npm:^29.5.12"
-    "@types/jquery": "npm:^3.5.29"
+    "@types/jquery": "npm:^3.5.31"
     babel-jest: "npm:^29.6.1"
     fetch-intercept: "npm:^2.4.0"
     jest: "npm:^29.6.1"
@@ -3939,21 +3939,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jquery@npm:^3.5.29":
-  version: 3.5.29
-  resolution: "@types/jquery@npm:3.5.29"
-  dependencies:
-    "@types/sizzle": "npm:*"
-  checksum: 10/364facf2cb0bc935cb4b7f4af0b12c8e901b02b08a85af213172485166123b10aad8563f8e51e363f65a778c4105a59a64dedd0b0fd73f96557219d46477af56
-  languageName: node
-  linkType: hard
-
 "@types/jquery@npm:^3.5.30":
   version: 3.5.30
   resolution: "@types/jquery@npm:3.5.30"
   dependencies:
     "@types/sizzle": "npm:*"
   checksum: 10/5287586be022bfe85d411733b35f8f0ae8577c4afb5a94ff0e157d2c1036e10adfdd15ed80becb06f01647c39be5dbb24a45cba10db3fa6304eb442fa509321e
+  languageName: node
+  linkType: hard
+
+"@types/jquery@npm:^3.5.31":
+  version: 3.5.31
+  resolution: "@types/jquery@npm:3.5.31"
+  dependencies:
+    "@types/sizzle": "npm:*"
+  checksum: 10/c14b3db4d2c34eb44b30ae119f1983d9d94231a02d44357b08f3ef406852c777edd928eb35875e879515a96eb8eb2188ed5572a0de35f322019bf6de858ce610
   languageName: node
   linkType: hard
 
