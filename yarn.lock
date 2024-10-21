@@ -2043,7 +2043,7 @@ __metadata:
     cors: "npm:^2.8.5"
     express: "npm:^4.21.0"
     fetch-intercept: "npm:^2.4.0"
-    helmet: "npm:^6.0.0"
+    helmet: "npm:^8.0.0"
     http-proxy-middleware: "npm:^3.0.3"
     https: "npm:^1.0.0"
     jest: "npm:^29.6.1"
@@ -9250,10 +9250,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"helmet@npm:^6.0.0":
-  version: 6.2.0
-  resolution: "helmet@npm:6.2.0"
-  checksum: 10/f112fcd0d8494e6c8ad10e9307e182f1be9c9c4917a3f9a3718c13ae120d4c4e1f251e735297d6a9266e068dcc0463ab101c8d7f2b809c0ceabcef4681f81a2a
+"helmet@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "helmet@npm:8.0.0"
+  checksum: 10/cf30579d1dbd095e301458265fb6b3446d1ee0598c99b5e946afda8a72c035a6a7ebf2176168d5ca2541e6e522a88fb58d06f0eeec4ab378646960de9aea6584
   languageName: node
   linkType: hard
 
