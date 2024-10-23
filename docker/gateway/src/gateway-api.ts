@@ -1,6 +1,6 @@
 /* jshint node: true */
 import express from 'express'
-import { createProxyMiddleware } from 'http-proxy-middleware'
+import { createProxyMiddleware, responseInterceptor } from 'http-proxy-middleware'
 import helmet from 'helmet'
 import methodOverride from 'method-override'
 import cors from 'cors'
@@ -11,6 +11,7 @@ import { logger, expressLogger } from './logger'
 import { proxyMasterGuard } from './master-guard'
 import { proxyJolokiaAgent } from './jolokia-agent'
 import { GatewayOptions } from './globals'
+import { maskIPAddresses } from './utils'
 
 const environment = process.env.NODE_ENV || 'development'
 const port = process.env.HAWTIO_ONLINE_GATEWAY_APP_PORT || 3000
@@ -114,6 +115,10 @@ gatewayServer.use(
     changeOrigin: false,
     ws: true,
     secure: false,
+    /**
+     * IMPORTANT: avoid res.end being called automatically
+     **/
+    selfHandleResponse: true,
 
     pathFilter: (path, _) => {
       const result = proxyMasterGuard('/master' + path)
@@ -122,6 +127,16 @@ gatewayServer.use(
 
     pathRewrite: (path, _) => {
       return path.replace('/master', '')
+    },
+
+    /**
+     * Intercept response
+     **/
+    on: {
+      proxyRes: responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
+        const jsonStr = responseBuffer.toString('utf8')
+        return maskIPAddresses(jsonStr)
+      }),
     },
   }),
 )
