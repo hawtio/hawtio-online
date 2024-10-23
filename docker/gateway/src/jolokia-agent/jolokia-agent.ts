@@ -5,7 +5,7 @@ import * as fs from 'fs'
 import { JolokiaRequest as MBeanRequest } from 'jolokia.js'
 import { logger } from '../logger'
 import { GatewayOptions } from '../globals'
-import { isObject, isError } from '../utils'
+import { isObject, isError, maskIPAddresses } from '../utils'
 import {
   AgentInfo,
   InterceptedResponse,
@@ -62,7 +62,9 @@ function response(agentInfo: AgentInfo, res: SimpleResponse) {
    */
   agentInfo.response.setHeader('content-type', 'application/json')
 
-  agentInfo.response.status(res.status).send(res.body)
+  const maskedResponse = maskIPAddresses(res.body)
+
+  agentInfo.response.status(res.status).send(maskedResponse)
 }
 
 function reject(status: number, body: Record<string, string>): Promise<SimpleResponse> {
