@@ -31,3 +31,15 @@ export function toStringArray(value: unknown): string[] {
 export function isError(obj: unknown): obj is Error {
   return obj instanceof Error
 }
+
+// IP Address Regex Matcher
+const ipPattern =
+  /\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/gm
+
+export function maskIPAddresses(obj: string | object): string {
+  let jsonStr
+  if (isObject(obj)) jsonStr = JSON.stringify(obj)
+  else jsonStr = obj
+
+  return jsonStr.replaceAll(ipPattern, '<masked>')
+}
