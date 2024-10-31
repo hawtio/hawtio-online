@@ -19,6 +19,11 @@ export const discoverCore: HawtioPlugin = () => {
     id: pluginId,
     title: pluginTitle,
     headerItems: [{ component: HeaderMenuDropDown, universal: true }],
+    /*
+     * order must be bigger (low priority) than discover-core
+     * to ensure it is not the default
+     */
+    order: 200,
     isActive: async () => true,
   })
 

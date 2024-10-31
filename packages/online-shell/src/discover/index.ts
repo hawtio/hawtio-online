@@ -11,6 +11,11 @@ export const discover: HawtioPlugin = () => {
     title: pluginTitle,
     path: pluginPath,
     component: Discover,
+    /*
+     * order must be smaller (higher priority) than discover-core
+     * to ensure it is the default
+     */
+    order: 31,
     isActive: async () => {
       // Only active is there is NO current connection
       const connection = await connectService.getCurrentConnection()
