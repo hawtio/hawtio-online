@@ -39,7 +39,7 @@
     "@hawtio/react": "^1.5.0",
     "@patternfly/react-core": "^5.3.3",
     "@patternfly/react-styles": "^5.3.1",
-    "@types/node": "^20.14.9",
+    "@types/node": "^22.8.7",
     "@types/react": "18.3.5",
     "@types/react-dom": "^18.3.0",
     "jquery-match-height": "^0.7.2",
