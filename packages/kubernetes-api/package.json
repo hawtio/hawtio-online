@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@hawtio/online-oauth": "workspace:*",
-    "@hawtio/react": "^1.5.0",
+    "@hawtio/react": "^1.6.1",
     "@types/jquery": "^3.5.31",
     "@types/jsonpath": "^0.2.4",
     "@types/node": "^20.14.9",

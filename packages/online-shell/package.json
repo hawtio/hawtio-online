@@ -36,7 +36,7 @@
     "@hawtio/online-kubernetes-api": "workspace:*",
     "@hawtio/online-management-api": "workspace:*",
     "@hawtio/online-oauth": "workspace:*",
-    "@hawtio/react": "^1.5.0",
+    "@hawtio/react": "^1.6.1",
     "@patternfly/react-core": "^5.3.3",
     "@patternfly/react-styles": "^5.3.1",
     "@types/node": "^20.14.9",
