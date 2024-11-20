@@ -2081,7 +2081,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^5.3.1"
     "@types/node": "npm:^20.14.9"
     "@types/react": "npm:18.3.5"
-    "@types/react-dom": "npm:^18.3.0"
+    "@types/react-dom": "npm:^18.3.1"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^8.1.0"
@@ -2151,7 +2151,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^5.3.1"
     "@types/node": "npm:^20.14.9"
     "@types/react": "npm:18.3.5"
-    "@types/react-dom": "npm:^18.3.0"
+    "@types/react-dom": "npm:^18.3.1"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^8.1.0"
@@ -2220,7 +2220,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^5.3.1"
     "@types/node": "npm:^20.14.9"
     "@types/react": "npm:18.3.5"
-    "@types/react-dom": "npm:^18.3.0"
+    "@types/react-dom": "npm:^18.3.1"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^8.1.0"
@@ -2313,7 +2313,7 @@ __metadata:
     "@patternfly/react-styles": "npm:^5.3.1"
     "@types/node": "npm:^20.14.9"
     "@types/react": "npm:18.3.5"
-    "@types/react-dom": "npm:^18.3.0"
+    "@types/react-dom": "npm:^18.3.1"
     babel-loader: "npm:^9.2.1"
     connect-history-api-fallback: "npm:^2.0.0"
     copy-webpack-plugin: "npm:^12.0.2"
@@ -4127,15 +4127,6 @@ __metadata:
   version: 1.2.6
   resolution: "@types/range-parser@npm:1.2.6"
   checksum: 10/22decf0fa30a5fb5b26b9d30052c8eca1dddf55449c87031c8d58a4e2e75c606d7bab6a1409988c96f774eb0ebf814147d47c76487d1d0d83441f1ab26bd5d6a
-  languageName: node
-  linkType: hard
-
-"@types/react-dom@npm:^18.3.0":
-  version: 18.3.0
-  resolution: "@types/react-dom@npm:18.3.0"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 10/6ff53f5a7b7fba952a68e114d3b542ebdc1e87a794234785ebab0bcd9bde7fb4885f21ebaf93d26dc0a1b5b93287f42cad68b78ae04dddf6b20da7aceff0beaf
   languageName: node
   linkType: hard
 
