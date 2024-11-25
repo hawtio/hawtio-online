@@ -2056,7 +2056,7 @@ __metadata:
     ts-node: "npm:^10.9.2"
     tsconfig-paths-webpack-plugin: "npm:^4.1.0"
     tsup: "npm:^8.2.4"
-    typescript: "npm:^5.4.5"
+    typescript: "npm:^5.7.2"
     webpack: "npm:^5.95.0"
     webpack-cli: "npm:^5.1.4"
     yaml: "npm:^2.4.3"
@@ -2098,7 +2098,7 @@ __metadata:
     style-loader: "npm:^4.0.0"
     ts-loader: "npm:^9.5.1"
     tsconfig-paths-webpack-plugin: "npm:^4.1.0"
-    typescript: "npm:^5.4.5"
+    typescript: "npm:^5.7.2"
     web-vitals: "npm:^4.2.3"
     webpack: "npm:^5.95.0"
     webpack-cli: "npm:^5.1.4"
@@ -2132,7 +2132,7 @@ __metadata:
     ts-jest: "npm:^29.2.5"
     ts-node: "npm:^10.9.2"
     tsup: "npm:^8.2.4"
-    typescript: "npm:^5.4.5"
+    typescript: "npm:^5.7.2"
   peerDependencies:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
@@ -2168,7 +2168,7 @@ __metadata:
     style-loader: "npm:^4.0.0"
     ts-loader: "npm:^9.5.1"
     tsconfig-paths-webpack-plugin: "npm:^4.1.0"
-    typescript: "npm:^5.4.5"
+    typescript: "npm:^5.7.2"
     web-vitals: "npm:^4.2.3"
     webpack: "npm:^5.95.0"
     webpack-cli: "npm:^5.1.4"
@@ -2201,7 +2201,7 @@ __metadata:
     ts-jest: "npm:^29.2.5"
     ts-node: "npm:^10.9.2"
     tsup: "npm:^8.2.4"
-    typescript: "npm:^5.4.5"
+    typescript: "npm:^5.7.2"
   peerDependencies:
     react: ^16.8 || ^17 || ^18
     react-dom: ^16.8 || ^17 || ^18
@@ -2238,7 +2238,7 @@ __metadata:
     style-loader: "npm:^4.0.0"
     ts-loader: "npm:^9.5.1"
     tsconfig-paths-webpack-plugin: "npm:^4.1.0"
-    typescript: "npm:^5.4.5"
+    typescript: "npm:^5.7.2"
     url: "npm:^0.11.4"
     web-vitals: "npm:^4.2.3"
     webpack: "npm:^5.95.0"
@@ -2269,7 +2269,7 @@ __metadata:
     ts-jest: "npm:^29.2.5"
     ts-node: "npm:^10.9.2"
     tsup: "npm:^8.2.4"
-    typescript: "npm:^5.4.5"
+    typescript: "npm:^5.7.2"
     whatwg-fetch: "npm:^3.6.20"
   peerDependencies:
     react: ^16.8 || ^17 || ^18
@@ -2338,7 +2338,7 @@ __metadata:
     style-loader: "npm:^4.0.0"
     ts-loader: "npm:^9.5.1"
     tsconfig-paths-webpack-plugin: "npm:^4.1.0"
-    typescript: "npm:^5.4.5"
+    typescript: "npm:^5.7.2"
     url: "npm:^0.11.4"
     web-vitals: "npm:^4.2.3"
     webpack: "npm:^5.95.0"
@@ -15501,6 +15501,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^5.7.2":
+  version: 5.7.2
+  resolution: "typescript@npm:5.7.2"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10/4caa3904df69db9d4a8bedc31bafc1e19ffb7b24fbde2997a1633ae1398d0de5bdbf8daf602ccf3b23faddf1aeeb9b795223a2ed9c9a4fdcaf07bfde114a401a
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@npm%3A^4.6.4 || ^5.0.0#optional!builtin<compat/typescript>":
   version: 5.2.2
   resolution: "typescript@patch:typescript@npm%3A5.2.2#optional!builtin<compat/typescript>::version=5.2.2&hash=f3b441"
@@ -15518,6 +15528,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10/760f7d92fb383dbf7dee2443bf902f4365db2117f96f875cf809167f6103d55064de973db9f78fe8f31ec08fff52b2c969aee0d310939c0a3798ec75d0bca2e1
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A^5.7.2#optional!builtin<compat/typescript>":
+  version: 5.7.2
+  resolution: "typescript@patch:typescript@npm%3A5.7.2#optional!builtin<compat/typescript>::version=5.7.2&hash=379a07"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10/ff27fc124bceb8969be722baa38af945b2505767cf794de3e2715e58f61b43780284060287d651fcbbdfb6f917f4653b20f4751991f17e0706db389b9bb3f75d
   languageName: node
   linkType: hard
 
