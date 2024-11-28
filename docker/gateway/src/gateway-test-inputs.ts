@@ -119,47 +119,52 @@ export const testData = {
           ],
         },
         value: {
-          'gc()': {
-            CanInvoke: true,
-            Method: 'gc()',
-            ObjectName: 'java.lang:type=Memory',
+          'java.lang:type=Memory': {
+            'gc()': {
+              CanInvoke: true,
+              Method: 'gc()',
+              ObjectName: 'java.lang:type=Memory',
+            },
           },
-          'addOrUpdateRoutesFromXml(java.lang.String)': {
-            CanInvoke: true,
-            Method: 'addOrUpdateRoutesFromXml(java.lang.String)',
-            ObjectName:
-              'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
-          },
-          'addOrUpdateRoutesFromXml(java.lang.String,boolean)': {
-            CanInvoke: true,
-            Method: 'addOrUpdateRoutesFromXml(java.lang.String,boolean)',
-            ObjectName:
-              'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
-          },
-          'dumpStatsAsXml(boolean)': {
-            CanInvoke: true,
-            Method: 'dumpStatsAsXml(boolean)',
-            ObjectName:
-              'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
-          },
-          'getCamelId()': {
-            CanInvoke: true,
-            Method: 'getCamelId()',
-            ObjectName:
-              'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
-          },
-          'getRedeliveries()': {
-            CanInvoke: true,
-            Method: 'getRedeliveries()',
-            ObjectName:
-              'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
-          },
-          'sendStringBody(java.lang.String,java.lang.String)': {
-            CanInvoke: true,
-            Method: 'sendStringBody(java.lang.String,java.lang.String)',
-            ObjectName:
-              'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
-          },
+          'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context':
+            {
+              'addOrUpdateRoutesFromXml(java.lang.String)': {
+                CanInvoke: true,
+                Method: 'addOrUpdateRoutesFromXml(java.lang.String)',
+                ObjectName:
+                  'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
+              },
+              'addOrUpdateRoutesFromXml(java.lang.String,boolean)': {
+                CanInvoke: true,
+                Method: 'addOrUpdateRoutesFromXml(java.lang.String,boolean)',
+                ObjectName:
+                  'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
+              },
+              'dumpStatsAsXml(boolean)': {
+                CanInvoke: true,
+                Method: 'dumpStatsAsXml(boolean)',
+                ObjectName:
+                  'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
+              },
+              'getCamelId()': {
+                CanInvoke: true,
+                Method: 'getCamelId()',
+                ObjectName:
+                  'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
+              },
+              'getRedeliveries()': {
+                CanInvoke: true,
+                Method: 'getRedeliveries()',
+                ObjectName:
+                  'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
+              },
+              'sendStringBody(java.lang.String,java.lang.String)': {
+                CanInvoke: true,
+                Method: 'sendStringBody(java.lang.String,java.lang.String)',
+                ObjectName:
+                  'org.apache.camel:context=io.fabric8.quickstarts.karaf-camel-log-log-example-context,name="log-example-context",type=context',
+              },
+            },
         },
         timestamp: 1718286845551,
       },

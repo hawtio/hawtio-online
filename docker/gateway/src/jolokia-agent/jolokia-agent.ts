@@ -21,6 +21,10 @@ import * as RBAC from './rbac'
 
 const aclFile = fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || `${__dirname}/ACL.yaml`, 'utf8')
 const aclYaml = yaml.parse(aclFile)
+
+logger.trace('=== imported ACL yaml ===')
+logger.trace(aclYaml)
+
 RBAC.initACL(aclYaml)
 
 let isRbacEnabled = typeof process.env['HAWTIO_ONLINE_RBAC_ACL'] !== 'undefined'
