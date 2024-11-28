@@ -2,12 +2,14 @@ import * as yaml from 'yaml'
 import * as fs from 'fs'
 import * as rbac from './rbac'
 import {
+  BulkValue,
   MBeanInfoCache,
   OptimisedJmxDomains,
   OptimisedMBeanOperations,
   hasMBeanOperation,
   isOptimisedCachedDomains,
 } from './globals'
+import { ExecRequest } from 'jolokia.js'
 
 const aclFile = fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || `${__dirname}/ACL.yaml`, 'utf8')
 const aclYaml = yaml.parse(aclFile)
@@ -286,5 +288,46 @@ describe('parseProperties', function () {
     expect(rbac.testing.parseProperties('type=Memory')).toEqual({
       type: 'Memory',
     })
+  })
+})
+
+describe('bulk-intercept-responses', () => {
+  it('should handle bulk intercepts correctly', () => {
+    const ctx1 = 'org.apache.camel:context=MyCamel,type=context,name="MyCamel"'
+    const ctx2 = 'org.apache.camel:context=MyCamel,type=consumers,name=TimerConsumer(0x6a04d2a4)'
+
+    const arg: Record<string, string[]> = {}
+    arg[ctx1] = ['stop()', 'getGlobalOptions()', 'reset()', 'reset(boolean)']
+    arg[ctx2] = ['getState()', 'stop()', 'getInflightExchanges()', 'getServiceType()', 'getRunLoggingLevel()']
+
+    const request: ExecRequest = {
+      type: 'exec',
+      mbean: 'hawtio:type=security,area=jmx,name=HawtioOnlineRBAC',
+      operation: 'canInvoke(java.util.Map)',
+      arguments: [arg],
+    }
+
+    const mbeansFile = fs.readFileSync(`${__dirname}/test.domainMBeans.json`, 'utf8')
+    const mbeans = JSON.parse(mbeansFile)
+
+    const intercepted = rbac.intercept(request, admin, mbeans)
+
+    expect(intercepted.response?.value).toBeDefined()
+    const value = intercepted.response?.value as Record<string, Record<string, BulkValue>>
+    expect(Object.getOwnPropertyNames(value)).toHaveLength(2)
+
+    expect(value[ctx1]).toBeDefined()
+    expect(Object.getOwnPropertyNames(value[ctx1])).toHaveLength(arg[ctx1].length)
+    let stopOp = value[ctx1]['stop()']
+    expect(stopOp).toBeDefined()
+    expect(stopOp.CanInvoke).toBeTruthy()
+    expect(stopOp.ObjectName).toBe(ctx1)
+
+    expect(value[ctx2]).toBeDefined()
+    expect(Object.getOwnPropertyNames(value[ctx2])).toHaveLength(arg[ctx2].length)
+    stopOp = value[ctx2]['stop()']
+    expect(stopOp).toBeDefined()
+    expect(stopOp.CanInvoke).toBeTruthy()
+    expect(stopOp.ObjectName).toBe(ctx2)
   })
 })

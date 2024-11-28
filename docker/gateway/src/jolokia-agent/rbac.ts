@@ -90,6 +90,13 @@ function isExecRBACRegistryList(request: MBeanRequest) {
 
 // ===== intercept =========================================
 export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomains): Intercepted {
+  logger.trace(`Calling intercept on mbean request`)
+  logger.trace(`Intercept role: ${role}`)
+  logger.trace(`Intercept request:`)
+  logger.trace(request)
+  logger.trace(`Intercept mbeans:`)
+  logger.trace(mbeans)
+
   const intercepted = (value: unknown) => ({
     intercepted: true,
     request: request,
@@ -112,6 +119,8 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
 
   // Intercept client-side RBAC canInvoke(java.lang.String) request
   if (isCanInvokeRequest(request) && isArgumentExecRequest(request)) {
+    logger.trace('Intercept: canInvokeRequest')
+
     const args: unknown[] = request.arguments || []
     if (args.length > 0) {
       const mbean = args[0] as string
@@ -169,6 +178,9 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
 
   // Intercept client-side RBAC canInvoke(java.util.Map) request
   if (isBulkCanInvokeRequest(request) && isArgumentExecRequest(request)) {
+    logger.trace(
+      `Intercept: processing a bulk request ${request.mbean} ${!request.arguments ? '<No arguments>' : request.arguments[0]}`,
+    )
     const args: unknown[] = request.arguments || []
     if (args.length > 0 && isRecord(args[0])) {
       const argEntries = Object.entries(args[0])
@@ -178,20 +190,29 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
         const mbean = argEntry[0]
         const operations = toStringArray(argEntry[1])
 
+        const opValues: Record<string, unknown> = {}
         operations.forEach(operation => {
+          logger.trace(`Intercept: testing operation ${operation} => canInvoke: ${canInvoke(mbean, operation, role)}`)
+
           const bulkValue: BulkValue = {
             CanInvoke: canInvoke(mbean, operation, role),
             Method: operation,
             ObjectName: mbean,
           }
-          value[operation] = bulkValue
+          opValues[operation] = bulkValue
         })
+
+        value[mbean] = opValues
       })
+
+      logger.trace('Intercept: bulk result')
+      logger.trace(intercepted(value))
       return intercepted(value)
     }
   }
 
   if (rbacRegistryEnabled) {
+    logger.trace(`Intercept: RBAC registry enabled: ${rbacRegistryEnabled}`)
     // Intercept client-side RBACRegistry discovery request
     if (isListRBACRegistry(request)) {
       return intercepted({
@@ -209,6 +230,7 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
 
     // Intercept client-side optimised list MBeans request
     if (isExecRBACRegistryList(request)) {
+      logger.trace(`Intercept: registry list request`)
       return intercepted(optimisedMBeans(mbeans, role))
     }
   }
