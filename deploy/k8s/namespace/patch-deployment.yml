@@ -19,3 +19,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+        - name: hawtio-online-gateway
+          env:
+            - name: HAWTIO_ONLINE_AUTH
+              value: form
