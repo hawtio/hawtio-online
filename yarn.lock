@@ -1927,10 +1927,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.12.0, @eslint/js@npm:^9.12.0":
+"@eslint/js@npm:9.12.0":
   version: 9.12.0
   resolution: "@eslint/js@npm:9.12.0"
   checksum: 10/c4ec9f7ff664f778324002bccdfd63e4a563018e4d7efc838d8149898f9df8649fbc51a379c3d7deea40da4fba9e8e62f39f2df3ff2b9616e2241bbfc10456b0
+  languageName: node
+  linkType: hard
+
+"@eslint/js@npm:^9.18.0":
+  version: 9.18.0
+  resolution: "@eslint/js@npm:9.18.0"
+  checksum: 10/364a7d030dad9dbda1458d8dbcea0199fe7d48bcfefe4b49389df6c45cdc5a2449f70e5d8a794e46ed9fb34af3fe5a3f53e30020d306b6ee791e2a1b2b9fa25f
   languageName: node
   linkType: hard
 
@@ -2282,7 +2289,7 @@ __metadata:
   resolution: "@hawtio/online-root@workspace:."
   dependencies:
     "@eslint/compat": "npm:^1.2.0"
-    "@eslint/js": "npm:^9.12.0"
+    "@eslint/js": "npm:^9.18.0"
     compression-webpack-plugin: "npm:^11.1.0"
     concurrently: "npm:^8.2.2"
     cz-conventional-changelog: "npm:3.3.0"
