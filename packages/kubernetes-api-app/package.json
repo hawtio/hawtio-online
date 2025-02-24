@@ -25,7 +25,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
     "typescript": "^5.7.3",
-    "web-vitals": "^4.2.3"
+    "web-vitals": "^4.2.4"
   },
   "devDependencies": {
     "connect-history-api-fallback": "^2.0.0",
