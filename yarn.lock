@@ -2085,7 +2085,7 @@ __metadata:
     "@patternfly/react-core": "npm:^5.3.3"
     "@patternfly/react-styles": "npm:^5.3.1"
     "@patternfly/react-table": "npm:^5.3.3"
-    "@patternfly/react-tokens": "npm:^5.3.1"
+    "@patternfly/react-tokens": "npm:^6.1.0"
     "@types/node": "npm:^20.14.9"
     "@types/react": "npm:18.3.5"
     "@types/react-dom": "npm:^18.3.0"
@@ -2155,7 +2155,7 @@ __metadata:
     "@patternfly/react-core": "npm:^5.3.3"
     "@patternfly/react-styles": "npm:^5.3.1"
     "@patternfly/react-table": "npm:^5.3.3"
-    "@patternfly/react-tokens": "npm:^5.3.1"
+    "@patternfly/react-tokens": "npm:^6.1.0"
     "@types/node": "npm:^20.14.9"
     "@types/react": "npm:18.3.5"
     "@types/react-dom": "npm:^18.3.0"
@@ -2224,7 +2224,7 @@ __metadata:
     "@patternfly/react-core": "npm:^5.3.1"
     "@patternfly/react-styles": "npm:^5.3.0"
     "@patternfly/react-table": "npm:^5.3.1"
-    "@patternfly/react-tokens": "npm:^5.3.1"
+    "@patternfly/react-tokens": "npm:^6.1.0"
     "@types/node": "npm:^20.14.9"
     "@types/react": "npm:18.3.5"
     "@types/react-dom": "npm:^18.3.0"
@@ -2999,6 +2999,13 @@ __metadata:
   version: 5.3.1
   resolution: "@patternfly/react-tokens@npm:5.3.1"
   checksum: 10/bdc63babf07969f6c959ee6f8368239fe00090ac39b265961130638dad613b3680ba7f660805c73d1a7a83baf84d74293f3f071bbc6d8f5b4fc43dcbd6e6dd11
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-tokens@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@patternfly/react-tokens@npm:6.1.0"
+  checksum: 10/f282ef839526ad094b878cd159741fd5fbba5c86abc4e9c5ed205fc56b28886319e9696f70b1b65a534a9d9f0a5b9d224f5eaff0bf9de900aefe055ac8238c1f
   languageName: node
   linkType: hard
 
