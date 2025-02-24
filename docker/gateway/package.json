@@ -31,7 +31,7 @@
     "helmet": "^8.0.0",
     "http-proxy-middleware": "^3.0.3",
     "https": "^1.0.0",
-    "jolokia.js": "^2.1.7",
+    "jolokia.js": "^2.2.3",
     "jwt-decode": "^4.0.0",
     "method-override": "^3.0.0",
     "pino": "^9.6.0",
