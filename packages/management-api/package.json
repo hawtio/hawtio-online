@@ -40,7 +40,7 @@
     "typescript": "^5.7.3"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.13",
+    "@types/jest": "^29.5.14",
     "@types/jquery": "^3.5.31",
     "@types/jsonpath": "^0.2.4",
     "babel-jest": "^29.6.1",

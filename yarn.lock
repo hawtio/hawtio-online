@@ -2030,7 +2030,7 @@ __metadata:
   dependencies:
     "@types/cors": "npm:^2.8.17"
     "@types/express": "npm:^4.17.21"
-    "@types/jest": "npm:^29.5.13"
+    "@types/jest": "npm:^29.5.14"
     "@types/jquery": "npm:^3.5.31"
     "@types/js-yaml": "npm:^4.0.9"
     "@types/method-override": "npm:^0.0.35"
@@ -2121,7 +2121,7 @@ __metadata:
     "@hawtio/online-oauth": "workspace:*"
     "@hawtio/react": "npm:^1.6.2"
     "@testing-library/jest-dom": "npm:^6.6.3"
-    "@types/jest": "npm:^29.5.13"
+    "@types/jest": "npm:^29.5.14"
     "@types/jquery": "npm:^3.5.31"
     "@types/jsonpath": "npm:^0.2.4"
     "@types/node": "npm:^20.14.9"
@@ -2190,7 +2190,7 @@ __metadata:
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": "npm:^1.6.2"
-    "@types/jest": "npm:^29.5.13"
+    "@types/jest": "npm:^29.5.14"
     "@types/jquery": "npm:^3.5.31"
     "@types/jsonpath": "npm:^0.2.4"
     babel-jest: "npm:^29.6.1"
@@ -2261,7 +2261,7 @@ __metadata:
   dependencies:
     "@hawtio/react": "npm:^1.6.2"
     "@thumbmarkjs/thumbmarkjs": "npm:^0.19.1"
-    "@types/jest": "npm:^29.5.13"
+    "@types/jest": "npm:^29.5.14"
     "@types/jquery": "npm:^3.5.31"
     babel-jest: "npm:^29.6.1"
     fetch-intercept: "npm:^2.4.0"
@@ -3944,6 +3944,16 @@ __metadata:
     expect: "npm:^29.0.0"
     pretty-format: "npm:^29.0.0"
   checksum: 10/7d6e3e4ef4b1cab0f61270d55764709512fdfbcb1bd47c0ef44117d48490529c1f264dacf3440b9188363e99e290b80b79c529eadc3af2184116a90f6856b192
+  languageName: node
+  linkType: hard
+
+"@types/jest@npm:^29.5.14":
+  version: 29.5.14
+  resolution: "@types/jest@npm:29.5.14"
+  dependencies:
+    expect: "npm:^29.0.0"
+    pretty-format: "npm:^29.0.0"
+  checksum: 10/59ec7a9c4688aae8ee529316c43853468b6034f453d08a2e1064b281af9c81234cec986be796288f1bbb29efe943bc950e70c8fa8faae1e460d50e3cf9760f9b
   languageName: node
   linkType: hard
 
