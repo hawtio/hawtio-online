@@ -1,6 +1,6 @@
 {
   "name": "@hawtio/online-shell",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "The UI shell on hawtio-online for kubernetes",
   "author": "Hawtio developer team",
   "license": "Apache-2.0",
@@ -29,14 +29,14 @@
     "analyze:webpack:prod": "webpack --mode production --analyze --progress --config webpack.config.prod.js --output-public-path='/online/'"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.6.0",
-    "@fortawesome/free-brands-svg-icons": "^6.5.2",
-    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@hawtio/online-kubernetes-api": "workspace:*",
     "@hawtio/online-management-api": "workspace:*",
     "@hawtio/online-oauth": "workspace:*",
-    "@hawtio/react": "^1.8.0",
+    "@hawtio/react": "^1.8.1",
     "@patternfly/react-core": "^5.3.3",
     "@patternfly/react-styles": "^5.3.1",
     "@types/node": "^20.14.9",
@@ -49,8 +49,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-markdown": "^8.0.7",
-    "typescript": "^5.4.5",
-    "web-vitals": "^4.2.3"
+    "typescript": "^5.7.3",
+    "web-vitals": "^4.2.4"
   },
   "devDependencies": {
     "babel-loader": "^9.2.1",
@@ -59,7 +59,7 @@
     "css-loader": "^7.1.2",
     "dotenv-webpack": "^8.1.0",
     "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^5.6.0",
+    "html-webpack-plugin": "^5.6.3",
     "interpolate-html-plugin": "^4.0.0",
     "jest": "^29.6.2",
     "mini-css-extract-plugin": "^2.9.1",
@@ -75,7 +75,7 @@
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.1.0",
-    "webpack-merge": "^5.9.0"
+    "webpack-merge": "^6.0.1"
   },
   "browserslist": {
     "production": [
