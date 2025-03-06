@@ -13,3 +13,7 @@ spec:
               value: form
             - name: HAWTIO_ONLINE_MODE
               value: cluster
+        - name: hawtio-online-gateway
+          env:
+            - name: HAWTIO_ONLINE_AUTH
+              value: form

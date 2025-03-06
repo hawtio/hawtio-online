@@ -45,6 +45,7 @@ NGINX_DOCKERFILE=Dockerfile-nginx
 CUSTOM_IMAGE ?= $(IMAGE_NAME)
 CUSTOM_GATEWAY_IMAGE ?= $(GATEWAY_IMAGE_NAME)
 CUSTOM_VERSION ?= $(VERSION)
+CUSTOM_GATEWAY_VERSION ?= $(VERSION)
 
 RELEASE_GIT_REMOTE := origin
 GIT_COMMIT := $(shell if [ -d .git ]; then git rev-list -1 HEAD; else echo "$(CUSTOM_VERSION)"; fi)
@@ -124,10 +125,13 @@ image-push: image
 
 image-gateway:
 	@echo "####### Building Hawtio Online Gateway container image..."
-	docker build -t $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_VERSION) -f Dockerfile-gateway .
+	docker build -t $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION) -f Dockerfile-gateway .
 
 image-gateway-push: image-gateway
-	docker push $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_VERSION)
+	docker push $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)
+
+image-gateway-push: image-gateway
+	docker push $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)
 
 get-image:
 	@echo $(CUSTOM_IMAGE)

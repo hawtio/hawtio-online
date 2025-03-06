@@ -29,19 +29,19 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/react": "^1.6.1",
-    "@thumbmarkjs/thumbmarkjs": "^0.16.0",
+    "@hawtio/react": "^1.8.1",
+    "@thumbmarkjs/thumbmarkjs": "^0.19.1",
     "babel-jest": "^29.6.1",
     "fetch-intercept": "^2.4.0",
     "jest-extended": "^4.0.0",
     "jquery": "^3.7.0",
     "jwt-decode": "^4.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5",
+    "typescript": "^5.7.3",
     "whatwg-fetch": "^3.6.20"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.13",
+    "@types/jest": "^29.5.14",
     "@types/jquery": "^3.5.31",
     "jest": "^29.6.1",
     "jest-environment-jsdom": "^29.6.1",
