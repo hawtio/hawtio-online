@@ -49,7 +49,7 @@
     "jest-watch-typeahead": "^2.2.2",
     "replace": "^1.2.2",
     "ts-jest": "^29.2.5",
-    "tsup": "^8.2.4"
+    "tsup": "^8.4.0"
   },
   "peerDependencies": {
     "react": "^16.8 || ^17 || ^18",
