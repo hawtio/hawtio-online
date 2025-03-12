@@ -2031,7 +2031,7 @@ __metadata:
     "@types/cors": "npm:^2.8.17"
     "@types/express": "npm:^4.17.21"
     "@types/jest": "npm:^29.5.14"
-    "@types/jquery": "npm:^3.5.31"
+    "@types/jquery": "npm:^3.5.32"
     "@types/js-yaml": "npm:^4.0.9"
     "@types/method-override": "npm:^0.0.35"
     "@types/node": "npm:^20.14.9"
@@ -2122,7 +2122,7 @@ __metadata:
     "@hawtio/react": "npm:^1.9.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@types/jest": "npm:^29.5.14"
-    "@types/jquery": "npm:^3.5.31"
+    "@types/jquery": "npm:^3.5.32"
     "@types/jsonpath": "npm:^0.2.4"
     "@types/node": "npm:^20.14.9"
     babel-jest: "npm:^29.6.1"
@@ -2192,7 +2192,7 @@ __metadata:
     "@hawtio/react": "npm:^1.9.0"
     "@jolokia.js/simple": "npm:^2.2.4"
     "@types/jest": "npm:^29.5.14"
-    "@types/jquery": "npm:^3.5.31"
+    "@types/jquery": "npm:^3.5.32"
     "@types/jsonpath": "npm:^0.2.4"
     babel-jest: "npm:^29.6.1"
     eventemitter3: "npm:^5.0.1"
@@ -2263,7 +2263,7 @@ __metadata:
     "@hawtio/react": "npm:^1.9.0"
     "@thumbmarkjs/thumbmarkjs": "npm:^0.19.1"
     "@types/jest": "npm:^29.5.14"
-    "@types/jquery": "npm:^3.5.31"
+    "@types/jquery": "npm:^3.5.32"
     babel-jest: "npm:^29.6.1"
     fetch-intercept: "npm:^2.4.0"
     jest: "npm:^29.6.1"
@@ -4055,12 +4055,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jquery@npm:^3.5.31":
-  version: 3.5.31
-  resolution: "@types/jquery@npm:3.5.31"
+"@types/jquery@npm:^3.5.32":
+  version: 3.5.32
+  resolution: "@types/jquery@npm:3.5.32"
   dependencies:
     "@types/sizzle": "npm:*"
-  checksum: 10/c14b3db4d2c34eb44b30ae119f1983d9d94231a02d44357b08f3ef406852c777edd928eb35875e879515a96eb8eb2188ed5572a0de35f322019bf6de858ce610
+  checksum: 10/2c67cac338828870ead5c5e608f5fa5ab8101598ed4572cf49b58c342adffe8918d2e2fc94d7954e6b98a889cef8c3f4e6f44b8fecb75e80854b0f9cf9dd18a1
   languageName: node
   linkType: hard
 
