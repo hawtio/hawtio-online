@@ -12,7 +12,7 @@
   "dependencies": {
     "@hawtio/online-oauth": "workspace:*",
     "@hawtio/react": "^1.9.0",
-    "@patternfly/react-core": "^5.3.1",
+    "@patternfly/react-core": "^6.1.0",
     "@patternfly/react-styles": "^5.3.0",
     "@patternfly/react-table": "^5.3.1",
     "@patternfly/react-tokens": "^5.3.1",
