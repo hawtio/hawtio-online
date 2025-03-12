@@ -30,7 +30,7 @@
   "dependencies": {
     "@hawtio/online-oauth": "workspace:*",
     "@hawtio/react": "^1.9.0",
-    "@types/jquery": "^3.5.31",
+    "@types/jquery": "^3.5.32",
     "@types/jsonpath": "^0.2.4",
     "@types/node": "^20.14.9",
     "eventemitter3": "^5.0.1",
