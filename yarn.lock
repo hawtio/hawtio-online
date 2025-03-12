@@ -2050,7 +2050,7 @@ __metadata:
     jest-extended: "npm:^4.0.0"
     jest-fetch-mock: "npm:^3.0.3"
     jest-watch-typeahead: "npm:^2.2.2"
-    jolokia.js: "npm:^2.2.3"
+    jolokia.js: "npm:^2.2.4"
     jwt-decode: "npm:^4.0.0"
     method-override: "npm:^3.0.0"
     pino: "npm:^9.6.0"
@@ -10859,13 +10859,6 @@ __metadata:
   version: 2.2.4
   resolution: "jolokia.js@npm:2.2.4"
   checksum: 10/c7c0f1fa9f4a4ded43edf0425978b84b6bff1fef1a9ac5f6b6a15ec1dd04f2b0e4b5314c1d6dc1996d91990e71944672215db9151150cab24108073a9b879e1f
-  languageName: node
-  linkType: hard
-
-"jolokia.js@npm:^2.2.3":
-  version: 2.2.3
-  resolution: "jolokia.js@npm:2.2.3"
-  checksum: 10/a200da8447160b8d55e499ef03166923d9ebce920eee88970268c500142c4936eccdd3bcfdbd9e8e4103cfe4c29afd0a301785b23738e536ac90a0372d6c2c71
   languageName: node
   linkType: hard
 
