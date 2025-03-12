@@ -30,9 +30,10 @@
   },
   "dependencies": {
     "@hawtio/online-kubernetes-api": "workspace:*",
-    "@hawtio/react": "^1.8.1",
+    "@hawtio/react": "^1.9.0",
+    "@jolokia.js/simple": "^2.2.4",
     "eventemitter3": "^5.0.1",
-    "jolokia.js": "^2.2.3",
+    "jolokia.js": "^2.2.4",
     "jquery": "^3.7.0",
     "jsonpath": "^1.1.1",
     "superstruct": "^2.0.2",

@@ -1,27 +1,7 @@
-import {
-  JolokiaErrorResponse,
-  VersionResponseValue as JolokiaVersionResponseValue,
-  JolokiaSuccessResponse,
-} from 'jolokia.js'
+import { JolokiaErrorResponse, JolokiaSuccessResponse } from 'jolokia.js'
+import Jolokia from '@jolokia.js/simple'
 
 export type ParseResult<T> = { hasError: false; parsed: T } | { hasError: true; error: string }
-
-function isObject(value: unknown): value is object {
-  const type = typeof value
-  return value != null && (type === 'object' || type === 'function')
-}
-
-export function isJolokiaResponseSuccessType(o: unknown): o is JolokiaSuccessResponse {
-  return isObject(o) && 'status' in o && 'timestamp' in o && 'value' in o
-}
-
-export function isJolokiaResponseErrorType(o: unknown): o is JolokiaErrorResponse {
-  return isObject(o) && 'error_type' in o && 'error' in o
-}
-
-export function isJolokiaVersionResponseType(o: unknown): o is JolokiaVersionResponseValue {
-  return isObject(o) && 'protocol' in o && 'agent' in o && 'info' in o
-}
 
 export async function jolokiaResponseParse(
   response: Response,
@@ -29,10 +9,10 @@ export async function jolokiaResponseParse(
   try {
     const parsed = await response.json()
 
-    if (isJolokiaResponseErrorType(parsed)) {
+    if (Jolokia.isResponseError(parsed)) {
       const errorResponse: JolokiaErrorResponse = parsed as JolokiaErrorResponse
       return { error: errorResponse.error, hasError: true }
-    } else if (isJolokiaResponseSuccessType(parsed)) {
+    } else if (Jolokia.isResponseSuccess(parsed)) {
       const parsedResponse: JolokiaSuccessResponse = parsed as JolokiaSuccessResponse
       return { parsed: parsedResponse, hasError: false }
     } else {
