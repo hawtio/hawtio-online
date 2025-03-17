@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+{{ include "hawtio-online.app.labels" .Values.online | indent 4 }}
+  name: {{ .Values.online.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.online.replicaCount }}
+  selector:
+    matchLabels:
+{{ include "hawtio-online.app.selector" .Values.online | indent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+{{ include "hawtio-online.app.labels" .Values.online | indent 8 }}
+    spec:
+      containers:
+        - env:
+          - name: HAWTIO_ONLINE_AUTH
+            value: {{ eq .Values.clusterType "openshift" | ternary "oauth" "form" }}
+          - name: HAWTIO_ONLINE_MODE
+            value: {{ .Values.mode }}
+{{- if eq .Values.mode "namespace" }}
+          - name: HAWTIO_OAUTH_CLIENT_ID
+            value: {{ .Values.online.authClientId }}
+          - name: HAWTIO_ONLINE_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+{{- end }}
+{{- if eq .Values.clusterType "openshift" }}
+          - name: OPENSHIFT_WEB_CONSOLE_URL
+            value: {{ .Values.consoleUrl | default "\"\"" }}
+          - name: OPENSHIFT_CLUSTER_VERSION
+            value: "4"
+{{- end }}
+          image: {{ .Values.online.image.name}}:{{ .Values.online.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.online.image.pullPolicy }}
+          livenessProbe:
+            httpGet:
+              path: /online
+              port: nginx
+              scheme: HTTPS
+            periodSeconds: 10
+            timeoutSeconds: 1
+          name: {{ .Values.online.name }}
+          ports:
+            - containerPort: {{ .Values.online.deployment.port }}
+              name: nginx
+          readinessProbe:
+            httpGet:
+              path: /online
+              port: nginx
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: "{{ .Values.online.resources.limits.cpu }}"
+              memory: {{ .Values.online.resources.limits.memory }}
+            requests:
+              cpu: "{{ .Values.online.resources.requests.cpu }}"
+              memory: {{ .Values.online.resources.requests.memory }}
+          volumeMounts:
+{{- if eq .Values.clusterType "openshift" }}
+          - mountPath: /etc/tls/private/proxying
+            name: {{ .Values.online.secrets.proxy.name }}
+{{- end }}
+{{- if eq .Values.hawtconfig true }}
+          - mountPath: /usr/share/nginx/html/online/hawtconfig.json
+            name: {{ .Values.online.name }}
+            subPath: hawtconfig.json
+{{- end }}
+          - mountPath: /etc/tls/private/serving
+            name: {{ .Values.online.secrets.serving.name }}
+        - env:
+          - name: HAWTIO_ONLINE_AUTH
+            value: {{ eq .Values.clusterType "openshift" | ternary "oauth" "form" }}
+          - name: HAWTIO_ONLINE_RBAC_ACL
+            value: /etc/hawtio/rbac/ACL.yaml
+          - name: HAWTIO_ONLINE_GATEWAY_WEB_SERVER
+            value: https://localhost:{{ .Values.online.deployment.port }}
+          - name: HAWTIO_ONLINE_GATEWAY_SSL_KEY
+            value: /etc/tls/private/serving/tls.key
+          - name: HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE
+            value: /etc/tls/private/serving/tls.crt
+          - name: HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE_CA
+            value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          image: {{ .Values.gateway.image.name}}:{{ .Values.gateway.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: express
+              scheme: HTTPS
+            periodSeconds: 120
+            timeoutSeconds: 1
+          name: {{ .Values.gateway.name }}
+          ports:
+            - containerPort: {{ .Values.gateway.deployment.port }}
+              name: express
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: express
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 1
+          volumeMounts:
+          - mountPath: /etc/hawtio/rbac
+            name: {{ .Values.online.rbac.name }}
+          - mountPath: /etc/tls/private/serving
+            name: {{ .Values.online.secrets.serving.name }}
+      volumes:
+{{- if eq .Values.clusterType "openshift" }}
+      - name: {{ .Values.online.secrets.proxy.name }}
+        secret:
+          secretName: {{ .Values.online.secrets.proxy.name }}
+{{- end }}
+{{- if eq .Values.hawtconfig true }}
+      - configMap:
+          name: {{ .Values.online.name }}
+        name: {{ .Values.online.name }}
+{{- end }}
+      - configMap:
+          name: {{ .Values.online.rbac.name }}
+        name: {{ .Values.online.rbac.name }}
+      - name: {{ .Values.online.secrets.serving.name }}
+        secret:
+          secretName: {{ .Values.online.secrets.serving.name }}

@@ -1,0 +1,15 @@
+Thank you for installing {{ .Chart.Name }} {{ .Chart.AppVersion }}.
+
+The release is named {{ .Release.Name }}.
+
+The following install configuration was selected
+- The type of the target cluster [openshift | k8s]:         {{ .Values.clusterType }}
+- The mode of installation [cluster | namespace]:           {{ .Values.mode }}
+- Whether to use the hawtconfig config map [true | false]:  {{ .Values.hawtconfig }}
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get all {{ .Release.Name }}
+
+To learn more about hawtio, please visit https://hawt.io.
