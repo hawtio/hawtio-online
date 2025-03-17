@@ -52,7 +52,7 @@
     "kustomize:image": "cd deploy/base && kustomize edit set image hawtio/online=quay.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.2.0",
+    "@eslint/compat": "^1.2.7",
     "@eslint/js": "^9.22.0",
     "compression-webpack-plugin": "^11.1.0",
     "concurrently": "^9.1.2",
