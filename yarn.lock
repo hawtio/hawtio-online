@@ -2040,7 +2040,7 @@ __metadata:
     "@types/jest": "npm:^29.5.14"
     "@types/jquery": "npm:^3.5.32"
     "@types/js-yaml": "npm:^4.0.9"
-    "@types/method-override": "npm:^0.0.35"
+    "@types/method-override": "npm:^3.0.0"
     "@types/node": "npm:^22.13.10"
     "@types/pino-multi-stream": "npm:^5.1.6"
     "@types/supertest": "npm:^6.0.2"
@@ -4119,12 +4119,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/method-override@npm:^0.0.35":
-  version: 0.0.35
-  resolution: "@types/method-override@npm:0.0.35"
-  dependencies:
-    "@types/express": "npm:*"
-  checksum: 10/5ff62afdefe6f9fc6260fb7600c17d275d771c4022b8255cc2295085f25a4a0d6165be48d85506b71c2cd28ae4ce7ba9123cee1f7d6120cc4fd0b5df6fcad2ba
+"@types/method-override@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@types/method-override@npm:3.0.0"
+  peerDependencies:
+    "@types/express": "*"
+  checksum: 10/219c23e4fc114f26fd08f1d0c46a7a4850c6f863d94c2ca62655ca0936f7eab4fb29a5c29ffa08d6961ea5248ee61a6eebca197587510d79b53b1e0e7411bead
   languageName: node
   linkType: hard
 
