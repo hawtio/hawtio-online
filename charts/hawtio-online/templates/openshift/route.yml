@@ -1,0 +1,16 @@
+{{- if eq .Values.clusterType "openshift" }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+{{ include "hawtio-online.app.labels" .Values.online | indent 4 }}
+  name: {{ .Values.online.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: reencrypt
+  to:
+    kind: Service
+    name: {{ .Values.online.name }}
+{{- end }}
