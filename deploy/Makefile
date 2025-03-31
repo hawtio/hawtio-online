@@ -45,6 +45,8 @@ NAMESPACE ?= hawtio-online
 
 # Cluster on which to install [ openshift | k8s ]
 CLUSTER_TYPE ?= k8s
+# Use ssl for internal server communication [ true | false ]
+INTERNAL_SERVER_SSL ?= true
 # The mode of installation [ cluster | namespace ]
 MODE ?= namespace
 # Use configmap as hawtconfig file
@@ -61,6 +63,10 @@ PLACEHOLDER := placeholder
 
 OS_CONSOLE_URL_PATCH := $(PATCHES)/patch-os-console-url.yml
 HAWTCONFIG_PATCH := $(PATCHES)/patch-hawtconfig-configmap.yml
+SSL_DEPLOYMENT_SECRET_PATCH := $(PATCHES)/patch-deployment-ssl-serving-secret.yml
+SSL_DEPLOYMENT_PORTS_PATCH := $(PATCHES)/patch-deployment-ssl-ports.yml
+SSL_SERVICE_PATCH := $(PATCHES)/patch-service-ssl-ports.yml
+SSL_INGRESS_PATCH := patch-ingress-ssl-ports.yml
 
 #
 # Macro for editing kustomization to define
@@ -152,6 +158,23 @@ else
 	@$(call add-remove-hawtconfig-configmap,$(BASE),remove)
 endif
 
+# SSL support is mandatory for OpenShift so no need to add
+.ssl-support:
+ifneq ($(CLUSTER_TYPE), openshift)
+ifeq ($(INTERNAL_SERVER_SSL), true)
+	# SSL optional for other kubernetes platforms
+	@$(call add-remove-kind-patch,$(BASE),add,../$(SSL_DEPLOYMENT_SECRET_PATCH),Deployment)
+	@$(call add-remove-kind-patch,$(BASE),add,../$(SSL_DEPLOYMENT_PORTS_PATCH),Deployment)
+	@$(call add-remove-kind-patch,$(BASE),add,../$(SSL_SERVICE_PATCH),Service)
+	@$(call add-remove-kind-patch,$(CLUSTER_TYPE)/$(MODE),add,../$(SSL_INGRESS_PATCH),Ingress)
+else
+	@$(call add-remove-kind-patch,$(BASE),remove,../$(SSL_DEPLOYMENT_SECRET_PATCH),Deployment)
+	@$(call add-remove-kind-patch,$(BASE),remove,../$(SSL_DEPLOYMENT_PORTS_PATCH),Deployment)
+	@$(call add-remove-kind-patch,$(BASE),remove,../$(SSL_SERVICE_PATCH),Service)
+	@$(call add-remove-kind-patch,$(CLUSTER_TYPE)/$(MODE),remove,../$(SSL_INGRESS_PATCH),Ingress)
+endif
+endif
+
 #---
 #
 #@ install
@@ -195,6 +218,8 @@ endif
 ifeq ($(CLUSTER_TYPE), k8s)
 	@$(MAKE) -s generate-serving
 endif
+# Add ssl support in deployment
+	@$(MAKE) -s .ssl-support
 #
 # Build the resources
 # Either apply to the cluster or output to CLI
