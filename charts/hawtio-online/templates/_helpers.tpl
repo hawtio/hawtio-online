@@ -19,6 +19,40 @@ deployment: {{ .name }}
 {{- end }}
 
 {{/*
+  Hawtio-Online use SSL
+  - parameters:
+   - value if true
+   - value if false
+*/}}
+{{- define "hawtio-online.use.ssl" -}}
+{{- if or (eq .clusterType "openshift") (eq .internalSSL true) }}
+true
+{{- else }}
+{{- end }}
+{{- end }}
+
+{{/*
+  Hawtio-Online Service Port
+*/}}
+{{- define "hawtio-online.service.port" -}}
+{{- ternary .online.service.ssl.port .online.service.plain.port (include "hawtio-online.use.ssl" . | not | empty) }}
+{{- end }}
+
+{{/*
+  Hawtio-Online Deployment Port
+*/}}
+{{- define "hawtio-online.deployment.port" -}}
+{{- ternary .online.deployment.ssl.port .online.deployment.plain.port (include "hawtio-online.use.ssl" . | not | empty) }}
+{{- end }}
+
+{{/*
+  Hawtio-Online Deployment Scheme
+*/}}
+{{- define "hawtio-online.deployment.scheme" -}}
+{{- ternary .online.deployment.ssl.scheme .online.deployment.plain.scheme (include "hawtio-online.use.ssl" . | not | empty) }}
+{{- end }}
+
+{{/*
   Generate on OpenShift the proxying certificate to access the jolokia pods
   - Looks up the signing Certifcate Authority in the cluster
   - Extracts the key and certificate from the CA
