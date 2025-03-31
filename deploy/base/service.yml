@@ -9,7 +9,7 @@ spec:
   type: NodePort
   ports:
     - name: hawtio-online
-      port: 443
+      port: 80
       protocol: TCP
       targetPort: nginx
   selector:

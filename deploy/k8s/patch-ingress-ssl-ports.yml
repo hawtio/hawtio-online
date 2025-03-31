@@ -1,0 +1,13 @@
+#
+# Patch to update the port number to the SSL port (base: 80)
+# of the internal deployed nginx server
+#
+- op: replace
+  path: /spec/rules/0/http/paths/0/backend/service/port/number
+  value: 443
+- op: add
+  path: /metadata/annotations/nginx.ingress.kubernetes.io~1backend-protocol
+  value: "HTTPS"
+- op: add
+  path: /metadata/annotations/nginx.ingress.kubernetes.io~1force-ssl-redirect
+  value: "true"
