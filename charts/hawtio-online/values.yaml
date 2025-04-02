@@ -20,7 +20,7 @@ online:
   replicaCount: 1
   image:
     name: quay.io/hawtio/online
-    tag: 2.2.0
+    tag: 2.3.0
     pullPolicy: Always
   deployment:
     port: 8443
@@ -44,7 +44,7 @@ gateway:
   name: hawtio-online-gateway
   image:
     name: quay.io/hawtio/online-gateway
-    tag: 2.2.0
+    tag: 2.3.0
     pullPolicy: Always
   deployment:
     port: 3000
