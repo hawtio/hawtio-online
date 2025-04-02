@@ -86,6 +86,9 @@ mode: namespace
 clusterType: openshift
 # Use hawtconfig config map [ true | false ]
 hawtconfig: true
+# Use internal SSL [ true | false ]
+#  - Only required if clusterType is k8s
+internalSSL: true
 
 # The url of the OpenShift Console
 # (only applicable to clusterType: openshift)
@@ -100,12 +103,21 @@ online:
   replicaCount: 1
   image:
     name: quay.io/hawtio/online
-    tag: 2.2.0
+    tag: 2.3.0
     pullPolicy: Always
   deployment:
+    plain:
+      scheme: HTTP
+      port: 8080
+    ssl:
+      scheme: HTTPS
+      port: 8443
     port: 8443
   service:
-    port: 443
+    plain:
+      port: 80
+    ssl:
+      port: 443
   resources:
     requests:
       cpu: "0.2"
@@ -124,7 +136,7 @@ gateway:
   name: hawtio-online-gateway
   image:
     name: quay.io/hawtio/online-gateway
-    tag: 2.2.0
+    tag: 2.3.0
     pullPolicy: Always
   deployment:
     port: 3000
@@ -143,3 +155,14 @@ $ helm install \
   --set mode=cluster \
   hawtio-online hawtio/hawtio-online
 ```
+
+###### SSL Termination at Ingress
+In some kubernetes clusters, it may be preferred to terminate the SSL encryption at the ingress and have unsecured communication internal to the cluster. In that case, override the `internalSSL` property:
+```
+$ helm install \
+  --set clusterType=k8s \
+  --set mode=cluster \
+  --set internalSSL=false \
+  hawtio-online hawtio/hawtio-online
+```
+This has the effect of stripping out the _hawtio-serving_ certificate being applied to the internal deployment servers, updates the http protocol to plain rather from SSL and changes the ports to expected plain values.
