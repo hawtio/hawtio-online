@@ -13,8 +13,6 @@ spec:
               value: form
             - name: HAWTIO_ONLINE_MODE
               value: namespace
-            - name: HAWTIO_OAUTH_CLIENT_ID
-              value: hawtio-online
             - name: HAWTIO_ONLINE_NAMESPACE
               valueFrom:
                 fieldRef:
