@@ -38,7 +38,7 @@
     "jsonpath": "^1.1.1",
     "superstruct": "^2.0.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
