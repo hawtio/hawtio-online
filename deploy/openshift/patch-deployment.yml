@@ -11,8 +11,8 @@ spec:
           env:
             - name: HAWTIO_ONLINE_AUTH
               value: oauth
-            - name: HAWTIO_ONLINE_MODE
-              value: cluster
+            - name: HAWTIO_OAUTH_CLIENT_ID
+              value: 'hawtio-online'
             - name: OPENSHIFT_WEB_CONSOLE_URL
               value: ''
             - name: OPENSHIFT_CLUSTER_VERSION

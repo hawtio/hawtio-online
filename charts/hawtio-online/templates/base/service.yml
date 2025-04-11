@@ -12,7 +12,7 @@ metadata:
 spec:
   ports:
     - name: {{ .Values.online.name }}
-      port: {{ .Values.online.service.port }}
+      port: {{ include "hawtio-online.service.port" .Values }}
       protocol: TCP
       targetPort: nginx
   selector:

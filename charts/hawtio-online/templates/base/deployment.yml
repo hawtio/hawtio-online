@@ -22,13 +22,21 @@ spec:
     spec:
       containers:
         - env:
-          - name: HAWTIO_ONLINE_AUTH
-            value: {{ eq .Values.clusterType "openshift" | ternary "oauth" "form" }}
+{{- if include "hawtio-online.use.ssl" .Values }}
+          - name: HAWTIO_ONLINE_SSL_KEY
+            value: /etc/tls/private/serving/tls.key
+          - name: HAWTIO_ONLINE_SSL_CERTIFICATE
+            value: /etc/tls/private/serving/tls.crt
+{{- end }}
           - name: HAWTIO_ONLINE_MODE
             value: {{ .Values.mode }}
-{{- if eq .Values.mode "namespace" }}
+          - name: HAWTIO_ONLINE_AUTH
+            value: {{ eq .Values.clusterType "openshift" | ternary "oauth" "form" }}
+{{- if eq .Values.clusterType "openshift" }}
           - name: HAWTIO_OAUTH_CLIENT_ID
             value: {{ .Values.online.authClientId }}
+{{- end }}
+{{- if eq .Values.mode "namespace" }}
           - name: HAWTIO_ONLINE_NAMESPACE
             valueFrom:
               fieldRef:
@@ -46,18 +54,18 @@ spec:
             httpGet:
               path: /online
               port: nginx
-              scheme: HTTPS
+              scheme: {{ include "hawtio-online.deployment.scheme" .Values }}
             periodSeconds: 10
             timeoutSeconds: 1
           name: {{ .Values.online.name }}
           ports:
-            - containerPort: {{ .Values.online.deployment.port }}
+            - containerPort: {{ include "hawtio-online.deployment.port" .Values }}
               name: nginx
           readinessProbe:
             httpGet:
               path: /online
               port: nginx
-              scheme: HTTPS
+              scheme: {{ include "hawtio-online.deployment.scheme" .Values }}
             initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 1
@@ -78,28 +86,32 @@ spec:
             name: {{ .Values.online.name }}
             subPath: hawtconfig.json
 {{- end }}
+{{- if include "hawtio-online.use.ssl" .Values }}
           - mountPath: /etc/tls/private/serving
             name: {{ .Values.online.secrets.serving.name }}
+{{- end }}
         - env:
           - name: HAWTIO_ONLINE_AUTH
             value: {{ eq .Values.clusterType "openshift" | ternary "oauth" "form" }}
           - name: HAWTIO_ONLINE_RBAC_ACL
             value: /etc/hawtio/rbac/ACL.yaml
           - name: HAWTIO_ONLINE_GATEWAY_WEB_SERVER
-            value: https://localhost:{{ .Values.online.deployment.port }}
+            value: {{ (include "hawtio-online.deployment.scheme" .Values) | lower }}://localhost:{{ include "hawtio-online.deployment.port" .Values }}
+{{- if include "hawtio-online.use.ssl" .Values }}
           - name: HAWTIO_ONLINE_GATEWAY_SSL_KEY
             value: /etc/tls/private/serving/tls.key
           - name: HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE
             value: /etc/tls/private/serving/tls.crt
           - name: HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE_CA
             value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+{{- end }}
           image: {{ .Values.gateway.image.name}}:{{ .Values.gateway.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
           livenessProbe:
             httpGet:
               path: /status
               port: express
-              scheme: HTTPS
+              scheme: {{ include "hawtio-online.deployment.scheme" .Values }}
             periodSeconds: 120
             timeoutSeconds: 1
           name: {{ .Values.gateway.name }}
@@ -110,15 +122,17 @@ spec:
             httpGet:
               path: /status
               port: express
-              scheme: HTTPS
+              scheme: {{ include "hawtio-online.deployment.scheme" .Values }}
             initialDelaySeconds: 5
             periodSeconds: 30
             timeoutSeconds: 1
           volumeMounts:
           - mountPath: /etc/hawtio/rbac
             name: {{ .Values.online.rbac.name }}
+{{- if include "hawtio-online.use.ssl" .Values }}
           - mountPath: /etc/tls/private/serving
             name: {{ .Values.online.secrets.serving.name }}
+{{- end }}
       volumes:
 {{- if eq .Values.clusterType "openshift" }}
       - name: {{ .Values.online.secrets.proxy.name }}
@@ -133,6 +147,8 @@ spec:
       - configMap:
           name: {{ .Values.online.rbac.name }}
         name: {{ .Values.online.rbac.name }}
+{{- if include "hawtio-online.use.ssl" .Values }}
       - name: {{ .Values.online.secrets.serving.name }}
         secret:
           secretName: {{ .Values.online.secrets.serving.name }}
+{{- end }}

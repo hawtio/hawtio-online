@@ -1,0 +1,8 @@
+#
+# Patch to update the deployment to support SSL
+# of the internal deployed nginx server
+# - containerPort: 8443
+#
+- op: replace
+  path: /spec/template/spec/containers/0/ports/0/containerPort
+  value: 8443
