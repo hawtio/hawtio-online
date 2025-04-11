@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hawtio-online
+  namespace: hawtio
+spec:
+  template:
+    spec:
+      containers:
+        - name: hawtio-online
+          env:
+            - name: HAWTIO_ONLINE_MODE
+              value: cluster

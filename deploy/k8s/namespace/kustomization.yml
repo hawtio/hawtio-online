@@ -3,7 +3,7 @@ kind: Kustomization
 
 
 resources:
-- ingress.yml
+- ../ingress.yml
 - serviceaccount.yml
 - ../../base
 

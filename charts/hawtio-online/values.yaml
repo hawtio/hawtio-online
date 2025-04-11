@@ -6,6 +6,9 @@ mode: namespace
 clusterType: openshift
 # Use hawtconfig config map [ true | false ]
 hawtconfig: true
+# Use internal SSL [ true | false ]
+#  - Only required if clusterType is k8s
+internalSSL: true
 
 # The url of the OpenShift Console
 # (only applicable to clusterType: openshift)
@@ -23,9 +26,18 @@ online:
     tag: 2.3.0
     pullPolicy: Always
   deployment:
+    plain:
+      scheme: HTTP
+      port: 8080
+    ssl:
+      scheme: HTTPS
+      port: 8443
     port: 8443
   service:
-    port: 443
+    plain:
+      port: 80
+    ssl:
+      port: 443
   resources:
     requests:
       cpu: "0.2"

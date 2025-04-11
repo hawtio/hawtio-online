@@ -45,6 +45,8 @@ NAMESPACE ?= hawtio-online
 
 # Cluster on which to install [ openshift | k8s ]
 CLUSTER_TYPE ?= k8s
+# Use ssl for internal server communication [ true | false ]
+INTERNAL_SERVER_SSL ?= true
 # The mode of installation [ cluster | namespace ]
 MODE ?= namespace
 # Use configmap as hawtconfig file
@@ -61,6 +63,10 @@ PLACEHOLDER := placeholder
 
 OS_CONSOLE_URL_PATCH := $(PATCHES)/patch-os-console-url.yml
 HAWTCONFIG_PATCH := $(PATCHES)/patch-hawtconfig-configmap.yml
+SSL_DEPLOYMENT_SECRET_PATCH := $(PATCHES)/patch-deployment-ssl-serving-secret.yml
+SSL_DEPLOYMENT_PORTS_PATCH := $(PATCHES)/patch-deployment-ssl-ports.yml
+SSL_SERVICE_PATCH := $(PATCHES)/patch-service-ssl-ports.yml
+SSL_INGRESS_PATCH := patch-ingress-ssl-ports.yml
 
 #
 # Macro for editing kustomization to define
@@ -152,6 +158,23 @@ else
 	@$(call add-remove-hawtconfig-configmap,$(BASE),remove)
 endif
 
+# SSL support is mandatory for OpenShift so no need to add
+.ssl-support:
+ifneq ($(CLUSTER_TYPE), openshift)
+ifeq ($(INTERNAL_SERVER_SSL), true)
+	# SSL optional for other kubernetes platforms
+	@$(call add-remove-kind-patch,$(BASE),add,../$(SSL_DEPLOYMENT_SECRET_PATCH),Deployment)
+	@$(call add-remove-kind-patch,$(BASE),add,../$(SSL_DEPLOYMENT_PORTS_PATCH),Deployment)
+	@$(call add-remove-kind-patch,$(BASE),add,../$(SSL_SERVICE_PATCH),Service)
+	@$(call add-remove-kind-patch,$(CLUSTER_TYPE)/$(MODE),add,../$(SSL_INGRESS_PATCH),Ingress)
+else
+	@$(call add-remove-kind-patch,$(BASE),remove,../$(SSL_DEPLOYMENT_SECRET_PATCH),Deployment)
+	@$(call add-remove-kind-patch,$(BASE),remove,../$(SSL_DEPLOYMENT_PORTS_PATCH),Deployment)
+	@$(call add-remove-kind-patch,$(BASE),remove,../$(SSL_SERVICE_PATCH),Service)
+	@$(call add-remove-kind-patch,$(CLUSTER_TYPE)/$(MODE),remove,../$(SSL_INGRESS_PATCH),Ingress)
+endif
+endif
+
 #---
 #
 #@ install
@@ -162,16 +185,24 @@ endif
 #=== Calls kubectl
 #
 #* PARAMETERS:
-#** CLUSTER_TYPE:            Set the cluster type to install on [ openshift | k8s ]
-#** MODE:                    Set the mode of installation [ cluster | namespace ]
+#** CLUSTER_TYPE:            Set the cluster type to install on
+#**                            [ openshift | k8s ]
+#** MODE:                    Set the mode of installation
+#**                            [ cluster | namespace ]
 #** NAMESPACE:               Set the namespace for the resources
-#** HAWTCONFIG:              Set whether to use configmap as hawtconfig.json [ true | false ] (true by default)
+#** HAWTCONFIG:              Set whether to use configmap as hawtconfig.json
+#**                            [ true | false ]
+#**                            (true by default)
+#** OS_CONSOLE_URL:          Set the location URL of the openshift console
+#**                            (only used in 'openshift' cluster type)
+#** INTERNAL_SERVER_SSL:     Set whether SSL should be used for internal server communication
+#**                            (only configurable in 'k8s' -- assumed in 'openshift')
 #** CUSTOM_IMAGE:            Set a custom image to install from
 #** CUSTOM_GATEWAY_IMAGE:    Set a custom gateway image to install from
 #** CUSTOM_VERSION:          Set a custom version to install from
 #** CUSTOM_GATEWAY_VERSION:  Set a custom gateway version to install from
-#** OS_CONSOLE_URL:          Set the location URL of the openshift console (only used in 'openshift' mode)
-#** DRY_RUN:                 Print the resources to be applied instead of applying them [ true | false ]
+#** DRY_RUN:                 Print the resources to be applied instead of applying them
+#**                            [ true | false ]
 #
 #---
 install: kustomize kubectl
@@ -195,6 +226,8 @@ endif
 ifeq ($(CLUSTER_TYPE), k8s)
 	@$(MAKE) -s generate-serving
 endif
+# Add ssl support in deployment
+	@$(MAKE) -s .ssl-support
 #
 # Build the resources
 # Either apply to the cluster or output to CLI
@@ -225,7 +258,9 @@ endif
 #=== Calls check-admin
 #
 #* PARAMETERS:
-#** CLUSTER_TYPE:            Set the cluster type to install on [ openshift | k8s ] - must be openshift not applicable to kubernetes
+#** CLUSTER_TYPE:            Set the cluster type to install on
+#**                            [ openshift | k8s ]
+#**                            (must be openshift not applicable to kubernetes)
 #** NAMESPACE:               Set the namespace for the secret
 #
 #---
@@ -244,7 +279,9 @@ endif
 #=== Calls check-admin
 #
 #* PARAMETERS:
-#** CLUSTER_TYPE:            Set the cluster type to install on [ openshift | k8s ] - must be kubernetes not applicable to openshift
+#** CLUSTER_TYPE:            Set the cluster type to install on
+#**                            [ openshift | k8s ]
+#**                            (must be kubernetes not applicable to openshift)
 #** NAMESPACE:               Set the namespace for the secret
 #
 #---
@@ -263,8 +300,10 @@ endif
 #=== Calls check-admin
 #
 #* PARAMETERS:
-#** CLUSTER_TYPE:            Set the cluster type - must be openshift as not applicable to kubernetes
-#** MODE:                    Set the mode of installation [ cluster | namespace ]
+#** CLUSTER_TYPE:            Set the cluster type
+#**                            (must be openshift as not applicable to kubernetes)
+#** MODE:                    Set the mode of installation
+#**                            [ cluster | namespace ]
 #
 #---
 cluster-auth-client: check-admin
@@ -287,11 +326,16 @@ endif
 #=== Cluster-admin privileges are required.
 #
 #* PARAMETERS:
-#** CLUSTER_TYPE:            Set the cluster type to install on [ openshift | k8s ]
-#** MODE:                    Set the mode of installation [ cluster | namespace ]
+#** CLUSTER_TYPE:            Set the cluster type to install on
+#**                            [ openshift | k8s ]
+#** MODE:                    Set the mode of installation
+#**                            [ cluster | namespace ]
 #** NAMESPACE:               Set the namespace to uninstall the resources from
-#** UNINSTALL_ALL:           Uninstall all resources including crds and cluster roles installed by setup-cluster [true|false]
-#** DRY_RUN:                 Print the resources to be applied instead of applying them [true|false]
+#** UNINSTALL_ALL:           Uninstall all resources including crds and cluster
+#**                          roles installed by setup-cluster
+#**                            [ true | false ]
+#** DRY_RUN:                 Print the resources to be applied instead of applying them
+#**                            [ true | false ]
 #
 #---
 uninstall: kubectl kustomize
