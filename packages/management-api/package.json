@@ -51,7 +51,7 @@
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^2.2.2",
     "replace": "^1.2.2",
-    "ts-jest": "^29.3.1",
+    "ts-jest": "^29.3.2",
     "tsup": "^8.4.0"
   },
   "peerDependencies": {
