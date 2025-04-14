@@ -2268,7 +2268,7 @@ __metadata:
   resolution: "@hawtio/online-oauth@workspace:packages/oauth"
   dependencies:
     "@hawtio/react": "npm:^1.9.0"
-    "@thumbmarkjs/thumbmarkjs": "npm:^0.19.1"
+    "@thumbmarkjs/thumbmarkjs": "npm:^0.20.0"
     "@types/jest": "npm:^29.5.14"
     "@types/jquery": "npm:^3.5.32"
     babel-jest: "npm:^29.6.1"
@@ -3471,6 +3471,13 @@ __metadata:
   version: 0.19.1
   resolution: "@thumbmarkjs/thumbmarkjs@npm:0.19.1"
   checksum: 10/d51eb956c3ad0cf3316587270311c63ca39903cd7cd80201de4af59f9f37cabbe50de6b82758f911b7aa79a5deb2363c05d424852866b4995d81bbd936319c9f
+  languageName: node
+  linkType: hard
+
+"@thumbmarkjs/thumbmarkjs@npm:^0.20.0":
+  version: 0.20.0
+  resolution: "@thumbmarkjs/thumbmarkjs@npm:0.20.0"
+  checksum: 10/b142b11bfbfd6ecfea2e1253f69a3c5adac401c23a4e02db5c37c74ce3f288cad06d1bfbc0ada193b585909e84ed817c0532ae6888bddb50374e813e87acb12a
   languageName: node
   linkType: hard
 
