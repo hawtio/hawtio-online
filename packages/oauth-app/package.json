@@ -14,7 +14,7 @@
     "@hawtio/react": "^1.9.0",
     "@patternfly/react-core": "^5.3.1",
     "@patternfly/react-styles": "^5.3.0",
-    "@patternfly/react-table": "^5.3.1",
+    "@patternfly/react-table": "^6.2.1",
     "@patternfly/react-tokens": "^5.3.1",
     "@types/node": "^22.13.10",
     "@types/react": "18.3.5",
