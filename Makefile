@@ -91,6 +91,17 @@ else
 YARN=$(shell command -v yarn 2> /dev/null)
 endif
 
+container-builder:
+ifeq (, $(shell command -v podman 2> /dev/null))
+ifeq (, $(shell command -v docker 2> /dev/null))
+        $(error "No podman or docker found in PATH. Please install and re-run")
+else
+CONTAINER_BUILDER=$(shell command -v docker 2> /dev/null)
+endif
+else
+CONTAINER_BUILDER=$(shell command -v podman 2> /dev/null)
+endif
+
 setup: yarn
 	yarn install
 
@@ -116,19 +127,19 @@ format-fix: setup
 check-licenses:
 	./script/check_licenses.sh
 
-image:
+image: container-builder
 	@echo "####### Building Hawtio Online container image..."
-	docker build -t $(CUSTOM_IMAGE):$(CUSTOM_VERSION) -f Dockerfile-nginx .
+	$(CONTAINER_BUILDER) build -t $(CUSTOM_IMAGE):$(CUSTOM_VERSION) -f Dockerfile-nginx .
 
 image-push: image
-	docker push $(CUSTOM_IMAGE):$(CUSTOM_VERSION)
+	$(CONTAINER_BUILDER) push $(CUSTOM_IMAGE):$(CUSTOM_VERSION)
 
-image-gateway:
+image-gateway: container-builder
 	@echo "####### Building Hawtio Online Gateway container image..."
-	docker build -t $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION) -f Dockerfile-gateway .
+	$(CONTAINER_BUILDER) build -t $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION) -f Dockerfile-gateway .
 
 image-gateway-push: image-gateway
-	docker push $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)
+	$(CONTAINER_BUILDER) push $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)
 
 get-image:
 	@echo $(CUSTOM_IMAGE)
