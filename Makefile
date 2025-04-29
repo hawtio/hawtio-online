@@ -94,7 +94,7 @@ endif
 container-builder:
 ifeq (, $(shell command -v podman 2> /dev/null))
 ifeq (, $(shell command -v docker 2> /dev/null))
-        $(error "No podman or docker found in PATH. Please install and re-run")
+	$(error "No podman or docker found in PATH. Please install and re-run")
 else
 CONTAINER_BUILDER=$(shell command -v docker 2> /dev/null)
 endif
