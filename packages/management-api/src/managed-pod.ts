@@ -3,6 +3,7 @@ import {
   JolokiaSuccessResponse,
   VersionResponseValue as JolokiaVersionResponseValue,
 } from 'jolokia.js'
+import Jolokia from '@jolokia.js/simple'
 import { eventService } from '@hawtio/react'
 import jsonpath from 'jsonpath'
 import {
@@ -15,7 +16,7 @@ import {
   JOLOKIA_PORT_QUERY,
 } from '@hawtio/online-kubernetes-api'
 import { log } from './globals'
-import { ParseResult, isJolokiaVersionResponseType, jolokiaResponseParse } from './jolokia-response-utils'
+import { ParseResult, jolokiaResponseParse } from './jolokia-response-utils'
 
 export type Management = {
   status: {
@@ -197,7 +198,7 @@ export class ManagedPod {
             }
 
             const jsonResponse: JolokiaSuccessResponse = result.parsed as JolokiaSuccessResponse
-            if (!isJolokiaVersionResponseType(jsonResponse.value)) {
+            if (!Jolokia.isVersionResponse(jsonResponse.value)) {
               this.setManagementError(500, 'Detected jolokia but cannot determine agent or version')
               reject(this.mgmtError)
               return

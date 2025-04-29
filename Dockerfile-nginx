@@ -1,4 +1,4 @@
-FROM docker.io/node:20-alpine as builder
+FROM docker.io/node:22-alpine as builder
 
 WORKDIR /hawtio-online
 
@@ -53,6 +53,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
     chmod -R g=u /var/cache/nginx /etc/nginx
 
 EXPOSE 8443
+EXPOSE 8080
 
 ## Add symbolic link to config.json to avoid mounting issues
 #RUN ln -sf /usr/share/nginx/html/config.json /usr/share/nginx/html/config.json

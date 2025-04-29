@@ -1,0 +1,62 @@
+# Default values for hawtio-online.
+
+# The mode of installation [ cluster | namespace ]
+mode: namespace
+# The type of the target cluster [ openshift | k8s ]
+clusterType: openshift
+# Use hawtconfig config map [ true | false ]
+hawtconfig: true
+# Use internal SSL [ true | false ]
+#  - Only required if clusterType is k8s
+internalSSL: true
+
+# The url of the OpenShift Console
+# (only applicable to clusterType: openshift)
+# consoleUrl:
+
+online:
+  name: hawtio-online
+  shortname: hawtio
+  rbac:
+    name: hawtio-rbac
+  application: hawtio-online
+  replicaCount: 1
+  image:
+    name: quay.io/hawtio/online
+    tag: 2.3.0
+    pullPolicy: Always
+  deployment:
+    plain:
+      scheme: HTTP
+      port: 8080
+    ssl:
+      scheme: HTTPS
+      port: 8443
+    port: 8443
+  service:
+    plain:
+      port: 80
+    ssl:
+      port: 443
+  resources:
+    requests:
+      cpu: "0.2"
+      memory: 32Mi
+    limits:
+      cpu: "1.0"
+      memory: 500Mi
+  secrets:
+    serving:
+      name: hawtio-online-tls-serving
+    proxy:
+      name: hawtio-online-tls-proxying
+  authClientId: hawtio-online
+
+gateway:
+  name: hawtio-online-gateway
+  image:
+    name: quay.io/hawtio/online-gateway
+    tag: 2.3.0
+    pullPolicy: Always
+  deployment:
+    port: 3000

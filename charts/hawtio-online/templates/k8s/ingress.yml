@@ -1,0 +1,28 @@
+{{- if eq .Values.clusterType "k8s" }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+{{- if include "hawtio-online.use.ssl" .Values }}
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+{{- end }}
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  labels:
+{{ include "hawtio-online.app.labels" .Values.online | indent 4 }}
+  name: {{ .Values.online.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Values.online.name }}
+            port:
+              number: {{ include "hawtio-online.service.port" .Values }}
+        path: /(.*)
+        pathType: Prefix
+  tls:
+  - secretName: {{ .Values.online.secrets.serving.name }}
+{{- end }}
