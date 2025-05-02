@@ -50,7 +50,7 @@ online:
       name: hawtio-online-tls-serving
     proxy:
       name: hawtio-online-tls-proxying
-  authClientId: hawtio-online
+  authClientId: hawtio
 
 gateway:
   name: hawtio-online-gateway

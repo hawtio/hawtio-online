@@ -90,3 +90,17 @@ true
 {{ (print "tls.key: " ($cert.Key | b64enc)) | indent 2 }}
 {{ (print "tls.crt: " ($cert.Cert | b64enc)) | indent 2 }}
 {{- end }}
+
+{{/*
+  Generate the oauthclient redirectURI
+  - parameters:
+   - full scope object
+*/}}
+{{- define "hawtio-online.oauthclient.uri" -}}
+{{- $consoleRoute := (lookup "route.openshift.io/v1" "Route" "openshift-console" "console") }}
+{{- if not $consoleRoute }}
+{{- fail "Error: OCP console is required" }}
+{{- end }}
+{{- $consoleTLD := $consoleRoute.spec.host | replace "console-openshift-console." "" }}
+{{- (print "https://" .Values.online.name "-" .Release.Namespace "." $consoleTLD) }}
+{{- end }}

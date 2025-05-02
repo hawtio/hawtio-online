@@ -1,0 +1,11 @@
+{{- if eq .Values.clusterType "openshift" }}
+{{- if eq .Values.mode "cluster" }}
+apiVersion: oauth.openshift.io/v1
+kind: OAuthClient
+metadata:
+  name: hawtio
+grantMethod: auto
+redirectURIs:
+- {{ include "hawtio-online.oauthclient.uri" . }}
+{{- end }}
+{{- end }}

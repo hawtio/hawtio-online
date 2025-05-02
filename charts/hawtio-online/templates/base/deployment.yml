@@ -33,8 +33,10 @@ spec:
           - name: HAWTIO_ONLINE_AUTH
             value: {{ eq .Values.clusterType "openshift" | ternary "oauth" "form" }}
 {{- if eq .Values.clusterType "openshift" }}
+{{- if eq .Values.mode "cluster" }}
           - name: HAWTIO_OAUTH_CLIENT_ID
             value: {{ .Values.online.authClientId }}
+{{- end }}
 {{- end }}
 {{- if eq .Values.mode "namespace" }}
           - name: HAWTIO_ONLINE_NAMESPACE
