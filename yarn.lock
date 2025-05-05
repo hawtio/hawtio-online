@@ -2041,7 +2041,7 @@ __metadata:
     "@types/jquery": "npm:^3.5.32"
     "@types/js-yaml": "npm:^4.0.9"
     "@types/method-override": "npm:^3.0.0"
-    "@types/node": "npm:^22.13.10"
+    "@types/node": "npm:^22.15.3"
     "@types/pino-multi-stream": "npm:^5.1.6"
     "@types/supertest": "npm:^6.0.2"
     babel-jest: "npm:^29.6.1"
@@ -2093,7 +2093,7 @@ __metadata:
     "@patternfly/react-styles": "npm:^5.3.1"
     "@patternfly/react-table": "npm:^5.3.3"
     "@patternfly/react-tokens": "npm:^5.3.1"
-    "@types/node": "npm:^22.13.10"
+    "@types/node": "npm:^22.15.3"
     "@types/react": "npm:18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
@@ -2131,7 +2131,7 @@ __metadata:
     "@types/jest": "npm:^29.5.14"
     "@types/jquery": "npm:^3.5.32"
     "@types/jsonpath": "npm:^0.2.4"
-    "@types/node": "npm:^22.13.10"
+    "@types/node": "npm:^22.15.3"
     babel-jest: "npm:^29.6.1"
     eventemitter3: "npm:^5.0.1"
     jest: "npm:^29.6.1"
@@ -2163,7 +2163,7 @@ __metadata:
     "@patternfly/react-styles": "npm:^5.3.1"
     "@patternfly/react-table": "npm:^5.3.3"
     "@patternfly/react-tokens": "npm:^5.3.1"
-    "@types/node": "npm:^22.13.10"
+    "@types/node": "npm:^22.15.3"
     "@types/react": "npm:18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
@@ -2233,7 +2233,7 @@ __metadata:
     "@patternfly/react-styles": "npm:^5.3.0"
     "@patternfly/react-table": "npm:^5.3.1"
     "@patternfly/react-tokens": "npm:^5.3.1"
-    "@types/node": "npm:^22.13.10"
+    "@types/node": "npm:^22.15.3"
     "@types/react": "npm:18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
@@ -2326,7 +2326,7 @@ __metadata:
     "@hawtio/react": "npm:^1.9.4"
     "@patternfly/react-core": "npm:^5.3.3"
     "@patternfly/react-styles": "npm:^5.3.1"
-    "@types/node": "npm:^22.13.10"
+    "@types/node": "npm:^22.15.3"
     "@types/react": "npm:18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     babel-loader: "npm:^10.0.0"
@@ -4181,16 +4181,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.13.10":
-  version: 22.13.10
-  resolution: "@types/node@npm:22.13.10"
-  dependencies:
-    undici-types: "npm:~6.20.0"
-  checksum: 10/57dc6a5e0110ca9edea8d7047082e649fa7fa813f79e4a901653b9174141c622f4336435648baced5b38d9f39843f404fa2d8d7a10981610da26066bc8caab48
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^22.13.13":
+"@types/node@npm:^22.13.13, @types/node@npm:^22.15.3":
   version: 22.15.3
   resolution: "@types/node@npm:22.15.3"
   dependencies:
@@ -15701,13 +15692,6 @@ __metadata:
   version: 5.25.3
   resolution: "undici-types@npm:5.25.3"
   checksum: 10/9a57f2dd6fecb2d0f7d9b86aa6f417609a0ffc73247a95aa25c078cf36cbbfe6c164b63b8dace7ad01126e6510f284c185b69c78356bb1d6b279f195acffcaf4
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~6.20.0":
-  version: 6.20.0
-  resolution: "undici-types@npm:6.20.0"
-  checksum: 10/583ac7bbf4ff69931d3985f4762cde2690bb607844c16a5e2fbb92ed312fe4fa1b365e953032d469fa28ba8b224e88a595f0b10a449332f83fa77c695e567dbe
   languageName: node
   linkType: hard
 
