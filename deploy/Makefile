@@ -53,6 +53,8 @@ MODE ?= namespace
 HAWTCONFIG ?= true
 # The URL to use for access to the openshift console
 OS_CONSOLE_URL ?=
+# The name of the service-account user
+HAWTIO_USER ?= hawtio-user
 
 # Uninstall all hawtio-onlineresources: [true|false]
 UNINSTALL_ALL ?=false
@@ -125,8 +127,6 @@ define add-remove-hawtconfig-configmap
 	cd $(1) || exit 1 && \
 		$(KUSTOMIZE) edit $(2) resource configmap-hawtio-online.yml &> /dev/null
 endef
-
-.PHONY: check_admin kubectl kustomize install generate-proxying
 
 #
 # Checks if the cluster user has the necessary privileges to be a cluster-admin
@@ -315,7 +315,19 @@ ifneq ($(MODE), cluster)
 endif
 	./$(CLUSTER_TYPE)/$(MODE)/oauthclient.sh
 
-.PHONY: uninstall
+#---
+#
+#@ user
+#
+#== Generate a service-account user that can provide a bearer token for form-based access
+#
+#* PARAMETERS:
+#** NAMESPACE:               Set the namespace for the secret
+#** HAWTIO_USER:             The name of the service-account user
+#
+#---
+user:
+	NAMESPACE=$(NAMESPACE) HAWTIO_USER=$(HAWTIO_USER) ./script/create-user.sh
 
 #---
 #
@@ -348,6 +360,7 @@ else
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help
+.PHONY: check_admin .openshift-console-url .hawtconfig .ssl_support install generate-proxying generate-serving cluster-auth-client user uninstall help
+
 help: ## Show this help screen.
 	@awk 'BEGIN { printf "\nUsage: make \033[31m<PARAM1=val1 PARAM2=val2>\033[0m \033[36m<target>\033[0m\n"; printf "\nAvailable targets are:\n" } /^#@/ { printf "\033[36m%-15s\033[0m", $$2; subdesc=0; next } /^#===/ { printf "%-14s \033[32m%s\033[0m\n", " ", substr($$0, 5); subdesc=1; next } /^#==/ { printf "\033[0m%s\033[0m\n\n", substr($$0, 4); next } /^#\*\*/ { printf "%-14s \033[31m%s\033[0m\n", " ", substr($$0, 4); next } /^#\*/ && (subdesc == 1) { printf "\n"; next } /^#\-\-\-/ { printf "\n"; next }' $(MAKEFILE_LIST)
