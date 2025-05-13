@@ -34,10 +34,16 @@ online:
       port: 8443
     port: 8443
   service:
+    type: NodePort
+    annotations:
+#      custom-annotation: value
     plain:
       port: 80
     ssl:
       port: 443
+  ingress:
+    annotations:
+#      custom-annotation: value
   resources:
     requests:
       cpu: "0.2"
