@@ -52,18 +52,18 @@
     "kustomize:image": "cd deploy/base && kustomize edit set image hawtio/online=quay.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.2.0",
+    "@eslint/compat": "^1.2.8",
     "@eslint/js": "^9.22.0",
     "compression-webpack-plugin": "^11.1.0",
     "concurrently": "^9.1.2",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "^9.1.0",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.1.2",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-testing-library": "^6.3.0",
-    "prettier": "3.3.3",
+    "prettier": "3.5.3",
     "typescript-eslint": "^8.8.0"
   },
   "config": {

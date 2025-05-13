@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@hawtio/online-kubernetes-api": "workspace:*",
-    "@hawtio/react": "^1.9.0",
+    "@hawtio/react": "^1.9.4",
     "@patternfly/react-core": "^5.3.3",
     "@patternfly/react-styles": "^5.3.1",
     "@patternfly/react-table": "^5.3.3",
@@ -20,11 +20,11 @@
     "@types/node": "^22.13.10",
     "@types/react": "18.3.5",
     "@types/react-dom": "^18.3.0",
-    "mini-css-extract-plugin": "2.9.1",
+    "mini-css-extract-plugin": "2.9.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
-    "typescript": "^5.7.3",
+    "typescript": "^5.8.3",
     "web-vitals": "^4.2.4"
   },
   "devDependencies": {
@@ -39,7 +39,7 @@
     "source-map-loader": "^5.0.0",
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.1",
-    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "tsconfig-paths-webpack-plugin": "^4.2.0",
     "webpack": "^5.95.0",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.0",

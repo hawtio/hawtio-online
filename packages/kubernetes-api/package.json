@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@hawtio/online-oauth": "workspace:*",
-    "@hawtio/react": "^1.9.0",
+    "@hawtio/react": "^1.9.4",
     "@types/jquery": "^3.5.32",
     "@types/jsonpath": "^0.2.4",
     "@types/node": "^22.13.10",
@@ -38,7 +38,7 @@
     "jsonpath": "^1.1.1",
     "kubernetes-types": "^1.30.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
@@ -50,8 +50,8 @@
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^2.2.2",
     "replace": "^1.2.2",
-    "ts-jest": "^29.2.5",
-    "tsup": "^8.2.4"
+    "ts-jest": "^29.3.2",
+    "tsup": "^8.4.0"
   },
   "peerDependencies": {
     "react": "^16.8 || ^17 || ^18",

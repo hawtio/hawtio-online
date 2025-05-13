@@ -1,0 +1,8 @@
+#
+# Patch to update the service to support SSL
+# of the internal deployed nginx server
+# - port: 443
+#
+- op: replace
+  path: /spec/ports/0/port
+  value: 443

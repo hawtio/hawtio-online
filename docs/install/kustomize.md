@@ -11,17 +11,25 @@ $ ENV1=value1 ENV2=value2 make install
 
 The following environment variables are available:
 ```
-CLUSTER_TYPE:            Set the cluster type to install on [ openshift | k8s ]
-MODE:                    Set the mode of installation [ cluster | namespace ] (namespace as default)
-NAMESPACE:               Set the namespace for the resources (hawtio-online as default)
-HAWTCONFIG:              Set whether to use configmap as hawtconfig.json [ true | false ] (true by default)
-OS_CONSOLE_URL:          Set the location URL of the openshift console (only used in 'openshift' mode)
-DRY_RUN:                 Print the resources to be applied instead of applying them [ true | false ]
+CLUSTER_TYPE:            Set the cluster type to install on
+                           [ openshift | k8s ]
+MODE:                    Set the mode of installation
+                           [ cluster | namespace ] (namespace as default)
+NAMESPACE:               Set the namespace for the resources
+                           (hawtio-online as default)
+HAWTCONFIG:              Set whether to use configmap as hawtconfig.json
+                           [ true | false ] (true by default)
+INTERNAL_SERVER_SSL:     Set whether SSL should be used for internal server communication
+                           (only configurable in 'k8s' -- assumed in 'openshift')
+OS_CONSOLE_URL:          Set the location URL of the openshift console
+                           (only used in 'openshift' mode)
+DRY_RUN:                 Print the resources to be applied instead of applying them
+                           [ true | false ]
 ```
 
 * The default for the namespace is 'hawtio-online'. Use the NAMESPACE environment variable to install in a different namespace;
 * This assumes the default mode of hawtio-online is 'namespace' so only the current namespace will be scanned for jolokia-enabled target applications. To scan the whole cluster use the MODE environment-variable and set to 'cluster';
-* 
+*
 
 > [!WARNING]
 > It is important to ensure the correct cluster type is chosen for the install, since helm has no way to verify the type of cluster is correct. Asserting the wrong cluster type can have unexpected results due to issues such as certificate generation and signing
@@ -61,4 +69,4 @@ $ CLUSTER_TYPE=k8s make install
 
 Given the variation of kubernetes implementations, secure communication and access to target applications can also vary. Therefore, at this time only the connection between the client and the Hawtio-Online connection has been secured with SSL encryption. So during the installation, a self-signed certificate is generated and stored in the _hawtio-online-tls-serving_ secret. This is then applied to Hawtio-Online's ingress resource as well as the internal communication between the service and server processes.
 
-
+In some implementations, it may be preferred to terminate the SSL encryption at the ingress and have unsecured communication internal to the cluster. In that case, set the INTERNAL_SERVER_SSL environment variable to _false_.
