@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Install NJS
+      - name: Install NGINX
         run: |
           # https://nginx.org/en/linux_packages.html#Ubuntu
           sudo apt-get install -y curl gnupg2 ca-certificates lsb-release ubuntu-keyring
@@ -30,7 +30,7 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
           echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx
           sudo apt-get update -y
-          sudo apt-get install -y nginx=1.20.2-1~focal
+          sudo apt-get install -y nginx=1.20.2-1~jammy
 
       - name: Set up Node
         uses: actions/setup-node@v4
