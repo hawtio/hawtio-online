@@ -8,6 +8,9 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 {{- end }}
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+{{- with .Values.online.ingress.annotations }}
+  {{- toYaml . | nindent 4 }}
+{{- end }}
   labels:
 {{ include "hawtio-online.app.labels" .Values.online | indent 4 }}
   name: {{ .Values.online.name }}
