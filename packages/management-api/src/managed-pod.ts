@@ -183,7 +183,46 @@ export class ManagedPod {
         .then(async (response: Response) => {
           if (!response.ok) {
             log.debug('Using URL:', path, 'assuming it could be an agent but got return code:', response.status)
-            this.setManagementError(response.status, response.statusText)
+
+            // Start with the most generic, but always available, error message as a fallback.
+            let message = response.statusText
+
+            try {
+              // Attempt to read the body as text.
+              // In rare cases, this I/O operation might fail.
+              const errorText = await response.text()
+
+              // Parsing as text succeeded but would be helpful to see if it is json.
+              // The default message is now the full text body.
+              message = errorText
+
+              try {
+                // Attempt to parse the text string as JSON.
+                const errorJson = JSON.parse(errorText)
+
+                // Parsing has succeeded AND it has a JSON structure,
+                if (errorJson && errorJson.error) {
+                  message = errorJson.error
+                }
+              } catch (jsonError) {
+                // Wasn't valid JSON.
+                // Message is already the full 'errorText', so no action is needed here.
+                log.debug(`Response body was not valid JSON. Using raw text for error message: ${jsonError}`)
+              }
+            } catch (textError) {
+              // Catches if `response.text()` itself fails.
+              // This would be due to a TypeError (e.g., body already read).
+              log.error('Failed to read response body as text:', textError)
+              // No action is needed because `message` variable still holds the
+              // initial fallback value of `response.statusText`.
+            }
+
+            /*
+             * Finally, create and reject the error with the best message
+             * The '|| response.statusText' is a final safety net in
+             * case message is empty
+             */
+            this.setManagementError(response.status, message || response.statusText)
             reject(this.mgmtError)
             return
           }

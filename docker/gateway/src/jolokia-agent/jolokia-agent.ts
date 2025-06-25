@@ -509,13 +509,12 @@ export function proxyJolokiaAgent(req: ExpressRequest, res: ExpressResponse, opt
           headers: new Headers(),
         }
       } else if (isError(error)) {
-        let body
-        if (isObject(error.message)) body = JSON.stringify(error.message)
-        else body = `{error: "${error.message}"}`
-
+        const errorPayload = {
+          error: error.message,
+        }
         simpleResponse = {
           status: 502,
-          body: body,
+          body: JSON.stringify(errorPayload),
           headers: new Headers(),
         }
       } else {
