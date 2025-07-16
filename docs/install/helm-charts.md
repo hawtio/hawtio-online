@@ -89,6 +89,8 @@ hawtconfig: true
 # Use internal SSL [ true | false ]
 #  - Only required if clusterType is k8s
 internalSSL: true
+# Mask IP addresses in application responses [ true | false ]
+maskIPAddresses: true
 
 # The url of the OpenShift Console
 # (only applicable to clusterType: openshift)
@@ -166,3 +168,14 @@ $ helm install \
   hawtio-online hawtio/hawtio-online
 ```
 This has the effect of stripping out the _hawtio-serving_ certificate being applied to the internal deployment servers, updates the http protocol to plain rather from SSL and changes the ports to expected plain values.
+
+###### Masking IP Addresses in connection responses
+As a security measure, any IP address patterns contained in json response data are, by default,  masked with the placeholder `<masked>`. Should users wish to disable this masking then the following override the `maskIPAddresses` property:
+```
+$ helm install \
+  --set clusterType=k8s \
+  --set mode=cluster \
+  --set maskIPAddresses=false \
+  hawtio-online hawtio/hawtio-online
+```
+This will set the deployment resource environment variable HAWTIO_ONLINE_MASK_IP_ADDRESSES to false which will disable the ip address masking.
