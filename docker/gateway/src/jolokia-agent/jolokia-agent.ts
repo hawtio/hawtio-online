@@ -19,26 +19,64 @@ import {
 } from './globals'
 import * as RBAC from './rbac'
 
-const aclFile = fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || `${__dirname}/ACL.yaml`, 'utf8')
-const aclYaml = yaml.parse(aclFile)
+const DEFAULT_ACL_FILE_PATH = `${__dirname}/ACL.yaml`
 
-logger.trace('=== imported ACL yaml ===')
-logger.trace(aclYaml)
+function initRBACFile(rbacFilePath: string) {
+  let aclFile
+  try {
+    aclFile = fs.readFileSync(rbacFilePath, 'utf8')
+  } catch (err) {
+    const e = new Error(`Failed to read the ACL file at ${rbacFilePath}`)
+    e.cause = err
+    throw e
+  }
 
-RBAC.initACL(aclYaml)
-
-let isRbacEnabled = typeof process.env['HAWTIO_ONLINE_RBAC_ACL'] !== 'undefined'
-const useForm = process.env['HAWTIO_ONLINE_AUTH'] === 'form'
-
-logger.info(`=== RBAC Enabled: ${isRbacEnabled}`)
-logger.info(`=== Use Form Authentication: ${useForm}`)
-
-/**
- * Used only for testing to allow for rbac to be turned on/off
- */
-export function enableRbac(enabled: boolean) {
-  isRbacEnabled = enabled
+  try {
+    const aclYaml = yaml.parse(aclFile)
+    logger.trace('=== Parsed ACL file and initialising RBAC ===')
+    logger.trace(aclYaml)
+    RBAC.initACL(aclYaml)
+  } catch (err) {
+    const e = new Error(`Failed to parse the ACL file at ${rbacFilePath}`)
+    e.cause = err
+    throw e
+  }
 }
+
+/*
+ * Process the RBAC env variable and, if required, initialise the file
+ * - RBAC envVar value not defined: RBAC enabled / default RBAC file
+ * - RBAC envVar value is 'disabled': RBAC disabled
+ * - RBAC envVar value is 'file path': RBAC enabled / custom RBAC file
+ */
+export function processRBACEnvVar(defaultRbacFilePath: string, rbacEnvVar?: string): boolean {
+  if (!rbacEnvVar) {
+    logger.info(`=== Enabling RBAC with default rules file`)
+    initRBACFile(defaultRbacFilePath)
+    isRbacEnabled = true
+  } else if (rbacEnvVar.toLowerCase() === 'disabled') {
+    logger.info(`=== RBAC has been disabled`)
+    isRbacEnabled = false
+  } else {
+    // Custom ACL file has been specified
+    logger.info(`=== Custom RBAC rules file defined: ${rbacEnvVar}`)
+    initRBACFile(rbacEnvVar)
+    isRbacEnabled = true
+  }
+
+  return isRbacEnabled
+}
+
+/*
+ * Determine whether to apply RBAC using either a custom
+ * or default file
+ */
+const rbacACLEnvVar = process.env['HAWTIO_ONLINE_RBAC_ACL']
+let isRbacEnabled: boolean
+processRBACEnvVar(DEFAULT_ACL_FILE_PATH, rbacACLEnvVar)
+
+const useForm = process.env['HAWTIO_ONLINE_AUTH'] === 'form'
+logger.info(`=== Use Form Authentication: ${useForm}`)
 
 // Headers that should not be passed onto fetch sub requests
 const excludeHeaders = [
