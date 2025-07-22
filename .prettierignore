@@ -5,3 +5,5 @@ dist
 
 # any directories specifically labelled ignore
 **/ignore/**
+
+**/test.invalid.ACL.yaml

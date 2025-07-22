@@ -1,3 +1,4 @@
+import path from 'path'
 import request from 'supertest'
 import express from 'express'
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express-serve-static-core'
@@ -10,7 +11,7 @@ import { JOLOKIA_PARAMS, JOLOKIA_PATH, JOLOKIA_PORT, JOLOKIA_URI, NAMESPACE, tes
 // process.env.LOG_LEVEL = 'trace'
 
 import { expressLogger, logger } from '../logger'
-import { proxyJolokiaAgent, enableRbac } from './jolokia-agent'
+import { processRBACEnvVar, proxyJolokiaAgent } from './jolokia-agent'
 import { isOptimisedCachedDomains } from './globals'
 import { cloneObject } from '../utils'
 
@@ -170,13 +171,44 @@ app
 /***********************************
  *            T E S T S
  ***********************************/
+// Defined by jest env vars in .jestEnvVars.js
+const defaultACLFile = `${process.env.HAWTIO_ONLINE_RBAC_ACL}`
 
-beforeEach(() => {
-  // Reset TestOptions
-  testData.authorization.forbidden = false
-  testData.authorization.adminAllowed = true
-  testData.authorization.viewerAllowed = true
-  enableRbac(true)
+describe('processRBACEnvVar', () => {
+  it('RBAC Enabled - Default File', () => {
+    expect(() => {
+      const rbacEnabled = processRBACEnvVar(defaultACLFile)
+      expect(rbacEnabled).toBe(true)
+    }).not.toThrow()
+  })
+
+  it('RBAC Disabled', () => {
+    expect(() => {
+      const rbacEnabled = processRBACEnvVar(defaultACLFile, 'disabled')
+      expect(rbacEnabled).toBe(false)
+    }).not.toThrow()
+  })
+
+  it('RBAC Enabled - Custom File Not Found', () => {
+    expect(() => {
+      processRBACEnvVar(defaultACLFile, 'notFoundFilePath')
+    }).toThrow(new Error('Failed to read the ACL file at notFoundFilePath'))
+  })
+
+  it('RBAC Enabled - Custom File Invalid', () => {
+    const invalidYamlACLPath = `${path.dirname(__filename)}/test.invalid.ACL.yaml`
+    expect(() => {
+      processRBACEnvVar(defaultACLFile, invalidYamlACLPath)
+    }).toThrow(new Error(`Failed to parse the ACL file at ${invalidYamlACLPath}`))
+  })
+
+  it('RBAC Enabled - Custom File Valid', () => {
+    const validYamlACLPath = `${path.dirname(__filename)}/test.ACL.yaml`
+    expect(() => {
+      const rbacEnabled = processRBACEnvVar(defaultACLFile, validYamlACLPath)
+      expect(rbacEnabled).toBe(true)
+    }).not.toThrow()
+  })
 })
 
 function appPost(uri: string, body: Record<string, unknown> | Record<string, unknown>[]) {
@@ -196,21 +228,27 @@ describe.each([
 ])('$title', ({ title, rbac }) => {
   const testAuth = rbac ? 'RBAC Enabled' : 'RBAC Disabled'
 
+  beforeEach(() => {
+    // Reset TestOptions
+    testData.authorization.forbidden = false
+    testData.authorization.adminAllowed = true
+    testData.authorization.viewerAllowed = true
+    if (rbac) processRBACEnvVar(defaultACLFile)
+    else processRBACEnvVar(defaultACLFile, 'disabled')
+  })
+
   it(`${testAuth}: Bare path`, async () => {
-    enableRbac(rbac)
     const path = '/management/'
     return appPost(path, testData.jolokia.search.request).expect(404)
   })
 
   it(`${testAuth}: Authorization forbidden`, async () => {
-    enableRbac(rbac)
     testData.authorization.forbidden = true
     const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
     return appPost(path, testData.jolokia.search.request).expect(403)
   })
 
   it(`${testAuth}: Authorization not allowed`, async () => {
-    enableRbac(rbac)
     testData.authorization.adminAllowed = false
     testData.authorization.viewerAllowed = false
     const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
@@ -222,7 +260,6 @@ describe.each([
   })
 
   it(`${testAuth}: Authorization Post search`, async () => {
-    enableRbac(rbac)
     const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
     return appPost(path, testData.jolokia.search.request)
       .expect(200)
@@ -232,7 +269,6 @@ describe.each([
   })
 
   it(`${testAuth}: Authorization Post registerList`, async () => {
-    enableRbac(rbac)
     const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
     return appPost(path, testData.jolokia.registerList.request)
       .expect(200)
@@ -255,7 +291,6 @@ describe.each([
   })
 
   it(`${testAuth}: Authorization Post canInvokeMap`, async () => {
-    enableRbac(rbac)
     const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
     return appPost(path, testData.jolokia.canInvokeMap.request)
       .expect(200)
@@ -272,7 +307,6 @@ describe.each([
   })
 
   it(`${testAuth}: Authorization Post canInvokeSingleAttribute`, async () => {
-    enableRbac(rbac)
     const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
     return appPost(path, testData.jolokia.canInvokeSingleAttribute.request)
       .expect(200)
@@ -289,7 +323,6 @@ describe.each([
   })
 
   it(`${testAuth}: Authorization Post canInvokeSingleOperation`, async () => {
-    enableRbac(rbac)
     const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
     return appPost(path, testData.jolokia.canInvokeSingleOperation.request)
       .expect(200)
@@ -306,7 +339,6 @@ describe.each([
   })
 
   it(`${testAuth}: Authorization Post bulkRequestWithInterception`, async () => {
-    enableRbac(rbac)
     const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
     return appPost(path, testData.jolokia.bulkRequestWithInterception.request)
       .expect(200)
@@ -323,9 +355,6 @@ describe.each([
   })
 
   it(`${testAuth}: Authorization Post operationWithArgumentsAndViewerRoleOnly`, async () => {
-    // RBAC enabled depending on test suite
-    enableRbac(rbac)
-
     // Only viewer role allowed
     testData.authorization.adminAllowed = false
     testData.authorization.viewerAllowed = true
@@ -347,8 +376,6 @@ describe.each([
   })
 
   it(`${testAuth}: Authorization Post bulkRequestWithViewerRole`, async () => {
-    enableRbac(rbac)
-
     // Only viewer role allowed
     testData.authorization.adminAllowed = false
     testData.authorization.viewerAllowed = true
@@ -368,9 +395,6 @@ describe.each([
   })
 
   it(`${testAuth}: Authorization Post requestOperationWithArgumentsAndNoRole`, async () => {
-    // RBAC enabled depending on test suite
-    enableRbac(rbac)
-
     // No role allowed
     testData.authorization.adminAllowed = false
     testData.authorization.viewerAllowed = false
