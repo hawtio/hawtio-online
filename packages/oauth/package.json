@@ -29,8 +29,7 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/react": "^1.9.6",
-    "@thumbmarkjs/thumbmarkjs": "^0.20.2",
+    "@hawtio/react": "^1.10.0",
     "babel-jest": "^29.6.1",
     "fetch-intercept": "^2.4.0",
     "jest-extended": "^6.0.0",
