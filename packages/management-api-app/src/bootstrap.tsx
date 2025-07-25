@@ -2,7 +2,6 @@ import { Logger, configManager, hawtio } from '@hawtio/react'
 import { isMgmtApiRegistered, log } from '@hawtio/online-management-api'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { reportWebVitals } from './reportWebVitals'
 import { Management } from './Management'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthLoginPage } from './login'
@@ -36,9 +35,4 @@ isMgmtApiRegistered().then(() => {
       </BrowserRouter>
     </React.StrictMode>,
   )
-
-  // If you want to start measuring performance in your app, pass a function
-  // to log results (for example: reportWebVitals(console.log))
-  // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-  reportWebVitals()
 })
