@@ -2115,7 +2115,7 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": "npm:^1.9.6"
     "@patternfly/react-core": "npm:^5.3.3"
-    "@patternfly/react-styles": "npm:^5.3.1"
+    "@patternfly/react-styles": "npm:^6.3.0"
     "@patternfly/react-table": "npm:^5.3.3"
     "@patternfly/react-tokens": "npm:^5.3.1"
     "@types/node": "npm:^22.15.29"
@@ -2185,7 +2185,7 @@ __metadata:
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/react": "npm:^1.9.6"
     "@patternfly/react-core": "npm:^5.3.3"
-    "@patternfly/react-styles": "npm:^5.3.1"
+    "@patternfly/react-styles": "npm:^6.3.0"
     "@patternfly/react-table": "npm:^5.3.3"
     "@patternfly/react-tokens": "npm:^5.3.1"
     "@types/node": "npm:^22.15.29"
@@ -2255,7 +2255,7 @@ __metadata:
     "@hawtio/online-oauth": "workspace:*"
     "@hawtio/react": "npm:^1.9.6"
     "@patternfly/react-core": "npm:^5.3.1"
-    "@patternfly/react-styles": "npm:^5.3.0"
+    "@patternfly/react-styles": "npm:^6.3.0"
     "@patternfly/react-table": "npm:^5.3.1"
     "@patternfly/react-tokens": "npm:^5.3.1"
     "@types/node": "npm:^22.15.29"
@@ -2350,7 +2350,7 @@ __metadata:
     "@hawtio/online-oauth": "workspace:*"
     "@hawtio/react": "npm:^1.9.6"
     "@patternfly/react-core": "npm:^5.3.3"
-    "@patternfly/react-styles": "npm:^5.3.1"
+    "@patternfly/react-styles": "npm:^6.3.0"
     "@types/node": "npm:^22.15.29"
     "@types/react": "npm:18.3.5"
     "@types/react-dom": "npm:^18.3.0"
@@ -3133,7 +3133,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-styles@npm:^5.3.0, @patternfly/react-styles@npm:^5.3.1":
+"@patternfly/react-styles@npm:^5.3.1":
   version: 5.3.1
   resolution: "@patternfly/react-styles@npm:5.3.1"
   checksum: 10/9b30c78e2933cea671b455bb6650e583a81e5fe76f63955d9e28f047034a7a3a1111539a21eda4035c30ffd08952b0d163a954cb55c1ab5e196c498e6018f5e2
@@ -3144,6 +3144,13 @@ __metadata:
   version: 5.4.1
   resolution: "@patternfly/react-styles@npm:5.4.1"
   checksum: 10/414a55c31a90d4619f13085d043d90e93b3e563cde88ba72b485ed3e334e99f442cc43030b8de61712a5ace498e9e83acd5bd76ebe00098d0e0319fcc048fc8e
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-styles@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "@patternfly/react-styles@npm:6.3.0"
+  checksum: 10/94e1e601baf03b4fefc6b4859277befde4a90a3d5b7abf6a2d36a5e953455d937ba3e8455e7c7a4f2a3bfcc6f0d0828c94427885d8c60c34d9948173058d6609
   languageName: node
   linkType: hard
 
