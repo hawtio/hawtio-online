@@ -162,6 +162,14 @@ module.exports = () => {
     ],
 
     resolve: {
+      // This tells Webpack to look for the "require" and "import" conditions
+      // in the "exports" map of a package.json.
+      conditionNames: ['require', 'import', 'browser'],
+
+      // While often default in modern Webpack, it's good to be explicit
+      // that you want to respect the "exports" field.
+      exportsFields: ['exports'],
+
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
       alias: {
         'react-native': 'react-native-web',
