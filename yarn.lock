@@ -2138,7 +2138,7 @@ __metadata:
     ts-loader: "npm:^9.5.2"
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     typescript: "npm:^5.8.3"
-    web-vitals: "npm:^4.2.4"
+    web-vitals: "npm:^5.1.0"
     webpack: "npm:^5.101.0"
     webpack-cli: "npm:^6.0.1"
     webpack-dev-server: "npm:^5.2.2"
@@ -2208,7 +2208,7 @@ __metadata:
     ts-loader: "npm:^9.5.2"
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     typescript: "npm:^5.8.3"
-    web-vitals: "npm:^4.2.4"
+    web-vitals: "npm:^5.1.0"
     webpack: "npm:^5.101.0"
     webpack-cli: "npm:^6.0.1"
     webpack-dev-server: "npm:^5.2.2"
@@ -2280,7 +2280,7 @@ __metadata:
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     typescript: "npm:^5.8.3"
     url: "npm:^0.11.4"
-    web-vitals: "npm:^4.2.4"
+    web-vitals: "npm:^5.1.0"
     webpack: "npm:^5.101.0"
     webpack-cli: "npm:^6.0.1"
     webpack-dev-server: "npm:^5.2.2"
@@ -2380,7 +2380,7 @@ __metadata:
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     typescript: "npm:^5.8.3"
     url: "npm:^0.11.4"
-    web-vitals: "npm:^4.2.4"
+    web-vitals: "npm:^5.1.0"
     webpack: "npm:^5.101.0"
     webpack-bundle-analyzer: "npm:^4.10.2"
     webpack-cli: "npm:^6.0.1"
@@ -18107,10 +18107,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web-vitals@npm:^4.2.4":
-  version: 4.2.4
-  resolution: "web-vitals@npm:4.2.4"
-  checksum: 10/68cd1c2625a04b26e7eab67110623396afc6c9ef8c3a76f4e780aefe5b7d4ca1691737a0b99119e1d1ca9a463c4d468c0f0090b1875b6d784589d3a4a8503313
+"web-vitals@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "web-vitals@npm:5.1.0"
+  checksum: 10/3b99e3e5e031257387f59f5e71f84d873b259bc09d560993fff1d0c84e0196a509712bc974666c47f51561f8bb8297ff1c1fdf18d4ebde2345a1cd06dba36021
   languageName: node
   linkType: hard
 
