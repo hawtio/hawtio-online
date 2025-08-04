@@ -2120,7 +2120,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^5.3.1"
     "@types/node": "npm:^22.15.29"
     "@types/react": "npm:18.3.5"
-    "@types/react-dom": "npm:^18.3.0"
+    "@types/react-dom": "npm:^19.1.7"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^8.1.0"
@@ -2131,7 +2131,7 @@ __metadata:
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     react: "npm:^18.3.1"
-    react-dom: "npm:^18.3.1"
+    react-dom: "npm:^19.1.1"
     react-router-dom: "npm:^7.7.1"
     source-map-loader: "npm:^5.0.0"
     style-loader: "npm:^4.0.0"
@@ -2190,7 +2190,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^5.3.1"
     "@types/node": "npm:^22.15.29"
     "@types/react": "npm:18.3.5"
-    "@types/react-dom": "npm:^18.3.0"
+    "@types/react-dom": "npm:^19.1.7"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^8.1.0"
@@ -2201,7 +2201,7 @@ __metadata:
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     react: "npm:^18.3.1"
-    react-dom: "npm:^18.3.1"
+    react-dom: "npm:^19.1.1"
     react-router-dom: "npm:^7.7.1"
     source-map-loader: "npm:^5.0.0"
     style-loader: "npm:^4.0.0"
@@ -2260,7 +2260,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^5.3.1"
     "@types/node": "npm:^22.15.29"
     "@types/react": "npm:18.3.5"
-    "@types/react-dom": "npm:^18.3.0"
+    "@types/react-dom": "npm:^19.1.7"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^8.1.0"
@@ -2272,7 +2272,7 @@ __metadata:
     path-browserify: "npm:^1.0.1"
     process: "npm:^0.11.10"
     react: "npm:^18.3.1"
-    react-dom: "npm:^18.3.1"
+    react-dom: "npm:^19.1.1"
     react-router-dom: "npm:^7.7.1"
     source-map-loader: "npm:^5.0.0"
     style-loader: "npm:^4.0.0"
@@ -2353,7 +2353,7 @@ __metadata:
     "@patternfly/react-styles": "npm:^5.3.1"
     "@types/node": "npm:^22.15.29"
     "@types/react": "npm:18.3.5"
-    "@types/react-dom": "npm:^18.3.0"
+    "@types/react-dom": "npm:^19.1.7"
     babel-loader: "npm:^10.0.0"
     connect-history-api-fallback: "npm:^2.0.0"
     copy-webpack-plugin: "npm:^13.0.0"
@@ -2372,7 +2372,7 @@ __metadata:
     path-browserify: "npm:^1.0.1"
     process: "npm:^0.11.10"
     react: "npm:^18.3.1"
-    react-dom: "npm:^18.3.1"
+    react-dom: "npm:^19.1.1"
     react-markdown: "npm:^10.1.0"
     source-map-loader: "npm:^5.0.0"
     style-loader: "npm:^4.0.0"
@@ -4416,21 +4416,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.3.0":
-  version: 18.3.0
-  resolution: "@types/react-dom@npm:18.3.0"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 10/6ff53f5a7b7fba952a68e114d3b542ebdc1e87a794234785ebab0bcd9bde7fb4885f21ebaf93d26dc0a1b5b93287f42cad68b78ae04dddf6b20da7aceff0beaf
-  languageName: node
-  linkType: hard
-
 "@types/react-dom@npm:^18.3.1":
   version: 18.3.1
   resolution: "@types/react-dom@npm:18.3.1"
   dependencies:
     "@types/react": "npm:*"
   checksum: 10/33f9ba79b26641ddf00a8699c30066b7e3573ab254e97475bf08f82fab83a6d3ce8d4ebad86afeb49bb8df3374390a9ba93125cece33badc4b3e8f7eac3c84d8
+  languageName: node
+  linkType: hard
+
+"@types/react-dom@npm:^19.1.7":
+  version: 19.1.7
+  resolution: "@types/react-dom@npm:19.1.7"
+  peerDependencies:
+    "@types/react": ^19.0.0
+  checksum: 10/a99465e5a17d40725dedb3708357f8998c57caab768cee0992b4bb7822ce7ed2ec697a5f426cb98d3397b020756a6e4b0986dc5f6f4254e13b3536afb38538e6
   languageName: node
   linkType: hard
 
@@ -14177,6 +14177,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dom@npm:^19.1.1":
+  version: 19.1.1
+  resolution: "react-dom@npm:19.1.1"
+  dependencies:
+    scheduler: "npm:^0.26.0"
+  peerDependencies:
+    react: ^19.1.1
+  checksum: 10/9005415d2175b1f1eb4a544ad04afb29691bb7b6dd43bbdaa09932146b310b73bd4552bc772ad78fa481f409eada1560cf887606c83c1a53a922c1e30f1b3a34
+  languageName: node
+  linkType: hard
+
 "react-dropzone@npm:14.2.3, react-dropzone@npm:^14.2.3":
   version: 14.2.3
   resolution: "react-dropzone@npm:14.2.3"
@@ -15004,6 +15015,13 @@ __metadata:
   dependencies:
     loose-envify: "npm:^1.1.0"
   checksum: 10/e8d68b89d18d5b028223edf090092846868a765a591944760942b77ea1f69b17235f7e956696efbb62c8130ab90af7e0949bfb8eba7896335507317236966bc9
+  languageName: node
+  linkType: hard
+
+"scheduler@npm:^0.26.0":
+  version: 0.26.0
+  resolution: "scheduler@npm:0.26.0"
+  checksum: 10/1ecf2e5d7de1a7a132796834afe14a2d589ba7e437615bd8c06f3e0786a3ac3434655e67aac8755d9b14e05754c177e49c064261de2673aaa3c926bc98caa002
   languageName: node
   linkType: hard
 
