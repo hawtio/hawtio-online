@@ -33,7 +33,7 @@
     "@hawtio/react": "^1.9.6",
     "@jolokia.js/simple": "^2.2.4",
     "eventemitter3": "^5.0.1",
-    "jolokia.js": "^2.2.4",
+    "jolokia.js": "^2.3.0",
     "jquery": "^3.7.0",
     "jsonpath": "^1.1.1",
     "superstruct": "^2.0.2",
