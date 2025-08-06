@@ -69,7 +69,7 @@ export const OAuthStatus: React.FunctionComponent = () => {
         else setProfile(userProfile)
 
         await userService.fetchUser()
-        const username = await userService.getUsername()
+        const username = (await userService.getUsername()) ?? '<not logged-in>'
         setUsername(username)
       } catch (error) {
         if (error instanceof Error) setError(error)
