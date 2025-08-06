@@ -14,7 +14,7 @@ export async function isK8ApiRegistered(): Promise<boolean> {
   return await registerK8Api()
 }
 
-export { K8Actions, JOLOKIA_PORT_QUERY } from './globals'
+export { K8Actions, JOLOKIA_PORT_QUERY, log } from './globals'
 
 export type {
   Paging,
