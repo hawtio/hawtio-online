@@ -9,6 +9,8 @@ export const LOGOUT_ENDPOINT = '/auth/logout'
 export const OPENSHIFT_MASTER_KIND = 'OPENSHIFT'
 export const KUBERNETES_MASTER_KIND = 'KUBERNETES'
 
+export const AUTH_METHOD = 'oauth2'
+
 export class UserProfile {
   // Type of oauth is the profile, eg. openshift, form
   private oAuthType = 'unknown'
