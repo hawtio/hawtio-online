@@ -61,14 +61,17 @@ const common = (mode, publicPath, packageVersion) => {
           react: {
             singleton: true,
             requiredVersion: dependencies['react'],
+            eager: true,
           },
           'react-dom': {
             singleton: true,
             requiredVersion: dependencies['react-dom'],
+            eager: true,
           },
           'react-router-dom': {
             singleton: true,
             requiredVersion: dependencies['react-router-dom'],
+            eager: true,
           },
           '@hawtio/react': {
             singleton: true,
