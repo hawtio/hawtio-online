@@ -2123,7 +2123,7 @@ __metadata:
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
-    dotenv-webpack: "npm:^8.1.0"
+    dotenv-webpack: "npm:^8.1.1"
     html-webpack-plugin: "npm:^5.6.3"
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^29.6.2"
@@ -2193,7 +2193,7 @@ __metadata:
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
-    dotenv-webpack: "npm:^8.1.0"
+    dotenv-webpack: "npm:^8.1.1"
     html-webpack-plugin: "npm:^5.6.3"
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^29.6.2"
@@ -2263,7 +2263,7 @@ __metadata:
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
-    dotenv-webpack: "npm:^8.1.0"
+    dotenv-webpack: "npm:^8.1.1"
     html-webpack-plugin: "npm:^5.6.3"
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^29.6.2"
@@ -2358,7 +2358,7 @@ __metadata:
     connect-history-api-fallback: "npm:^2.0.0"
     copy-webpack-plugin: "npm:^13.0.0"
     css-loader: "npm:^7.1.2"
-    dotenv-webpack: "npm:^8.1.0"
+    dotenv-webpack: "npm:^8.1.1"
     file-loader: "npm:^6.2.0"
     html-webpack-plugin: "npm:^5.6.3"
     interpolate-html-plugin: "npm:^4.0.0"
@@ -7745,14 +7745,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv-webpack@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "dotenv-webpack@npm:8.1.0"
+"dotenv-webpack@npm:^8.1.1":
+  version: 8.1.1
+  resolution: "dotenv-webpack@npm:8.1.1"
   dependencies:
     dotenv-defaults: "npm:^2.0.2"
   peerDependencies:
     webpack: ^4 || ^5
-  checksum: 10/74a46a48646cfbd18c1df9afec13bcff41feeff6662bcd734d4069774bd3ee8531f072c109579812841de7683be3edf06495b694c7e78a7653a270bd9106b0db
+  checksum: 10/99bc25a711f979948a4907cc31757ba392e5a56cf6d1399512d37dddda23e08a747dede72c4f84f79a7bbdb14a4eee302a9a591cef2f332346bc4a1d4cbf9bff
   languageName: node
   linkType: hard
 
