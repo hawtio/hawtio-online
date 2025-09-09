@@ -43,7 +43,7 @@ bootstrapModules().then(mods => {
     configManager.initItem('Jolokia Management API', TaskState.finished, 'plugins')
 
     // Register Hawtio builtin plugins
-    configManager.initItem('Hawtio Plugins', TaskState.finished, 'plugins')
+    configManager.initItem('Hawtio Plugins', TaskState.started, 'plugins')
     mods.hawtioreact.jmx()
     mods.hawtioreact.rbac()
     mods.hawtioreact.camel()
@@ -53,14 +53,18 @@ bootstrapModules().then(mods => {
     mods.hawtioreact.springboot()
     configManager.initItem('Hawtio Plugins', TaskState.finished, 'plugins')
 
+    configManager.initItem('Hawtio UI', TaskState.started, 'plugins')
+    const hawtioUiMod = await import('@hawtio/react/ui')
+    configManager.initItem('Hawtio UI', TaskState.finished, 'plugins')
+
     // Register discover-core plugin
-    configManager.initItem('Discover Core Plugin', TaskState.finished, 'plugins')
+    configManager.initItem('Discover Core Plugin', TaskState.started, 'plugins')
     const discoverCoreMod = await import('./discover-core')
     discoverCoreMod.discoverCore()
     configManager.initItem('Discover Core Plugin', TaskState.finished, 'plugins')
 
     // Register discover UI plugin
-    configManager.initItem('Discover UI Plugin', TaskState.finished, 'plugins')
+    configManager.initItem('Discover UI Plugin', TaskState.started, 'plugins')
     const discoverMod = await import('./discover')
     discoverMod.discover()
     configManager.initItem('Discover UI Plugin', TaskState.finished, 'plugins')
@@ -76,7 +80,7 @@ bootstrapModules().then(mods => {
 
     root.render(
       <React.StrictMode>
-        <mods.hawtioUi.Hawtio />
+        <hawtioUiMod.Hawtio />
       </React.StrictMode>,
     )
   }

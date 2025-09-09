@@ -2399,7 +2399,6 @@ __metadata:
     react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.30.1"
     replace: "npm:^1.2.2"
-    superstruct: "npm:^2.0.2"
     ts-jest: "npm:^29.3.2"
     ts-node: "npm:^10.9.2"
     tsup: "npm:^8.5.0"

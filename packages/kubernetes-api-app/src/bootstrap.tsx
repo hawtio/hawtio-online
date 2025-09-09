@@ -14,7 +14,7 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 // It is imported and rendered in fully synchronous way.
 root.render(<HawtioInitialization verbose={true} />)
 
-// Configure the console\
+// Configure the console
 configManager.addProductInfo('Kubernetes API Test App', '1.0.0')
 
 /*
@@ -37,6 +37,10 @@ bootstrapModules().then(mods => {
     mods.kube.log.log('Logging Level set to', mods.hawtioreact.Logger.getLevel())
     await mods.kube.isK8ApiRegistered()
     configManager.initItem('Kubernetes API', TaskState.finished, 'plugins')
+
+    configManager.initItem('Hawtio UI', TaskState.started, 'plugins')
+    await import('@hawtio/react/ui')
+    configManager.initItem('Hawtio UI', TaskState.finished, 'plugins')
 
     // hawtio.bootstrap() will wait for all init items to be ready, so we have to finish 'loading'
     // stage of UI. UI will be rendered after bootstrap() returned promise is resolved

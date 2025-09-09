@@ -1,15 +1,19 @@
-export async function bootstrapModules() {
+export type HawtioBootstrapModules = {
+  hawtioreact: typeof import('@hawtio/react')
+  oAuth: typeof import('@hawtio/online-oauth')
+  kube: typeof import('@hawtio/online-kubernetes-api')
+}
+
+export async function bootstrapModules(): Promise<HawtioBootstrapModules> {
   // Use Promise.all to fetch all modules concurrently
-  const [hawtioReactMod, hawtioUiMod, oAuthMod, kubeMod] = await Promise.all([
+  const [hawtioReactMod, oAuthMod, kubeMod] = await Promise.all([
     import('@hawtio/react'),
-    import('@hawtio/react/ui'),
     import('@hawtio/online-oauth'),
     import('@hawtio/online-kubernetes-api'),
   ])
 
   return {
     hawtioreact: hawtioReactMod,
-    hawtioUi: hawtioUiMod,
     oAuth: oAuthMod,
     kube: kubeMod,
   }
