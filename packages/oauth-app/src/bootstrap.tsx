@@ -33,8 +33,10 @@ bootstrapModules().then(mods => {
     mods.oAuth.onlineOAuth()
     configManager.initItem('OAuth2 Authentication', TaskState.finished, 'plugins')
 
-    // hawtio.bootstrap() will wait for all init items to be ready, so we have to finish 'loading'
-    // stage of UI. UI will be rendered after bootstrap() returned promise is resolved
+    configManager.initItem('Hawtio UI', TaskState.started, 'plugins')
+    await import('@hawtio/react/ui')
+    configManager.initItem('Hawtio UI', TaskState.finished, 'plugins')
+
     configManager.initItem('Loading UI', TaskState.finished, 'config')
 
     // finally, after we've registered all custom and built-in plugins, we can proceed to the final stage:

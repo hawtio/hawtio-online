@@ -88,7 +88,8 @@ class OAuthService {
 
     // this will cause redirect, so there's nothing to await for
     // after redirect we'll go through constructor(), init() and loadUserProfile() again
-    return await delegateService.loginStatus()
+    // Therefore, if it gets to here then this is a configuration error.
+    return AuthenticationResult.configuration_error
   }
 
   /**

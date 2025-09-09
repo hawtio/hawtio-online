@@ -42,6 +42,10 @@ bootstrapModules().then(mods => {
     await mods.mgmt.isMgmtApiRegistered()
     configManager.initItem('Jolokia Management API', TaskState.finished, 'plugins')
 
+    configManager.initItem('Hawtio UI', TaskState.started, 'plugins')
+    await import('@hawtio/react/ui')
+    configManager.initItem('Hawtio UI', TaskState.finished, 'plugins')
+
     // hawtio.bootstrap() will wait for all init items to be ready, so we have to finish 'loading'
     // stage of UI. UI will be rendered after bootstrap() returned promise is resolved
     configManager.initItem('Loading UI', TaskState.finished, 'config')

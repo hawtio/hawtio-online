@@ -22,7 +22,7 @@ import {
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
 import { UserProfile, oAuthInit, getActiveProfile } from '@hawtio/online-oauth'
-import { userService } from '@hawtio/react'
+import { PUBLIC_USER, userService } from '@hawtio/react'
 
 class DefaultProfile extends UserProfile {
   constructor() {
@@ -69,7 +69,7 @@ export const OAuthStatus: React.FunctionComponent = () => {
         else setProfile(userProfile)
 
         await userService.fetchUser()
-        const username = (await userService.getUsername()) ?? '<not logged-in>'
+        const username = (await userService.getUsername()) ?? PUBLIC_USER
         setUsername(username)
       } catch (error) {
         if (error instanceof Error) setError(error)
