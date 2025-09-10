@@ -34,7 +34,6 @@
     "@jolokia.js/simple": "^2.3.0",
     "eventemitter3": "^5.0.1",
     "jolokia.js": "^2.3.0",
-    "jquery": "^3.7.0",
     "jsonpath": "^1.1.1"
   },
   "devDependencies": {
@@ -47,7 +46,6 @@
     "@patternfly/react-table": "^5.4.16",
     "@patternfly/react-tokens": "^5.4.1",
     "@types/jest": "^29.5.14",
-    "@types/jquery": "^3.5.32",
     "@types/jsonpath": "^0.2.4",
     "@types/node": "^24.3.1",
     "@types/react": "^18.3.5",
