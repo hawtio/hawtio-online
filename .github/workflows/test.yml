@@ -21,7 +21,7 @@ jobs:
         node: ['20']
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install NGINX
         run: |
           # https://nginx.org/en/linux_packages.html#Ubuntu
