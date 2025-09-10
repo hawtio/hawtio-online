@@ -2372,7 +2372,7 @@ __metadata:
     "@babel/core": "npm:^7.28.0"
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": "npm:^1.10.0"
-    "@jolokia.js/simple": "npm:^2.2.4"
+    "@jolokia.js/simple": "npm:^2.3.0"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2934,6 +2934,15 @@ __metadata:
   dependencies:
     jolokia.js: "npm:2.2.4"
   checksum: 10/b0f182db30ce0d8a71205e7de84ea74d6d5d4d44249949c6a7a515adfaba010ff0f9b41acb303dc394bc24aa415637b8533f8b4879985123446893310b27faf7
+  languageName: node
+  linkType: hard
+
+"@jolokia.js/simple@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@jolokia.js/simple@npm:2.3.0"
+  dependencies:
+    jolokia.js: "npm:2.3.0"
+  checksum: 10/eff38ea17fc7c0c9b90bbdb9f2f6f0c13be7bd84b5a2d3b655a7120751faf799830e64d069844d21e957208d58d191791fe161bf64c448ad0767e60778a4e839
   languageName: node
   linkType: hard
 
@@ -11359,7 +11368,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jolokia.js@npm:^2.3.0":
+"jolokia.js@npm:2.3.0, jolokia.js@npm:^2.3.0":
   version: 2.3.0
   resolution: "jolokia.js@npm:2.3.0"
   checksum: 10/5de76ba41d492badf524cf9c3aff8d3b33cb10ffffc129105f1f44a374dbfe29fadd7ce204cf8f69b27332effae6e283f387e8071bacff4a0167d7f959192e7c
