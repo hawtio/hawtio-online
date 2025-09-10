@@ -44,7 +44,7 @@
     "@patternfly/react-styles": "^5.4.1",
     "@patternfly/react-table": "^5.4.16",
     "@patternfly/react-tokens": "^5.4.1",
-    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/jest-dom": "^6.8.0",
     "@types/jest": "^29.5.14",
     "@types/jquery": "^3.5.32",
     "@types/jsonpath": "^0.2.4",
