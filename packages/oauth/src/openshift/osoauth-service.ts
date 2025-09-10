@@ -1,6 +1,5 @@
 import { AuthenticationResult, PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
-import $ from 'jquery'
 import { OAuthDelegateService } from '../api'
 import { AUTH_METHOD, UserProfile, log } from '../globals'
 import { CLUSTER_CONSOLE_KEY } from '../metadata'
@@ -150,34 +149,6 @@ export class OSOAuthService implements OAuthDelegateService {
     })
   }
 
-  private setupJQueryAjax(config: OpenShiftOAuthConfig) {
-    if (this.userProfile.hasError()) {
-      return
-    }
-
-    log.debug('Set authorization header to Openshift auth token for AJAX requests')
-    const beforeSend = (xhr: JQueryXHR, settings: JQueryAjaxSettings) => {
-      if (tokenHasExpired(this.userProfile)) {
-        log.debug('Cannot navigate to', settings.url, 'as token expired so need to logout')
-        this.doLogout(config)
-        return
-      }
-
-      // Set bearer token is used
-      xhr.setRequestHeader('Authorization', `Bearer ${this.userProfile.getToken()}`)
-
-      // For CSRF protection with Spring Security
-      const token = getCookie('XSRF-TOKEN')
-      if (token) {
-        log.debug('Set XSRF token header from cookies')
-        xhr.setRequestHeader('X-XSRF-TOKEN', token)
-      }
-      return // To suppress ts(7030)
-    }
-
-    $.ajaxSetup({ beforeSend })
-  }
-
   private setupKeepAlive(config: OpenShiftOAuthConfig) {
     const keepAlive = async () => {
       log.debug('Running oAuth keepAlive function')
@@ -280,7 +251,6 @@ export class OSOAuthService implements OAuthDelegateService {
 
       // Need fetch for keepalive
       this.setupFetch(config)
-      this.setupJQueryAjax(config)
 
       this.setupKeepAlive(config)
       return AuthenticationResult.ok

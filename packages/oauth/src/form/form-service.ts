@@ -1,6 +1,5 @@
 import { AuthenticationResult, PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
-import $ from 'jquery'
 import { jwtDecode } from 'jwt-decode'
 import { OAuthDelegateService } from '../api'
 import { AUTH_METHOD, OPENSHIFT_MASTER_KIND, UserProfile, log } from '../globals'
@@ -79,7 +78,6 @@ export class FormService implements OAuthDelegateService {
 
     // Need fetch for keepalive
     this.setupFetch()
-    this.setupJQueryAjax()
     return AuthenticationResult.ok
   }
 
@@ -153,29 +151,6 @@ export class FormService implements OAuthDelegateService {
         return [url, { ...requestConfig, headers }]
       },
     })
-  }
-
-  private setupJQueryAjax() {
-    if (this.userProfile.hasError()) {
-      return
-    }
-
-    log.debug('Set authorization header to Openshift auth token for AJAX requests')
-
-    const beforeSend = (xhr: JQueryXHR, settings: JQueryAjaxSettings) => {
-      // Set bearer token is used
-      xhr.setRequestHeader('Authorization', `Bearer ${this.userProfile.getToken()}`)
-
-      // For CSRF protection with Spring Security
-      const token = getCookie('XSRF-TOKEN')
-      if (token) {
-        log.debug('Set XSRF token header from cookies')
-        xhr.setRequestHeader('X-XSRF-TOKEN', token)
-      }
-      return // To suppress ts(7030)
-    }
-
-    $.ajaxSetup({ beforeSend })
   }
 
   private clearTokenStorage(): void {

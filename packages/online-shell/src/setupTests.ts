@@ -5,7 +5,6 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom'
 import fetchMock from 'jest-fetch-mock'
-import $ from 'jquery'
 
 fetchMock.enableMocks()
 
@@ -21,8 +20,3 @@ fetchMock.mockResponse(req => {
   }
   return Promise.resolve(res)
 })
-
-// To fix "jQuery is not defined" error
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const global: any
-global.$ = global.jQuery = $
