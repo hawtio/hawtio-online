@@ -19,6 +19,7 @@ interface StatusProps {
 }
 
 interface StatusIconDefinition {
+  text: string
   iconDef: IconDefinition
   spin?: boolean
   beat?: boolean
@@ -28,43 +29,49 @@ interface StatusIconDefinition {
 
 export const StatusIcon: React.FunctionComponent<StatusProps> = (props: StatusProps) => {
   const statusIconDef = (): StatusIconDefinition => {
-    switch (discoverService.getStatus(props.pod)) {
+    const status = discoverService.getStatus(props.pod)
+    const statusDef: StatusIconDefinition = {
+      text: status,
+      iconDef: faQuestion,
+    }
+
+    switch (status) {
       case 'Cancelled':
-        return { iconDef: faBan, className: 'text-muted' }
+        return { ...statusDef, iconDef: faBan, className: 'text-muted' }
       case 'Complete':
-        return { iconDef: faCheck, className: 'text-success' }
+        return { ...statusDef, iconDef: faCheck, className: 'text-success' }
       case 'Completed':
-        return { iconDef: faCheck, className: 'text-success' }
+        return { ...statusDef, iconDef: faCheck, className: 'text-success' }
       case 'Active':
-        return { iconDef: faRefresh }
+        return { ...statusDef, iconDef: faRefresh }
       case 'Error':
-        return { iconDef: faTimes, beat: true, className: 'text-danger' }
+        return { ...statusDef, iconDef: faTimes, beat: true, className: 'text-danger' }
       case 'Failed':
-        return { iconDef: faTimes, beat: true, className: 'text-danger' }
+        return { ...statusDef, iconDef: faTimes, beat: true, className: 'text-danger' }
       case 'New':
-        return { iconDef: faHourglass }
+        return { ...statusDef, iconDef: faHourglass }
       case 'Pending':
-        return { iconDef: faHourglassHalf, beatFade: true }
+        return { ...statusDef, iconDef: faHourglassHalf, beatFade: true }
       case 'Ready':
-        return { iconDef: faCheck, className: 'text-success' }
+        return { ...statusDef, iconDef: faCheck, className: 'text-success' }
       case 'Running':
-        return { iconDef: faRefresh, spin: true, className: 'running-state' }
+        return { ...statusDef, iconDef: faRefresh, spin: true, className: 'running-state' }
       case 'Succeeded':
-        return { iconDef: faCheck, className: 'text-success' }
+        return { ...statusDef, iconDef: faCheck, className: 'text-success' }
       case 'Bound':
-        return { iconDef: faCheck, className: 'text-success' }
+        return { ...statusDef, iconDef: faCheck, className: 'text-success' }
       case 'Terminating':
-        return { iconDef: faTimes, beatFade: true, className: 'text-danger' }
+        return { ...statusDef, iconDef: faTimes, beatFade: true, className: 'text-danger' }
       case 'Terminated':
-        return { iconDef: faTimes, beat: true, className: 'text-danger' }
+        return { ...statusDef, iconDef: faTimes, beat: true, className: 'text-danger' }
       case 'Unknown':
-        return { iconDef: faQuestion, beatFade: true, className: 'text-danger' }
+        return { ...statusDef, iconDef: faQuestion, beatFade: true, className: 'text-danger' }
 
       // Container Runtime States
       case 'Init Error':
-        return { iconDef: faTimes, className: 'text-danger' }
+        return { ...statusDef, iconDef: faTimes, className: 'text-danger' }
       case 'ContainerCreating':
-        return { iconDef: faHourglassHalf, beatFade: true }
+        return { ...statusDef, iconDef: faHourglassHalf, beatFade: true }
       case 'CrashLoopBackOff':
       case 'ImagePullBackOff':
       case 'ImageInspectError':
@@ -78,23 +85,26 @@ export const StatusIcon: React.FunctionComponent<StatusProps> = (props: StatusPr
       case 'SetupNetworkError':
       case 'TeardownNetworkError':
       case 'DeadlineExceeded':
-        return { iconDef: faTimes, beat: true, className: 'text-danger' }
+        return { ...statusDef, iconDef: faTimes, beat: true, className: 'text-danger' }
       case 'PodInitializing':
-        return { iconDef: faHourglassHalf, beatFade: true }
+        return { ...statusDef, iconDef: faHourglassHalf, beatFade: true }
       default:
-        return { iconDef: faQuestion }
+        return { ...statusDef, iconDef: faQuestion }
     }
   }
 
   const defn = statusIconDef()
 
   return (
-    <FontAwesomeIcon
-      className={'state-icon ' + defn.className}
-      icon={defn.iconDef}
-      beat={defn.beat ? defn.beat : false}
-      spin={defn.spin ? defn.spin : false}
-      title={discoverService.getStatus(props.pod)}
-    />
+    <span className='state-icon-wrapper'>
+      <FontAwesomeIcon
+        className={'state-icon ' + defn.className}
+        icon={defn.iconDef}
+        beat={defn.beat ? defn.beat : false}
+        spin={defn.spin ? defn.spin : false}
+        title={defn.text}
+      />
+      <span className='state-text'>{defn.text}</span>
+    </span>
   )
 }
