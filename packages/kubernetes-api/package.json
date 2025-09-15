@@ -61,7 +61,7 @@
     "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "peerDependencies": {
     "@patternfly/react-charts": "^7",
