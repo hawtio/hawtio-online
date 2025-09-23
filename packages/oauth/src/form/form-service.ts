@@ -1,9 +1,8 @@
-import { PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
+import { AuthenticationResult, PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
-import $ from 'jquery'
 import { jwtDecode } from 'jwt-decode'
-import { OAuthProtoService } from '../api'
-import { OPENSHIFT_MASTER_KIND, UserProfile, log } from '../globals'
+import { OAuthDelegateService } from '../api'
+import { AUTH_METHOD, OPENSHIFT_MASTER_KIND, UserProfile, log } from '../globals'
 import {
   FetchOptions,
   fetchPath,
@@ -27,8 +26,8 @@ interface Headers {
   'X-XSRF-TOKEN'?: string
 }
 
-export class FormService implements OAuthProtoService {
-  private readonly login: Promise<boolean>
+export class FormService implements OAuthDelegateService {
+  private readonly login: Promise<AuthenticationResult>
   private formConfig: FormConfig | null
   private fetchUnregister?: () => void
 
@@ -42,35 +41,35 @@ export class FormService implements OAuthProtoService {
     this.login = this.createLogin()
   }
 
-  private async createLogin(): Promise<boolean> {
+  private async createLogin(): Promise<AuthenticationResult> {
     if (!this.formConfig) {
       log.debug('Form auth disabled')
-      return false
+      return AuthenticationResult.configuration_error
     }
 
     if (!this.formConfig.uri) {
       log.debug('Invalid config, disabled form auth:', this.formConfig)
-      return false
+      return AuthenticationResult.configuration_error
     }
 
     if (this.userProfile.hasError()) {
       log.debug('Cannot login as user profile has an error: ', this.userProfile.getError())
-      return false
+      return AuthenticationResult.configuration_error
     }
 
     if (!this.userProfile.getMasterUri()) {
       log.debug('Cannot initialise form authentication as master uri not specified')
-      return false
+      return AuthenticationResult.configuration_error
     }
 
     if (this.userProfile.hasToken()) {
-      return true // already logged in
+      return AuthenticationResult.ok // already logged in
     }
 
     const token = await this.checkToken()
     if (!token) {
       this.tryLogin({ uri: new URL(window.location.href) })
-      return false
+      return AuthenticationResult.connect_error
     }
 
     /* Populate the profile with the new token */
@@ -79,8 +78,7 @@ export class FormService implements OAuthProtoService {
 
     // Need fetch for keepalive
     this.setupFetch()
-    this.setupJQueryAjax()
-    return true
+    return AuthenticationResult.ok
   }
 
   private async checkToken(): Promise<string | null> {
@@ -155,29 +153,6 @@ export class FormService implements OAuthProtoService {
     })
   }
 
-  private setupJQueryAjax() {
-    if (this.userProfile.hasError()) {
-      return
-    }
-
-    log.debug('Set authorization header to Openshift auth token for AJAX requests')
-
-    const beforeSend = (xhr: JQueryXHR, settings: JQueryAjaxSettings) => {
-      // Set bearer token is used
-      xhr.setRequestHeader('Authorization', `Bearer ${this.userProfile.getToken()}`)
-
-      // For CSRF protection with Spring Security
-      const token = getCookie('XSRF-TOKEN')
-      if (token) {
-        log.debug('Set XSRF token header from cookies')
-        xhr.setRequestHeader('X-XSRF-TOKEN', token)
-      }
-      return // To suppress ts(7030)
-    }
-
-    $.ajaxSetup({ beforeSend })
-  }
-
   private clearTokenStorage(): void {
     secureDispose(FORM_TOKEN_STORAGE_KEY)
   }
@@ -193,7 +168,7 @@ export class FormService implements OAuthProtoService {
     logoutRedirect(targetUri)
   }
 
-  isLoggedIn(): Promise<boolean> {
+  loginStatus(): Promise<AuthenticationResult> {
     // Use Promise to conform with interface
     return this.login
   }
@@ -206,8 +181,8 @@ export class FormService implements OAuthProtoService {
   async fetchUser(resolve: ResolveUser): Promise<boolean> {
     log.debug('Form - Running fetchUser hook')
     if (!this.login || !this.userProfile.hasToken() || this.userProfile.hasError()) {
-      resolve({ username: PUBLIC_USER, isLogin: false })
-      return true
+      resolve({ username: PUBLIC_USER, isLogin: false, loginMethod: AUTH_METHOD })
+      return false
     }
 
     const masterUri = this.userProfile.getMasterUri()
@@ -236,7 +211,7 @@ export class FormService implements OAuthProtoService {
     }
 
     // Default to user if subject cannot be established
-    resolve({ username: subject !== '' ? subject : 'user', isLogin: true })
+    resolve({ username: subject !== '' ? subject : 'user', isLogin: true, loginMethod: AUTH_METHOD })
     userService.setToken(token)
 
     return true
@@ -246,7 +221,7 @@ export class FormService implements OAuthProtoService {
     log.debug('Form - Running logout hook')
     const login = await this.login
 
-    if (!login || !this.userProfile.hasToken() || this.userProfile.hasError()) return false
+    if (login !== AuthenticationResult.ok || !this.userProfile.hasToken() || this.userProfile.hasError()) return false
 
     log.info('Log out')
     try {

@@ -17,8 +17,10 @@
   "scripts": {
     "build": "yarn build:online && yarn license",
     "start:online": "yarn build:mgmt && yarn start:shell",
+    "analyze:online": "yarn build:online && yarn analyze:shell",
     "build:online": "yarn workspaces foreach -v -Aipt --exclude @hawtio/online-root --exclude \"@hawtio/*-app\" run build",
     "start:shell": "yarn workspace @hawtio/online-shell start",
+    "analyze:shell": "yarn workspace @hawtio/online-shell analyze:webpack:prod",
     "build:shell": "yarn workspace @hawtio/online-shell build",
     "start:mgmt": "yarn build:mgmt && yarn start:mgmtApp",
     "build:mgmt": "yarn build:k8s && yarn build:mgmtApi",
@@ -52,19 +54,21 @@
     "kustomize:image": "cd deploy/base && kustomize edit set image hawtio/online=quay.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.2.8",
-    "@eslint/js": "^9.22.0",
+    "@eslint/compat": "^1.3.1",
+    "@eslint/js": "^9.35.0",
     "compression-webpack-plugin": "^11.1.0",
-    "concurrently": "^9.1.2",
+    "concurrently": "^9.2.0",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "^9.1.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-testing-library": "^6.3.0",
-    "prettier": "3.5.3",
-    "typescript-eslint": "^8.8.0"
+    "prettier": "3.6.2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.43.0",
+    "webpack": "^5.101.0"
   },
   "config": {
     "commitizen": {
@@ -72,7 +76,7 @@
       "maxLineWidth": 80
     }
   },
-  "packageManager": "yarn@4.3.1",
+  "packageManager": "yarn@4.9.2",
   "engines": {
     "yarn": ">=4.3.1",
     "node": ">=20"

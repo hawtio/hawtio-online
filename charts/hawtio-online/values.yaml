@@ -9,6 +9,8 @@ hawtconfig: true
 # Use internal SSL [ true | false ]
 #  - Only required if clusterType is k8s
 internalSSL: true
+# Mask IP addresses in application responses [ true | false ]
+maskIPAddresses: true
 
 # The url of the OpenShift Console
 # (only applicable to clusterType: openshift)
@@ -34,10 +36,16 @@ online:
       port: 8443
     port: 8443
   service:
+    type: NodePort
+    annotations:
+#      custom-annotation: value
     plain:
       port: 80
     ssl:
       port: 443
+  ingress:
+    annotations:
+#      custom-annotation: value
   resources:
     requests:
       cpu: "0.2"

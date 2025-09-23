@@ -21,6 +21,9 @@ HAWTCONFIG:              Set whether to use configmap as hawtconfig.json
                            [ true | false ] (true by default)
 INTERNAL_SERVER_SSL:     Set whether SSL should be used for internal server communication
                            (only configurable in 'k8s' -- assumed in 'openshift')
+MASK_IP_ADDRESSES:       Set whether to mask IP Addresses in response data
+                           [ true | false ]
+                           (true by default)
 OS_CONSOLE_URL:          Set the location URL of the openshift console
                            (only used in 'openshift' mode)
 DRY_RUN:                 Print the resources to be applied instead of applying them

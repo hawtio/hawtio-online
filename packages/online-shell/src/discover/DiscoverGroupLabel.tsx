@@ -81,9 +81,8 @@ export const DiscoverGroupLabel: React.FunctionComponent<DiscoverGroupLabelProps
   return (
     <React.Fragment>
       <Title className='discover-group-label' headingLevel='h3'>
-        {title}
+        {title} {content}
       </Title>
-      {content}
     </React.Fragment>
   )
 }

@@ -2,8 +2,8 @@ apiVersion: v2
 name: hawtio-online
 description: A Helm chart for installing HawtIO
 type: application
-version: 1.0.0
-appVersion: 2.3.0
+version: 1.0.2
+appVersion: 2.4.0
 keywords:
   - hawtio
   - camel

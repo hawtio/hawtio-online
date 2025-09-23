@@ -61,14 +61,17 @@ const common = (mode, publicPath, packageVersion) => {
           react: {
             singleton: true,
             requiredVersion: dependencies['react'],
+            eager: true,
           },
           'react-dom': {
             singleton: true,
             requiredVersion: dependencies['react-dom'],
+            eager: true,
           },
           'react-router-dom': {
             singleton: true,
             requiredVersion: dependencies['react-router-dom'],
+            eager: true,
           },
           '@hawtio/react': {
             singleton: true,
@@ -121,6 +124,14 @@ const common = (mode, publicPath, packageVersion) => {
     ],
 
     resolve: {
+      // This tells Webpack to look for the "require" and "import" conditions
+      // in the "exports" map of a package.json.
+      conditionNames: ['require', 'import', 'browser'],
+
+      // While often default in modern Webpack, it's good to be explicit
+      // that you want to respect the "exports" field.
+      exportsFields: ['exports'],
+
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
       alias: {
         'react-native': 'react-native-web',

@@ -51,6 +51,11 @@
   color: rgb(117, 117, 117);
 }
 
+.pod-item-list-item {
+  display: flex;
+  align-items: center;
+}
+
 .pod-item-name-with-labels {
   flex-grow: 3;
   display: flex;
@@ -90,6 +95,13 @@
   padding-top: 0.1em;
 }
 
+.state-icon-wrapper {
+  display: flex;
+  align-items: center; /* Vertically centers the icon and text */
+  gap: 0.5em;
+  font-size: 0.8rem;
+}
+
 .state-icon {
   border-radius: 50%;
   height: 1.5em;
@@ -98,8 +110,7 @@
 }
 
 .running-state {
-  color: green;
-  background-color: lightcyan;
+  color: black;
 }
 
 .text-danger {

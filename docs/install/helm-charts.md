@@ -89,6 +89,8 @@ hawtconfig: true
 # Use internal SSL [ true | false ]
 #  - Only required if clusterType is k8s
 internalSSL: true
+# Mask IP addresses in application responses [ true | false ]
+maskIPAddresses: true
 
 # The url of the OpenShift Console
 # (only applicable to clusterType: openshift)

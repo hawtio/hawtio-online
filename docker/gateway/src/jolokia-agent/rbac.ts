@@ -563,7 +563,7 @@ function checkACLs(role: string, jolokia: JmxUnionRequest) {
 function checkACL(role: string, jolokia: JmxUnionRequest, name: string) {
   logger.trace(`Checking ACL for role ${role} on request ${jolokia.type} named ${name}`)
 
-  const acl = ACL[name]
+  const acl = ACL ? ACL[name] : null
   if (!acl) {
     return null
   }

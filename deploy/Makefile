@@ -55,6 +55,8 @@ HAWTCONFIG ?= true
 OS_CONSOLE_URL ?=
 # The name of the service-account user
 HAWTIO_USER ?= hawtio-user
+# Whether to mask ip addresses in network responses
+MASK_IP_ADDRESSES ?= true
 
 # Uninstall all hawtio-onlineresources: [true|false]
 UNINSTALL_ALL ?=false
@@ -69,6 +71,7 @@ SSL_DEPLOYMENT_SECRET_PATCH := $(PATCHES)/patch-deployment-ssl-serving-secret.ym
 SSL_DEPLOYMENT_PORTS_PATCH := $(PATCHES)/patch-deployment-ssl-ports.yml
 SSL_SERVICE_PATCH := $(PATCHES)/patch-service-ssl-ports.yml
 SSL_INGRESS_PATCH := patch-ingress-ssl-ports.yml
+MASK_IP_ADDRESSES_PATCH := $(PATCHES)/patch-mask-ip-addresses.yml
 
 #
 # Macro for editing kustomization to define
@@ -175,6 +178,13 @@ else
 endif
 endif
 
+.mask-ip-addresses:
+ifeq ($(MASK_IP_ADDRESSES), false)
+	@$(call add-remove-kind-patch,$(BASE),add,../$(MASK_IP_ADDRESSES_PATCH),Deployment)
+else
+	@$(call add-remove-kind-patch,$(BASE),remove,../$(MASK_IP_ADDRESSES_PATCH),Deployment)
+endif
+
 #---
 #
 #@ install
@@ -197,6 +207,9 @@ endif
 #**                            (only used in 'openshift' cluster type)
 #** INTERNAL_SERVER_SSL:     Set whether SSL should be used for internal server communication
 #**                            (only configurable in 'k8s' -- assumed in 'openshift')
+#** MASK_IP_ADDRESSES:       Set whether to mask IP Addresses in response data
+#**                            [ true | false ]
+#**                            (true by default)
 #** CUSTOM_IMAGE:            Set a custom image to install from
 #** CUSTOM_GATEWAY_IMAGE:    Set a custom gateway image to install from
 #** CUSTOM_VERSION:          Set a custom version to install from
@@ -214,6 +227,8 @@ install: kustomize kubectl
 	@$(call set-kustomize-gateway-image,$(CLUSTER_TYPE)/$(MODE))
 # Configure use of hawtconfig configmap
 	@$(MAKE) -s .hawtconfig
+# Do not mask IP addresses if required
+	@$(MAKE) -s .mask-ip-addresses
 # Set the console url on openshift, if specified
 ifeq ($(CLUSTER_TYPE), openshift)
 	@$(MAKE) -s .openshift-console-url

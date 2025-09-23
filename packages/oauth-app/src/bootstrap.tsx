@@ -1,34 +1,59 @@
-import { configManager, hawtio, Logger } from '@hawtio/react'
-import { log, onlineOAuth } from '@hawtio/online-oauth'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { reportWebVitals } from './reportWebVitals'
+import { configManager, HawtioInitialization, TaskState } from '@hawtio/react/init'
+import { bootstrapModules } from './bootstrap-modules'
+
 import { OAuth } from './OAuth'
 
-// To be removed post-development / pre-production
-Logger.setLevel(Logger.DEBUG)
-log.log('Logging Level set to', Logger.getLevel())
+// Hawtio itself creates and tracks initialization tasks, but we can add our own.
+configManager.initItem('Loading UI', TaskState.started, 'config')
 
-// Configure the test app
-const configure = () => {
-  configManager.addProductInfo('OAuth Test App', '1.0.0')
-}
-configure()
-
-// Load OpenShift OAuth plugin first
-onlineOAuth()
-
-// Bootstrap Hawtio
-hawtio.bootstrap()
-
+// Create root for rendering React components. More React components can be rendered in single root.
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
-root.render(
-  <React.StrictMode>
-    <OAuth />
-  </React.StrictMode>,
-)
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+// Basic UI that shows initialization progress without depending on PatternFly.
+// It is imported and rendered in fully synchronous way.
+root.render(<HawtioInitialization verbose={true} />)
+
+// Configure the console
+configManager.addProductInfo('OAuth Test App', '1.0.0')
+
+/*
+ * Bootstrap all required modules first, essentially enforces download
+ * of all chunks required for proceeding with this bootstrap process.
+ */
+bootstrapModules().then(mods => {
+  const bootstrapInit = async () => {
+    mods.hawtioreact.Logger.setLevel(mods.hawtioreact.Logger.DEBUG)
+
+    configManager.initItem('OAuth2 Authentication', TaskState.started, 'plugins')
+    mods.oAuth.log.log('Logging Level set to', mods.hawtioreact.Logger.getLevel())
+    // Load OpenShift OAuth plugin first
+    await mods.oAuth.oAuthInit()
+    mods.oAuth.onlineOAuth()
+    configManager.initItem('OAuth2 Authentication', TaskState.finished, 'plugins')
+
+    configManager.initItem('Hawtio UI', TaskState.started, 'plugins')
+    await import('@hawtio/react/ui')
+    configManager.initItem('Hawtio UI', TaskState.finished, 'plugins')
+
+    configManager.initItem('Loading UI', TaskState.finished, 'config')
+
+    // finally, after we've registered all custom and built-in plugins, we can proceed to the final stage:
+    //  - bootstrap(), which finishes internal configuration, applies branding and loads all registered plugins
+    //  - rendering of <Hawtio> React component after bootstrap() finishes
+    await mods.hawtioreact.hawtio.bootstrap()
+
+    root.render(
+      <React.StrictMode>
+        <OAuth />
+      </React.StrictMode>,
+    )
+  }
+
+  // Execute the bootstrap function asynchronously and catch any errors.
+  bootstrapInit().catch(error => {
+    /* eslint-disable no-console */
+    console.error('An Error occurred while bootstrapping the application', error)
+  })
+})

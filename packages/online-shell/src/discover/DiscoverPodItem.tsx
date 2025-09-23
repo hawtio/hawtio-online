@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react'
-import { Label, LabelGroup, ListItem, Title } from '@patternfly/react-core'
-import { DatabaseIcon, HomeIcon, OutlinedHddIcon } from '@patternfly/react-icons'
+import React, { ReactNode, RefObject, useRef } from 'react'
+import { Label, LabelGroup, ListItem, Title, Tooltip } from '@patternfly/react-core'
+import { CubeIcon, UsersIcon, OutlinedHddIcon } from '@patternfly/react-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { ConsoleLink, ConsoleType } from '../console'
@@ -16,7 +16,16 @@ interface DiscoverPodItemProps {
 }
 
 export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (props: DiscoverPodItemProps) => {
-  const nodeLabel = (): ReactNode => {
+  const nsLabelRef = useRef<HTMLDivElement>(null)
+  const nodeLabelRef = useRef<HTMLDivElement>(null)
+  const containerLabelRef = useRef<HTMLDivElement>(null)
+  const routesLabelRef = useRef<HTMLDivElement>(null)
+
+  const labelTooltip = (id: string, ref: RefObject<HTMLDivElement>, text: string): ReactNode => {
+    return <Tooltip id={`${id}-tooltip`} content={<div>{text}</div>} triggerRef={ref} />
+  }
+
+  const nodeLabelText = (): ReactNode => {
     if (props.pod.mPod.spec?.nodeName) {
       return (
         <ConsoleLink type={ConsoleType.node} selector={props.pod.mPod.spec?.nodeName}>
@@ -28,39 +37,59 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
     return props.pod.mPod.status?.hostIP
   }
 
-  const containersLabel = (): ReactNode => {
+  const containersLabelText = (): ReactNode => {
     const total = props.pod.mPod.spec?.containers.length || 0
-    return `${total} container${total !== 1 ? 's' : ''}`
+    let ready = 0
+    if (props.pod.mPod.status && props.pod.mPod.status.containerStatuses) {
+      for (const status of props.pod.mPod.status.containerStatuses) {
+        if (status.ready) ++ready
+      }
+    }
+
+    return `${ready}/${total} ready`
   }
 
   const routesLabel = (): ReactNode => {
     if (!props.pod.mPod.management.status.managed) {
       return (
-        <Label color='grey' icon={<FontAwesomeIcon icon={faSpinner} spin />} className='pod-item-routes'>
-          {`querying routes ...`}
-        </Label>
+        <div id='routes-label' ref={routesLabelRef}>
+          <Label color='grey' icon={<FontAwesomeIcon icon={faSpinner} spin />} className='pod-item-routes'>
+            {`querying routes ...`}
+          </Label>
+          {labelTooltip(
+            'routes-label',
+            routesLabelRef,
+            'Getting the number of camel routes registered in the pod application.',
+          )}
+        </div>
       )
     }
 
     const error = props.pod.mPod.management.status.error
     if (error) {
       return (
-        <Label color='red' icon={<CamelRouteIcon />} className='pod-item-routes'>
-          {`?? routes`}
-        </Label>
+        <div id='routes-label' ref={nsLabelRef}>
+          <Label color='red' icon={<CamelRouteIcon />} className='pod-item-routes'>
+            {`?? routes`}
+          </Label>
+          {labelTooltip('routes-label', routesLabelRef, 'Cannot determine the number of camel routes due to an error.')}
+        </div>
       )
     }
 
     const total = props.pod.mPod.management.camel.routes_count
     return (
-      <Label color='gold' icon={<CamelRouteIcon />} className='pod-item-routes'>
-        {`${total} route${total !== 1 ? 's' : ''}`}
-      </Label>
+      <div id='routes-label' ref={nsLabelRef}>
+        <Label color='gold' icon={<CamelRouteIcon />} className='pod-item-routes'>
+          {`${total} route${total !== 1 ? 's' : ''}`}
+        </Label>
+        {labelTooltip('routes-label', routesLabelRef, 'The number of camel routes registered in the pod application.')}
+      </div>
     )
   }
 
   return (
-    <ListItem icon={<StatusIcon pod={props.pod} />} key={'item-' + props.pod.uid}>
+    <ListItem className='pod-item-list-item' icon={<StatusIcon pod={props.pod} />} key={'item-' + props.pod.uid}>
       <div className='pod-item-name-with-labels'>
         <Title headingLevel='h3'>
           <ConsoleLink
@@ -77,19 +106,32 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
       </div>
 
       <LabelGroup numLabels={4} className='pod-item-label-group'>
-        <Label color='gold' icon={<HomeIcon />} className='pod-item-home'>
-          <ConsoleLink type={ConsoleType.namespace} namespace={props.pod.namespace}>
-            {props.pod.namespace}
-          </ConsoleLink>
-        </Label>
+        <div id='namespace-label' ref={nsLabelRef}>
+          <Label color='gold' icon={<UsersIcon />} className='pod-item-home'>
+            <ConsoleLink type={ConsoleType.namespace} namespace={props.pod.namespace}>
+              {props.pod.namespace}
+            </ConsoleLink>
+          </Label>
+          {labelTooltip('namespace-label', nsLabelRef, 'The namespace where the pod is deployed.')}
+        </div>
 
-        <Label color='gold' icon={<OutlinedHddIcon />} className='pod-item-node'>
-          {nodeLabel()}
-        </Label>
+        <div id='node-label' ref={nodeLabelRef}>
+          <Label color='gold' icon={<OutlinedHddIcon />} className='pod-item-node'>
+            {nodeLabelText()}
+          </Label>
+          {labelTooltip('node-label', nodeLabelRef, 'The node, the pod is running on.')}
+        </div>
 
-        <Label color='gold' icon={<DatabaseIcon />} className='pod-item-containers'>
-          {containersLabel()}
-        </Label>
+        <div id='container-label' ref={containerLabelRef}>
+          <Label color='gold' icon={<CubeIcon />} className='pod-item-containers'>
+            {containersLabelText()}
+          </Label>
+          {labelTooltip(
+            'container-label',
+            containerLabelRef,
+            "The number of containers in the pod that have a status of 'ready'",
+          )}
+        </div>
 
         {routesLabel()}
       </LabelGroup>

@@ -1,0 +1,13 @@
+#
+# Default, generic rules, declared as an ordered map, so that the most specific keys
+# are tested first.
+default:
+  - version: admin, viewer
+  - list: admin, viewer
+  - read: admin, viewer
+  - search: admin, viewer
+  - /list.*/: admin, viewer
+  - /get.*/: admin, viewer
+  - /is.*/: admin, viewer
+  - /set.*/: admin
+  - /.*/: admin

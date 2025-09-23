@@ -1,8 +1,7 @@
-import { PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
+import { AuthenticationResult, PUBLIC_USER, ResolveUser, userService } from '@hawtio/react'
 import * as fetchIntercept from 'fetch-intercept'
-import $ from 'jquery'
-import { OAuthProtoService } from '../api'
-import { UserProfile, log } from '../globals'
+import { OAuthDelegateService } from '../api'
+import { AUTH_METHOD, UserProfile, log } from '../globals'
 import { CLUSTER_CONSOLE_KEY } from '../metadata'
 import { fetchPath, getCookie, isBlank, logoutUri, redirect } from '../utils'
 import {
@@ -40,13 +39,13 @@ interface Headers {
   'X-XSRF-TOKEN'?: string
 }
 
-export class OSOAuthService implements OAuthProtoService {
+export class OSOAuthService implements OAuthDelegateService {
   private userInfoUri = ''
   private keepaliveInterval = 10
   private keepAliveHandler: NodeJS.Timeout | null = null
 
   private readonly adaptedConfig: Promise<OpenShiftOAuthConfig | null>
-  private readonly login: Promise<boolean>
+  private readonly login: Promise<AuthenticationResult>
   private fetchUnregister?: () => void
 
   constructor(
@@ -150,34 +149,6 @@ export class OSOAuthService implements OAuthProtoService {
     })
   }
 
-  private setupJQueryAjax(config: OpenShiftOAuthConfig) {
-    if (this.userProfile.hasError()) {
-      return
-    }
-
-    log.debug('Set authorization header to Openshift auth token for AJAX requests')
-    const beforeSend = (xhr: JQueryXHR, settings: JQueryAjaxSettings) => {
-      if (tokenHasExpired(this.userProfile)) {
-        log.debug('Cannot navigate to', settings.url, 'as token expired so need to logout')
-        this.doLogout(config)
-        return
-      }
-
-      // Set bearer token is used
-      xhr.setRequestHeader('Authorization', `Bearer ${this.userProfile.getToken()}`)
-
-      // For CSRF protection with Spring Security
-      const token = getCookie('XSRF-TOKEN')
-      if (token) {
-        log.debug('Set XSRF token header from cookies')
-        xhr.setRequestHeader('X-XSRF-TOKEN', token)
-      }
-      return // To suppress ts(7030)
-    }
-
-    $.ajaxSetup({ beforeSend })
-  }
-
   private setupKeepAlive(config: OpenShiftOAuthConfig) {
     const keepAlive = async () => {
       log.debug('Running oAuth keepAlive function')
@@ -236,15 +207,15 @@ export class OSOAuthService implements OAuthProtoService {
     return false
   }
 
-  private async createLogin(): Promise<boolean> {
+  private async createLogin(): Promise<AuthenticationResult> {
     const config = await this.adaptedConfig
     if (!config) {
-      return false
+      return AuthenticationResult.configuration_error
     }
 
     if (this.userProfile.hasError()) {
       log.debug('Cannot login as user profile has an error:', this.userProfile.getError())
-      return false
+      return AuthenticationResult.configuration_error
     }
 
     const currentURI = new URL(window.location.href)
@@ -261,7 +232,7 @@ export class OSOAuthService implements OAuthProtoService {
       if (!tokenParams) {
         log.debug('No Token so initiating new login')
         this.tryLogin(config, currentURI)
-        return false
+        return AuthenticationResult.connect_error
       }
 
       log.debug('Populating user profile with token metadata')
@@ -272,7 +243,7 @@ export class OSOAuthService implements OAuthProtoService {
 
       this.userProfile.setToken(tokenParams.access_token ?? '')
 
-      if (this.checkTokenExpired(config)) return false
+      if (this.checkTokenExpired(config)) return AuthenticationResult.connect_error
 
       // Promote the hawtio mode to expose to third-parties
       log.debug('Adding cluster version to profile metadata')
@@ -280,14 +251,13 @@ export class OSOAuthService implements OAuthProtoService {
 
       // Need fetch for keepalive
       this.setupFetch(config)
-      this.setupJQueryAjax(config)
 
       this.setupKeepAlive(config)
-      return true
+      return AuthenticationResult.ok
     } catch (error) {
       const e = error instanceof Error ? error : new Error('Error from checking token')
       this.userProfile.setError(e)
-      return false
+      return AuthenticationResult.connect_error
     }
   }
 
@@ -309,7 +279,7 @@ export class OSOAuthService implements OAuthProtoService {
     forceRelogin(currentURI, config)
   }
 
-  isLoggedIn(): Promise<boolean> {
+  loginStatus(): Promise<AuthenticationResult> {
     return this.login
   }
 
@@ -317,10 +287,10 @@ export class OSOAuthService implements OAuthProtoService {
     log.debug('OAuth - Running fetchUser hook')
     const config = await this.adaptedConfig
     const login = await this.login
-    if (!config || !login || this.userProfile.hasError()) {
-      // OpenShift OAuth provides a dedicated login page, thus setting isLoading=true
-      resolve({ username: PUBLIC_USER, isLogin: false, isLoading: true })
-      return true
+    if (!config || login !== AuthenticationResult.ok || this.userProfile.hasError()) {
+      // OpenShift OAuth provides a dedicated login page
+      resolve({ username: PUBLIC_USER, isLogin: false, loginMethod: AUTH_METHOD })
+      return false
     }
 
     if (this.userProfile.getToken()) {
@@ -334,7 +304,7 @@ export class OSOAuthService implements OAuthProtoService {
         username = userInfo.metadata.name
       }
 
-      resolve({ username, isLogin: true })
+      resolve({ username, isLogin: true, loginMethod: AUTH_METHOD })
       userService.setToken(this.userProfile.getToken())
     }
 
@@ -345,7 +315,7 @@ export class OSOAuthService implements OAuthProtoService {
     log.debug('OAuth - Running logout hook')
     const config = await this.adaptedConfig
     const login = await this.login
-    if (!config || !login || this.userProfile.hasError()) {
+    if (!config || login !== AuthenticationResult.ok || this.userProfile.hasError()) {
       return false
     }
 
