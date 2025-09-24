@@ -192,14 +192,14 @@ describe('processRBACEnvVar', () => {
   it('RBAC Enabled - Custom File Not Found', () => {
     expect(() => {
       processRBACEnvVar(defaultACLFile, 'notFoundFilePath')
-    }).toThrow(new Error('Failed to read the ACL file at notFoundFilePath'))
+    }).toThrow('Failed to read the ACL file at notFoundFilePath')
   })
 
   it('RBAC Enabled - Custom File Invalid', () => {
     const invalidYamlACLPath = `${path.dirname(__filename)}/test.invalid.ACL.yaml`
     expect(() => {
       processRBACEnvVar(defaultACLFile, invalidYamlACLPath)
-    }).toThrow(new Error(`Failed to parse the ACL file at ${invalidYamlACLPath}`))
+    }).toThrow(`Failed to parse the ACL file at ${invalidYamlACLPath}`)
   })
 
   it('RBAC Enabled - Custom File Valid', () => {
