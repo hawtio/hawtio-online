@@ -2401,7 +2401,7 @@ __metadata:
     jolokia.js: "npm:^2.3.0"
     jwt-decode: "npm:^4.0.0"
     method-override: "npm:^3.0.0"
-    pino: "npm:^9.6.0"
+    pino: "npm:^9.11.0"
     pino-http: "npm:^10.5.0"
     pino-pretty: "npm:^13.0.0"
     source-map-loader: "npm:^5.0.0"
@@ -14083,16 +14083,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^9.6.0":
-  version: 9.6.0
-  resolution: "pino@npm:9.6.0"
+"pino@npm:^9.11.0":
+  version: 9.11.0
+  resolution: "pino@npm:9.11.0"
   dependencies:
     atomic-sleep: "npm:^1.0.0"
     fast-redact: "npm:^3.1.1"
     on-exit-leak-free: "npm:^2.1.0"
     pino-abstract-transport: "npm:^2.0.0"
     pino-std-serializers: "npm:^7.0.0"
-    process-warning: "npm:^4.0.0"
+    process-warning: "npm:^5.0.0"
     quick-format-unescaped: "npm:^4.0.3"
     real-require: "npm:^0.2.0"
     safe-stable-stringify: "npm:^2.3.1"
@@ -14100,7 +14100,7 @@ __metadata:
     thread-stream: "npm:^3.0.0"
   bin:
     pino: bin.js
-  checksum: 10/0a36125718dc2350bbaff243e4856108a80805dc1b305da1e246460cd22396d11a8b3a78b39b0b270cce4fb8ae6aa6e584f5387f6c2ee47348aae5db49d919e6
+  checksum: 10/359bc3624110a0261a5dc5fc3f990028920a8165d173bd5304b328da3ed9eb1281d233c2acfb1a263282fed0aa1a1e1d5f2f66e856fcb56926836458610e78bc
   languageName: node
   linkType: hard
 
@@ -14306,13 +14306,6 @@ __metadata:
   version: 3.0.0
   resolution: "process-warning@npm:3.0.0"
   checksum: 10/2d82fa641e50a5789eaf0f2b33453760996e373d4591aac576a22d696186ab7e240a0592db86c264d4f28a46c2abbe9b94689752017db7dadc90f169f12b0924
-  languageName: node
-  linkType: hard
-
-"process-warning@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "process-warning@npm:4.0.0"
-  checksum: 10/0d6ec069f3a6fe1d3379c0247329a297f1f3b9ea7e1d828db0a8f61e0e8337a98b7eb201547350924bc4a101ddcf2fa5cf5563ffe2c54c27651f7996d328483e
   languageName: node
   linkType: hard
 
