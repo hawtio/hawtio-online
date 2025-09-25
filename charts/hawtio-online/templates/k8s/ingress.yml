@@ -18,7 +18,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   {{- with .Values.online.ingress.className }}
-  ingressClassName: {{ . | quote}}
+  ingressClassName: {{ . | quote }}
   {{- end }}
   rules:
   - host: {{ .Values.online.ingress.host }}
