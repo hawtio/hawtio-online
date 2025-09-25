@@ -44,6 +44,8 @@ online:
     ssl:
       port: 443
   ingress:
+    className: ""
+    host: "hawtio-online.hawtio.svc"
     annotations:
 #      custom-annotation: value
   resources:

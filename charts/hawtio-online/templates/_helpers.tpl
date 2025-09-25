@@ -86,7 +86,7 @@ true
   - Generates the Certificate
 */}}
 {{- define "hawtio-online.serving.gen-cert" -}}
-{{- $cert := (genSelfSignedCert "hawtio-online.hawtio.svc" nil nil 365) -}}
+{{- $cert := (genSelfSignedCert .Values.online.ingress.host nil nil 365) -}}
 {{ (print "tls.key: " ($cert.Key | b64enc)) | indent 2 }}
 {{ (print "tls.crt: " ($cert.Cert | b64enc)) | indent 2 }}
 {{- end }}
