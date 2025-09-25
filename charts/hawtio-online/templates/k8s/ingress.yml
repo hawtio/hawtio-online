@@ -8,6 +8,7 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 {{- end }}
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
 {{- with .Values.online.ingress.annotations }}
   {{- toYaml . | nindent 4 }}
 {{- end }}
@@ -16,8 +17,12 @@ metadata:
   name: {{ .Values.online.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  {{- with .Values.online.ingress.className }}
+  ingressClassName: {{ . | quote }}
+  {{- end }}
   rules:
-  - http:
+  - host: {{ .Values.online.ingress.host }}
+    http:
       paths:
       - backend:
           service:
@@ -25,7 +30,9 @@ spec:
             port:
               number: {{ include "hawtio-online.service.port" .Values }}
         path: /(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
   tls:
   - secretName: {{ .Values.online.secrets.serving.name }}
+    hosts:
+      - {{ .Values.online.ingress.host }}
 {{- end }}

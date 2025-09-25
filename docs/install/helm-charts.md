@@ -116,10 +116,16 @@ online:
       port: 8443
     port: 8443
   service:
+    type: NodePort
+    annotations:
     plain:
       port: 80
     ssl:
       port: 443
+  ingress:
+    className: ""
+    host: "hawtio-online.hawtio.svc"
+    annotations:
   resources:
     requests:
       cpu: "0.2"
