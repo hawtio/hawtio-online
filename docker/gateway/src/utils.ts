@@ -37,6 +37,8 @@ const ipPattern =
   /\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/gm
 
 export function maskIPAddresses(obj: string | object): string {
+  if (!obj) return ''
+
   let jsonStr
   if (isObject(obj)) jsonStr = JSON.stringify(obj)
   else jsonStr = obj
