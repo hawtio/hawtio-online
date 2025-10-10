@@ -35,6 +35,7 @@
     "start:oAuth": "yarn build:oAuthApi && yarn start:oAuthApp",
     "start:oAuthApp": "yarn workspace @hawtio/online-oauth-app start",
     "build:oAuthApi": "yarn workspace @hawtio/online-oauth build",
+    "start:gateway": "yarn workspace @hawtio/gateway start:gateway-server",
     "build:gateway": "yarn workspace @hawtio/gateway build",
     "lint": "yarn eslint packages/ docker/gateway/",
     "lint:fix": "yarn eslint packages/  docker/gateway/ --fix",
