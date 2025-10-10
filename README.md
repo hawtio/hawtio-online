@@ -24,7 +24,7 @@ There are alternative methods of installation available to directly install Hawt
 * via [Makefile and Kustomize](docs/install/kustomize.md)
 * via [Manual Commands](docs/install/manual.md)
 
-Each method will require the following: 
+Each method will require the following:
 
 * specifying the type of cluster targetted for the installation (either OpenShift or Kubernetes), thereby ensuring the correct certificates are generated for secure (SSL) access;
 * the namespace targetted for the installation
@@ -72,14 +72,16 @@ To provision the installation for RBAC support, please see [RBAC](docs/rbac.md).
 
 You must have the following tools installed:
 
-- [Node.js](http://nodejs.org) (version `18` or higher)
-- [Yarn](https://yarnpkg.com) (version `3.6.0` or higher)
+- [Node.js](http://nodejs.org) (version `20` or higher)
+- [Yarn](https://yarnpkg.com) (version `4.3.1` or higher)
 
 ### Build
 
 ```sh
-yarn install
+make build
 ```
+
+See the [Makefile](Makefile) for other commands in order to construct the container images.
 
 ### Install
 
@@ -103,19 +105,40 @@ See [Service Accounts as OAuth Clients](https://docs.openshift.com/container-pla
 
 ### Run
 
-#### Cluster mode
-
 ```sh
-yarn start --master=`oc whoami --show-server` --mode=cluster
+yarn start:online
 ```
 
-#### Namespace mode
+This will start the webpack development server containing a compiled version of the hawtio code.
+The console is then available at <http://localhost:2772/>.
 
+### Running along with a dev gateway server
+
+Since Hawtio-Online is actually two servers working together, it is possible to run them both
+separately on the CLI and have them correctly interface with one another in the same manner as
+when installed in a cluster.
+
+* Create, if not already, a new .env.development file, in `docker/gateway` by copying the [example](docker/gateway/env.development.defaults);
+* Set the environment variable in `docker/gateway.env.development` to the value
+```
+HAWTIO_ONLINE_GATEWAY_WEB_SERVER=http://localhost:2772
+```
+* Create, if not already, a new .env file in `packages/online-shell` by copying the [example](packages/online-shell/.env.defaults);
+* Set the online shell environment variable in `packages/online-shell/.env` to the value
+```
+HAWTIO_GATEWAY_SERVER=http://localhost:3000
+```
+* Start the gateway server
 ```sh
-yarn start --master=`oc whoami --show-server` --mode=namespace --namespace=`oc project -q`
+yarn start:gateway
+```
+* Start hawtio-online
+```sh
+yarn start:online
 ```
 
-You can access the console at <http://localhost:2772/>.
+Now the gateway and hawtio-online development servers should correctly interact and simulate
+the actions on an installed production application.
 
 ### Disable Jolokia authentication for deployments (dev only)
 
