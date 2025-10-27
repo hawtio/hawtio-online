@@ -57,6 +57,8 @@ OS_CONSOLE_URL ?=
 HAWTIO_USER ?= hawtio-user
 # Whether to mask ip addresses in network responses
 MASK_IP_ADDRESSES ?= true
+# The Log Level of the hawtio-online server
+ONLINE_LOG_LEVEL ?= info
 
 # Uninstall all hawtio-onlineresources: [true|false]
 UNINSTALL_ALL ?=false
@@ -72,6 +74,8 @@ SSL_DEPLOYMENT_PORTS_PATCH := $(PATCHES)/patch-deployment-ssl-ports.yml
 SSL_SERVICE_PATCH := $(PATCHES)/patch-service-ssl-ports.yml
 SSL_INGRESS_PATCH := patch-ingress-ssl-ports.yml
 MASK_IP_ADDRESSES_PATCH := $(PATCHES)/patch-mask-ip-addresses.yml
+ONLINE_LOG_LEVEL_PATCH := $(PATCHES)/patch-online-log-level.yml
+
 
 #
 # Macro for editing kustomization to define
@@ -185,6 +189,14 @@ else
 	@$(call add-remove-kind-patch,$(BASE),remove,../$(MASK_IP_ADDRESSES_PATCH),Deployment)
 endif
 
+.onlineLogLevel:
+	@sed -i 's~.*value:.*~            value: "$(ONLINE_LOG_LEVEL)"~' $(ONLINE_LOG_LEVEL_PATCH)
+ifeq ($(ONLINE_LOG_LEVEL), info)
+	@$(call add-remove-kind-patch,$(BASE),remove,../$(ONLINE_LOG_LEVEL_PATCH),Deployment)
+else
+	@$(call add-remove-kind-patch,$(BASE),add,../$(ONLINE_LOG_LEVEL_PATCH),Deployment)
+endif
+
 #---
 #
 #@ install
@@ -210,6 +222,9 @@ endif
 #** MASK_IP_ADDRESSES:       Set whether to mask IP Addresses in response data
 #**                            [ true | false ]
 #**                            (true by default)
+#** ONLINE_LOG_LEVEL:        Set whether the logging level of the online server
+#**                            [ emerg | alert | crit | error | warn | notice | info ]
+#**                            (info by default)
 #** CUSTOM_IMAGE:            Set a custom image to install from
 #** CUSTOM_GATEWAY_IMAGE:    Set a custom gateway image to install from
 #** CUSTOM_VERSION:          Set a custom version to install from
@@ -229,6 +244,8 @@ install: kustomize kubectl
 	@$(MAKE) -s .hawtconfig
 # Do not mask IP addresses if required
 	@$(MAKE) -s .mask-ip-addresses
+# Update the log level of the online server
+	@$(MAKE) -s .onlineLogLevel
 # Set the console url on openshift, if specified
 ifeq ($(CLUSTER_TYPE), openshift)
 	@$(MAKE) -s .openshift-console-url
