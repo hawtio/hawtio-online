@@ -1,0 +1,16 @@
+#
+# Patch to update the deployment to set the log
+# level only if the user specifically requires.
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hawtio-online
+spec:
+  template:
+    spec:
+      containers:
+        - name: hawtio-online
+          env:
+          - name: HAWTIO_ONLINE_LOG_LEVEL
+            value: "info"
