@@ -92,9 +92,9 @@ endef
 # Parameter: directory of the kustomization.yaml
 #
 define set-kustomize-gateway-image
-	$(if $(filter $(GATEWAY_IMAGE_NAME),$(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_VERSION)),,\
+	$(if $(filter $(GATEWAY_IMAGE_NAME),$(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)),,\
 		@cd $(1) || exit 1 && \
-			$(KUSTOMIZE) edit set image $(GATEWAY_IMAGE_NAME)=$(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_VERSION))
+			$(KUSTOMIZE) edit set image $(GATEWAY_IMAGE_NAME)=$(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION))
 endef
 
 #
