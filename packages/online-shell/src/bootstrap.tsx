@@ -24,7 +24,8 @@ configManager.addProductInfo('Hawtio Online', HAWTIO_ONLINE_VERSION)
 bootstrapModules().then(mods => {
   const bootstrapInit = async () => {
     configManager.initItem('OAuth2 Authentication', TaskState.started, 'plugins')
-    mods.oAuth.log.log('Logging Level set to', mods.hawtioreact.Logger.getLevel())
+    mods.oAuth.log.setLevel(mods.hawtioreact.Logger.getLevel())
+    mods.oAuth.log.log('OAuth Logging Level set to', mods.oAuth.log.getLevel())
     // Load OpenShift OAuth plugin first
     await mods.oAuth.oAuthInit()
     mods.oAuth.onlineOAuth()
@@ -32,13 +33,15 @@ bootstrapModules().then(mods => {
 
     // Import and resolve kubernetes api
     configManager.initItem('Kubernetes API', TaskState.started, 'plugins')
-    mods.kube.log.log('Logging Level set to', mods.hawtioreact.Logger.getLevel())
+    mods.kube.log.setLevel(mods.hawtioreact.Logger.getLevel())
+    mods.kube.log.log('Kubernetes Logging Level set to', mods.kube.log.getLevel())
     await mods.kube.isK8ApiRegistered()
     configManager.initItem('Kubernetes API', TaskState.finished, 'plugins')
 
     // Import and resolve management api
     configManager.initItem('Jolokia Management API', TaskState.started, 'plugins')
-    mods.mgmt.log.log('Logging Level set to', mods.hawtioreact.Logger.getLevel())
+    mods.mgmt.log.setLevel(mods.hawtioreact.Logger.getLevel())
+    mods.mgmt.log.log('Management API Logging Level set to', mods.mgmt.log.getLevel())
     await mods.mgmt.isMgmtApiRegistered()
     configManager.initItem('Jolokia Management API', TaskState.finished, 'plugins')
 
@@ -60,12 +63,16 @@ bootstrapModules().then(mods => {
     // Register discover-core plugin
     configManager.initItem('Discover Core Plugin', TaskState.started, 'plugins')
     const discoverCoreMod = await import('./discover-core')
+    discoverCoreMod.log.setLevel(mods.hawtioreact.Logger.getLevel())
+    discoverCoreMod.log.log('Discover Core Logging Level set to', discoverCoreMod.log.getLevel())
     discoverCoreMod.discoverCore()
     configManager.initItem('Discover Core Plugin', TaskState.finished, 'plugins')
 
     // Register discover UI plugin
     configManager.initItem('Discover UI Plugin', TaskState.started, 'plugins')
     const discoverMod = await import('./discover')
+    discoverMod.log.setLevel(mods.hawtioreact.Logger.getLevel())
+    discoverMod.log.log('Discover Logging Level set to', discoverMod.log.getLevel())
     discoverMod.discover()
     configManager.initItem('Discover UI Plugin', TaskState.finished, 'plugins')
 

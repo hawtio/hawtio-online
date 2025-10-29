@@ -23,3 +23,5 @@ export const discover: HawtioPlugin = () => {
     },
   })
 }
+
+export { log } from './globals'
