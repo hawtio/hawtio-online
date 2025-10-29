@@ -2166,6 +2166,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hawtio/artemis-console-plugin@npm:1.3.0-redhat-00001":
+  version: 1.3.0-redhat-00001
+  resolution: "@hawtio/artemis-console-plugin@npm:1.3.0-redhat-00001::__archiveUrl=http%3A%2F%2Fgateway.indy.corp.redhat.com%2Fapi%2Fcontent%2Fnpm%2Fhosted%2Fpnc-builds%2F%40hawtio%2Fartemis-console-plugin%2F-%2Fartemis-console-plugin-1.3.0-redhat-00001.tgz"
+  dependencies:
+    react-split: "npm:^2.0.14"
+    xml-formatter: "npm:^3.6.6"
+  checksum: 10/02ba03c9bdf3baa511c461868a1384607fda19dd43b81efc03e635d653899a05886d286d99a9441388c24d0182e7098acfa578ce8233ee8de177927261875d8b
+  languageName: node
+  linkType: hard
+
 "@hawtio/camel-model-v4_10@npm:@hawtio/camel-model@~4.10.6":
   version: 4.10.6
   resolution: "@hawtio/camel-model@npm:4.10.6"
@@ -2236,7 +2246,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api-app@workspace:packages/kubernetes-api-app"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2278,7 +2288,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.0"
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2328,7 +2338,7 @@ __metadata:
   resolution: "@hawtio/online-management-api-app@workspace:packages/management-api-app"
   dependencies:
     "@hawtio/online-management-api": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2370,8 +2380,8 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.0"
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
-    "@jolokia.js/simple": "npm:^2.3.0"
+    "@hawtio/react": "file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz"
+    "@jolokia.js/simple": "npm:2.4.0-redhat-00001"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2389,7 +2399,7 @@ __metadata:
     jest-environment-jsdom: "npm:^29.6.1"
     jest-extended: "npm:^6.0.0"
     jest-fetch-mock: "npm:^3.0.3"
-    jolokia.js: "npm:^2.3.0"
+    jolokia.js: "npm:2.4.0-redhat-00001"
     jsonpath: "npm:^1.1.1"
     monaco-editor: "npm:^0.52.2"
     react: "npm:^18.3.1"
@@ -2420,7 +2430,7 @@ __metadata:
   resolution: "@hawtio/online-oauth-app@workspace:packages/oauth-app"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2464,7 +2474,7 @@ __metadata:
   resolution: "@hawtio/online-oauth@workspace:packages/oauth"
   dependencies:
     "@babel/core": "npm:^7.28.0"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2540,10 +2550,11 @@ __metadata:
     "@fortawesome/free-brands-svg-icons": "npm:^7.0.1"
     "@fortawesome/free-solid-svg-icons": "npm:^7.0.1"
     "@fortawesome/react-fontawesome": "npm:^3.0.2"
+    "@hawtio/artemis-console-plugin": "npm:1.3.0-redhat-00001"
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2590,24 +2601,24 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:^1.10.0":
-  version: 1.10.1
-  resolution: "@hawtio/react@npm:1.10.1"
+"@hawtio/react@file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz::locator=%40hawtio%2Fonline-root%40workspace%3A.":
+  version: 1.10.2-redhat-00001
+  resolution: "@hawtio/react@file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz#/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz::hash=cc99ba&locator=%40hawtio%2Fonline-root%40workspace%3A."
   dependencies:
     "@hawtio/camel-model-v4_10": "npm:@hawtio/camel-model@~4.10.6"
     "@hawtio/camel-model-v4_8": "npm:@hawtio/camel-model@~4.8.8"
-    "@jolokia.js/simple": "npm:^2.2.4"
+    "@jolokia.js/simple": "npm:2.3.0-redhat-00001"
     "@module-federation/utilities": "npm:^3.1.62"
     "@monaco-editor/react": "npm:^4.6.0"
-    "@thumbmarkjs/thumbmarkjs": "npm:^1.0.0"
+    "@thumbmarkjs/thumbmarkjs": "npm:^1.1.1"
     dagre: "npm:^0.8.5"
     dompurify: "npm:^3.2.6"
     eventemitter3: "npm:^5.0.1"
-    jolokia.js: "npm:^2.2.4"
+    jolokia.js: "npm:2.3.0-redhat-00001"
     js-logger: "npm:^1.6.1"
     jwt-decode: "npm:^4.0.0"
     keycloak-js: "npm:^26.2.0"
-    oauth4webapi: "npm:^3.6.0"
+    oauth4webapi: "npm:^3.6.1"
     react-markdown: "npm:^10.1.0"
     react-split: "npm:^2.0.14"
     reactflow: "npm:^11.11.4"
@@ -2625,7 +2636,7 @@ __metadata:
     react: ^17 || ^18
     react-dom: ^17 || ^18
     react-router-dom: ^6.30
-  checksum: 10/d8f3d782a2c344293a2398636618d0bfef10b68cc478e761c7083c0715be902b87af60b47ce1d8be5251c1428660d5366256344eb22223c5dc00b5fb2e72a19b
+  checksum: 10/8b41f5298c9ec67afa95d456b59be9e29853edef845bd270645e933aa0fad5f0ab87502440610b05ede7ac2ac35a34be6d1f17b7c73b21569a23bce9e7ef6e74
   languageName: node
   linkType: hard
 
@@ -2924,21 +2935,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jolokia.js/simple@npm:^2.2.4":
-  version: 2.2.4
-  resolution: "@jolokia.js/simple@npm:2.2.4"
+"@jolokia.js/simple@file:/data/tmp/hawtio/simple-2.4.0-redhat-00001.tgz::locator=%40hawtio%2Fonline-root%40workspace%3A.":
+  version: 2.4.0-redhat-00001
+  resolution: "@jolokia.js/simple@file:/data/tmp/hawtio/simple-2.4.0-redhat-00001.tgz#/data/tmp/hawtio/simple-2.4.0-redhat-00001.tgz::hash=1603f7&locator=%40hawtio%2Fonline-root%40workspace%3A."
   dependencies:
-    jolokia.js: "npm:2.2.4"
-  checksum: 10/b0f182db30ce0d8a71205e7de84ea74d6d5d4d44249949c6a7a515adfaba010ff0f9b41acb303dc394bc24aa415637b8533f8b4879985123446893310b27faf7
-  languageName: node
-  linkType: hard
-
-"@jolokia.js/simple@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "@jolokia.js/simple@npm:2.3.0"
-  dependencies:
-    jolokia.js: "npm:2.3.0"
-  checksum: 10/eff38ea17fc7c0c9b90bbdb9f2f6f0c13be7bd84b5a2d3b655a7120751faf799830e64d069844d21e957208d58d191791fe161bf64c448ad0767e60778a4e839
+    jolokia.js: "npm:2.4.0-redhat-00001"
+  checksum: 10/261b32d64ef1d8d3e1ef8aeb87c44df221136a34e76bb79bf02250d8d321257af7c947feacdd7a7b396b0fbf50ae68fff998702f04856ffc01a7bb0380fa448f
   languageName: node
   linkType: hard
 
@@ -3564,10 +3566,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thumbmarkjs/thumbmarkjs@npm:^1.0.0":
-  version: 1.1.1
-  resolution: "@thumbmarkjs/thumbmarkjs@npm:1.1.1"
-  checksum: 10/678d8b7bd7648a99700290a2f5943c476893310fcef6b8c59fb623371ccba806dc03f17f4e134f958291c8806d6b953fa5e7e769d5c5498788146e9ca51deba7
+"@thumbmarkjs/thumbmarkjs@npm:^1.1.1":
+  version: 1.3.2
+  resolution: "@thumbmarkjs/thumbmarkjs@npm:1.3.2"
+  checksum: 10/15d6c24cb37aeda1e804210f66e8a503760ecbfe02450712e9667870f95a8fd94a0de8b06289acb4b2b4d2f284878a32390a7415accfc9ce0f156ff184ad155c
   languageName: node
   linkType: hard
 
@@ -11358,17 +11360,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jolokia.js@npm:2.2.4, jolokia.js@npm:^2.2.4":
-  version: 2.2.4
-  resolution: "jolokia.js@npm:2.2.4"
-  checksum: 10/c7c0f1fa9f4a4ded43edf0425978b84b6bff1fef1a9ac5f6b6a15ec1dd04f2b0e4b5314c1d6dc1996d91990e71944672215db9151150cab24108073a9b879e1f
-  languageName: node
-  linkType: hard
-
-"jolokia.js@npm:2.3.0, jolokia.js@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "jolokia.js@npm:2.3.0"
-  checksum: 10/5de76ba41d492badf524cf9c3aff8d3b33cb10ffffc129105f1f44a374dbfe29fadd7ce204cf8f69b27332effae6e283f387e8071bacff4a0167d7f959192e7c
+"jolokia.js@file:/data/tmp/hawtio/jolokia.js-2.4.0-redhat-00001.tgz::locator=%40hawtio%2Fonline-root%40workspace%3A.":
+  version: 2.4.0-redhat-00001
+  resolution: "jolokia.js@file:/data/tmp/hawtio/jolokia.js-2.4.0-redhat-00001.tgz#/data/tmp/hawtio/jolokia.js-2.4.0-redhat-00001.tgz::hash=6bac7c&locator=%40hawtio%2Fonline-root%40workspace%3A."
+  checksum: 10/2d2deca64b512d2e0ed12da3d44dd3b8abe1535c0e31f84e269e944369e61e7828abcc9a90ebd1a1b2e6d7a9c7422d18da7a3f63557fa79691f3b9a16cb742e5
   languageName: node
   linkType: hard
 
@@ -12838,10 +12833,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oauth4webapi@npm:^3.6.0":
-  version: 3.6.1
-  resolution: "oauth4webapi@npm:3.6.1"
-  checksum: 10/12fcda932796622b2de011ac42961f67ff5b808c0df30163f669dfaf4e0264689008964843e5181250426dba686a338eec0ff3a714d0df0cb626b884b122a4ff
+"oauth4webapi@npm:^3.6.1":
+  version: 3.8.2
+  resolution: "oauth4webapi@npm:3.8.2"
+  checksum: 10/5f96b50dd50298402a15d5d545decab0ef20aa14fdd0fe6d6ccc9e47d645d795f0aebb0c1fd452e2504170d8880b89021a87a168aed4df64bf39a1ba7e85f245
   languageName: node
   linkType: hard
 

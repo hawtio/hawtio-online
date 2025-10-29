@@ -29,7 +29,7 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/react": "^1.10.0",
+    "@hawtio/react": "file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz",
     "fetch-intercept": "^2.4.0",
     "jwt-decode": "^4.0.0",
     "whatwg-fetch": "^3.6.20"

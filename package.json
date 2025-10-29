@@ -82,6 +82,9 @@
     "node": ">=20"
   },
   "resolutions": {
-    "eslint-config-react-app/eslint-plugin-react-hooks": "^4.6.2"
+    "eslint-config-react-app/eslint-plugin-react-hooks": "^4.6.2",
+    "@hawtio/react": "file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz",
+    "jolokia.js": "file:/data/tmp/hawtio/jolokia.js-2.4.0-redhat-00001.tgz",
+    "@jolokia.js/simple": "file:/data/tmp/hawtio/simple-2.4.0-redhat-00001.tgz"
   }
 }

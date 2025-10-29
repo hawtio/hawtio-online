@@ -30,10 +30,10 @@
   },
   "dependencies": {
     "@hawtio/online-kubernetes-api": "workspace:*",
-    "@hawtio/react": "^1.10.0",
-    "@jolokia.js/simple": "^2.3.0",
+    "@hawtio/react": "file:/data/tmp/hawtio/react-1.10.2-redhat-00001.tgz",
+    "@jolokia.js/simple": "2.4.0-redhat-00001",
     "eventemitter3": "^5.0.1",
-    "jolokia.js": "^2.3.0",
+    "jolokia.js": "2.4.0-redhat-00001",
     "jsonpath": "^1.1.1"
   },
   "devDependencies": {

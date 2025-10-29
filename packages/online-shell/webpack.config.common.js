@@ -73,9 +73,13 @@ const common = (mode, publicPath, packageVersion) => {
             requiredVersion: dependencies['react-router-dom'],
             eager: true,
           },
+          '@hawtio/artemis-console-plugin': {
+            singleton: true,
+            requiredVersion: dependencies['@hawtio/artemis-console-plugin'],
+          },
           '@hawtio/react': {
             singleton: true,
-            requiredVersion: dependencies['@hawtio/react'],
+            requiredVersion: "1.10.2-redhat-00001",
           },
           '@hawtio/online-oauth': {
             singleton: true,
