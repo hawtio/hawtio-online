@@ -45,6 +45,7 @@
     "@patternfly/react-styles": "^5.4.1",
     "@patternfly/react-table": "^5.4.16",
     "@patternfly/react-tokens": "^5.4.1",
+    "@patternfly/react-topology": "^5.4.1",
     "jquery-match-height": "^0.7.2",
     "jsonpath": "^1.1.1",
     "moment": "^2.30.1",
