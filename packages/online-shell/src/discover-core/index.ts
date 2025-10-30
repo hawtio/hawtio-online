@@ -29,3 +29,5 @@ export const discoverCore: HawtioPlugin = () => {
 
   preferencesRegistry.add(pluginId, pluginTitle, DiscoverPreferences)
 }
+
+export { log } from './globals'
