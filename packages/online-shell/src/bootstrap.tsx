@@ -56,6 +56,8 @@ bootstrapModules().then(mods => {
     mods.hawtioreact.springboot()
     configManager.initItem('Hawtio Plugins', TaskState.finished, 'plugins')
 
+    // ::hawtio-additional-modules:: // Build-time hook for sed/awk to add additional modules
+
     configManager.initItem('Hawtio UI', TaskState.started, 'plugins')
     const hawtioUiMod = await import('@hawtio/react/ui')
     configManager.initItem('Hawtio UI', TaskState.finished, 'plugins')
