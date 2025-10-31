@@ -2382,17 +2382,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hawtio/camel-model-v4_10@npm:@hawtio/camel-model@~4.10.6":
-  version: 4.10.6
-  resolution: "@hawtio/camel-model@npm:4.10.6"
-  checksum: 10/d32efb354b420c0b8cb1c5d53406807378f9227cd2cacaf0ebac746ef4c192a1203858f1cac00e15fbca1539ccba962f23cc9fb90fd724ab9d878ae2907c9923
+"@hawtio/camel-model-v4_10@npm:@hawtio/camel-model@~4.10.7":
+  version: 4.10.7
+  resolution: "@hawtio/camel-model@npm:4.10.7"
+  checksum: 10/c60c544acb327669a3d4dd0314f110c7e5072ad673bc1901d3775ca90b71782d27a57c4d645e50ed8ddbb994cb99cbf85f29999b926125ae11a4de46bd190d6a
   languageName: node
   linkType: hard
 
-"@hawtio/camel-model-v4_8@npm:@hawtio/camel-model@~4.8.8":
-  version: 4.8.8
-  resolution: "@hawtio/camel-model@npm:4.8.8"
-  checksum: 10/a7ab341d6030604d420af6238b80a58a762babbe86b5fcc91670a0fc65138c49d378dd9c0fd5ff6ae74ba40ee976ba377a6e87bc0d1b0290a1c6030b59bf9031
+"@hawtio/camel-model-v4_14@npm:@hawtio/camel-model@~4.14.1":
+  version: 4.14.1
+  resolution: "@hawtio/camel-model@npm:4.14.1"
+  checksum: 10/e07fde41092cfa465776bf9f5eca0863e5244460bd7e9a265aa9ab286f48cf2ac214e2006a8251d46f59ce232785e791858369f624ccf7b9a4c3e5def4ee6446
   languageName: node
   linkType: hard
 
@@ -2452,7 +2452,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api-app@workspace:packages/kubernetes-api-app"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "npm:^1.11.1"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2494,7 +2494,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.4"
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "npm:^1.11.1"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2544,7 +2544,7 @@ __metadata:
   resolution: "@hawtio/online-management-api-app@workspace:packages/management-api-app"
   dependencies:
     "@hawtio/online-management-api": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "npm:^1.11.1"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2586,8 +2586,8 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.4"
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
-    "@jolokia.js/simple": "npm:^2.3.0"
+    "@hawtio/react": "npm:^1.11.1"
+    "@jolokia.js/simple": "npm:^2.4.0"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2605,7 +2605,7 @@ __metadata:
     jest-environment-jsdom: "npm:^30.1.2"
     jest-extended: "npm:^6.0.0"
     jest-fetch-mock: "npm:^3.0.3"
-    jolokia.js: "npm:^2.3.0"
+    jolokia.js: "npm:^2.4.0"
     jsonpath: "npm:^1.1.1"
     monaco-editor: "npm:^0.52.2"
     react: "npm:^18.3.1"
@@ -2636,7 +2636,7 @@ __metadata:
   resolution: "@hawtio/online-oauth-app@workspace:packages/oauth-app"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "npm:^1.11.1"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2680,7 +2680,7 @@ __metadata:
   resolution: "@hawtio/online-oauth@workspace:packages/oauth"
   dependencies:
     "@babel/core": "npm:^7.28.4"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "npm:^1.11.1"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2759,7 +2759,7 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.10.0"
+    "@hawtio/react": "npm:^1.11.1"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2807,29 +2807,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:^1.10.0":
-  version: 1.10.1
-  resolution: "@hawtio/react@npm:1.10.1"
+"@hawtio/react@npm:^1.11.1":
+  version: 1.11.1
+  resolution: "@hawtio/react@npm:1.11.1"
   dependencies:
-    "@hawtio/camel-model-v4_10": "npm:@hawtio/camel-model@~4.10.6"
-    "@hawtio/camel-model-v4_8": "npm:@hawtio/camel-model@~4.8.8"
-    "@jolokia.js/simple": "npm:^2.2.4"
-    "@module-federation/utilities": "npm:^3.1.62"
+    "@hawtio/camel-model-v4_10": "npm:@hawtio/camel-model@~4.10.7"
+    "@hawtio/camel-model-v4_14": "npm:@hawtio/camel-model@~4.14.1"
+    "@jolokia.js/simple": "npm:^2.4.0"
+    "@module-federation/utilities": "npm:^3.1.72"
     "@monaco-editor/react": "npm:^4.6.0"
-    "@thumbmarkjs/thumbmarkjs": "npm:^1.0.0"
+    "@thumbmarkjs/thumbmarkjs": "npm:^1.3.2"
     dagre: "npm:^0.8.5"
-    dompurify: "npm:^3.2.6"
+    dompurify: "npm:^3.3.0"
     eventemitter3: "npm:^5.0.1"
-    jolokia.js: "npm:^2.2.4"
+    jolokia.js: "npm:^2.4.0"
     js-logger: "npm:^1.6.1"
     jwt-decode: "npm:^4.0.0"
-    keycloak-js: "npm:^26.2.0"
-    oauth4webapi: "npm:^3.6.0"
+    keycloak-js: "npm:^26.2.1"
+    oauth4webapi: "npm:^3.8.2"
     react-markdown: "npm:^10.1.0"
     react-split: "npm:^2.0.14"
     reactflow: "npm:^11.11.4"
     superstruct: "npm:^2.0.2"
-    xml-formatter: "npm:^3.6.6"
+    xml-formatter: "npm:^3.6.7"
   peerDependencies:
     "@patternfly/react-charts": ^7
     "@patternfly/react-code-editor": ^5
@@ -2842,7 +2842,7 @@ __metadata:
     react: ^17 || ^18
     react-dom: ^17 || ^18
     react-router-dom: ^6.30
-  checksum: 10/d8f3d782a2c344293a2398636618d0bfef10b68cc478e761c7083c0715be902b87af60b47ce1d8be5251c1428660d5366256344eb22223c5dc00b5fb2e72a19b
+  checksum: 10/5683f6cd894f5a7a93ea1bd12dec942e952aff1bf2a473715d7fc49cae4c26ff38bee7bec8c1bfa5756c588e0f90af285d67ebc198519ea68fe2fc3291304506
   languageName: node
   linkType: hard
 
@@ -3244,21 +3244,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jolokia.js/simple@npm:^2.2.4":
-  version: 2.2.4
-  resolution: "@jolokia.js/simple@npm:2.2.4"
+"@jolokia.js/simple@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "@jolokia.js/simple@npm:2.4.0"
   dependencies:
-    jolokia.js: "npm:2.2.4"
-  checksum: 10/b0f182db30ce0d8a71205e7de84ea74d6d5d4d44249949c6a7a515adfaba010ff0f9b41acb303dc394bc24aa415637b8533f8b4879985123446893310b27faf7
-  languageName: node
-  linkType: hard
-
-"@jolokia.js/simple@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "@jolokia.js/simple@npm:2.3.0"
-  dependencies:
-    jolokia.js: "npm:2.3.0"
-  checksum: 10/eff38ea17fc7c0c9b90bbdb9f2f6f0c13be7bd84b5a2d3b655a7120751faf799830e64d069844d21e957208d58d191791fe161bf64c448ad0767e60778a4e839
+    jolokia.js: "npm:2.4.0"
+  checksum: 10/976a5448700b81ff86b18c9c2707bb9fd694a07e12011993282f9379219f06e8d226c945862a5669e7af17f94b389976e88b52093a7c2007fd04ff77725c2b07
   languageName: node
   linkType: hard
 
@@ -3391,18 +3382,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@module-federation/sdk@npm:0.17.1":
-  version: 0.17.1
-  resolution: "@module-federation/sdk@npm:0.17.1"
-  checksum: 10/daaaa49ed900c00a69641130cf673ad5d5b8623d82fb4bd03a67c839a6da760a0a5ae29b836ba66eeb95ee5392e558588ffd987a2c00b05c2b0a7c5039ed042d
+"@module-federation/sdk@npm:0.21.2":
+  version: 0.21.2
+  resolution: "@module-federation/sdk@npm:0.21.2"
+  checksum: 10/e71a85bc4daf16cbe065c4ee8c36d6652b0d9a2cd5cc4fc53494f1c7f1111a67a08c4817e5738a7e4f66b7f60769abceb955c23bf94eb3205d2646002852b10f
   languageName: node
   linkType: hard
 
-"@module-federation/utilities@npm:^3.1.62":
-  version: 3.1.62
-  resolution: "@module-federation/utilities@npm:3.1.62"
+"@module-federation/utilities@npm:^3.1.72":
+  version: 3.1.73
+  resolution: "@module-federation/utilities@npm:3.1.73"
   dependencies:
-    "@module-federation/sdk": "npm:0.17.1"
+    "@module-federation/sdk": "npm:0.21.2"
   peerDependencies:
     react: ^16 || ^17 || ^18
     react-dom: ^16 || ^17 || ^18
@@ -3414,7 +3405,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 10/0b4513846480d035b07b70e47431aaeb0d4a48154e748eb2feb2dc1979705d8fc8a4f1dfeaebcd657875dfc6bc1c4eb0f1daf01724bd9d911616999f2efea40a
+  checksum: 10/751038c51fa2a98e94999383730cd0f388125e2f08724d40f2a380f96cce74bd0bc82a4c16f98fafa29aca3867ef7f6737bbc9dfebf26b335c7e2d3e34b80947
   languageName: node
   linkType: hard
 
@@ -3965,10 +3956,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thumbmarkjs/thumbmarkjs@npm:^1.0.0":
-  version: 1.1.1
-  resolution: "@thumbmarkjs/thumbmarkjs@npm:1.1.1"
-  checksum: 10/678d8b7bd7648a99700290a2f5943c476893310fcef6b8c59fb623371ccba806dc03f17f4e134f958291c8806d6b953fa5e7e769d5c5498788146e9ca51deba7
+"@thumbmarkjs/thumbmarkjs@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "@thumbmarkjs/thumbmarkjs@npm:1.3.2"
+  checksum: 10/15d6c24cb37aeda1e804210f66e8a503760ecbfe02450712e9667870f95a8fd94a0de8b06289acb4b2b4d2f284878a32390a7415accfc9ce0f156ff184ad155c
   languageName: node
   linkType: hard
 
@@ -8351,15 +8342,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^3.2.6":
-  version: 3.2.6
-  resolution: "dompurify@npm:3.2.6"
+"dompurify@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "dompurify@npm:3.3.0"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10/b91631ed0e4d17fae950ef53613cc009ed7e73adc43ac94a41dd52f35483f7538d13caebdafa7626e0da145fc8184e7ac7935f14f25b7e841b32fda777e40447
+  checksum: 10/d8782b10a0454344476936c91038d06c9450b3e3ada2ceb8f722525e6b54e64d847939b9f35bf385facd4139f0a2eaf7f5553efce351f8e9295620570875f002
   languageName: node
   linkType: hard
 
@@ -12272,14 +12263,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jolokia.js@npm:2.2.4, jolokia.js@npm:^2.2.4":
-  version: 2.2.4
-  resolution: "jolokia.js@npm:2.2.4"
-  checksum: 10/c7c0f1fa9f4a4ded43edf0425978b84b6bff1fef1a9ac5f6b6a15ec1dd04f2b0e4b5314c1d6dc1996d91990e71944672215db9151150cab24108073a9b879e1f
+"jolokia.js@npm:2.4.0, jolokia.js@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "jolokia.js@npm:2.4.0"
+  checksum: 10/970d89d194304d194f3c68e89f260542719f12dd5b289d86784b4fe98f16f7a3fe16f81ca16eb3e8f13a8321f2ea107518f2186fd577256e905c15b412beb1f5
   languageName: node
   linkType: hard
 
-"jolokia.js@npm:2.3.0, jolokia.js@npm:^2.3.0":
+"jolokia.js@npm:^2.3.0":
   version: 2.3.0
   resolution: "jolokia.js@npm:2.3.0"
   checksum: 10/5de76ba41d492badf524cf9c3aff8d3b33cb10ffffc129105f1f44a374dbfe29fadd7ce204cf8f69b27332effae6e283f387e8071bacff4a0167d7f959192e7c
@@ -12493,10 +12484,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"keycloak-js@npm:^26.2.0":
-  version: 26.2.0
-  resolution: "keycloak-js@npm:26.2.0"
-  checksum: 10/1afde5975491e12e5b1be747d054475dd3d315fe884c980390b3b9dd4f04e9f0e7746f2c6f615ac1f2297c2b815dc2ec9a1054a7db3050968d2b2bee2f772969
+"keycloak-js@npm:^26.2.1":
+  version: 26.2.1
+  resolution: "keycloak-js@npm:26.2.1"
+  checksum: 10/7aa07eaeb2f540f4af9665ef55f57bed4187de9cca81e2970ced44effe30bf7980a8f37462628acf974d57cb6568396bd36592fe5cc2fc99c7e3f56141257a12
   languageName: node
   linkType: hard
 
@@ -13778,10 +13769,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oauth4webapi@npm:^3.6.0":
-  version: 3.6.1
-  resolution: "oauth4webapi@npm:3.6.1"
-  checksum: 10/12fcda932796622b2de011ac42961f67ff5b808c0df30163f669dfaf4e0264689008964843e5181250426dba686a338eec0ff3a714d0df0cb626b884b122a4ff
+"oauth4webapi@npm:^3.8.2":
+  version: 3.8.2
+  resolution: "oauth4webapi@npm:3.8.2"
+  checksum: 10/5f96b50dd50298402a15d5d545decab0ef20aa14fdd0fe6d6ccc9e47d645d795f0aebb0c1fd452e2504170d8880b89021a87a168aed4df64bf39a1ba7e85f245
   languageName: node
   linkType: hard
 
@@ -18629,12 +18620,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xml-formatter@npm:^3.6.6":
-  version: 3.6.6
-  resolution: "xml-formatter@npm:3.6.6"
+"xml-formatter@npm:^3.6.7":
+  version: 3.6.7
+  resolution: "xml-formatter@npm:3.6.7"
   dependencies:
-    xml-parser-xo: "npm:^4.1.4"
-  checksum: 10/086bc6ea58b26d0d02900fa7c68436a0ab6f9a841ce2dd353d107ca6156310846e719508e1aef62e5ce40923f8711742064c700b60238d413a12767a90d16cd5
+    xml-parser-xo: "npm:^4.1.5"
+  checksum: 10/0bd9955ab43b60e0bbf55d092761f27dbe4a9871cc60554cc07f67d31a2ae50423d207b2d8f408aad7c5fb7651cc54cba325056b9ac7abcb5df246fc9826a8e3
   languageName: node
   linkType: hard
 
@@ -18645,10 +18636,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xml-parser-xo@npm:^4.1.4":
-  version: 4.1.4
-  resolution: "xml-parser-xo@npm:4.1.4"
-  checksum: 10/12b31b03e8250856d3c5d574f48ea11d655384b3edaddd6efc5b9b37607ce0068e3e4c6ec126160be1e98ccc49b6b0c591c972415f5c2c3ee1f6ef13c02b83b6
+"xml-parser-xo@npm:^4.1.5":
+  version: 4.1.5
+  resolution: "xml-parser-xo@npm:4.1.5"
+  checksum: 10/0a6d24a2deb757e6595314f500cadd7d1fb2b06b92798a5bf4bdff05fc3b50815c20ec5bd101293602ca5a65f95453ec4a7320e364e060bf33ad8f0520e027a9
   languageName: node
   linkType: hard
 
