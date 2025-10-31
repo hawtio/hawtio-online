@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@hawtio/online-management-api": "workspace:*",
-    "@hawtio/react": "^1.10.0",
+    "@hawtio/react": "^1.11.1",
     "@patternfly/react-charts": "^7.4.9",
     "@patternfly/react-code-editor": "^5.4.18",
     "@patternfly/react-core": "^5.4.14",
