@@ -2406,7 +2406,7 @@ __metadata:
     "@types/jest": "npm:^30.0.0"
     "@types/js-yaml": "npm:^4.0.9"
     "@types/method-override": "npm:^3.0.0"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/pino-multi-stream": "npm:^5.1.6"
     "@types/supertest": "npm:^6.0.2"
     babel-jest: "npm:^29.6.1"
@@ -2460,7 +2460,7 @@ __metadata:
     "@patternfly/react-styles": "npm:^5.4.1"
     "@patternfly/react-table": "npm:^5.4.16"
     "@patternfly/react-tokens": "npm:^5.4.1"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
@@ -2505,7 +2505,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.8.0"
     "@types/jest": "npm:^30.0.0"
     "@types/jsonpath": "npm:^0.2.4"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     babel-jest: "npm:^29.6.1"
     eventemitter3: "npm:^5.0.1"
@@ -2552,7 +2552,7 @@ __metadata:
     "@patternfly/react-styles": "npm:^5.4.1"
     "@patternfly/react-table": "npm:^5.4.16"
     "@patternfly/react-tokens": "npm:^5.4.1"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
@@ -2597,7 +2597,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^5.4.1"
     "@types/jest": "npm:^30.0.0"
     "@types/jsonpath": "npm:^0.2.4"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     babel-jest: "npm:^29.6.1"
     eventemitter3: "npm:^5.0.1"
@@ -2644,7 +2644,7 @@ __metadata:
     "@patternfly/react-styles": "npm:^5.4.1"
     "@patternfly/react-table": "npm:^5.4.16"
     "@patternfly/react-tokens": "npm:^5.4.1"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
@@ -2690,7 +2690,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^5.4.1"
     "@types/babel__core": "npm:^7"
     "@types/jest": "npm:^30.0.0"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     babel-jest: "npm:^29.6.1"
     fetch-intercept: "npm:^2.4.0"
@@ -2768,7 +2768,7 @@ __metadata:
     "@patternfly/react-table": "npm:^5.4.16"
     "@patternfly/react-tokens": "npm:^5.4.1"
     "@patternfly/react-topology": "npm:^5.4.1"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     babel-loader: "npm:^10.0.0"
@@ -4735,12 +4735,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.3.1":
-  version: 24.3.1
-  resolution: "@types/node@npm:24.3.1"
+"@types/node@npm:^24.9.2":
+  version: 24.9.2
+  resolution: "@types/node@npm:24.9.2"
   dependencies:
-    undici-types: "npm:~7.10.0"
-  checksum: 10/b9a52ed8f2fb1fa764ce988828b8d579761f944f1bb0492adbdeaa676a161086bad1a807b590799681ad93b3d272468b5c5ddccf5678735d487d1b65e481bc07
+    undici-types: "npm:~7.16.0"
+  checksum: 10/3e76ad89cca317c0886deedab0245b6b2a04ef6c47362bd3918020296f3e9630334795af9cee8c6633eae774c85d848ff2e6bed5a7c3133fc94968364fc3ee36
   languageName: node
   linkType: hard
 
@@ -17388,10 +17388,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~7.10.0":
-  version: 7.10.0
-  resolution: "undici-types@npm:7.10.0"
-  checksum: 10/1f3fe777937690ab8a7a7bccabc8fdf4b3171f4899b5a384fb5f3d6b56c4b5fec2a51fbf345c9dd002ff6716fd440a37fa8fdb0e13af8eca8889f25445875ba3
+"undici-types@npm:~7.16.0":
+  version: 7.16.0
+  resolution: "undici-types@npm:7.16.0"
+  checksum: 10/db43439f69c2d94cc29f75cbfe9de86df87061d6b0c577ebe9bb3255f49b22c50162a7d7eb413b0458b6510b8ca299ac7cff38c3a29fbd31af9f504bcf7fbc0d
   languageName: node
   linkType: hard
 
