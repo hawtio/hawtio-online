@@ -47,6 +47,8 @@ spec:
             value: {{ .Values.consoleUrl | default "\"\"" }}
           - name: OPENSHIFT_CLUSTER_VERSION
             value: "4"
+          - name: HAWTIO_ONLINE_LOG_LEVEL
+            value: "{{ .Values.online.logLevel }}"
 {{- end }}
           image: {{ .Values.online.image.name}}:{{ .Values.online.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.online.image.pullPolicy }}
@@ -106,6 +108,8 @@ spec:
             value: /etc/tls/private/serving/tls.crt
           - name: HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE_CA
             value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          - name: HAWTIO_ONLINE_GATEWAY_LOG_LEVEL
+            value: "{{ .Values.gateway.logLevel }}"
 {{- end }}
           image: {{ .Values.gateway.image.name}}:{{ .Values.gateway.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}

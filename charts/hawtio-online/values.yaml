@@ -23,6 +23,10 @@ online:
     name: hawtio-rbac
   application: hawtio-online
   replicaCount: 1
+# logLevel:        Set whether the logging level of the online server
+#                  [ emerg | alert | crit | error | warn | notice | info ]
+#                  (info by default)
+  logLevel: info
   image:
     name: quay.io/hawtio/online
     tag: 2.3.0
@@ -70,3 +74,6 @@ gateway:
     pullPolicy: Always
   deployment:
     port: 3000
+# logLevel:       Set whether the logging level of the online server
+#                 [ info | debug | trace ]
+  logLevel: info
