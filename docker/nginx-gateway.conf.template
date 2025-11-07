@@ -1,5 +1,7 @@
 # vim: set filetype=nginx:
 
+error_log /dev/stderr ${NGINX_LOG_LEVEL};
+
 proxy_cache_path /var/cache/nginx/pods levels=1:2 keys_zone=pods:2m max_size=4m inactive=60m use_temp_path=off;
 proxy_cache_path /var/cache/nginx/rbac levels=1:2 keys_zone=rbac:256k max_size=3m inactive=60m use_temp_path=off;
 proxy_cache_path /var/cache/nginx/rbac2 levels=1:2 keys_zone=rbac2:256k max_size=3m inactive=60m use_temp_path=off;
