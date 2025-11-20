@@ -30,7 +30,7 @@ try {
  * @param {string} dependencyName The name of the dependency to check (e.g., '@hawtio/react').
  * @returns {string} The resolved version string.
  */
-const getDependencyVersion = (dependencyName) => {
+const getDependencyVersion = dependencyName => {
   // Check ROOT resolutions
   if (rootPkg.resolutions && rootPkg.resolutions[dependencyName]) {
     const resolvedVersion = rootPkg.resolutions[dependencyName]
