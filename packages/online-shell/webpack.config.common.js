@@ -4,12 +4,66 @@ const InterpolateHtmlPlugin = require('interpolate-html-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const path = require('path')
-const { dependencies } = require('./package.json')
+const pkg = require('./package.json')
+const { dependencies } = pkg
+
+/**
+ * Try to load the ROOT package.json to check for resolutions
+ * Ensures that the shell handles cases where the shell may be
+ * running in a standalone repo or copied out of the mono repo
+ */
+let rootPkg = {}
+try {
+  rootPkg = require(path.resolve(__dirname, '..', '..', 'package.json'))
+  console.log('Root package.json loaded successfully.')
+} catch (e) {
+  console.log('No parent package.json found. Assuming standalone repository structure.')
+}
+
+/**
+ * Get the version of a dependency from the package.json file(s)
+ * using a cascading strategy:
+ * 1. Check for Root package.json 'resolutions'
+ * 2. Check for Local package.json 'resolutions'
+ * 3. Check for Local package.json 'dependencies' (fallback)
+ *
+ * @param {string} dependencyName The name of the dependency to check (e.g., '@hawtio/react').
+ * @returns {string} The resolved version string.
+ */
+const getDependencyVersion = (dependencyName) => {
+  // Check ROOT resolutions
+  if (rootPkg.resolutions && rootPkg.resolutions[dependencyName]) {
+    const resolvedVersion = rootPkg.resolutions[dependencyName]
+    console.log(`Using ROOT resolved version for ${dependencyName}: ${resolvedVersion}`)
+    return resolvedVersion
+  }
+
+  // Check LOCAL resolutions
+  if (pkg.resolutions && typeof pkg.resolutions === 'object') {
+    // Check if the specific dependency is defined in resolutions
+    if (pkg.resolutions[dependencyName]) {
+      console.log(`Using resolved version for ${dependencyName}: ${pkg.resolutions[dependencyName]}`)
+      return pkg.resolutions[dependencyName]
+    }
+  }
+
+  // Fallback to standard dependencies
+  const version = pkg.dependencies[dependencyName]
+  if (version) {
+    console.log(`Using standard dependency version for ${dependencyName}: ${version}`)
+    return version
+  }
+
+  throw new Error(`Could not find version for dependency: ${dependencyName}`)
+}
 
 const common = (mode, publicPath, packageVersion) => {
   console.log(`Compilation Mode: ${mode}`)
   console.log(`Public Path: ${publicPath}`)
   console.log(`Package Version: ${packageVersion}`)
+
+  // Resolve the version for @hawtio/react using the dependency function
+  const hawtioReactVersion = getDependencyVersion('@hawtio/react')
 
   return {
     mode: mode,
@@ -75,7 +129,7 @@ const common = (mode, publicPath, packageVersion) => {
           },
           '@hawtio/react': {
             singleton: true,
-            requiredVersion: dependencies['@hawtio/react'],
+            requiredVersion: hawtioReactVersion,
           },
           '@hawtio/online-oauth': {
             singleton: true,
