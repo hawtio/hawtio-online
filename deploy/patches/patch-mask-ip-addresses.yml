@@ -1,7 +1,7 @@
 #
-# Patch to update the deployment to reveal ip addresses
+# Patch to update the deployment to mask ip addresses
 # only if the user specifically requires.
-# The default is always to mask them.
+# The default is not to mask them.
 #
 apiVersion: apps/v1
 kind: Deployment
@@ -15,4 +15,4 @@ spec:
           image: quay.io/hawtio/online-gateway
           env:
             - name: HAWTIO_ONLINE_MASK_IP_ADDRESSES
-              value: "false"
+              value: "true"

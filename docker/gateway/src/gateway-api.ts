@@ -54,8 +54,8 @@ logger.info(`* App Port:          ${port}`)
 logger.info(`* Web Server:        ${gatewayOptions.websvr}`)
 logger.info(`* Log Level:         ${logger.level}`)
 logger.info(`* SSL Enabled:       ${sslCertificate !== ''}`)
-logger.info(`* RBAC:              ${process.env['HAWTIO_ONLINE_RBAC_ACL'] || 'default'}`)
-logger.info(`* Mask IP Addresses: ${process.env['HAWTIO_ONLINE_MASK_IP_ADDRESSES'] || 'true'}`)
+logger.info(`* RBAC:              ${process.env['HAWTIO_ONLINE_RBAC_ACL'] ?? 'default'}`)
+logger.info(`* Mask IP Addresses: ${process.env['HAWTIO_ONLINE_MASK_IP_ADDRESSES'] ?? 'false'}`)
 logger.info('**************************************')
 
 // Log middleware requests

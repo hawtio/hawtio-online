@@ -409,3 +409,49 @@ describe.each([
       })
   })
 })
+
+describe('masking ip addresses', () => {
+  beforeEach(() => {
+    // Reset TestOptions
+    testData.authorization.forbidden = false
+    testData.authorization.adminAllowed = true
+    testData.authorization.viewerAllowed = true
+    processRBACEnvVar(defaultACLFile)
+  })
+
+  afterEach(() => {
+    process.env.HAWTIO_ONLINE_MASK_IP_ADDRESSES = 'false'
+  })
+
+  it('IP address masking off by default', async () => {
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.listMBeans.request)
+      .expect(200)
+      .then(res => {
+        expect(res.text).toContain('jolokia')
+        const response = JSON.parse(res.text)
+        expect(response.value.jolokia).toBeTruthy()
+        for (const k in response.value.jolokia) {
+          expect(k).toContain('10.217.0.214')
+          expect(k).not.toContain('***.***.***.***')
+        }
+      })
+  })
+
+  it('IP address masked when masking enabled', async () => {
+    process.env.HAWTIO_ONLINE_MASK_IP_ADDRESSES = 'true'
+
+    const path = `/management/namespaces/${NAMESPACE}/pods/${JOLOKIA_URI}`
+    return appPost(path, testData.jolokia.listMBeans.request)
+      .expect(200)
+      .then(res => {
+        expect(res.text).toContain('jolokia')
+        const response = JSON.parse(res.text)
+        expect(response.value.jolokia).toBeTruthy()
+        for (const k in response.value.jolokia) {
+          expect(k).not.toContain('10.217.0.214')
+          expect(k).toContain('***.***.***.***')
+        }
+      })
+  })
+})
