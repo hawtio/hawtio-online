@@ -56,7 +56,7 @@ OS_CONSOLE_URL ?=
 # The name of the service-account user
 HAWTIO_USER ?= hawtio-user
 # Whether to mask ip addresses in network responses
-MASK_IP_ADDRESSES ?= true
+MASK_IP_ADDRESSES ?= false
 # The Log Level of the hawtio-online server
 ONLINE_LOG_LEVEL ?= info
 # The Log Level of the hawtio gateway server
@@ -186,7 +186,7 @@ endif
 endif
 
 .mask-ip-addresses:
-ifeq ($(MASK_IP_ADDRESSES), false)
+ifeq ($(MASK_IP_ADDRESSES), true)
 	@$(call add-remove-kind-patch,$(BASE),add,../$(MASK_IP_ADDRESSES_PATCH),Deployment)
 else
 	@$(call add-remove-kind-patch,$(BASE),remove,../$(MASK_IP_ADDRESSES_PATCH),Deployment)
