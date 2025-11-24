@@ -34,7 +34,7 @@
     "jolokia.js": "^2.3.0",
     "jwt-decode": "^4.0.0",
     "method-override": "^3.0.0",
-    "pino": "^9.11.0",
+    "pino": "^10.1.0",
     "pino-http": "^10.5.0",
     "pino-pretty": "^13.0.0",
     "yaml": "^2.8.0"
