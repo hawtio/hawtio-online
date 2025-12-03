@@ -18,7 +18,7 @@ RUN microdnf -y install gettext
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
 
-ENV NGINX_VERSION 1.20.2-1.el9
+ENV NGINX_VERSION 1.22.1-1.el9
 
 LABEL name="nginxinc/nginx" \
     vendor="NGINX Inc." \
