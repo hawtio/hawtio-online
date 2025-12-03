@@ -10,6 +10,7 @@ HAWTIO_HTML="${NGINX_HTML}/online"
 export NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE="${NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE:-10m}"
 export NGINX_CLIENT_BODY_BUFFER_SIZE="${NGINX_CLIENT_BODY_BUFFER_SIZE:-256k}"
 export NGINX_PROXY_BUFFERS="${NGINX_PROXY_BUFFERS:-16 128k}"
+export NGINX_MASTER_BURST="${NGINX_MASTER_BURST:-5000}"
 export NGINX_LOG_LEVEL="${HAWTIO_ONLINE_LOG_LEVEL:-info}"
 export HAWTIO_ONLINE_GATEWAY_APP_PORT="${HAWTIO_ONLINE_GATEWAY_APP_PORT:-3000}"
 export HAWTIO_ONLINE_SSL_CERTIFICATE="${HAWTIO_ONLINE_SSL_CERTIFICATE:-}"
@@ -43,6 +44,29 @@ mkdir -p "${HAWTIO_HTML}/osconsole"
 generate_nginx_gateway_conf() {
   TEMPLATE=/nginx-gateway.conf.template
 
+  # Get the local IP (handle cases where hostname -i returns multiple IPs)
+  LOCAL_IP=$(awk 'END{print $1}' /etc/hosts)
+
+  # Extract the first octet (e.g., 10, 172, 192)
+  FIRST_OCTET=$(echo "${LOCAL_IP}" | cut -d'.' -f1)
+  if [ "${FIRST_OCTET}" = "10" ]; then
+     # Class A Private Network
+     export REAL_IP_FROM="10.0.0.0/8"
+  elif [ "${FIRST_OCTET}" = "172" ]; then
+     # Class B Private Network
+     export REAL_IP_FROM="172.16.0.0/12"
+  elif [ "${FIRST_OCTET}" = "192" ]; then
+     # Class C Private Network
+     export REAL_IP_FROM="192.168.0.0/16"
+  else
+     # Fallback: If we can't determine the private net, we must default to 0.0.0.0/0
+     # to ensure the app works, though it reduces the precision of the rate limiting.
+     echo "WARNING: Could not determine private subnet from IP ${LOCAL_IP}. Defaulting 'set_real_ip_from' to 0.0.0.0/0"
+     export REAL_IP_FROM="0.0.0.0/0"
+  fi
+
+  echo "Detected Local IP: ${LOCAL_IP}. Trusting subnet for Real IP: ${REAL_IP_FROM}"
+
   if [ -n "${HAWTIO_ONLINE_SSL_CERTIFICATE}" ]; then
     echo "Configurating nginx SSL protocol"
     if [ -z "${HAWTIO_ONLINE_SSL_KEY}" ]; then
@@ -75,6 +99,7 @@ generate_nginx_gateway_conf() {
     $NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE
     $NGINX_CLIENT_BODY_BUFFER_SIZE
     $NGINX_PROXY_BUFFERS
+    $NGINX_MASTER_BURST
     $LISTEN_SERVER_PORT
     $SERVING_SSL_CERTIFICATE
     $SERVING_SSL_KEY
@@ -84,6 +109,7 @@ generate_nginx_gateway_conf() {
     $HAWTIO_ONLINE_GATEWAY_APP_PROTOCOL
     $HAWTIO_ONLINE_GATEWAY_APP_PORT
     $NGINX_LOG_LEVEL
+    $REAL_IP_FROM
     ' < ${TEMPLATE} > /etc/nginx/conf.d/nginx.conf
 }
 
