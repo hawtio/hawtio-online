@@ -2,6 +2,27 @@
 
 error_log /dev/stderr ${NGINX_LOG_LEVEL};
 
+# IP Resolution
+real_ip_header X-Forwarded-For;
+set_real_ip_from ${REAL_IP_FROM};
+
+# Define Zones
+
+# Zone A: Sensitive APIs (Login, Management)
+# Strict: 10 reqs/sec. Good for brute-force protection.
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
+
+# Zone B: Static Assets (Files)
+# Fast: 50 reqs/sec.
+limit_req_zone $binary_remote_addr zone=static_limit:10m rate=50r/s;
+
+# Zone C: Kubernetes Proxy (High Traffic) - NEW
+# We allow a high rate (30r/s) because the dashboard is chatty.
+limit_req_zone $binary_remote_addr zone=proxy_limit:10m rate=30r/s;
+
+# Zone D: Connections
+limit_conn_zone $binary_remote_addr zone=addr_conn:10m;
+
 proxy_cache_path /var/cache/nginx/pods levels=1:2 keys_zone=pods:2m max_size=4m inactive=60m use_temp_path=off;
 proxy_cache_path /var/cache/nginx/rbac levels=1:2 keys_zone=rbac:256k max_size=3m inactive=60m use_temp_path=off;
 proxy_cache_path /var/cache/nginx/rbac2 levels=1:2 keys_zone=rbac2:256k max_size=3m inactive=60m use_temp_path=off;
@@ -26,6 +47,9 @@ server {
     gzip_types text/plain application/javascript text/javascript;
     root                /usr/share/nginx/html/;
 
+    # Keep the tunnel open for 1 hour even if silent
+    proxy_read_timeout 3600s;
+    proxy_send_timeout 3600s;
     # Limit the keepalive of connections (60s default)
     keepalive_timeout 60s;
 
@@ -69,6 +93,8 @@ server {
     }
 
     location /auth/logout {
+        limit_req zone=api_limit burst=20 nodelay;
+
         if ( $arg_redirect_uri = '') {
           return 200 "Acknowledge logout but nothing further to do";
         }
@@ -90,8 +116,11 @@ server {
 
     # Static content serving
     location /online {
-        add_header location-rule ONLINE always;
+        # Allow a big burst (100) and high rate (50r/s) for requests.
+        # This stops a dedicated DoS scripts not a browser.
+        limit_req zone=static_limit burst=100 nodelay;
 
+        add_header location-rule ONLINE always;
         include /etc/nginx/includes/security-headers-online.conf;
 
         alias     /usr/share/nginx/html/online;
@@ -105,8 +134,12 @@ server {
     # to the kubernetes api server
     #
     location ~ ^/master/(.*) {
-        add_header                    location-rule MASTER always;
+        # burst uses the injected value to allow the dashboard
+        # to fire an initial number of requests (default: 5000)
+        # instantly without error.
+        limit_req zone=proxy_limit burst=${NGINX_MASTER_BURST} nodelay;
 
+        add_header                    location-rule MASTER always;
         include /etc/nginx/includes/security-headers-common.conf;
 
         proxy_pass                    ${HAWTIO_ONLINE_GATEWAY_APP_PROTOCOL}://localhost:${HAWTIO_ONLINE_GATEWAY_APP_PORT}/master/$1$is_args$args;
@@ -122,6 +155,8 @@ server {
     }
 
     location /management {
+        limit_req zone=api_limit burst=50 nodelay;
+
         add_header                    location-rule MANAGEMENT always;
 
         include /etc/nginx/includes/security-headers-common.conf;
