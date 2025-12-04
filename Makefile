@@ -103,7 +103,7 @@ CONTAINER_BUILDER=$(shell command -v podman 2> /dev/null)
 endif
 
 setup: yarn
-	yarn install
+	yarn install --frozen-lockfile
 
 build: setup
 	@echo "####### Building hawtio/online ..."
