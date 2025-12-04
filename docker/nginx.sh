@@ -25,7 +25,7 @@ check_openshift_api() {
   TOKEN=$(cat ${SERVICEACCOUNT}/token)
   CACERT=${SERVICEACCOUNT}/ca.crt
 
-  STATUS_CODE=$(curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET "${APISERVER}"/apis/apps.openshift.io/v1 --write-out '%{http_code}' --silent --output /dev/null)
+  STATUS_CODE=$(curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET "${APISERVER}"/apis/apps.openshift.io/v1 --write-out '%{http_code}' --silent --output /dev/null || echo "000")
   if [ "${STATUS_CODE}" != "200" ]; then
     OPENSHIFT=false
   fi
