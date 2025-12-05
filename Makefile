@@ -129,14 +129,14 @@ check-licenses:
 
 image: container-builder
 	@echo "####### Building Hawtio Online container image..."
-	$(CONTAINER_BUILDER) build -t $(CUSTOM_IMAGE):$(CUSTOM_VERSION) -f Dockerfile-nginx .
+	$(CONTAINER_BUILDER) build -t $(CUSTOM_IMAGE):$(CUSTOM_VERSION) -t $(CUSTOM_IMAGE):latest -f Dockerfile-nginx .
 
 image-push: image
 	$(CONTAINER_BUILDER) push $(CUSTOM_IMAGE):$(CUSTOM_VERSION)
 
 image-gateway: container-builder
 	@echo "####### Building Hawtio Online Gateway container image..."
-	$(CONTAINER_BUILDER) build -t $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION) -f Dockerfile-gateway .
+	$(CONTAINER_BUILDER) build -t $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION) -t $(CUSTOM_GATEWAY_IMAGE):latest -f Dockerfile-gateway .
 
 image-gateway-push: image-gateway
 	$(CONTAINER_BUILDER) push $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)

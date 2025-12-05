@@ -33,4 +33,4 @@ jobs:
           PASSWORD: ${{ secrets.QUAY_PASSWORD }}
         run: |
           docker login -u ${USERNAME} -p ${PASSWORD} quay.io
-          make image-push
+          make image-push && make image-gateway-push
