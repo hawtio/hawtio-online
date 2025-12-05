@@ -19,6 +19,8 @@ maskIPAddresses: false
 nodeSelector: {}
   # kubernetes.io/arch: amd64
 
+imagePullSecrets: []
+
 online:
   name: hawtio-online
   shortname: hawtio
