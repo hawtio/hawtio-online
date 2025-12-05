@@ -20,6 +20,10 @@ spec:
       labels:
 {{ include "hawtio-online.app.labels" .Values.online | indent 8 }}
     spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8}}
+      {{- end }}
       containers:
         - env:
 {{- if include "hawtio-online.use.ssl" .Values }}
