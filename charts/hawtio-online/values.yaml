@@ -16,6 +16,9 @@ maskIPAddresses: false
 # (only applicable to clusterType: openshift)
 # consoleUrl:
 
+nodeSelector: {}
+  # kubernetes.io/arch: amd64
+
 online:
   name: hawtio-online
   shortname: hawtio
