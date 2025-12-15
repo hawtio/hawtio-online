@@ -2,7 +2,7 @@ apiVersion: v2
 name: hawtio-online
 description: A Helm chart for installing HawtIO
 type: application
-version: 1.0.4
+version: 1.0.6
 appVersion: 2.4.0
 keywords:
   - hawtio
@@ -13,3 +13,4 @@ keywords:
 home: https://hawt.io
 sources:
   - https://github.com/hawtio/hawtio-online.git
+icon: https://hawtio.github.io/hawtio-charts/hawtio-logo.png
