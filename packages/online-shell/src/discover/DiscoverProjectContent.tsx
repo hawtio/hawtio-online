@@ -79,7 +79,7 @@ export const DiscoverProjectContent: React.FunctionComponent<DiscoverProjectCntP
       <PanelHeader>
         <Toolbar id='pagination-toolbar-items' className='paginated-pods-toolbar-content' isSticky>
           <ToolbarContent>
-            <ToolbarGroup variant='button-group' align={{ default: 'alignLeft' }}>
+            <ToolbarGroup gap={{ default: 'gapMd' }}>
               <ToolbarItem>
                 <Pagination
                   widgetId='pagination-toolbar'
@@ -103,7 +103,7 @@ export const DiscoverProjectContent: React.FunctionComponent<DiscoverProjectCntP
         <PanelMainBody>
           {refreshing && (
             <ToolbarGroup isOverflowContainer>
-              <ToolbarItem widths={{ default: '100%' }}>
+              <ToolbarItem className='pf-v6-u-w-100'>
                 <DiscoverLoadingPanel compact={true} />
               </ToolbarItem>
             </ToolbarGroup>

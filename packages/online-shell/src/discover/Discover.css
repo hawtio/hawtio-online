@@ -1,20 +1,3 @@
-/*
- * TODO probably should push this down into hawtio-next
- * Moves the user and help button on nav bar to the end
- */
-#hawtio-header-toolbar .pf-v5-c-toolbar__content-section {
-  justify-content: end;
-}
-
-.pf-v5-c-menu__item a {
-  text-decoration: none;
-  color: unset;
-}
-
-.online-header-toolbar-dropdown {
-  border: none;
-}
-
 .online-header-toolbar-dropdown .online-header-toolbar-dropdown-toggle::before {
   border: none !important;
 }
@@ -24,10 +7,13 @@
   padding-bottom: 0 !important;
 }
 
-.online-header-toolbar-dropdown .online-header-toolbar-dropdown-toggle .pf-v5-c-dropdown__toggle-icon {
+.online-header-toolbar-dropdown .online-header-toolbar-dropdown-toggle .pf-v6-c-dropdown__toggle-icon {
   display: none;
 }
 
+/*
+ * Used in the DiscoverLoadingPanel
+ */
 .discover-loading {
   width: 85%;
   text-align: center;
@@ -38,24 +24,46 @@
   font-style: italic;
 }
 
+/*
+ * Used in the DiscoverLoadingPanel
+ */
 .discover-loading-compact {
   margin-top: 0 !important;
 }
 
+/*
+ * Used in the DiscoverLoadingPanel
+ */
 .discover-loading-compact div {
   padding: 0;
 }
 
+/* Colour of the group label, eg. Deployment Config */
 .discover-group-label {
   text-align: left;
-  color: rgb(117, 117, 117);
 }
 
+/*
+ * Vertically aligns the pod item panel containing
+ * all the information from the Running icon to the labels
+ */
 .pod-item-list-item {
   display: flex;
   align-items: center;
 }
 
+/*
+ * This is a span added to the list component in PF6.
+ * While the list has a flex layout this wrapper does not
+ * so need to ensure that existing flex properties of
+ * children respond appropriately.
+ */
+.pod-item-list-item .pf-v6-c-list__item-text {
+  display: flex;
+  width: 100%;
+}
+
+/* Determines the layout of the pod name */
 .pod-item-name-with-labels {
   flex-grow: 3;
   display: flex;
@@ -63,38 +71,57 @@
   max-width: 40%;
 }
 
+/* Determines the layout of the pod group name */
 .pod-item-label-group {
   flex-grow: 2;
-  margin-left: 1em;
-  margin-right: 1em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
+/* Ensures the labels list is centred */
 .pod-item-label-group ul {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
+/*
+* Since these labels remain on a yellow background despite the theme,
+* override the console link's theme colours (grey in dark mode)
+* to preserve their readability.
+*/
+.pod-item-home .console-link,
+.pod-item-node .console-link {
+  color: #453910 !important;
+}
+
+/* Lays out the connect button vertically aligning centre */
 .pod-item-connect-button {
   flex-basis: 15%;
   display: flex;
   justify-content: flex-end;
-  max-height: 2em;
   margin-top: auto;
   margin-bottom: auto;
 }
 
+/* Ensures connect button text is vertically aligned in the centre */
+.connect-button {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* Ensures connect button text is vertically aligned in the centre */
+.connect-button-dropdown {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* Provides space between the error badge and connect button */
 .pod-item-connect-error-badge {
   margin-right: 0.2em;
 }
 
-.pod-item-connect-error-badge span {
-  width: 1.5em;
-  height: 1.6em;
-  padding-left: 0.25em;
-  padding-top: 0.1em;
-}
-
+/* Lays out the "Running.." label and icon */
 .state-icon-wrapper {
   display: flex;
   align-items: center; /* Vertically centers the icon and text */
@@ -110,7 +137,7 @@
 }
 
 .running-state {
-  color: black;
+  /* default colour so its rendered according to theme */
 }
 
 .text-danger {
@@ -123,16 +150,4 @@
 
 .text-muted {
   color: #9c9c9c;
-}
-
-.connect-button {
-  max-height: 2em;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.connect-button-dropdown {
-  max-height: 2em;
-  margin-top: auto;
-  margin-bottom: auto;
 }
