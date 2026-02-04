@@ -1,15 +1,5 @@
 import React, { useEffect } from 'react'
-import {
-  Alert,
-  Card,
-  CardBody,
-  PageSection,
-  PageSectionVariants,
-  Title,
-  Tabs,
-  TabTitleText,
-  Tab,
-} from '@patternfly/react-core'
+import { Alert, Card, CardBody, PageSection, Title, Tabs, TabTitleText, Tab } from '@patternfly/react-core'
 import { discoverService } from './discover-service'
 import { DiscoverToolbar } from './DiscoverToolbar'
 import { DiscoverContext, useDisplayItems } from './context'
@@ -54,7 +44,7 @@ export const Discover: React.FunctionComponent = () => {
 
   if (isLoading) {
     return (
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection>
         <DiscoverLoadingPanel />
       </PageSection>
     )
@@ -62,7 +52,7 @@ export const Discover: React.FunctionComponent = () => {
 
   if (error) {
     return (
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection>
         <Card>
           <CardBody>
             <Alert variant='danger' title='Error occurred while loading'>
@@ -75,7 +65,7 @@ export const Discover: React.FunctionComponent = () => {
   }
 
   return (
-    <PageSection variant={PageSectionVariants.light}>
+    <PageSection>
       <Title headingLevel='h1'>Hawtio Containers</Title>
 
       <DiscoverContext.Provider

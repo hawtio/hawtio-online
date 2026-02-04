@@ -63,7 +63,7 @@ export const DiscoverPreferences: React.FunctionComponent = () => {
         <FormGroup
           label='Namespace Container Limit  '
           fieldId='namespace-limit-input'
-          labelIcon={tooltip('Set how many containers are displayed in each namespace')}
+          labelHelp={tooltip('Set how many containers are displayed in each namespace')}
         >
           <NumberInput
             id='namespace-limit-input'
@@ -80,7 +80,7 @@ export const DiscoverPreferences: React.FunctionComponent = () => {
         <FormGroup
           label='Jolokia Polling Interval  '
           fieldId='jolokia-polling-input'
-          labelIcon={tooltip('How frequently containers are polled for their jolokia status')}
+          labelHelp={tooltip('How frequently containers are polled for their jolokia status')}
         >
           <NumberInput
             value={jolokiaPolling}

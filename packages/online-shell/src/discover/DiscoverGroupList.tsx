@@ -38,17 +38,16 @@ export const DiscoverGroupList: React.FunctionComponent<DiscoverGroupListProps> 
       {props.groups.map(group => {
         const key = `${group.name}-${group.namespace}`
         return (
-          <AccordionItem key={'item-' + key}>
+          <AccordionItem key={'item-' + key} isExpanded={!isHidden(group)}>
             <AccordionToggle
               onClick={() => {
                 onToggle(group)
               }}
-              isExpanded={!isHidden(group)}
               id={'item-' + group.name}
             >
               <DiscoverGroupLabel group={group} />
             </AccordionToggle>
-            <AccordionContent id={'item-' + key + 'expand'} isHidden={isHidden(group)}>
+            <AccordionContent id={'item-' + key + 'expand'}>
               <List isBordered={true} iconSize='large'>
                 {group.replicas.map(replica => (
                   <DiscoverPodItem key={replica.uid} pod={replica} />
