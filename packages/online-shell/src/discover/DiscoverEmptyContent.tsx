@@ -1,8 +1,6 @@
 import React, { useContext } from 'react'
 import {
   EmptyState,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateBody,
   Panel,
   PanelMain,
@@ -28,12 +26,7 @@ export const DiscoverEmptyContent: React.FunctionComponent = () => {
       )}
 
       {!refreshing && (
-        <EmptyState>
-          <EmptyStateHeader
-            titleText='No Hawtio Containers'
-            icon={<EmptyStateIcon icon={CubesIcon} />}
-            headingLevel='h1'
-          />
+        <EmptyState headingLevel='h1' icon={CubesIcon} titleText='No Hawtio Containers'>
           <EmptyStateBody>
             There are no containers running with a port configured whose name is <code>jolokia</code>.
           </EmptyStateBody>

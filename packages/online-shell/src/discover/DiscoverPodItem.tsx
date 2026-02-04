@@ -80,7 +80,7 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
     const total = props.pod.mPod.management.camel.routes_count
     return (
       <div id='routes-label' ref={nsLabelRef}>
-        <Label color='gold' icon={<CamelRouteIcon />} className='pod-item-routes'>
+        <Label color='yellow' icon={<CamelRouteIcon />} className='pod-item-routes'>
           {`${total} route${total !== 1 ? 's' : ''}`}
         </Label>
         {labelTooltip('routes-label', routesLabelRef, 'The number of camel routes registered in the pod application.')}
@@ -107,7 +107,7 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
 
       <LabelGroup numLabels={4} className='pod-item-label-group'>
         <div id='namespace-label' ref={nsLabelRef}>
-          <Label color='gold' icon={<UsersIcon />} className='pod-item-home'>
+          <Label color='yellow' icon={<UsersIcon />} className='pod-item-home'>
             <ConsoleLink type={ConsoleType.namespace} namespace={props.pod.namespace}>
               {props.pod.namespace}
             </ConsoleLink>
@@ -116,14 +116,14 @@ export const DiscoverPodItem: React.FunctionComponent<DiscoverPodItemProps> = (p
         </div>
 
         <div id='node-label' ref={nodeLabelRef}>
-          <Label color='gold' icon={<OutlinedHddIcon />} className='pod-item-node'>
+          <Label color='yellow' icon={<OutlinedHddIcon />} className='pod-item-node'>
             {nodeLabelText()}
           </Label>
           {labelTooltip('node-label', nodeLabelRef, 'The node, the pod is running on.')}
         </div>
 
         <div id='container-label' ref={containerLabelRef}>
-          <Label color='gold' icon={<CubeIcon />} className='pod-item-containers'>
+          <Label color='yellow' icon={<CubeIcon />} className='pod-item-containers'>
             {containersLabelText()}
           </Label>
           {labelTooltip(

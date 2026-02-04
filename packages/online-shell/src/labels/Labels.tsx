@@ -28,7 +28,7 @@ export const Labels: React.FunctionComponent<LabelsProps> = (props: LabelsProps)
           selector={`${key}=${value}`}
         >
           <span className='k8s-label-key'>{key}</span>
-          <span>=</span>
+          <span className='k8s-label-divider'>=</span>
           <span className='k8s-label-value'>{value}</span>
         </ConsoleLink>
       </Label>
@@ -39,7 +39,7 @@ export const Labels: React.FunctionComponent<LabelsProps> = (props: LabelsProps)
     return (
       <Label color='blue' icon={<InfoCircleIcon />} className='k8s-clickable-label' key={key + '-' + value}>
         <span className='k8s-label-key'>{key}</span>
-        <span>=</span>
+        <span className='k8s-label-divider'>=</span>
         <span className='k8s-label-value'>{value}</span>
       </Label>
     )
