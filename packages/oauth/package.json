@@ -29,7 +29,7 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/react": "^1.11.1",
+    "@hawtio/react": "^1.11.4",
     "fetch-intercept": "^2.4.0",
     "jwt-decode": "^4.0.0",
     "whatwg-fetch": "^3.6.20"
@@ -45,7 +45,7 @@
     "@patternfly/react-tokens": "^5.4.1",
     "@types/babel__core": "^7",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.3.1",
+    "@types/node": "^24.9.2",
     "@types/react": "^18.3.5",
     "babel-jest": "^29.6.1",
     "jest": "^30.1.3",

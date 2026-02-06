@@ -16,6 +16,11 @@ maskIPAddresses: false
 # (only applicable to clusterType: openshift)
 # consoleUrl:
 
+nodeSelector: {}
+  # kubernetes.io/arch: amd64
+
+imagePullSecrets: []
+
 online:
   name: hawtio-online
   shortname: hawtio
@@ -29,7 +34,7 @@ online:
   logLevel: info
   image:
     name: quay.io/hawtio/online
-    tag: 2.3.0
+    tag: 2.4.0
     pullPolicy: Always
   deployment:
     plain:
@@ -70,7 +75,7 @@ gateway:
   name: hawtio-online-gateway
   image:
     name: quay.io/hawtio/online-gateway
-    tag: 2.3.0
+    tag: 2.4.0
     pullPolicy: Always
   deployment:
     port: 3000

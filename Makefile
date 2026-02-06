@@ -19,9 +19,9 @@
 #
 SHELL := /bin/bash
 
-VERSION := 2.3.0
+VERSION := 2.4.0
 LAST_RELEASED_IMAGE_NAME := hawtio/online
-LAST_RELEASED_VERSION ?= 2.2.1
+LAST_RELEASED_VERSION ?= 2.3.0
 CONTROLLER_GEN_VERSION := v0.6.1
 OPERATOR_SDK_VERSION := v1.26.1
 KUSTOMIZE_VERSION := v4.5.4
@@ -103,7 +103,7 @@ CONTAINER_BUILDER=$(shell command -v podman 2> /dev/null)
 endif
 
 setup: yarn
-	yarn install
+	yarn install --frozen-lockfile
 
 build: setup
 	@echo "####### Building hawtio/online ..."
@@ -129,14 +129,14 @@ check-licenses:
 
 image: container-builder
 	@echo "####### Building Hawtio Online container image..."
-	$(CONTAINER_BUILDER) build -t $(CUSTOM_IMAGE):$(CUSTOM_VERSION) -f Dockerfile-nginx .
+	$(CONTAINER_BUILDER) build -t $(CUSTOM_IMAGE):$(CUSTOM_VERSION) -t $(CUSTOM_IMAGE):latest -f Dockerfile-nginx .
 
 image-push: image
 	$(CONTAINER_BUILDER) push $(CUSTOM_IMAGE):$(CUSTOM_VERSION)
 
 image-gateway: container-builder
 	@echo "####### Building Hawtio Online Gateway container image..."
-	$(CONTAINER_BUILDER) build -t $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION) -f Dockerfile-gateway .
+	$(CONTAINER_BUILDER) build -t $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION) -t $(CUSTOM_GATEWAY_IMAGE):latest -f Dockerfile-gateway .
 
 image-gateway-push: image-gateway
 	$(CONTAINER_BUILDER) push $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)

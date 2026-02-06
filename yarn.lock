@@ -2315,10 +2315,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:^9.35.0":
-  version: 9.35.0
-  resolution: "@eslint/js@npm:9.35.0"
-  checksum: 10/a8764d0592ebe9a4804f8c0dafa7f49dbcdb38cabf30dd50587a3cfa51d898b90a3a0b93975d549f47debdd96b3e21da95081935f74213e45ec8c25f11f2ba1e
+"@eslint/js@npm:^9.38.0":
+  version: 9.38.0
+  resolution: "@eslint/js@npm:9.38.0"
+  checksum: 10/08ba53e3e631e2815ff33e0f48dccf87daf3841eb5605fa5980d18b88cd6dd4cd63b5829ac015e97eeb85807bf91efe7d4e1d4eaf6beb586bc01549b7660c4a2
   languageName: node
   linkType: hard
 
@@ -2406,12 +2406,12 @@ __metadata:
     "@types/jest": "npm:^30.0.0"
     "@types/js-yaml": "npm:^4.0.9"
     "@types/method-override": "npm:^3.0.0"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/pino-multi-stream": "npm:^5.1.6"
     "@types/supertest": "npm:^6.0.2"
     babel-jest: "npm:^29.6.1"
     compression-webpack-plugin: "npm:^11.1.0"
-    copy-webpack-plugin: "npm:^13.0.0"
+    copy-webpack-plugin: "npm:^13.0.1"
     cors: "npm:^2.8.5"
     express: "npm:^4.21.2"
     fetch-intercept: "npm:^2.4.0"
@@ -2424,20 +2424,20 @@ __metadata:
     jolokia.js: "npm:^2.3.0"
     jwt-decode: "npm:^4.0.0"
     method-override: "npm:^3.0.0"
-    pino: "npm:^9.11.0"
+    pino: "npm:^10.1.0"
     pino-http: "npm:^10.5.0"
     pino-pretty: "npm:^13.0.0"
     source-map-loader: "npm:^5.0.0"
     supertest: "npm:^7.1.3"
     ts-jest: "npm:^29.4.4"
-    ts-loader: "npm:^9.5.2"
+    ts-loader: "npm:^9.5.4"
     ts-node: "npm:^10.9.2"
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     tsup: "npm:^8.5.0"
     typescript: "npm:^5.9.2"
     webpack: "npm:^5.101.3"
     webpack-cli: "npm:^6.0.1"
-    yaml: "npm:^2.8.0"
+    yaml: "npm:^2.8.1"
   languageName: unknown
   linkType: soft
 
@@ -2452,7 +2452,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api-app@workspace:packages/kubernetes-api-app"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^1.11.1"
+    "@hawtio/react": "npm:^1.11.4"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2460,7 +2460,7 @@ __metadata:
     "@patternfly/react-styles": "npm:^5.4.1"
     "@patternfly/react-table": "npm:^5.4.16"
     "@patternfly/react-tokens": "npm:^5.4.1"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
@@ -2478,7 +2478,7 @@ __metadata:
     react-router-dom: "npm:^6.30.1"
     source-map-loader: "npm:^5.0.0"
     style-loader: "npm:^4.0.0"
-    ts-loader: "npm:^9.5.2"
+    ts-loader: "npm:^9.5.4"
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     typescript: "npm:^5.9.2"
     webpack: "npm:^5.101.3"
@@ -2494,7 +2494,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.4"
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.11.1"
+    "@hawtio/react": "npm:^1.11.4"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2505,7 +2505,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.8.0"
     "@types/jest": "npm:^30.0.0"
     "@types/jsonpath": "npm:^0.2.4"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     babel-jest: "npm:^29.6.1"
     eventemitter3: "npm:^5.0.1"
@@ -2544,7 +2544,7 @@ __metadata:
   resolution: "@hawtio/online-management-api-app@workspace:packages/management-api-app"
   dependencies:
     "@hawtio/online-management-api": "workspace:*"
-    "@hawtio/react": "npm:^1.11.1"
+    "@hawtio/react": "npm:^1.11.4"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2552,7 +2552,7 @@ __metadata:
     "@patternfly/react-styles": "npm:^5.4.1"
     "@patternfly/react-table": "npm:^5.4.16"
     "@patternfly/react-tokens": "npm:^5.4.1"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
@@ -2570,7 +2570,7 @@ __metadata:
     react-router-dom: "npm:^6.30.1"
     source-map-loader: "npm:^5.0.0"
     style-loader: "npm:^4.0.0"
-    ts-loader: "npm:^9.5.2"
+    ts-loader: "npm:^9.5.4"
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     typescript: "npm:^5.9.2"
     webpack: "npm:^5.101.3"
@@ -2586,7 +2586,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.4"
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^1.11.1"
+    "@hawtio/react": "npm:^1.11.4"
     "@jolokia.js/simple": "npm:^2.4.0"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
@@ -2597,7 +2597,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^5.4.1"
     "@types/jest": "npm:^30.0.0"
     "@types/jsonpath": "npm:^0.2.4"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     babel-jest: "npm:^29.6.1"
     eventemitter3: "npm:^5.0.1"
@@ -2636,7 +2636,7 @@ __metadata:
   resolution: "@hawtio/online-oauth-app@workspace:packages/oauth-app"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.11.1"
+    "@hawtio/react": "npm:^1.11.4"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2644,7 +2644,7 @@ __metadata:
     "@patternfly/react-styles": "npm:^5.4.1"
     "@patternfly/react-table": "npm:^5.4.16"
     "@patternfly/react-tokens": "npm:^5.4.1"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
@@ -2663,7 +2663,7 @@ __metadata:
     react-router-dom: "npm:^6.30.1"
     source-map-loader: "npm:^5.0.0"
     style-loader: "npm:^4.0.0"
-    ts-loader: "npm:^9.5.2"
+    ts-loader: "npm:^9.5.4"
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     typescript: "npm:^5.9.2"
     url: "npm:^0.11.4"
@@ -2680,7 +2680,7 @@ __metadata:
   resolution: "@hawtio/online-oauth@workspace:packages/oauth"
   dependencies:
     "@babel/core": "npm:^7.28.4"
-    "@hawtio/react": "npm:^1.11.1"
+    "@hawtio/react": "npm:^1.11.4"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2690,7 +2690,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^5.4.1"
     "@types/babel__core": "npm:^7"
     "@types/jest": "npm:^30.0.0"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     babel-jest: "npm:^29.6.1"
     fetch-intercept: "npm:^2.4.0"
@@ -2729,7 +2729,7 @@ __metadata:
   resolution: "@hawtio/online-root@workspace:."
   dependencies:
     "@eslint/compat": "npm:^1.3.1"
-    "@eslint/js": "npm:^9.35.0"
+    "@eslint/js": "npm:^9.38.0"
     compression-webpack-plugin: "npm:^11.1.0"
     concurrently: "npm:^9.2.0"
     cz-conventional-changelog: "npm:3.3.0"
@@ -2759,7 +2759,7 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^1.11.1"
+    "@hawtio/react": "npm:^1.11.4"
     "@patternfly/react-charts": "npm:^7.4.9"
     "@patternfly/react-code-editor": "npm:^5.4.18"
     "@patternfly/react-core": "npm:^5.4.14"
@@ -2768,12 +2768,12 @@ __metadata:
     "@patternfly/react-table": "npm:^5.4.16"
     "@patternfly/react-tokens": "npm:^5.4.1"
     "@patternfly/react-topology": "npm:^5.4.1"
-    "@types/node": "npm:^24.3.1"
+    "@types/node": "npm:^24.9.2"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
     babel-loader: "npm:^10.0.0"
     connect-history-api-fallback: "npm:^2.0.0"
-    copy-webpack-plugin: "npm:^13.0.0"
+    copy-webpack-plugin: "npm:^13.0.1"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^8.1.1"
     file-loader: "npm:^6.2.0"
@@ -2795,7 +2795,7 @@ __metadata:
     react-router-dom: "npm:^6.30.1"
     source-map-loader: "npm:^5.0.0"
     style-loader: "npm:^4.0.0"
-    ts-loader: "npm:^9.5.2"
+    ts-loader: "npm:^9.5.4"
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     typescript: "npm:^5.9.2"
     url: "npm:^0.11.4"
@@ -2807,16 +2807,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:^1.11.1":
-  version: 1.11.1
-  resolution: "@hawtio/react@npm:1.11.1"
+"@hawtio/react@npm:^1.11.4":
+  version: 1.11.4
+  resolution: "@hawtio/react@npm:1.11.4"
   dependencies:
     "@hawtio/camel-model-v4_10": "npm:@hawtio/camel-model@~4.10.7"
     "@hawtio/camel-model-v4_14": "npm:@hawtio/camel-model@~4.14.1"
     "@jolokia.js/simple": "npm:^2.4.0"
-    "@module-federation/utilities": "npm:^3.1.72"
+    "@module-federation/utilities": "npm:^3.1.74"
     "@monaco-editor/react": "npm:^4.6.0"
-    "@thumbmarkjs/thumbmarkjs": "npm:^1.3.2"
+    "@thumbmarkjs/thumbmarkjs": "npm:^1.3.3"
     dagre: "npm:^0.8.5"
     dompurify: "npm:^3.3.0"
     eventemitter3: "npm:^5.0.1"
@@ -2842,7 +2842,7 @@ __metadata:
     react: ^17 || ^18
     react-dom: ^17 || ^18
     react-router-dom: ^6.30
-  checksum: 10/5683f6cd894f5a7a93ea1bd12dec942e952aff1bf2a473715d7fc49cae4c26ff38bee7bec8c1bfa5756c588e0f90af285d67ebc198519ea68fe2fc3291304506
+  checksum: 10/ac602ec36179677c526de592de7ad745407c4b2599f4fccef71694ea8905dce0d7d188d7e2c361f2d5b282d6237f4203cc97415ec32283f92bb0c2a1f6841306
   languageName: node
   linkType: hard
 
@@ -3382,18 +3382,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@module-federation/sdk@npm:0.21.2":
-  version: 0.21.2
-  resolution: "@module-federation/sdk@npm:0.21.2"
-  checksum: 10/e71a85bc4daf16cbe065c4ee8c36d6652b0d9a2cd5cc4fc53494f1c7f1111a67a08c4817e5738a7e4f66b7f60769abceb955c23bf94eb3205d2646002852b10f
+"@module-federation/sdk@npm:0.21.6":
+  version: 0.21.6
+  resolution: "@module-federation/sdk@npm:0.21.6"
+  checksum: 10/effc4aa932e2f06742bda8f02aaec84e138f5512b50f18c38b051490020b20d3d8edf7ece853fccffc1f78a0b43dec78e69bf02150e7e2801d5ce03c3ee367b9
   languageName: node
   linkType: hard
 
-"@module-federation/utilities@npm:^3.1.72":
-  version: 3.1.73
-  resolution: "@module-federation/utilities@npm:3.1.73"
+"@module-federation/utilities@npm:^3.1.74":
+  version: 3.1.77
+  resolution: "@module-federation/utilities@npm:3.1.77"
   dependencies:
-    "@module-federation/sdk": "npm:0.21.2"
+    "@module-federation/sdk": "npm:0.21.6"
   peerDependencies:
     react: ^16 || ^17 || ^18
     react-dom: ^16 || ^17 || ^18
@@ -3405,7 +3405,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 10/751038c51fa2a98e94999383730cd0f388125e2f08724d40f2a380f96cce74bd0bc82a4c16f98fafa29aca3867ef7f6737bbc9dfebf26b335c7e2d3e34b80947
+  checksum: 10/a5440155d4588c4c0c7bde84299b740926c4648e0a6729778b4ceaf4bca7d0a17a35cae56e670da02bd54dbbf6a9a3d7e11eae54c05d3d9e06255e571f7227f4
   languageName: node
   linkType: hard
 
@@ -3636,6 +3636,13 @@ __metadata:
     react: ^17 || ^18
     react-dom: ^17 || ^18
   checksum: 10/ab81ad9f7dd7a6758acee12a44958779ffe85100b80f0a7ba48390b142dce82a6e03faf3f1fd1d54274fdeb1280b0c2e6aef8ec3cb8f3807e9a7342fba3ccd3e
+  languageName: node
+  linkType: hard
+
+"@pinojs/redact@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@pinojs/redact@npm:0.4.0"
+  checksum: 10/2210ffb6b38357853d47239fd0532cc9edb406325270a81c440a35cece22090127c30c2ead3eefa3e608f2244087485308e515c431f4f69b6bd2e16cbd32812b
   languageName: node
   linkType: hard
 
@@ -3956,10 +3963,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thumbmarkjs/thumbmarkjs@npm:^1.3.2":
-  version: 1.3.2
-  resolution: "@thumbmarkjs/thumbmarkjs@npm:1.3.2"
-  checksum: 10/15d6c24cb37aeda1e804210f66e8a503760ecbfe02450712e9667870f95a8fd94a0de8b06289acb4b2b4d2f284878a32390a7415accfc9ce0f156ff184ad155c
+"@thumbmarkjs/thumbmarkjs@npm:^1.3.3":
+  version: 1.5.1
+  resolution: "@thumbmarkjs/thumbmarkjs@npm:1.5.1"
+  checksum: 10/ef165659485a21806ba67bd54f870b9798a1c50a4f1728441651e0802bf5f8c6d416e3526a5e141f47a50a94c66beafd39acfead96938754fba467ade84d2c42
   languageName: node
   linkType: hard
 
@@ -4726,12 +4733,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.3.1":
-  version: 24.3.1
-  resolution: "@types/node@npm:24.3.1"
+"@types/node@npm:^24.9.2":
+  version: 24.9.2
+  resolution: "@types/node@npm:24.9.2"
   dependencies:
-    undici-types: "npm:~7.10.0"
-  checksum: 10/b9a52ed8f2fb1fa764ce988828b8d579761f944f1bb0492adbdeaa676a161086bad1a807b590799681ad93b3d272468b5c5ddccf5678735d487d1b65e481bc07
+    undici-types: "npm:~7.16.0"
+  checksum: 10/3e76ad89cca317c0886deedab0245b6b2a04ef6c47362bd3918020296f3e9630334795af9cee8c6633eae774c85d848ff2e6bed5a7c3133fc94968364fc3ee36
   languageName: node
   linkType: hard
 
@@ -7281,9 +7288,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-webpack-plugin@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "copy-webpack-plugin@npm:13.0.0"
+"copy-webpack-plugin@npm:^13.0.1":
+  version: 13.0.1
+  resolution: "copy-webpack-plugin@npm:13.0.1"
   dependencies:
     glob-parent: "npm:^6.0.1"
     normalize-path: "npm:^3.0.0"
@@ -7292,7 +7299,7 @@ __metadata:
     tinyglobby: "npm:^0.2.12"
   peerDependencies:
     webpack: ^5.1.0
-  checksum: 10/209051dd3c0bc7ab97170309cdb1826e642044d2d53e0adc35bb227123c89ae1296a504409325e9b955d7b2d1a505b063f0023e924151d382dbcc92cb9325e6a
+  checksum: 10/2abf3b85c32556b1cb9ef47f2198f6497ef414505cf42d249e3b7e65185db738756bec85333b4a32865d1c6b09343ea63eb9e8d154c133ddcebb4c7f066be5af
   languageName: node
   linkType: hard
 
@@ -14358,7 +14365,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^9.0.0, pino@npm:^9.11.0":
+"pino@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "pino@npm:10.1.0"
+  dependencies:
+    "@pinojs/redact": "npm:^0.4.0"
+    atomic-sleep: "npm:^1.0.0"
+    on-exit-leak-free: "npm:^2.1.0"
+    pino-abstract-transport: "npm:^2.0.0"
+    pino-std-serializers: "npm:^7.0.0"
+    process-warning: "npm:^5.0.0"
+    quick-format-unescaped: "npm:^4.0.3"
+    real-require: "npm:^0.2.0"
+    safe-stable-stringify: "npm:^2.3.1"
+    sonic-boom: "npm:^4.0.1"
+    thread-stream: "npm:^3.0.0"
+  bin:
+    pino: bin.js
+  checksum: 10/6f9c86572669842950887cf1cd45fc977903ce1be0a6e32b98918c87d1914ff8854395dc64388d75a583672439997422975977275ed92c14a2f6ee1a26b07ccf
+  languageName: node
+  linkType: hard
+
+"pino@npm:^9.0.0":
   version: 9.11.0
   resolution: "pino@npm:9.11.0"
   dependencies:
@@ -16856,9 +16884,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-loader@npm:^9.5.2":
-  version: 9.5.2
-  resolution: "ts-loader@npm:9.5.2"
+"ts-loader@npm:^9.5.4":
+  version: 9.5.4
+  resolution: "ts-loader@npm:9.5.4"
   dependencies:
     chalk: "npm:^4.1.0"
     enhanced-resolve: "npm:^5.0.0"
@@ -16868,7 +16896,7 @@ __metadata:
   peerDependencies:
     typescript: "*"
     webpack: ^5.0.0
-  checksum: 10/b2d0a4ae9eab459586580e6f83a4351fa0568ccd4d9b41b42368390c95335f98562120cd63c84b6008548ee7af13520a8b79c14b2e8114058104cf7cfb39873d
+  checksum: 10/a9977dce1cda5af08010ae92d96fb57981ce52cb6123054b232fc7f71e151969f45e36ca055c0babe01b3b97dcba54b631ad7a50e3e96e839dfd7033c385de05
   languageName: node
   linkType: hard
 
@@ -17379,10 +17407,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~7.10.0":
-  version: 7.10.0
-  resolution: "undici-types@npm:7.10.0"
-  checksum: 10/1f3fe777937690ab8a7a7bccabc8fdf4b3171f4899b5a384fb5f3d6b56c4b5fec2a51fbf345c9dd002ff6716fd440a37fa8fdb0e13af8eca8889f25445875ba3
+"undici-types@npm:~7.16.0":
+  version: 7.16.0
+  resolution: "undici-types@npm:7.16.0"
+  checksum: 10/db43439f69c2d94cc29f75cbfe9de86df87061d6b0c577ebe9bb3255f49b22c50162a7d7eb413b0458b6510b8ca299ac7cff38c3a29fbd31af9f504bcf7fbc0d
   languageName: node
   linkType: hard
 
@@ -18685,12 +18713,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.8.0":
-  version: 2.8.0
-  resolution: "yaml@npm:2.8.0"
+"yaml@npm:^2.8.1":
+  version: 2.8.1
+  resolution: "yaml@npm:2.8.1"
   bin:
     yaml: bin.mjs
-  checksum: 10/7d4bd9c10d0e467601f496193f2ac254140f8e36f96f5ff7f852b9ce37974168eb7354f4c36dc8837dde527a2043d004b6aff48818ec24a69ab2dd3c6b6c381c
+  checksum: 10/eae07b3947d405012672ec17ce27348aea7d1fa0534143355d24a43a58f5e05652157ea2182c4fe0604f0540be71f99f1173f9d61018379404507790dff17665
   languageName: node
   linkType: hard
 

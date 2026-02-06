@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@hawtio/online-oauth": "workspace:*",
-    "@hawtio/react": "^1.11.1",
+    "@hawtio/react": "^1.11.4",
     "eventemitter3": "^5.0.1",
     "jsonpath": "^1.1.1",
     "kubernetes-types": "^1.30.0"
@@ -46,7 +46,7 @@
     "@testing-library/jest-dom": "^6.8.0",
     "@types/jest": "^30.0.0",
     "@types/jsonpath": "^0.2.4",
-    "@types/node": "^24.3.1",
+    "@types/node": "^24.9.2",
     "@types/react": "^18.3.5",
     "babel-jest": "^29.6.1",
     "jest": "^30.1.3",
