@@ -31,7 +31,7 @@
     "@hawtio/online-oauth": "workspace:*",
     "@hawtio/react": "^1.11.4",
     "eventemitter3": "^5.0.1",
-    "jsonpath": "^1.2.0",
+    "jsonpath": "^1.2.1",
     "kubernetes-types": "^1.30.0"
   },
   "devDependencies": {

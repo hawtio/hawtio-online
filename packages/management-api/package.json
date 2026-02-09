@@ -34,7 +34,7 @@
     "@jolokia.js/simple": "^2.4.0",
     "eventemitter3": "^5.0.1",
     "jolokia.js": "^2.4.0",
-    "jsonpath": "^1.2.0"
+    "jsonpath": "^1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
