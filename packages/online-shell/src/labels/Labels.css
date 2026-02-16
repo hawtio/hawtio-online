@@ -1,16 +1,23 @@
-.k8s-clickable-label .pf-v5-c-label__content {
-  margin: 0.3em !important;
-  font-size: 12px;
-  height: 100%;
-  width: 100%;
+.k8s-clickable-label .pf-v6-c-label__content {
+  margin: 0.1em !important;
 }
 
+/*
+ * Overrides colour to stay readable in dark mode
+ * - dark mode changes color to light-grey which is
+ *   not readable on blue background
+ */
 .k8s-label-key {
   font-weight: bold;
+  color: #0033cc;
+}
+
+.k8s-label-divider {
+  color: #0033cc;
 }
 
 .k8s-label-value {
-  background-color: #7dc3e8;
+  background-color: #405db4;
   color: #ffffff;
   font-weight: bold;
 }

@@ -107,14 +107,13 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
     filterTypeToggleRef?.current?.focus()
   }
 
-  const filterChips = (): string[] => {
-    const chips: string[] = []
+  const filterLabels = (): string[] => {
+    const labels: string[] = []
 
-    filter.nsValues.map(v => chips.push(TypeFilterType.NAMESPACE + ':' + v))
+    filter.nsValues.map(v => labels.push(TypeFilterType.NAMESPACE + ':' + v))
+    filter.nameValues.map(v => labels.push(TypeFilterType.NAME + ':' + v))
 
-    filter.nameValues.map(v => chips.push(TypeFilterType.NAME + ':' + v))
-
-    return chips
+    return labels
   }
 
   const createFilter = (value: string) => {
@@ -237,9 +236,9 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
             </Select>
           </ToolbarItem>
           <ToolbarFilter
-            chips={filterChips()}
-            deleteChip={(_e, filter) => deleteFilter(filter as string)}
-            deleteChipGroup={clearFilters}
+            labels={filterLabels()}
+            deleteLabel={(_e, filter) => deleteFilter(filter as string)}
+            deleteLabelGroup={clearFilters}
             categoryName='Filters'
           >
             <SearchInput
@@ -255,7 +254,7 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
           </ToolbarFilter>
         </ToolbarGroup>
         <ToolbarItem variant='separator' />
-        <ToolbarGroup variant='icon-button-group'>
+        <ToolbarGroup gap={{ default: 'gapSm' }}>
           <ToolbarItem>
             <Select
               id='select-sort-type'

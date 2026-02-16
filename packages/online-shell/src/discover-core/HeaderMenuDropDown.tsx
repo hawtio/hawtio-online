@@ -7,7 +7,7 @@ import {
   DropdownItem,
   DropdownList,
   Menu,
-  MenuContent,
+  MenuContent, // Important: Needed for Flyouts
   MenuGroup,
   MenuItem,
   MenuList,
@@ -45,9 +45,7 @@ export const HeaderMenuDropDown: React.FunctionComponent = () => {
           <MenuItem
             key={`header-menu-dropdown-pod-${connName}-menu-list-item`}
             itemId={`header-menu-dropdown-pod-${connName}`}
-            component='button'
             onClick={() => mgmtService.connect(connName)}
-            value={connName}
             icon={<CubesIcon aria-hidden />}
           >
             {connName}
@@ -66,12 +64,13 @@ export const HeaderMenuDropDown: React.FunctionComponent = () => {
               key={`project-${project.name}`}
               itemId={`project-${project.name}`}
               icon={<UsersIcon aria-hidden />}
-              direction='down'
               flyoutMenu={
                 <Menu id={`project-${project.name}-pod-menu`} isScrollable>
-                  <MenuGroup label='Containers' key='header-menu-dropdown-pod-group'>
-                    {podEntries(project)}
-                  </MenuGroup>
+                  <MenuContent>
+                    <MenuGroup label='Containers' key='header-menu-dropdown-pod-group'>
+                      {podEntries(project)}
+                    </MenuGroup>
+                  </MenuContent>
                 </Menu>
               }
             >
@@ -83,18 +82,15 @@ export const HeaderMenuDropDown: React.FunctionComponent = () => {
     </DropdownGroup>
   )
 
-  const menu = (
-    <Menu id='header-menu-dropdown-root-menu' containsFlyout>
-      <MenuContent>
-        <MenuList>
-          <MenuItem itemId='open-cluster-console-item' description='Open the cluster console' component='button'>
-            <ConsoleLink type={ConsoleType.console}>Cluster Console</ConsoleLink>
-          </MenuItem>
-          <Divider key='header-menu-dropdown-separator' />
-          {projectItems}
-        </MenuList>
-      </MenuContent>
-    </Menu>
+  const clusterItems = (
+    <DropdownList>
+      <DropdownItem itemId='open-cluster-console-item' description='Open the cluster console'>
+        {/* Note: Ensure ConsoleLink doesn't render an <a> tag if DropdownItem renders a <button>,
+            nested interactive controls are invalid HTML. PatternFly DropdownItem handles this well usually. */}
+        <ConsoleLink type={ConsoleType.console}>Cluster Console</ConsoleLink>
+      </DropdownItem>
+      <Divider key='header-menu-dropdown-separator' component='li' />
+    </DropdownList>
   )
 
   return (
@@ -115,8 +111,12 @@ export const HeaderMenuDropDown: React.FunctionComponent = () => {
       )}
       isOpen={isOpen}
       onOpenChange={setIsOpen}
+      popperProps={{ direction: 'down' }}
     >
-      {menu}
+      {/* Cluster Links */}
+      {clusterItems}
+      {/* Dynamic Project Items */}
+      {projectItems}
     </Dropdown>
   )
 }
