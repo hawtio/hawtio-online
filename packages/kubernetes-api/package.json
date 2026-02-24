@@ -30,9 +30,10 @@
   "dependencies": {
     "@hawtio/online-oauth": "workspace:*",
     "@hawtio/react": "2.0.0-dev.1",
+    "@jsonjoy.com/json-path": "^18.0.0",
     "eventemitter3": "^5.0.1",
-    "jsonpath": "^1.2.1",
-    "kubernetes-types": "^1.30.0"
+    "kubernetes-types": "^1.30.0",
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
