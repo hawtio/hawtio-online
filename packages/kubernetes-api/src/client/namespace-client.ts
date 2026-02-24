@@ -1,4 +1,4 @@
-import jsonpath from 'jsonpath'
+import { JsonPathCodegen } from '@jsonjoy.com/json-path'
 import { JOLOKIA_PORT_QUERY, KubeObject, KubePod, Paging, log } from '../globals'
 import { TypeFilter } from '../filter'
 import { WatchTypes } from '../model'
@@ -24,6 +24,8 @@ export interface PodWatchers {
 }
 
 export class NamespaceClient implements Paging {
+  private static jsonQueryFn = JsonPathCodegen.compile(JOLOKIA_PORT_QUERY)
+
   private _current = 0
 
   private _podList: Set<string> = new Set<string>()
@@ -225,7 +227,10 @@ export class NamespaceClient implements Paging {
        */
       const podNames: string[] = []
       pods
-        .filter(pod => jsonpath.query(pod, JOLOKIA_PORT_QUERY).length > 0)
+        .filter(pod => {
+          const matches = NamespaceClient.jsonQueryFn(pod)
+          return matches && matches.length > 0
+        })
         .forEach(pod => {
           const name = pod.metadata?.name || undefined
           if (!name) return
