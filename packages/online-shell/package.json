@@ -32,7 +32,7 @@
     "@fortawesome/fontawesome-common-types": "^7.0.1",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
-    "@fortawesome/free-solid-svg-icons": "^7.0.1",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.0.2",
     "@hawtio/online-kubernetes-api": "workspace:*",
     "@hawtio/online-management-api": "workspace:*",
