@@ -2365,12 +2365,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/free-brands-svg-icons@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "@fortawesome/free-brands-svg-icons@npm:7.0.1"
+"@fortawesome/free-brands-svg-icons@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@fortawesome/free-brands-svg-icons@npm:7.2.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": "npm:7.0.1"
-  checksum: 10/43890977cde79f34eb28aed289d5c0183926d071369c0b5536678080e76425ac7901d653bc38a2022f6f2bcaa261942a1c93df1f9d3f4b12758dab12f5da3de0
+    "@fortawesome/fontawesome-common-types": "npm:7.2.0"
+  checksum: 10/50c1e25591b20ed95eee62336c3025d27e03736d7a28f4109c31e91c4c8a37e0967551fe703491c65b294124cfb6bfc17ff5bc64669fd868286f58f295c1c461
   languageName: node
   linkType: hard
 
@@ -2766,7 +2766,7 @@ __metadata:
     "@babel/core": "npm:^7.28.4"
     "@fortawesome/fontawesome-common-types": "npm:^7.0.1"
     "@fortawesome/fontawesome-svg-core": "npm:^7.2.0"
-    "@fortawesome/free-brands-svg-icons": "npm:^7.0.1"
+    "@fortawesome/free-brands-svg-icons": "npm:^7.2.0"
     "@fortawesome/free-solid-svg-icons": "npm:^7.0.1"
     "@fortawesome/react-fontawesome": "npm:^3.0.2"
     "@hawtio/online-kubernetes-api": "workspace:*"
