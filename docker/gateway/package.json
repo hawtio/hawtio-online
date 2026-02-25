@@ -1,6 +1,6 @@
 {
   "name": "@hawtio/gateway",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "The hawtio-online gateway to jolokia on kubernetes",
   "author": "Hawtio developer team",
   "license": "Apache-2.0",
