@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@hawtio/online-oauth": "workspace:*",
-    "@hawtio/react": "2.0.0-dev.1",
+    "@hawtio/react": "2.0.0-dev.2",
     "@jsonjoy.com/json-path": "^18.0.0",
     "eventemitter3": "^5.0.1",
     "kubernetes-types": "^1.30.0",
