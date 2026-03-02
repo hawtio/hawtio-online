@@ -5,7 +5,7 @@ import {
 } from 'jolokia.js'
 import Jolokia from '@jolokia.js/simple'
 import { eventService } from '@hawtio/react'
-import { JsonPathCodegen } from '@jsonjoy.com/json-path'
+import { JsonPathEval } from '@jsonjoy.com/json-path'
 import {
   k8Api,
   KubePod,
@@ -78,8 +78,6 @@ export class ManagedPod {
     return defaultValue
   }
 
-  static jsonQueryFn = JsonPathCodegen.compile(JOLOKIA_PORT_QUERY)
-
   static getJolokiaPath(pod: KubePod, port: number): string | null {
     if (!k8Api.masterUri()) {
       return null
@@ -103,7 +101,7 @@ export class ManagedPod {
   }
 
   private extractPort(pod: KubePod): number {
-    const portsValue = ManagedPod.jsonQueryFn(pod)
+    const portsValue = JsonPathEval.run(JOLOKIA_PORT_QUERY, pod)
     if (!portsValue || portsValue.length === 0) return ManagedPod.DEFAULT_JOLOKIA_PORT
 
     const node = portsValue[0] as unknown as { data?: { containerPort?: number } }
