@@ -9,11 +9,6 @@
     "type": "git",
     "url": "https://github.com/hawtio/hawtio-online.git"
   },
-  "workspaces": [
-    "packages/*",
-    "docker",
-    "docker/*"
-  ],
   "scripts": {
     "build": "yarn build:online && yarn license",
     "start:online": "yarn build:mgmt && yarn start:shell",
@@ -77,12 +72,11 @@
       "maxLineWidth": 80
     }
   },
-  "packageManager": "yarn@4.12.0",
   "engines": {
     "yarn": ">=4.3.1",
     "node": ">=20"
   },
   "resolutions": {
-    "eslint-config-react-app/eslint-plugin-react-hooks": "^4.6.2"
+    "eslint-config-react-app>eslint-plugin-react-hooks": "^4.6.2"
   }
 }
