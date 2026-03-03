@@ -43,10 +43,10 @@ the environment variable `HAWTIO_ONLINE_GATEWAY_LOG_LEVEL` to the deployment:
 
 The project file for the gateway provides the following commands that will aid in development and testing of the image:
 
-- `yarn start:gateway-dev`: Starts a development server that replicates the functions of the hawtio online nginx web server;
-- `yarn start:gateway-server`: Starts a development version of the gateway server;
-- `yarn start:gateway`: Starts both the development servers that should point to one another to allow end-to-end testing of the functionality;
-- `yarn build`: Builds the product version of the gateway server.
+- `pnpm start:gateway-dev`: Starts a development server that replicates the functions of the hawtio online nginx web server;
+- `pnpm start:gateway-server`: Starts a development version of the gateway server;
+- `pnpm start:gateway`: Starts both the development servers that should point to one another to allow end-to-end testing of the functionality;
+- `pnpm build`: Builds the product version of the gateway server.
 
 ### Changing properties of the development servers
 

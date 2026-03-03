@@ -36,13 +36,13 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
-      - name: Enable yarn v4
+      - name: Enable pnpm v4
         run: |
           corepack enable
-          yarn -v
-      - name: Get yarn cache directory path
+          pnpm -v
+      - name: Get pnpm cache directory path
         id: yarn-cache-dir-path
-        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(pnpm config get cacheFolder)" >> $GITHUB_OUTPUT
       - uses: actions/cache@v5
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
@@ -52,10 +52,10 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Audit
-        run: yarn npm audit --all
+        run: pnpm npm audit --all
       - name: Install
-        run: yarn install
+        run: pnpm install
       - name: Build
-        run: yarn build
+        run: pnpm build
       - name: Test
-        run: yarn test
+        run: pnpm test

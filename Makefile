@@ -84,11 +84,11 @@ else
 KUSTOMIZE=$(shell command -v kustomize 2> /dev/null)
 endif
 
-yarn:
-ifeq (, $(shell command -v yarn 2> /dev/null))
-	$(error "No yarn found in PATH. Please install and re-run")
+pnpm:
+ifeq (, $(shell command -v pnpm 2> /dev/null))
+	$(error "No pnpm found in PATH. Please install and re-run")
 else
-YARN=$(shell command -v yarn 2> /dev/null)
+PNPM=$(shell command -v pnpm 2> /dev/null)
 endif
 
 container-builder:
@@ -102,27 +102,27 @@ else
 CONTAINER_BUILDER=$(shell command -v podman 2> /dev/null)
 endif
 
-setup: yarn
-	yarn install --frozen-lockfile
+setup: pnpm
+	$(PNPM) install --frozen-lockfile
 
 build: setup
 	@echo "####### Building hawtio/online ..."
-	yarn build:online
+	pnpm build:online
 
 clean:
 	rm -rf $(PACKAGES)/$(ONLINE_SHELL)/build
 
 lint: setup
-	yarn lint
+	pnpm lint
 
 lint-fix: setup
-	yarn lint:fix
+	pnpm lint:fix
 
 format: setup
-	yarn format:check
+	pnpm format:check
 
 format-fix: setup
-	yarn format:fix
+	pnpm format:fix
 
 check-licenses:
 	./script/check_licenses.sh
@@ -153,4 +153,4 @@ set-version:
 git-tag:
 	./script/git_tag.sh $(CUSTOM_VERSION) $(RELEASE_GIT_REMOTE)
 
-.PHONY: kubectl kustomize yarn setup build clean lint lint-fix format format-fix check-licenses image image-push get-image get-version set-version git-tag
+.PHONY: kubectl kustomize pnpm setup build clean lint lint-fix format format-fix check-licenses image image-push get-image get-version set-version git-tag

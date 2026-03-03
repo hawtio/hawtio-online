@@ -125,7 +125,7 @@ module.exports = () => {
           },
           '@hawtio/online-oauth': {
             singleton: true,
-            // Hardcoding needed because it cannot handle yarn 'workspace:*' version
+            // Hardcoding needed because it cannot handle pnpm 'workspace:*' version
             requiredVersion: '^0.0.0',
           },
         },

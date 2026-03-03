@@ -21,10 +21,10 @@ Run the following script to generate and set up a client certificate for Hawtio 
 ./scripts/generate-proxying.sh
 ```
 
-or if you have Yarn installed, this will also do the same thing:
+or if you have pnpm installed, this will also do the same thing:
 
 ```sh
-yarn gen:proxying
+pnpm gen:proxying
 ```
 
 #### Serving certificates
@@ -53,7 +53,7 @@ For Kubernetes, a serving certificate must be generated manually. Run the follow
 or:
 
 ```sh
-yarn gen:serving [-k tls.key] [-c tls.crt] [SECRET_NAME] [CN]
+pnpm gen:serving [-k tls.key] [-c tls.crt] [SECRET_NAME] [CN]
 ```
 
 You can provide an existing TLS key and certificate by passing parameters `-k tls.key` and `-c tls.crt` respectively. Otherwise, a self-signed `tls.key` and `tls.crt` will be generated automatically in the working directory and used for creating the serving certificate secret.
@@ -87,10 +87,10 @@ To deploy the Hawtio Online console on OpenShift, follow the steps below.
 
 #### Cluster mode
 
-If you have Yarn installed:
+If you have pnpm installed:
 
 ```sh
-yarn deploy:openshift:cluster
+pnpm deploy:openshift:cluster
 ```
 
 otherwise (two commands):
@@ -102,10 +102,10 @@ oc apply -k deploy/openshift/cluster/
 
 #### Namespace mode
 
-If you have Yarn installed:
+If you have pnpm installed:
 
 ```sh
-yarn deploy:openshift:namespace
+pnpm deploy:openshift:namespace
 ```
 
 otherwise:
@@ -135,10 +135,10 @@ To deploy the Hawtio Online console on Kubernetes, follow the steps below.
 
 #### Cluster mode
 
-If you have Yarn installed:
+If you have pnpm installed:
 
 ```sh
-yarn deploy:k8s:cluster
+pnpm deploy:k8s:cluster
 ```
 
 otherwise:
@@ -149,10 +149,10 @@ kubectl apply -k deploy/k8s/cluster/
 
 #### Namespace mode
 
-If you have Yarn installed:
+If you have pnpm installed:
 
 ```sh
-yarn deploy:k8s:namespace
+pnpm deploy:k8s:namespace
 ```
 
 otherwise:

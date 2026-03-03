@@ -20,11 +20,11 @@
   ],
   "scripts": {
     "start": "webpack serve --hot --mode development --progress --config webpack.config.dev.js --env PACKAGE_VERSION=$npm_package_version",
-    "build": "yarn build:webpack",
+    "build": "pnpm build:webpack",
     "build:webpack": "webpack --mode production --progress --config webpack.config.prod.js --output-public-path='/online/' --env PACKAGE_VERSION=$npm_package_version",
     "test": "jest --watchAll=false --passWithNoTests",
     "test:watch": "jest --watch",
-    "test:coverage": "yarn test --coverage",
+    "test:coverage": "pnpm test --coverage",
     "analyze:webpack:dev": "webpack --mode development --analyze --progress --config webpack.config.dev.js --output-public-path='/online/'",
     "analyze:webpack:prod": "webpack --mode production --analyze --progress --config webpack.config.prod.js --output-public-path='/online/'"
   },
@@ -99,9 +99,7 @@
       "last 1 safari version"
     ]
   },
-  "packageManager": "yarn@4.3.1",
   "engines": {
-    "yarn": ">=4.3.1",
     "node": ">=20"
   },
   "publishConfig": {

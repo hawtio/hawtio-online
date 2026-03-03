@@ -12,8 +12,8 @@ COPY docker/gateway/tsconfig.json ./
 COPY docker/gateway/src ./src/
 COPY docker/gateway/public ./public/
 
-RUN yarn install
-RUN yarn build
+RUN pnpm install
+RUN pnpm build
 
 #====================================================
 

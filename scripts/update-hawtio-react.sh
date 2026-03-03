@@ -22,4 +22,4 @@ echo Updating @hawtio/react to "$version"
 
 ag @hawtio/react -G package.json -l | xargs sed -i "s|\"@hawtio/react\": \".*\"|\"@hawtio/react\": \"^$version\"|g"
 
-echo Run \'yarn install\' to update yarn.lock
+echo Run \'pnpm install\' to update yarn.lock

@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: <installNamespace>
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: <packageName>-installer
+  namespace: <installNamespace>
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: <packageName>-installer-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: <packageName>-installer
+  namespace: <installNamespace>
+---
+apiVersion: olm.operatorframework.io/v1
+kind: ClusterExtension
+metadata:
+  name: <packageName>
+spec:
+  namespace: <installNamespace>
+  serviceAccount:
+    name: <packageName>-installer
+  config:
+    configType: Inline
+    inline:
+      watchNamespace: <installNamespace>
+  source:
+    sourceType: Catalog
+    catalog:
+      packageName: <packageName>
+

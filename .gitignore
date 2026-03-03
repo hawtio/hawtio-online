@@ -15,7 +15,7 @@ target/
 .settings/
 .vscode/
 
-# Yarn v3 (non zero-installs)
+# pnpm v3 (non zero-installs)
 # See: https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
 .pnp.*
 .yarn/*

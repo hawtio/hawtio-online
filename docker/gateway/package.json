@@ -16,7 +16,7 @@
     "jolokia"
   ],
   "scripts": {
-    "start:gateway": "yarn start:gateway-dev & yarn start:gateway-server",
+    "start:gateway": "pnpm start:gateway-dev & pnpm start:gateway-server",
     "start:gateway-dev": "node --env-file .env.development proxy-dev-server.js",
     "start:gateway-server": "tsup --config tsup.config.dev.ts --watch",
     "build": "webpack --mode production --progress --config webpack.config.prod.js",
@@ -66,9 +66,7 @@
     "webpack": "^5.105.3",
     "webpack-cli": "^6.0.1"
   },
-  "packageManager": "yarn@4.3.1",
   "engines": {
-    "yarn": ">=4.3.1",
     "node": ">=20"
   },
   "publishConfig": {

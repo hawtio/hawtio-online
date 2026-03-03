@@ -106,7 +106,7 @@ See [Service Accounts as OAuth Clients](https://docs.openshift.com/container-pla
 ### Run
 
 ```sh
-yarn start:online
+pnpm start:online
 ```
 
 This will start the webpack development server containing a compiled version of the hawtio code.
@@ -130,11 +130,11 @@ HAWTIO_GATEWAY_SERVER=http://localhost:3000
 ```
 * Start the gateway server
 ```sh
-yarn start:gateway
+pnpm start:gateway
 ```
 * Start hawtio-online
 ```sh
-yarn start:online
+pnpm start:online
 ```
 
 Now the gateway and hawtio-online development servers should correctly interact and simulate

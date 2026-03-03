@@ -8,8 +8,8 @@ COPY packages/ packages/
 COPY .yarn/plugins .yarn/plugins
 COPY .yarn/releases .yarn/releases
 
-RUN yarn install
-RUN yarn build
+RUN pnpm install
+RUN pnpm build
 
 # Build stage to extract envsubst
 FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4 as envsubst

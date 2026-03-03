@@ -4,7 +4,7 @@ To release a new Hawtio Online version:
 
 - [ ] update the version of @hawtio/online workspace package:
 ```
-yarn workspace @hawtio/online-shell version
+pnpm workspace @hawtio/online-shell version
 ```
 - [ ] Update the VERSION variable in the `Makefile`
 - [ ] Update the website with the latest version information

@@ -104,7 +104,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>yarn install</id>
+            <id>pnpm install</id>
             <goals>
               <goal>yarn</goal>
             </goals>
@@ -113,7 +113,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>yarn build</id>
+            <id>pnpm build</id>
             <goals>
               <goal>yarn</goal>
             </goals>
@@ -122,7 +122,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>yarn generate licenses</id>
+            <id>pnpm generate licenses</id>
             <goals>
               <goal>yarn</goal>
             </goals>

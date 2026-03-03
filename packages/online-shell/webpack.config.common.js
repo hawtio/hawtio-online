@@ -133,17 +133,17 @@ const common = (mode, publicPath, packageVersion) => {
           },
           '@hawtio/online-oauth': {
             singleton: true,
-            // Hardcoding needed because it cannot handle yarn 'workspace:*' version
+            // Hardcoding needed because it cannot handle pnpm 'workspace:*' version
             requiredVersion: '^0.0.0',
           },
           '@hawtio/online-kubernetes-api': {
             singleton: true,
-            // Hardcoding needed because it cannot handle yarn 'workspace:*' version
+            // Hardcoding needed because it cannot handle pnpm 'workspace:*' version
             requiredVersion: '^0.0.0',
           },
           '@hawtio/online-management-api': {
             singleton: true,
-            // Hardcoding needed because it cannot handle yarn 'workspace:*' version
+            // Hardcoding needed because it cannot handle pnpm 'workspace:*' version
             requiredVersion: '^0.0.0',
           },
         },
