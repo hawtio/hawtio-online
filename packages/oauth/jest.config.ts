@@ -18,6 +18,7 @@ export default {
     '@hawtiosrc/(.*)': '<rootDir>/src/$1',
     'react-markdown': '<rootDir>/../../node_modules/react-markdown/react-markdown.min.js',
     '@patternfly/react-code-editor': '<rootDir>/src/__mocks__/codeEditorMock.js',
+    '@hawtio/react': '<rootDir>/src/__mocks__/@hawtioReact.js',
   },
 
   // The path to a module that runs some code to configure or set up the testing

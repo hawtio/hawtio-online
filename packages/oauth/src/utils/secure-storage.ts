@@ -1,6 +1,7 @@
+import { preferencesService } from '@hawtio/react'
 import { decrypt, encrypt, generateKey, toBase64, toByteArray } from './crypto'
 
-const SESSION_KEY_SALT = 'online.oauth.salt'
+export const SESSION_KEY_SALT = 'online.oauth.salt'
 
 export async function secureStore(storageKey: string, storageValue: string) {
   //
@@ -14,7 +15,7 @@ export async function secureStore(storageKey: string, storageValue: string) {
   // Note: this is NOT a vulnerability since knowing the salt value does
   // not in any way compromise the encryption process or divulge the key
   //
-  localStorage.setItem(SESSION_KEY_SALT, toBase64(salt))
+  preferencesService.setProtectedItem(SESSION_KEY_SALT, toBase64(salt))
 
   //
   // Generate the key for encryption of the credentials
@@ -29,7 +30,7 @@ export async function secureStore(storageKey: string, storageValue: string) {
   //
   // Store the encryption string in local storage
   //
-  localStorage.setItem(storageKey, encrypted)
+  preferencesService.setProtectedItem(storageKey, encrypted)
 }
 
 export async function secureRetrieve(storageKey: string): Promise<string | null> {
@@ -42,6 +43,26 @@ export async function secureRetrieve(storageKey: string): Promise<string | null>
   if (!encrypted || !salt) {
     return null
   }
+
+  //
+  // Re-hydrate the protected preferences registry.
+  //
+  // Because the JavaScript heap is destroyed on every browser refresh
+  // (F5) or during the OAuth extraction redirect loop, the preferencesService
+  // singleton loses its in-memory list of protected localStorage keys on
+  // every boot.
+  //
+  // The OAuth salt and credentials must immediately be re-registered upon
+  // initialization so they survive any subsequent user-initiated reset.
+  //
+  // Note: setProtectedItem() is used here to trigger the protection
+  // side-effect. This intentionally performs a redundant overwrite of the
+  // existing localStorage values with themselves to satisfy the @hawtio/react
+  // API contract.
+  // This "redundant" write should not be removed.
+  //
+  preferencesService.setProtectedItem(SESSION_KEY_SALT, saltItem as string)
+  preferencesService.setProtectedItem(storageKey, encrypted)
 
   //
   // Generate the key for decryption of the credentials

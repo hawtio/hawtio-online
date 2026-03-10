@@ -30,3 +30,4 @@ __webpackConfig__.txt
 
 # snyk
 .dccache
+.aider*
