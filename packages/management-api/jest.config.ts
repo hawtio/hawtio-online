@@ -15,8 +15,11 @@ export default {
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|md)$':
       '<rootDir>/src/__mocks__/fileMock.js',
     '\\.(css|less)$': '<rootDir>/src/__mocks__/styleMock.js',
+    '@hawtiosrc/(.*)': '<rootDir>/src/$1',
     'react-markdown': '<rootDir>/../../node_modules/react-markdown/react-markdown.min.js',
-    '@patternfly/react-code-editor': path.resolve(__dirname, './src/__mocks__/codeEditorMock.js'),
+    '@patternfly/react-code-editor': '<rootDir>/src/__mocks__/codeEditorMock.js',
+    oauth4webapi: '<rootDir>/src/__mocks__/oauth4webapi.js',
+    '@hawtio/react': '<rootDir>/src/__mocks__/@hawtioReact.js',
   },
 
   // The path to a module that runs some code to configure or set up the testing

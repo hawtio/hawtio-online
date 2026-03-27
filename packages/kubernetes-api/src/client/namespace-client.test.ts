@@ -321,4 +321,45 @@ describe('namespace-client', () => {
     nc.connect(nsLimit)
     expect(nc.isConnected()).toEqual(true)
   })
+
+  test('connect-filters-out-non-jolokia-pods', done => {
+    const nsLimit = 5
+
+    // Read in good pods
+    namespacedPods = readPods(2)
+
+    // Create a 'dud' pod that completely lacks a jolokia port
+    const dudPod: KubePod = {
+      metadata: { uid: 'dud-uid-123', name: 'non-jolokia-pod' },
+      spec: {
+        containers: [
+          {
+            name: 'standard-app',
+            ports: [{ name: 'http', containerPort: 8080 }],
+          },
+        ],
+      },
+    }
+
+    // Inject into the mock API response array
+    namespacedPods.push(dudPod)
+
+    const cb = (jolokiaPods: KubePod[], fullPodCount: number) => {
+      // The full count of VALID pods should now be exactly 1 less than the raw array
+      expect(fullPodCount).toBe(namespacedPods.length - 1)
+
+      // The valid pods should be present
+      expect(jolokiaPods.findIndex(pod => pod.metadata?.uid === namespacedPods[0].metadata?.uid)).not.toBe(-1)
+      expect(jolokiaPods.findIndex(pod => pod.metadata?.uid === namespacedPods[1].metadata?.uid)).not.toBe(-1)
+
+      // The dud pod must be completely filtered out
+      expect(jolokiaPods.findIndex(pod => pod.metadata?.uid === 'dud-uid-123')).toBe(-1)
+
+      done()
+    }
+
+    nc = new NamespaceClient(NAMESPACE, cb)
+    nc.connect(nsLimit)
+    expect(nc.isConnected()).toEqual(true)
+  })
 })
