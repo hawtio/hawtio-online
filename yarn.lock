@@ -2620,7 +2620,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^6.4.0"
     "@types/node": "npm:^25.3.3"
     "@types/react": "npm:^18.3.5"
-    "@types/react-dom": "npm:^19.2.3"
+    "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^8.1.1"
@@ -2632,7 +2632,7 @@ __metadata:
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     react: "npm:^18.3.1"
-    react-dom: "npm:^19.2.4"
+    react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.30.1"
     source-map-loader: "npm:^5.0.0"
     style-loader: "npm:^4.0.0"
@@ -2675,7 +2675,7 @@ __metadata:
     kubernetes-types: "npm:^1.30.0"
     monaco-editor: "npm:^0.52.2"
     react: "npm:^18.3.1"
-    react-dom: "npm:^19.2.4"
+    react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.30.1"
     replace: "npm:^1.2.2"
     ts-jest: "npm:^29.4.6"
@@ -2713,7 +2713,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^6.4.0"
     "@types/node": "npm:^25.3.3"
     "@types/react": "npm:^18.3.5"
-    "@types/react-dom": "npm:^19.2.3"
+    "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^8.1.1"
@@ -2725,7 +2725,7 @@ __metadata:
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     react: "npm:^18.3.1"
-    react-dom: "npm:^19.2.4"
+    react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.30.1"
     source-map-loader: "npm:^5.0.0"
     style-loader: "npm:^4.0.0"
@@ -2768,7 +2768,7 @@ __metadata:
     jolokia.js: "npm:^2.5.0"
     monaco-editor: "npm:^0.52.2"
     react: "npm:^18.3.1"
-    react-dom: "npm:^19.2.4"
+    react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.30.1"
     replace: "npm:^1.2.2"
     ts-jest: "npm:^29.4.6"
@@ -2806,7 +2806,7 @@ __metadata:
     "@patternfly/react-tokens": "npm:^6.4.0"
     "@types/node": "npm:^25.3.3"
     "@types/react": "npm:^18.3.5"
-    "@types/react-dom": "npm:^19.2.3"
+    "@types/react-dom": "npm:^18.3.0"
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^8.1.1"
@@ -2819,7 +2819,7 @@ __metadata:
     path-browserify: "npm:^1.0.1"
     process: "npm:^0.11.10"
     react: "npm:^18.3.1"
-    react-dom: "npm:^19.2.4"
+    react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.30.1"
     source-map-loader: "npm:^5.0.0"
     style-loader: "npm:^4.0.0"
@@ -2861,7 +2861,7 @@ __metadata:
     jwt-decode: "npm:^4.0.0"
     monaco-editor: "npm:^0.52.2"
     react: "npm:^18.3.1"
-    react-dom: "npm:^19.2.4"
+    react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.30.1"
     replace: "npm:^1.2.2"
     ts-jest: "npm:^29.4.6"
@@ -2931,7 +2931,7 @@ __metadata:
     "@patternfly/react-topology": "npm:^6.4.0"
     "@types/node": "npm:^25.3.3"
     "@types/react": "npm:^18.3.5"
-    "@types/react-dom": "npm:^19.2.3"
+    "@types/react-dom": "npm:^18.3.0"
     babel-loader: "npm:^10.1.0"
     connect-history-api-fallback: "npm:^2.0.0"
     copy-webpack-plugin: "npm:^14.0.0"
@@ -2950,7 +2950,7 @@ __metadata:
     path-browserify: "npm:^1.0.1"
     process: "npm:^0.11.10"
     react: "npm:^18.3.1"
-    react-dom: "npm:^19.2.4"
+    react-dom: "npm:^18.3.1"
     react-markdown: "npm:^10.1.0"
     react-router-dom: "npm:^6.30.1"
     source-map-loader: "npm:^5.0.0"
@@ -5010,12 +5010,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^19.2.3":
-  version: 19.2.3
-  resolution: "@types/react-dom@npm:19.2.3"
-  peerDependencies:
-    "@types/react": ^19.2.0
-  checksum: 10/616c4a8aee250ea05fb1e7b98e7e00475dd3a6c1c30d7be18b4b93caba832f4203106b3a496a6b147e5acc2da14575eca47bce234c633bca1f8430ef8ffb234a
+"@types/react-dom@npm:^18.3.0":
+  version: 18.3.0
+  resolution: "@types/react-dom@npm:18.3.0"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 10/6ff53f5a7b7fba952a68e114d3b542ebdc1e87a794234785ebab0bcd9bde7fb4885f21ebaf93d26dc0a1b5b93287f42cad68b78ae04dddf6b20da7aceff0beaf
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:*":
+  version: 18.2.29
+  resolution: "@types/react@npm:18.2.29"
+  dependencies:
+    "@types/prop-types": "npm:*"
+    "@types/scheduler": "npm:*"
+    csstype: "npm:^3.0.2"
+  checksum: 10/c261e4e2ec18a7244c959cb40ac2f43b0fa7f0b40fcce615243402fc61699cbebf6f2eae2632b8a0f0a2775a1ca735279b15543349cafa276c064b591712b85b
   languageName: node
   linkType: hard
 
@@ -5033,6 +5044,13 @@ __metadata:
   version: 0.12.2
   resolution: "@types/retry@npm:0.12.2"
   checksum: 10/e5675035717b39ce4f42f339657cae9637cf0c0051cf54314a6a2c44d38d91f6544be9ddc0280587789b6afd056be5d99dbe3e9f4df68c286c36321579b1bf4a
+  languageName: node
+  linkType: hard
+
+"@types/scheduler@npm:*":
+  version: 0.16.4
+  resolution: "@types/scheduler@npm:0.16.4"
+  checksum: 10/a57b0f10da1b021e6bd5eeef8a1917dd3b08a8715bd8029e2ded2096d8f091bb1bb1fef2d66e139588a983c4bfbad29b59e48011141725fa83c76e986e1257d7
   languageName: node
   linkType: hard
 
@@ -14856,14 +14874,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^19.2.4":
-  version: 19.2.4
-  resolution: "react-dom@npm:19.2.4"
+"react-dom@npm:^18.3.1":
+  version: 18.3.1
+  resolution: "react-dom@npm:18.3.1"
   dependencies:
-    scheduler: "npm:^0.27.0"
+    loose-envify: "npm:^1.1.0"
+    scheduler: "npm:^0.23.2"
   peerDependencies:
-    react: ^19.2.4
-  checksum: 10/ec17721a8cb131bc33480a9f738bc5bbfe4bd11b11cf69f3f473605346578a329ad26ceef6ef0761ea67a4b455803407dd7ed4ba3d8a5abd2cee8c32d221e498
+    react: ^18.3.1
+  checksum: 10/3f4b73a3aa083091173b29812b10394dd06f4ac06aff410b74702cfb3aa29d7b0ced208aab92d5272919b612e5cda21aeb1d54191848cf6e46e9e354f3541f81
   languageName: node
   linkType: hard
 
@@ -15697,10 +15716,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:^0.27.0":
-  version: 0.27.0
-  resolution: "scheduler@npm:0.27.0"
-  checksum: 10/eab3c3a8373195173e59c147224fc30dabe6dd453f248f5e610e8458512a5a2ee3a06465dc400ebfe6d35c9f5b7f3bb6b2e41c88c86fd177c25a73e7286a1e06
+"scheduler@npm:^0.23.2":
+  version: 0.23.2
+  resolution: "scheduler@npm:0.23.2"
+  dependencies:
+    loose-envify: "npm:^1.1.0"
+  checksum: 10/e8d68b89d18d5b028223edf090092846868a765a591944760942b77ea1f69b17235f7e956696efbb62c8130ab90af7e0949bfb8eba7896335507317236966bc9
   languageName: node
   linkType: hard
 
