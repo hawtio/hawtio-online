@@ -1,16 +1,23 @@
-name: Audit
+name: Audit Downstream Branches
 
 on:
   schedule:
     # Run it every Sunday
     - cron: '0 0 * * 0'
+  # Allow manual run if necessary
+  workflow_dispatch:
 
 jobs:
-  test:
+  audit:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch: [ 2.x-redhat, 2.3.x-redhat ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          ref: ${{ matrix.branch }}
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
