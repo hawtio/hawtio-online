@@ -67,8 +67,8 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-testing-library": "^6.3.0",
     "prettier": "3.8.1",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.43.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.58.1",
     "webpack": "^5.105.3"
   },
   "config": {

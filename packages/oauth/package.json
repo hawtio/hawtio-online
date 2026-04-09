@@ -29,7 +29,7 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/react": "2.0.0-pre.0",
+    "@hawtio/react": "^2.0.0",
     "fetch-intercept": "^2.4.0",
     "jwt-decode": "^4.0.0",
     "whatwg-fetch": "^3.6.20"
@@ -47,7 +47,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^25.3.3",
     "@types/react": "^18.3.5",
-    "babel-jest": "^29.6.1",
+    "babel-jest": "^30.2.0",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
     "jest-extended": "^7.0.0",
@@ -60,7 +60,7 @@
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "@patternfly/react-charts": "^8",
