@@ -2575,7 +2575,7 @@ __metadata:
     "@types/pino-multi-stream": "npm:^5.1.6"
     "@types/supertest": "npm:^7.2.0"
     babel-jest: "npm:^30.2.0"
-    compression-webpack-plugin: "npm:^11.1.0"
+    compression-webpack-plugin: "npm:^12.0.0"
     copy-webpack-plugin: "npm:^14.0.0"
     cors: "npm:^2.8.6"
     express: "npm:^4.21.2"
@@ -2897,7 +2897,7 @@ __metadata:
   dependencies:
     "@eslint/compat": "npm:^2.0.2"
     "@eslint/js": "npm:^9.38.0"
-    compression-webpack-plugin: "npm:^11.1.0"
+    compression-webpack-plugin: "npm:^12.0.0"
     concurrently: "npm:^9.2.1"
     cz-conventional-changelog: "npm:3.3.0"
     eslint: "npm:^9.1.0"
@@ -7314,15 +7314,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compression-webpack-plugin@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "compression-webpack-plugin@npm:11.1.0"
+"compression-webpack-plugin@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "compression-webpack-plugin@npm:12.0.0"
   dependencies:
     schema-utils: "npm:^4.2.0"
-    serialize-javascript: "npm:^6.0.2"
+    serialize-javascript: "npm:^7.0.3"
   peerDependencies:
     webpack: ^5.1.0
-  checksum: 10/9068fc0fe8feb3c342043b58d42756006b5e85393bd40356e2bd9b68b70adb77782cd42bda2c84bc26c749d7357ae195b526aad3e6e6ffb51db1a23217bf6357
+  checksum: 10/db4e35b595ded3c99ce84d4c9f3d9202dd28875492c6fb8152999884d118bee3257ea1bd2e3133fe72806d59d5249da54094283ccb8c1d097b2c73283ac8950a
   languageName: node
   linkType: hard
 
