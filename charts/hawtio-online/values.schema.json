@@ -151,10 +151,7 @@
             "className": { "type": "string" },
             "host": { "type": "string" },
             "annotations": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": "object"
             }
           }
         },
