@@ -5,12 +5,17 @@ data:
       "about": {
         "title": "Hawtio Online Console",
         "productInfo": [],
-        "additionalInfo": "The Hawtio Online Console eases the discovery and management of 'hawtio-enabled' applications deployed on Kubernetes/OpenShift.",
-        "copyright": ""
+        "description": "The Hawtio Online Console eases the discovery and management of 'hawtio-enabled' applications deployed on Kubernetes/OpenShift.",
+        "copyright": "",
+        "imgSrc": "/online/hawtio-logo.svg",
+        "imgDarkModeSrc": "/online/hawtio-logo.svg"
       },
       "branding": {
         "appName": "Hawtio Online Console",
-        "appLogoUrl": "/online/hawtio-logo.svg"
+        "showAppName": "true",
+        "appLogoUrl": "/online/hawtio-logo.svg",
+        "appLogoDarkModeUrl": "/online/hawtio-logo.svg",
+        "favicon": "/online/favicon.ico"
       },
       "disabledRoutes": ["connect"]
     }
