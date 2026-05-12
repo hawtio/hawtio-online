@@ -127,7 +127,7 @@
             },
             "annotations": {
               "type": [
-                "string",
+                "object",
                 "null"
               ]
             },
@@ -152,7 +152,7 @@
             "host": { "type": "string" },
             "annotations": {
               "type": [
-                "string",
+                "object",
                 "null"
               ]
             }
