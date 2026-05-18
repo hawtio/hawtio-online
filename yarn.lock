@@ -2617,7 +2617,7 @@ __metadata:
   resolution: "@hawtio/online-kubernetes-api-app@workspace:packages/kubernetes-api-app"
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^2.2.1"
+    "@hawtio/react": "npm:^2.2.2"
     "@patternfly/react-charts": "npm:^8.4.0"
     "@patternfly/react-code-editor": "npm:^6.4.0"
     "@patternfly/react-core": "npm:^6.4.0"
@@ -2659,7 +2659,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.29.0"
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^2.2.1"
+    "@hawtio/react": "npm:^2.2.2"
     "@jsonjoy.com/json-path": "npm:^18.0.0"
     "@patternfly/react-charts": "npm:^8.4.0"
     "@patternfly/react-code-editor": "npm:^6.4.0"
@@ -2710,7 +2710,7 @@ __metadata:
   resolution: "@hawtio/online-management-api-app@workspace:packages/management-api-app"
   dependencies:
     "@hawtio/online-management-api": "workspace:*"
-    "@hawtio/react": "npm:^2.2.1"
+    "@hawtio/react": "npm:^2.2.2"
     "@patternfly/react-charts": "npm:^8.4.0"
     "@patternfly/react-code-editor": "npm:^6.4.0"
     "@patternfly/react-core": "npm:^6.4.0"
@@ -2752,7 +2752,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.29.0"
     "@hawtio/online-kubernetes-api": "workspace:*"
-    "@hawtio/react": "npm:^2.2.1"
+    "@hawtio/react": "npm:^2.2.2"
     "@jolokia.js/simple": "npm:^2.6.0"
     "@jsonjoy.com/json-path": "npm:^18.0.0"
     "@patternfly/react-charts": "npm:^8.4.0"
@@ -2803,7 +2803,7 @@ __metadata:
   resolution: "@hawtio/online-oauth-app@workspace:packages/oauth-app"
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^2.2.1"
+    "@hawtio/react": "npm:^2.2.2"
     "@patternfly/react-charts": "npm:^8.4.0"
     "@patternfly/react-code-editor": "npm:^6.4.0"
     "@patternfly/react-core": "npm:^6.4.0"
@@ -2847,7 +2847,7 @@ __metadata:
   resolution: "@hawtio/online-oauth@workspace:packages/oauth"
   dependencies:
     "@babel/core": "npm:^7.29.0"
-    "@hawtio/react": "npm:^2.2.1"
+    "@hawtio/react": "npm:^2.2.2"
     "@patternfly/react-charts": "npm:^8.4.0"
     "@patternfly/react-code-editor": "npm:^6.4.0"
     "@patternfly/react-core": "npm:^6.4.0"
@@ -2926,7 +2926,7 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/online-oauth": "workspace:*"
-    "@hawtio/react": "npm:^2.2.1"
+    "@hawtio/react": "npm:^2.2.2"
     "@jsonjoy.com/json-path": "npm:^18.0.0"
     "@patternfly/react-charts": "npm:^8.4.0"
     "@patternfly/react-code-editor": "npm:^6.4.0"
@@ -2975,9 +2975,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "@hawtio/react@npm:2.2.1"
+"@hawtio/react@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "@hawtio/react@npm:2.2.2"
   dependencies:
     "@hawtio/camel-model-v4_14": "npm:@hawtio/camel-model@~4.14.5"
     "@hawtio/camel-model-v4_18": "npm:@hawtio/camel-model@~4.18.1"
@@ -3011,7 +3011,7 @@ __metadata:
     react: ^17 || ^18 || ^19
     react-dom: ^17 || ^18 || ^19
     react-router-dom: ^6.30
-  checksum: 10/20f2c8d9706760a9eb3313257ff616498cc9df35fe5578995d31f6a38007578167e72b298a9b44383cedb1a89418eb7ec76a149735480efc310913447598459f
+  checksum: 10/8c4aeb87f99385633381815d8c7d816de98ec9681b51e62dcaec8e1f7eb03b4031d501e5b1949a9eb64dfc4f78e2e2d6a534b5273df1effa96c7d9aba23a4a60
   languageName: node
   linkType: hard
 
