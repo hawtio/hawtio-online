@@ -2651,7 +2651,7 @@ __metadata:
     "@babel/core": "npm:^7.29.0"
     "@hawtio/online-oauth": "workspace:*"
     "@hawtio/react": "npm:^2.2.2"
-    "@jsonjoy.com/json-path": "npm:^18.0.0"
+    "@jsonjoy.com/json-path": "npm:^18.24.0"
     "@patternfly/react-charts": "npm:^8.4.0"
     "@patternfly/react-code-editor": "npm:^6.4.0"
     "@patternfly/react-core": "npm:^6.4.0"
@@ -2745,7 +2745,7 @@ __metadata:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": "npm:^2.2.2"
     "@jolokia.js/simple": "npm:^2.6.0"
-    "@jsonjoy.com/json-path": "npm:^18.0.0"
+    "@jsonjoy.com/json-path": "npm:^18.24.0"
     "@patternfly/react-charts": "npm:^8.4.0"
     "@patternfly/react-code-editor": "npm:^6.4.0"
     "@patternfly/react-core": "npm:^6.4.0"
@@ -2918,7 +2918,7 @@ __metadata:
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/online-oauth": "workspace:*"
     "@hawtio/react": "npm:^2.2.2"
-    "@jsonjoy.com/json-path": "npm:^18.0.0"
+    "@jsonjoy.com/json-path": "npm:^18.24.0"
     "@patternfly/react-charts": "npm:^8.4.0"
     "@patternfly/react-code-editor": "npm:^6.4.0"
     "@patternfly/react-core": "npm:^6.4.0"
@@ -3582,23 +3582,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jsonjoy.com/codegen@npm:18.0.0":
-  version: 18.0.0
-  resolution: "@jsonjoy.com/codegen@npm:18.0.0"
+"@jsonjoy.com/codegen@npm:18.24.0":
+  version: 18.24.0
+  resolution: "@jsonjoy.com/codegen@npm:18.24.0"
   peerDependencies:
     tslib: 2
-  checksum: 10/a565557c1ca7d124662b16656649075b001ebec0299eec8597ca51db7f9d3c7f7f5f97b61699c3e826abe5e0a792b689a6519742ed1f78e40d673f8577915439
+  checksum: 10/510479bd3d782724d8078a8d510e1043974db6b39d970a303f093e430c36c144ed25a8b3ff2e2f3c2e14543a265161660d808933f1fc25d979478c1e8750de11
   languageName: node
   linkType: hard
 
-"@jsonjoy.com/json-path@npm:^18.0.0":
-  version: 18.0.0
-  resolution: "@jsonjoy.com/json-path@npm:18.0.0"
+"@jsonjoy.com/json-path@npm:^18.24.0":
+  version: 18.24.0
+  resolution: "@jsonjoy.com/json-path@npm:18.24.0"
   dependencies:
-    "@jsonjoy.com/codegen": "npm:18.0.0"
+    "@jsonjoy.com/codegen": "npm:18.24.0"
   peerDependencies:
     tslib: 2
-  checksum: 10/6170fd7b1a80d0d92cb06b2532e4efcb43e95bf53819f02681c15c8a00caa9668e9dcf3fbfd05bbc48fc9e861db8bf46dc9b5334443e1d2798f0d93330cc8de3
+  checksum: 10/0bb898a52407cdf113a225cb04d837d6ffe0d5a8f76398ecd8ebf11a70218a812f790d3d84d4837bcfde88096eead16558bf3e223cee7263340c511b97e65e74
   languageName: node
   linkType: hard
 
