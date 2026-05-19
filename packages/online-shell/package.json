@@ -41,7 +41,7 @@
     "@jsonjoy.com/json-path": "^18.24.0",
     "@patternfly/react-charts": "^8.4.0",
     "@patternfly/react-code-editor": "^6.4.0",
-    "@patternfly/react-core": "^6.4.0",
+    "@patternfly/react-core": "^6.4.3",
     "@patternfly/react-icons": "^6.4.0",
     "@patternfly/react-styles": "^6.4.0",
     "@patternfly/react-table": "^6.4.0",
