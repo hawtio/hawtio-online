@@ -47,6 +47,12 @@ CUSTOM_GATEWAY_IMAGE ?= $(GATEWAY_IMAGE_NAME)
 CUSTOM_VERSION ?= $(VERSION)
 CUSTOM_GATEWAY_VERSION ?= $(CUSTOM_VERSION)
 
+# The supported architectures
+ARCHS ?= amd64 arm64
+
+# Destination registry prefix when pushing
+DESTINATION_PREFIX = docker://
+
 RELEASE_GIT_REMOTE := origin
 GIT_COMMIT := $(shell if [ -d .git ]; then git rev-list -1 HEAD; else echo "$(CUSTOM_VERSION)"; fi)
 LINT_GOGC := 10
@@ -70,6 +76,20 @@ limitations under the License.
 endef
 
 export LICENSE_HEADER
+
+# Locate container binary (Priority: Podman > Docker)
+CONTAINER_BUILDER := $(shell command -v podman 2> /dev/null || command -v docker 2> /dev/null)
+
+# Safety check: Error out immediately if neither exists
+ifeq ($(CONTAINER_BUILDER),)
+	$(error Neither podman nor docker found in PATH. Please install and re-run.)
+endif
+
+# Boolean flag for Podman-specific logic
+# Checks if 'podman' is a substring of the path found
+IS_PODMAN := $(findstring podman,$(CONTAINER_BUILDER))
+
+
 default: build
 
 kubectl:
@@ -89,17 +109,6 @@ ifeq (, $(shell command -v yarn 2> /dev/null))
 	$(error "No yarn found in PATH. Please install and re-run")
 else
 YARN=$(shell command -v yarn 2> /dev/null)
-endif
-
-container-builder:
-ifeq (, $(shell command -v podman 2> /dev/null))
-ifeq (, $(shell command -v docker 2> /dev/null))
-	$(error "No podman or docker found in PATH. Please install and re-run")
-else
-CONTAINER_BUILDER=$(shell command -v docker 2> /dev/null)
-endif
-else
-CONTAINER_BUILDER=$(shell command -v podman 2> /dev/null)
 endif
 
 setup: yarn
@@ -127,19 +136,57 @@ format-fix: setup
 check-licenses:
 	./script/check_licenses.sh
 
-image: container-builder
+image:
 	@echo "####### Building Hawtio Online container image..."
-	$(CONTAINER_BUILDER) build -t $(CUSTOM_IMAGE):$(CUSTOM_VERSION) -t $(CUSTOM_IMAGE):latest -f Dockerfile-nginx .
+	for arch in $(ARCHS); do \
+		echo "--- Building for $$arch ---"; \
+		$(CONTAINER_BUILDER) build --platform linux/$$arch -t $(CUSTOM_IMAGE):$(CUSTOM_VERSION)-$$arch -f Dockerfile-nginx .; \
+	done
 
-image-push: image
-	$(CONTAINER_BUILDER) push $(CUSTOM_IMAGE):$(CUSTOM_VERSION)
+image-manifest:
+ifndef IS_PODMAN
+	$(error Manifest creation and pushing requires Podman. Current engine: $(CONTAINER_BUILDER))
+endif
+	@echo "####### Creating Manifest Image ..."
+	-podman manifest rm $(CUSTOM_IMAGE):$(CUSTOM_VERSION)
+	podman manifest create $(CUSTOM_IMAGE):$(CUSTOM_VERSION)
+	for arch in $(ARCHS); do \
+		podman manifest add $(CUSTOM_IMAGE):$(CUSTOM_VERSION) $(CUSTOM_IMAGE):$(CUSTOM_VERSION)-$$arch; \
+	done
+	@echo "####### Manifest created. Tagging latest..."
+	podman tag $(CUSTOM_IMAGE):$(CUSTOM_VERSION) $(CUSTOM_IMAGE):latest
 
-image-gateway: container-builder
+image-manifest-push:
+ifndef IS_PODMAN
+	$(error Manifest creation and pushing requires Podman. Current engine: $(CONTAINER_BUILDER))
+endif
+	$(CONTAINER_BUILDER) manifest push --all $(CUSTOM_IMAGE):$(CUSTOM_VERSION) $(DESTINATION_PREFIX)$(CUSTOM_IMAGE):$(CUSTOM_VERSION)
+
+image-gateway:
 	@echo "####### Building Hawtio Online Gateway container image..."
-	$(CONTAINER_BUILDER) build -t $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION) -t $(CUSTOM_GATEWAY_IMAGE):latest -f Dockerfile-gateway .
+	for arch in $(ARCHS); do \
+		echo "--- Building for $$arch ---"; \
+		$(CONTAINER_BUILDER) build --platform linux/$$arch -t $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)-$$arch -f Dockerfile-gateway .; \
+	done
 
-image-gateway-push: image-gateway
-	$(CONTAINER_BUILDER) push $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)
+image-gateway-manifest:
+ifndef IS_PODMAN
+	$(error Manifest creation and pushing requires Podman. Current engine: $(CONTAINER_BUILDER))
+endif
+	@echo "####### Creating Gateway Manifest Image ..."
+	-podman manifest rm $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)
+	podman manifest create  $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)
+	for arch in $(ARCHS); do \
+		podman manifest add  $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION) $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)-$$arch; \
+	done
+	@echo "####### Manifest created. Tagging latest..."
+	podman tag $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION) $(CUSTOM_GATEWAY_IMAGE):latest
+
+image-gateway-manifest-push:
+ifndef IS_PODMAN
+	$(error Manifest creation and pushing requires Podman. Current engine: $(CONTAINER_BUILDER))
+endif
+	$(CONTAINER_BUILDER) manifest push --all $(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION) $(DESTINATION_PREFIX)$(CUSTOM_GATEWAY_IMAGE):$(CUSTOM_GATEWAY_VERSION)
 
 get-image:
 	@echo $(CUSTOM_IMAGE)
