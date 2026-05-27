@@ -21,8 +21,12 @@ spec:
   ingressClassName: {{ . | quote }}
   {{- end }}
   rules:
-  - host: {{ .Values.online.ingress.host }}
+  {{- if .Values.online.ingress.host }}
+  - host: {{ .Values.online.ingress.host | quote }}
     http:
+  {{- else }}
+  - http:
+  {{- end }}
       paths:
       - backend:
           service:
@@ -31,8 +35,12 @@ spec:
               number: {{ include "hawtio-online.service.port" .Values }}
         path: /(.*)
         pathType: ImplementationSpecific
+  {{- if include "hawtio-online.use.ssl" .Values }}
   tls:
   - secretName: {{ .Values.online.secrets.serving.name }}
+    {{- if .Values.online.ingress.host }}
     hosts:
-      - {{ .Values.online.ingress.host }}
+      - {{ .Values.online.ingress.host | quote }}
+    {{- end }}
+  {{- end }}
 {{- end }}

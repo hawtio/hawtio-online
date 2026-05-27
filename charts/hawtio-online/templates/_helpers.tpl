@@ -86,7 +86,9 @@ true
   - Generates the Certificate
 */}}
 {{- define "hawtio-online.serving.gen-cert" -}}
-{{- $cert := (genSelfSignedCert .Values.online.ingress.host nil nil 365) -}}
+{{- /* Determine the Common Name: Priority is Ingress Host, then a default string */ -}}
+{{- $cn := .Values.online.ingress.host | default (printf "%s.%s.svc" .Values.online.name .Release.Namespace) -}}
+{{- $cert := (genSelfSignedCert $cn nil nil 365) -}}
 {{ (print "tls.key: " ($cert.Key | b64enc)) | indent 2 }}
 {{ (print "tls.crt: " ($cert.Cert | b64enc)) | indent 2 }}
 {{- end }}
