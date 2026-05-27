@@ -53,7 +53,13 @@ online:
       port: 443
   ingress:
     className: ""
-    host: "hawtio-online.hawtio.svc"
+# -- The fully qualified domain name (FQDN) for the application.
+# - Routing: If set, the Ingress Controller only routes traffic matching this Host header.
+# - SSL: This value is used as the Common Name (CN) for the self-signed certificate
+#        if internalSSL.
+# - Development: Leave commented out (null) to allow "catch-all" access via localhost
+#    or IP addresses (common for kind/minikube).
+#    host: "hawtio-online.hawtio.svc"
     annotations:
 #      custom-annotation: value
   resources:
