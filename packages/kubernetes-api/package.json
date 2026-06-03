@@ -42,7 +42,7 @@
     "@patternfly/react-core": "^6.4.3",
     "@patternfly/react-icons": "^6.4.0",
     "@patternfly/react-styles": "^6.4.0",
-    "@patternfly/react-table": "^6.4.0",
+    "@patternfly/react-table": "^6.5.1",
     "@patternfly/react-tokens": "^6.4.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@types/jest": "^30.0.0",
