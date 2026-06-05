@@ -80,15 +80,19 @@ export LICENSE_HEADER
 # Locate container binary (Priority: Podman > Docker)
 CONTAINER_BUILDER := $(shell command -v podman 2> /dev/null || command -v docker 2> /dev/null)
 
+#
+# When not being built inside a container
 # Safety check: Error out immediately if neither exists
+#
+ifneq ($(CI_BUILD),true)
 ifeq ($(CONTAINER_BUILDER),)
 	$(error Neither podman nor docker found in PATH. Please install and re-run.)
+endif
 endif
 
 # Boolean flag for Podman-specific logic
 # Checks if 'podman' is a substring of the path found
 IS_PODMAN := $(findstring podman,$(CONTAINER_BUILDER))
-
 
 default: build
 
