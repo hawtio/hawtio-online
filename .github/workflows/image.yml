@@ -14,23 +14,23 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [ amd64, arm64 ]
     steps:
+      - name: Install QEMU static binaries for Podman
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static binfmt-support
       - name: Checkout code
         uses: actions/checkout@v6
-      - name: Build image
+      - name: Build Hawtio image on ${{matrix.arch}}
         run: |
-          make image
-      - name: Display image
+          ARCHS=${{matrix.arch}} make image
+      - name: Build Hawtio Gateway image on ${{matrix.arch}}
         run: |
-          docker images
-
-      # Only push from main repository
-      - name: Push image to Quay.io
-        if: github.repository == 'hawtio/hawtio-online'
-        env:
-          USERNAME: ${{ secrets.QUAY_USERNAME }}
-          PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+          ARCHS=${{matrix.arch}} make image-gateway
+      - name: Display images
         run: |
-          docker login -u ${USERNAME} -p ${PASSWORD} quay.io
-          make image-push && make image-gateway-push
+          make list-images
