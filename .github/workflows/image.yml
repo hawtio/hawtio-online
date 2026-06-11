@@ -12,6 +12,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,6 +28,8 @@ jobs:
           sudo apt-get install -y qemu-user-static binfmt-support
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Build Hawtio image on ${{matrix.arch}}
         run: |
           ARCHS=${{matrix.arch}} make image

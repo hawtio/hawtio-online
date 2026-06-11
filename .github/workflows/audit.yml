@@ -5,12 +5,17 @@ on:
     # Run it every Sunday
     - cron: '0 0 * * 0'
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Set up Node
         uses: actions/setup-node@v6
         with:

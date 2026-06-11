@@ -8,13 +8,18 @@ on:
   push:
     branches:
       - main
+
+permissions:
+  contents: read
+
 jobs:
   test-nginx:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
-
+        with:
+          persist-credentials: false
       # Clean build
       - name: Setup Node
         uses: actions/setup-node@v6
