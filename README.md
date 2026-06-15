@@ -118,8 +118,8 @@ Since Hawtio-Online is actually two servers working together, it is possible to 
 separately on the CLI and have them correctly interface with one another in the same manner as
 when installed in a cluster.
 
-* Create, if not already, a new .env.development file, in `docker/gateway` by copying the [example](docker/gateway/env.development.defaults);
-* Set the environment variable in `docker/gateway.env.development` to the value
+* Create, if not already, a new .env.development file, in `packages/gateway` by copying the [example](packages/gateway/env.development.defaults);
+* Set the environment variable in `packages/gateway.env.development` to the value
 ```
 HAWTIO_ONLINE_GATEWAY_WEB_SERVER=http://localhost:2772
 ```

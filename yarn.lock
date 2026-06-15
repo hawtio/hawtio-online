@@ -2559,9 +2559,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hawtio/gateway@workspace:docker/gateway":
+"@hawtio/gateway@workspace:packages/gateway":
   version: 0.0.0-use.local
-  resolution: "@hawtio/gateway@workspace:docker/gateway"
+  resolution: "@hawtio/gateway@workspace:packages/gateway"
   dependencies:
     "@babel/core": "npm:^7.29.0"
     "@types/cors": "npm:^2.8.19"
@@ -2601,12 +2601,6 @@ __metadata:
     webpack: "npm:^5.106.2"
     webpack-cli: "npm:^7.0.2"
     yaml: "npm:^2.9.0"
-  languageName: unknown
-  linkType: soft
-
-"@hawtio/online-docker@workspace:docker":
-  version: 0.0.0-use.local
-  resolution: "@hawtio/online-docker@workspace:docker"
   languageName: unknown
   linkType: soft
 

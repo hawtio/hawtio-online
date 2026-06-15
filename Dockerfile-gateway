@@ -6,11 +6,11 @@ COPY yarn.lock ./
 COPY .yarnrc.yml ./
 COPY .yarn/plugins .yarn/plugins
 COPY .yarn/releases .yarn/releases
-COPY docker/gateway/package.json ./
-COPY docker/gateway/webpack.config.prod.js ./
-COPY docker/gateway/tsconfig.json ./
-COPY docker/gateway/src ./src/
-COPY docker/gateway/public ./public/
+COPY packages/gateway/package.json ./
+COPY packages/gateway/webpack.config.prod.js ./
+COPY packages/gateway/tsconfig.json ./
+COPY packages/gateway/src ./src/
+COPY packages/gateway/public ./public/
 
 RUN yarn install
 RUN yarn build
@@ -32,8 +32,8 @@ RUN microdnf repoquery nodejs
 RUN microdnf -y install --setopt=tsflags=nodocs nodejs && microdnf clean all
 
 COPY --from=builder /hawtio-online-gateway/dist ${GATEWAY_DIR}/
-COPY docker/gateway/env.product ${GATEWAY_DIR}/
-COPY docker/gateway/gateway.sh ${GATEWAY_DIR}/
+COPY packages/gateway/env.product ${GATEWAY_DIR}/
+COPY packages/gateway/gateway.sh ${GATEWAY_DIR}/
 
 #
 # Finalize permissions for gateway files

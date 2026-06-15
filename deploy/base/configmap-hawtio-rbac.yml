@@ -1,6 +1,6 @@
 #
 # This file should be kept in sync with
-# /docker/gateway/public/ACL.yml
+# /packages/gateway/public/ACL.yml
 #
 
 apiVersion: v1
@@ -125,7 +125,7 @@ data:
     jolokia.Discovery:
       lookupAgents: admin, viewer
       lookupAgentsWithTimeout: admin, viewer
-    jolokia.ServerHandler.hawtio: 
+    jolokia.ServerHandler.hawtio:
       mBeanServersInfo: admin, viewer
 
     org.apache.aries.blueprint.blueprintMetadata:

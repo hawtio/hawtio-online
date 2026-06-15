@@ -50,7 +50,7 @@ The project file for the gateway provides the following commands that will aid i
 
 ### Changing properties of the development servers
 
-An `.env.development` file should be created in the [gateway](https://github.com/hawtio/hawtio-online/tree/main/docker/gateway) package directory. A [default](https://github.com/hawtio/hawtio-online/tree/main/docker/gateway/env.development.defaults) version is already provided in the directory and can be copied and modified to suit the individual install. The following are environment variables that can be updated:
+An `.env.development` file should be created in the [gateway](https://github.com/hawtio/hawtio-online/tree/main/packages/gateway) package directory. A [default](https://github.com/hawtio/hawtio-online/tree/main/packages/gateway/env.development.defaults) version is already provided in the directory and can be copied and modified to suit the individual install. The following are environment variables that can be updated:
 
 - HAWTIO_ONLINE_GATEWAY_APP_PORT: The port that the gateway server listens on. It has a default of 3000. Probably only if there is a conflict on the individual system should need to be changed;
 - LOG_LEVEL: This is the minimum level of logging to display. Should extra logging be displayed then other values are `debug` and `trace`;
@@ -59,7 +59,7 @@ An `.env.development` file should be created in the [gateway](https://github.com
 - HAWTIO_ONLINE_GATEWAY_CLUSTER_MASTER: The URI of the kubenenetes cluster api server, eg. [https://api.crc.testing:6443](https://api.crc.testing:6443). This should be changed to the correct location for the installed kubernetes cluster;
 - HAWTIO_ONLINE_GATEWAY_CLUSTER_TOKEN: A token that allows connection to the kubernetes cluster. In production, this is obtained from the Hawtio Online authentication mechanisms. For development this should be provided. Note: this token can expire so should be updated if testing starts resulting in 403 errors;LOKIA_SERVICE=test-jolokia
 
-Since the development nginx server is external to the kubernetes cluster, it is unable to access internal application jolokia ports. Therefore, the jolokia server of this test app must be exposed using a service. This service can be created by populating and applying the template [file](https://github.com/hawtio/hawtio-online/tree/main/docker/gateway/jolokia-testing-service.yml) included in the project:
+Since the development nginx server is external to the kubernetes cluster, it is unable to access internal application jolokia ports. Therefore, the jolokia server of this test app must be exposed using a service. This service can be created by populating and applying the template [file](https://github.com/hawtio/hawtio-online/tree/main/packages/gateway/jolokia-testing-service.yml) included in the project:
 
 ```
 apiVersion: v1

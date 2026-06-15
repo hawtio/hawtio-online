@@ -1,6 +1,6 @@
 #
 # This file should be kept in sync with
-# /docker/gateway/public/ACL.yml
+# /packages/gateway/public/ACL.yml
 #
 
 apiVersion: v1
