@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Accordion,
   AccordionContent,
@@ -22,6 +22,21 @@ type ManagementProjects = {
 export const ManagementProjects: React.FunctionComponent<ManagementProjects> = (props: ManagementProjects) => {
   const [expanded, setExpanded] = useState('')
 
+  const projectItemId = (project: string): string => {
+    if (!project || project.length === 0) {
+      return ''
+    }
+
+    return `project-${project}-toggle`
+  }
+
+  useEffect(() => {
+    const projectNames = Object.keys(props.projects)
+    if (projectNames.length > 0) {
+      setExpanded(prevExpanded => (prevExpanded ? prevExpanded : projectItemId(projectNames[0])))
+    }
+  }, [props.projects])
+
   const onToggle = (id: string) => {
     if (id === expanded) {
       setExpanded('')
@@ -36,17 +51,16 @@ export const ManagementProjects: React.FunctionComponent<ManagementProjects> = (
         <PanelMainBody>
           <Accordion asDefinitionList>
             {Object.entries(props.projects).map(([name, project]) => (
-              <AccordionItem key={name}>
+              <AccordionItem key={name} isExpanded={expanded === projectItemId(name)}>
                 <AccordionToggle
                   onClick={() => {
                     onToggle(`project-${name}-toggle`)
                   }}
-                  isExpanded={expanded === `project-${name}-toggle`}
                   id={`project-${name}-toggle`}
                 >
                   {name}
                 </AccordionToggle>
-                <AccordionContent id={`project-${name}-expand`} isHidden={expanded !== `project-${name}-toggle`}>
+                <AccordionContent id={`project-${name}-expand`}>
                   {isError(project.error) && (
                     <Label color='red' icon={<InfoCircleIcon />}>
                       {project.error.message}
