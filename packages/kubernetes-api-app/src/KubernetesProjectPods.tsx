@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { KubePodsByProject, KubePodsOrError, isError } from '@hawtio/online-kubernetes-api'
 import {
   Accordion,
@@ -20,6 +20,21 @@ type KubePodsProps = {
 export const KubernetesProjectPods: React.FunctionComponent<KubePodsProps> = (props: KubePodsProps) => {
   const [expanded, setExpanded] = useState('')
 
+  const projectItemId = (project: string): string => {
+    if (!project || project.length === 0) {
+      return ''
+    }
+
+    return `project-${project}-toggle`
+  }
+
+  useEffect(() => {
+    const projectNames = Object.keys(props.podsByProject)
+    if (projectNames.length > 0) {
+      setExpanded(prevExpanded => (prevExpanded ? prevExpanded : projectItemId(projectNames[0])))
+    }
+  }, [props.podsByProject])
+
   const onToggle = (id: string) => {
     if (id === expanded) {
       setExpanded('')
@@ -32,19 +47,18 @@ export const KubernetesProjectPods: React.FunctionComponent<KubePodsProps> = (pr
     <Panel isScrollable>
       <PanelMain className='paginated-panel'>
         <PanelMainBody>
-          <Accordion asDefinitionList>
+          <Accordion asDefinitionList togglePosition='start'>
             {Object.entries<KubePodsOrError>(props.podsByProject).map(([project, podsOrError]) => (
-              <AccordionItem key={project}>
+              <AccordionItem key={project} isExpanded={expanded === projectItemId(project)}>
                 <AccordionToggle
                   onClick={() => {
                     onToggle(`project-${project}-toggle`)
                   }}
-                  isExpanded={expanded === `project-${project}-toggle`}
                   id={`project-${project}-toggle`}
                 >
                   {project}
                 </AccordionToggle>
-                <AccordionContent id={`project-${project}-expand`} isHidden={expanded !== `project-${project}-toggle`}>
+                <AccordionContent id={`project-${project}-expand`}>
                   {isError(podsOrError.error) && (
                     <Label color='red' icon={<InfoCircleIcon />}>
                       {podsOrError.error.message}

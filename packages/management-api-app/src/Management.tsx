@@ -7,6 +7,7 @@ import {
   Card,
   CardBody,
   CardTitle,
+  Content,
   Divider,
   Label,
   Masthead,
@@ -18,9 +19,6 @@ import {
   PanelMainBody,
   Skeleton,
   Spinner,
-  Text,
-  TextContent,
-  TextVariants,
   Title,
 } from '@patternfly/react-core'
 import { InfoCircleIcon } from '@patternfly/react-icons'
@@ -157,11 +155,7 @@ export const Management: React.FunctionComponent = () => {
               <div style={{ justifyContent: 'center' }}>
                 <Spinner diameter='60px' aria-label='Loading Hawtio' />
 
-                <TextContent>
-                  <Text className={'--pf-global--Color--200'} component={TextVariants.h3}>
-                    Fetching Pods ...
-                  </Text>
-                </TextContent>
+                <Content component='h3'>Fetching Pods ...</Content>
               </div>
             </Bullseye>
           </Panel>

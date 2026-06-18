@@ -36,20 +36,19 @@ export const KubernetesProjects: React.FunctionComponent<KubeProjectProps> = (pr
         <PanelMainBody>
           <Accordion asDefinitionList>
             {props.projects.map(project => (
-              <AccordionItem key={project.metadata?.name}>
+              <AccordionItem
+                key={project.metadata?.name}
+                isExpanded={expanded === `project-${project.metadata?.name}-toggle`}
+              >
                 <AccordionToggle
                   onClick={() => {
                     onToggle(`project-${project.metadata?.name}-toggle`)
                   }}
-                  isExpanded={expanded === `project-${project.metadata?.name}-toggle`}
                   id={`project-${project.metadata?.name}-toggle`}
                 >
                   {project.metadata?.name}
                 </AccordionToggle>
-                <AccordionContent
-                  id={`project-${project.metadata?.name}-expand`}
-                  isHidden={expanded !== `project-${project.metadata?.name}-toggle`}
-                >
+                <AccordionContent id={`project-${project.metadata?.name}-expand`}>
                   <Table key='breakpoints' aria-label='Breakpoints table' variant='compact'>
                     <Thead>
                       <Tr>

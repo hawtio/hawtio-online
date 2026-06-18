@@ -1,4 +1,4 @@
-import { Bullseye, Page, Spinner, Text, TextContent, TextVariants } from '@patternfly/react-core'
+import { Bullseye, Content, Page, Spinner } from '@patternfly/react-core'
 import React from 'react'
 
 export const AuthLoadingPage: React.FunctionComponent = () => (
@@ -7,11 +7,7 @@ export const AuthLoadingPage: React.FunctionComponent = () => (
       <div style={{ justifyContent: 'center' }}>
         <Spinner diameter='60px' aria-label='Loading Hawtio' />
 
-        <TextContent>
-          <Text className={'--pf-global--Color--200'} component={TextVariants.h3}>
-            Loading ...
-          </Text>
-        </TextContent>
+        <Content component='h3'>Loading ...</Content>
       </div>
     </Bullseye>
   </Page>
