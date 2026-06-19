@@ -1,4 +1,10 @@
-FROM docker.io/node:22-alpine as builder
+# Regardless of arch being required (amd64 or arm64) this will
+# 'compile' the hawtio-online javascript package natively without
+# resorting to a foreign image that would have to be emulated and
+# so really sloooow!
+# The resulting javascript/assets are then copied into the final image
+# that conforms with the correct architecture.
+FROM --platform=${BUILDPLATFORM} docker.io/node:22-alpine as builder
 
 WORKDIR /hawtio-online
 
