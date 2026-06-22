@@ -1,5 +1,6 @@
 import * as yaml from 'yaml'
 import * as fs from 'fs'
+import { gatewayConfig } from '../gateway-config'
 import * as rbac from './rbac'
 import {
   BulkValue,
@@ -11,7 +12,11 @@ import {
 } from './globals'
 import { ExecRequest } from 'jolokia.js'
 
-const aclFile = fs.readFileSync(process.env['HAWTIO_ONLINE_RBAC_ACL'] || `${__dirname}/ACL.yaml`, 'utf8')
+// Set in .jestEnvVars.js
+const rbacAcl = process.env['HAWTIO_ONLINE_RBAC_ACL']
+gatewayConfig.setRbacAcl(rbacAcl)
+
+const aclFile = fs.readFileSync(gatewayConfig.getRbacAcl() || `${__dirname}/ACL.yaml`, 'utf8')
 const aclYaml = yaml.parse(aclFile)
 rbac.initACL(aclYaml)
 

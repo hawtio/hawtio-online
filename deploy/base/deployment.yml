@@ -57,8 +57,6 @@ spec:
           env:
             - name: HAWTIO_ONLINE_RBAC_ACL
               value: /etc/hawtio/rbac/ACL.yaml
-            - name: HAWTIO_ONLINE_GATEWAY_WEB_SERVER
-              value: http://localhost:8080
           ports:
             - name: express
               containerPort: 3000

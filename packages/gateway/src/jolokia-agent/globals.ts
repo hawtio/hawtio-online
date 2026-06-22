@@ -1,6 +1,8 @@
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express-serve-static-core'
 import { MBeanInfo, MBeanInfoError, MBeanAttribute, MBeanOperation, JolokiaRequest as MBeanRequest } from 'jolokia.js'
-import { GatewayOptions } from 'src/globals'
+import * as NodeFetch from 'node-fetch'
+import { gatewayConfig } from '../gateway-config'
+import { joinPaths } from '../utils'
 
 export interface BulkValue {
   CanInvoke: boolean
@@ -72,22 +74,72 @@ interface ArgumentRequest extends ExecMBeanRequest {
   arguments: unknown[]
 }
 
-export interface AgentInfo {
+export class AgentInfo {
   request: ExpressRequest
   requestHeaders: Headers
   response: ExpressResponse
-  options: GatewayOptions
   namespace: string
   protocol: string
   pod: string
   port: string
   path: string
+  ip?: string
+
+  constructor(init: {
+    request: ExpressRequest
+    requestHeaders: Headers
+    response: ExpressResponse
+    namespace: string
+    protocol: string
+    pod: string
+    port: string
+    path: string
+  }) {
+    this.request = init.request
+    this.requestHeaders = init.requestHeaders
+    this.response = init.response
+    this.namespace = init.namespace
+    this.protocol = init.protocol
+    this.pod = init.pod
+    this.port = init.port
+    this.path = init.path
+  }
+
+  getJolokiaUri() {
+    const encodedPath = encodeURI(this.path)
+    if (!this.ip) {
+      // If no ip assigned then return named pod uri using proxy
+      return joinPaths(
+        gatewayConfig.getClusterAddr(),
+        'api',
+        'v1',
+        'namespaces',
+        this.namespace,
+        'pods',
+        `${this.protocol}:${this.pod}:${this.port}`,
+        'proxy',
+        encodedPath,
+      )
+    }
+
+    return joinPaths(`${this.protocol}://`, `${this.ip}:${this.port}`, encodedPath)
+  }
 }
 
-export interface SimpleResponse {
-  status: number
-  body: string
-  headers: Headers
+export class SimpleResponse {
+  constructor(
+    public status: number,
+    public body: string,
+    private _headers?: Headers,
+  ) {}
+
+  get headers() {
+    return !this._headers ? new Headers() : this._headers
+  }
+
+  get ok() {
+    return this.status >= 200 && this.status <= 299
+  }
 }
 
 export function isSimpleResponse(obj: unknown): obj is SimpleResponse {
@@ -214,7 +266,7 @@ export function isOptimisedCachedDomains(obj: unknown): obj is OptimisedCachedDo
   return (obj as OptimisedCachedDomains).cache !== undefined && (obj as OptimisedCachedDomains).domains !== undefined
 }
 
-export function extractHeaders(req: ExpressRequest, excludedHeaders: string[]) {
+export function extractHeaders(req: ExpressRequest, excludedHeaders: string[]): Headers {
   const headers = new Headers()
   for (const prop in req.headers) {
     if (excludedHeaders.includes(prop)) continue
@@ -228,8 +280,20 @@ export function extractHeaders(req: ExpressRequest, excludedHeaders: string[]) {
   return headers
 }
 
-export function getFetchHeaders(srcHeaders: Headers): Headers {
-  const headers = new Headers(srcHeaders)
+// Convert from request Headers type to node-fetch Headers
+export function toFetchHeaders(srcHeaders: Headers): NodeFetch.Headers {
+  const headers = new NodeFetch.Headers()
+  srcHeaders.forEach((value, name) => headers.append(name, value))
+
+  // Ensure the body can be parsed by Express
+  headers.set('Content-Type', 'application/json')
+  return headers
+}
+
+// Convert to response Headers type from node-fetch Headers
+export function fromFetchHeaders(srcHeaders: NodeFetch.Headers): Headers {
+  const headers = new Headers()
+  srcHeaders.forEach((value, name) => headers.append(name, value))
 
   // Ensure the body can be parsed by Express
   headers.append('Content-Type', 'application/json')

@@ -34,11 +34,17 @@ module.exports = () => {
   const clusterAuthFormUri = process.env.CLUSTER_AUTH_FORM || '/login'
   if (clusterAuthFormUri) console.log('Using Cluster Auth Form URL:', clusterAuthFormUri)
 
-  console.log('Using Cluster URL:', master_uri)
+  const gatewayServerHost = process.env.HAWTIO_GATEWAY_SERVER
+  if (!gatewayServerHost) {
+    console.error('The HAWTIO_GATEWAY_SERVER environment variable must be set.')
+    process.exit(1)
+  }
+
+  console.log('Using Gateway Server:', gatewayServerHost)
   console.log('Using Master Kind:', masterKind)
   console.log('Using Cluster Namespace:', namespace)
   console.log('Using Hawtio Cluster Mode:', mode)
-  console.log('USing OAuth Client Id:', clientId)
+  console.log('Using OAuth Client Id:', clientId)
 
   const kubeBase = master_uri
   const kube = new URL(kubeBase)
@@ -204,8 +210,18 @@ module.exports = () => {
       proxy: [
         {
           context: ['/master'],
-          target: master_uri,
-          pathRewrite: { '^/master': '' },
+          target: gatewayServerHost,
+          secure: false,
+          ws: true, // Nginx config maps $http_upgrade for WebSockets here
+          onProxyRes: (proxyRes, req, res) => {
+            if (proxyRes.statusCode === 401) {
+              delete proxyRes.headers['www-authenticate']
+            }
+          },
+        },
+        {
+          context: ['/management'],
+          target: gatewayServerHost,
           secure: false,
           ws: true,
         },

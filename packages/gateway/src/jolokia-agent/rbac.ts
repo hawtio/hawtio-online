@@ -25,6 +25,7 @@ import {
 } from './globals'
 import { isRecord, toStringArray } from '../utils'
 import { logger } from '../logger'
+import { gatewayConfig } from '../gateway-config'
 
 interface JmxUnionRequest {
   type: string
@@ -47,8 +48,6 @@ const REGISTRY_MBEAN_URI_PATH = 'hawtio/type=security,name=RBACRegistry'
 let ACL: Record<string, unknown>
 const regex = /^\/.*\/$/
 const rbacSearchKeyword = '*:type=security,area=jmx,*'
-
-const rbacRegistryEnabled = process.env['HAWTIO_ONLINE_DISABLE_RBAC_REGISTRY'] !== 'true'
 
 // Expose private functions for testing
 const testing = { optimisedMBeans, identifySpecialMBean, parseProperties, decorateRBAC }
@@ -211,8 +210,8 @@ export function intercept(request: MBeanRequest, role: string, mbeans: JmxDomain
     }
   }
 
-  if (rbacRegistryEnabled) {
-    logger.trace(`Intercept: RBAC registry enabled: ${rbacRegistryEnabled}`)
+  if (gatewayConfig.isRbacRegistryEnabled()) {
+    logger.trace(`Intercept: RBAC registry enabled`)
     // Intercept client-side RBACRegistry discovery request
     if (isListRBACRegistry(request)) {
       return intercepted({
