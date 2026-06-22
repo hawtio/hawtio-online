@@ -42,18 +42,17 @@ module.exports = (env, argv) => {
   const clusterAuthFormUri = process.env.CLUSTER_AUTH_FORM || `${publicPath}/login`
   if (clusterAuthFormUri) console.log('Using Cluster Auth Form URL:', clusterAuthFormUri)
 
-  const gatewayServerHost = process.env.HAWTIO_GATEWAY_SERVER || ''
-  if (gatewayServerHost.length === 0) {
-    console.log('Using webpack dev server for gateway operations')
-  } else {
-    console.log(`Redirecting gateway operations to ${gatewayServerHost}`)
+  const gatewayServerHost = process.env.HAWTIO_GATEWAY_SERVER
+  if (!gatewayServerHost) {
+    console.error('The HAWTIO_GATEWAY_SERVER environment variable must be set.')
+    process.exit(1)
   }
 
-  console.log('Using Cluster URL:', master_uri)
+  console.log('Using Gateway Server:', gatewayServerHost)
   console.log('Using Master Kind:', masterKind)
   console.log('Using Cluster Namespace:', namespace)
   console.log('Using Hawtio Cluster Mode:', mode)
-  console.log('USing OAuth Client Id:', clientId)
+  console.log('Using OAuth Client Id:', clientId)
 
   const kubeBase = master_uri
   const kube = new URL(kubeBase)
@@ -88,22 +87,27 @@ module.exports = (env, argv) => {
        */
       proxy: [
         {
-          context: ['/master'],
-          target: master_uri,
-          pathRewrite: { '^/master': '' },
+          context: ['/auth/logout'],
+          target: gatewayServerHost,
+          pathRewrite: { '^/auth/logout': '/logout' },
           secure: false,
-          ws: true,
+        },
+        {
+          context: ['/master'],
+          target: gatewayServerHost,
+          secure: false,
+          ws: true, // Nginx config maps $http_upgrade for WebSockets here
           onProxyRes: (proxyRes, req, res) => {
             if (proxyRes.statusCode === 401) {
-              /*
-               * When both the 401 status code and the www-authenticate error are encountered
-               * Chrome (un)helpfully displays a pop-up login dialog. We want to disable that
-               * since it interferes with the probing of the jolokia connections
-               */
-              console.log('Unauthorized Error detected: removing www-authenticate header')
               delete proxyRes.headers['www-authenticate']
             }
           },
+        },
+        {
+          context: ['/management'],
+          target: gatewayServerHost,
+          secure: false,
+          ws: true,
         },
       ],
 
@@ -128,15 +132,6 @@ module.exports = (env, argv) => {
         if (!devServer) {
           throw new Error('webpack-dev-server is not defined')
         }
-
-        /*
-         * Ensure that dev server properly handles json in request body
-         * Important to keep a high limit as the default of 100kb can be
-         * exceeded by request bodies resulting in the parser transmitting
-         * an empty body.
-         */
-        devServer.app.use(express.json({ type: '*/json', limit: '50mb', strict: false }))
-        devServer.app.use(express.urlencoded({ extended: false }))
 
         // Redirect / or /${publicPath} to /${publicPath}/
         devServer.app.get('/', (_, res) => res.redirect(`${publicPath}/`))
@@ -209,277 +204,6 @@ module.exports = (env, argv) => {
           res.send(JSON.stringify(oscConfig))
         }
 
-        /*
-         * Create header array for use with the external server requests
-         */
-        const createHeaders = request => {
-          /*
-           * Ensure the authorization token is included
-           */
-          return new Headers({
-            Authorization: request.get('Authorization'),
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          })
-        }
-
-        /*
-         * Build the options for a fetch function call
-         */
-        const buildConfig = (method, headers, body) => {
-          const config = {
-            method: method,
-            headers: headers,
-          }
-
-          if ((method === 'POST' || method === 'PUT') && body) {
-            config.body = JSON.stringify(body)
-          }
-
-          return config
-        }
-
-        /*
-         * Analyse a response object and return it as
-         * json. Failing that return as text
-         */
-        const handleResponse = async (response, fnName) => {
-          if (!response.ok) {
-            console.log(`Error (dev-server): ${fnName} response not ok`, await response.text())
-            return { status: response.status, body: response.statusText }
-          } else {
-            var data
-            try {
-              data = await response.clone().json()
-            } catch (error) {
-              console.error(`Error (dev-server): ${fnName} error response from master: `, error)
-              data = await response.text()
-            }
-
-            return { status: response.status, body: data }
-          }
-        }
-
-        /*
-         * See this server is not inside the cluster then we cannot access
-         * the target pod by its ip as in
-         * http://localhost:2772/proxy/http:10.217.0.139:8778/jolokia.
-         * Therefore in this dev server we need to find the pod by its ip
-         * and access it by its namespace and name through the cluster api
-         */
-        const findPodByIp = async (podIp, headers) => {
-          // Use a fieldSelector to make the query highly efficient
-          const podListUrl = `${master_uri}/api/v1/pods?fieldSelector=status.podIP=${podIp}`
-
-          try {
-            const response = await fetch(podListUrl, { headers: headers })
-            if (!response.ok) {
-              console.error(`API error finding pod by IP ${podIp}:`, response.statusText)
-              return null
-            }
-
-            const podList = await response.json()
-            if (podList.items && podList.items.length > 0) {
-              const pod = podList.items[0]
-              return {
-                name: pod.metadata.name,
-                namespace: pod.metadata.namespace,
-              }
-            }
-
-            // Pod not found
-            return null
-          } catch (error) {
-            console.error('Failed to fetch pod details:', error)
-            return null
-          }
-        }
-
-        /*
-         * Redirects from management alias path to either:
-         *
-         * - externally running instance of the gateway server
-         *   (HAWTIO_GATEWAY_SERVER needs to be defined in .env file)
-         *
-         * - internal stub code that fetches from master directly
-         */
-        const management = async (req, res, next) => {
-          const headers = createHeaders(req)
-
-          /*
-           * If a gateway server has been separately executed and defined then defer to it
-           */
-          if (gatewayServerHost.length > 0) {
-            console.log(`Info (dev-server): /master Passing request to external gateway: ${gatewayServerHost}`)
-            console.log(JSON.stringify(req.headers))
-            const uri = `${gatewayServerHost}${req.path}`
-
-            const config = buildConfig(req.method, headers, req.body)
-            response = await fetch(uri, config)
-          } else {
-            /*
-             * Resort to basic default stub gateway server
-             */
-
-            const url = /\/management\/namespaces\/(.+)\/pods\/(http|https):([^/]+)\/(.+)/
-            const match = req.originalUrl.match(url)
-            const redirectPath = `/master/api/v1/namespaces/${match[1]}/pods/${match[2]}:${match[3]}/proxy/${match[4]}`
-            if (!match) {
-              next()
-            }
-
-            /*
-             * Redirect will no longer work since fetch is being used by
-             * jolokia instead and request contains Content-Length header.
-             * So perform a sub-request instead on master to return the
-             * correct response
-             */
-            const origin = `http://localhost:${devPort}`
-            const uri = `${origin}${redirectPath}`
-
-            let response
-            if (req.method === 'GET') {
-              response = await fetch(uri, {
-                method: req.method,
-                headers: headers,
-              })
-            } else {
-              const body = req.body
-              const isEmptyObject = typeof body === 'object' && Object.keys(body).length === 0
-              const isEmptyArray = Array.isArray(body) && body.length === 0
-
-              let msg
-              if (!body) {
-                msg = `Error (dev-server): undefined body found in POST request ${redirectPath}`
-                console.warn(msg, body)
-              } else if (isEmptyArray) {
-                msg = `Error (dev-server): empty body array found in POST request ${redirectPath}`
-                console.warn(msg, body)
-              } else if (isEmptyObject) {
-                msg = `Error (dev-server): empty body object found in POST request ${redirectPath}`
-                console.warn(msg, body)
-              } else {
-                console.log(`Info (dev-server): Body in request ${redirectPath} to be passed to master`, body)
-              }
-
-              response = await fetch(uri, {
-                method: req.method,
-                body: JSON.stringify(body),
-                headers: headers,
-              })
-            }
-          }
-
-          /*
-           * Process the response from either version of gateway server
-           */
-          const r = await handleResponse(response, '/management')
-          res.status(r.status).send(r.body)
-        }
-
-        /*
-         * Callback from an external gateway server that determines
-         * if the call is authorized based on the Authorization header
-         * bearer token.
-         */
-        const authorization = async (req, res, next) => {
-          const headers = createHeaders(req)
-
-          // The regex matches paths starting with /authorization/,
-          // captures the next segment, and then captures the rest of the path.
-          const regex = /^\/authorization\/([^/]+)\/(.*)/
-
-          // The replacement string uses the captured groups ($1 and $2)
-          // to construct the new path format.
-          const replacement = '/apis/$1/v1/$2'
-
-          // Use the replace() method to apply the rewrite rule.
-          // If the regex doesn't match, replace() returns the original string.
-          const uri = `${master_uri}${req.originalUrl.replace(regex, replacement)}`
-          console.log(`Info (dev-server): /authorization directly to ${uri}`)
-          console.log('                   (express not capable of sub-requesting to itself)')
-
-          const config = buildConfig(req.method, headers, req.body)
-          response = await fetch(uri, config)
-
-          /*
-           * Process the response from either version of gateway server
-           */
-          const r = await handleResponse(response, '/authorization')
-          res.status(r.status).send(r.body)
-        }
-
-        /*
-         * Callback from an external gateway server that determines
-         * the ip address of the pod being targetted.
-         */
-        const podIP = async (req, res, next) => {
-          const headers = createHeaders(req)
-
-          // The regex matches paths starting with /podIP/,
-          // captures the next segment, and then captures the rest of the path.
-          const regex = /^\/podIP\/(.+)\/(.+)/
-
-          // The replacement string uses the captured groups ($1 and $2)
-          // to construct the new path format.
-          const replacement = '/api/v1/namespaces/$1/pods/$2'
-
-          // Use the replace() method to apply the rewrite rule.
-          // If the regex doesn't match, replace() returns the original string.
-          const uri = `${master_uri}${req.originalUrl.replace(regex, replacement)}`
-          console.log(`Info (dev-server): /podIP directly to ${uri}`)
-          console.log('                   (express not capable of sub-requesting to itself)')
-
-          const config = buildConfig(req.method, headers, req.body)
-          response = await fetch(uri, config)
-
-          /*
-           * Process the response from either version of gateway server
-           */
-          const r = await handleResponse(response, '/podIP')
-          res.status(r.status).send(r.body)
-        }
-
-        /*
-         * Callback from an external gateway server that determines
-         * the connection to the target application jolokia port and
-         * returns the required final response.
-         */
-        const proxy = async (req, res, next) => {
-          const headers = createHeaders(req)
-
-          const regex = /^\/proxy\/(http|https):(.+):(\d+)\/(.*)$/
-          const match = req.originalUrl.match(regex)
-          if (!match) {
-            return res.status(400).send('Invalid proxy URL format.')
-          }
-
-          const [, protocol, podIp, port, podPath] = match
-
-          /*
-           * Turn the podIp back into namespace/name to allow external access
-           * Production server does not need to do this as it can directly talk
-           * via the ip address.
-           */
-          const podInfo = await findPodByIp(podIp, headers)
-          if (!podInfo) {
-            return res.status(404).send(`Pod with IP ${podIp} not found.`)
-          }
-
-          const uri = `${master_uri}/api/v1/namespaces/${podInfo.namespace}/pods/${protocol}:${podInfo.name}:${port}/proxy/${podPath}`
-          console.log(`Info (dev-server): /proxy directly to ${uri}`)
-          console.log('                   (express not capable of sub-requesting to itself)')
-
-          const config = buildConfig(req.method, headers, req.body)
-          response = await fetch(uri, config)
-
-          /*
-           * Process the response from either version of gateway server
-           */
-          const r = await handleResponse(response, '/proxy')
-          res.status(r.status).send(r.body)
-        }
-
         const username = 'developer'
         const login = false
         const proxyEnabled = true
@@ -499,41 +223,8 @@ module.exports = (env, argv) => {
 
         devServer.app.get('/', (req, res) => res.redirect(`${publicPath}`))
 
-        /* management urls are meant to be at the root of the server */
-        devServer.app.get('/management/*', management)
-        devServer.app.post('/management/*', management)
-
-        devServer.app.get('/authorization/*', authorization)
-        devServer.app.post('/authorization/*', authorization)
-
-        devServer.app.get('/podIP/*', podIP)
-        devServer.app.post('/podIP/*', podIP)
-
-        devServer.app.get('/proxy/*', proxy)
-        devServer.app.post('/proxy/*', proxy)
-
         devServer.app.get(`${publicPath}/keycloak/enabled`, (_, res) => res.send(String(keycloakEnabled)))
         devServer.app.get(`${publicPath}/proxy/enabled`, (_, res) => res.send(String(proxyEnabled)))
-
-        /*
-         * Provide a server-side implementation of /auth/logout page to
-         * allow use of the Clear-Site-Data header that will clear
-         * all entries from the cache and storage relating to the app
-         */
-        devServer.app.get(`${publicPath}/auth/logout`, (req, res) => {
-          let redirectUri = req.query.redirect_uri
-
-          if (!redirectUri) {
-            // If no url then simply acknowledge
-            res.sendStatus(200)
-          } else {
-            var r = url.format(redirectUri)
-
-            // Adds the Clear-Site-Data header
-            res.header('Clear-Site-Data', '"*"')
-            res.redirect(r)
-          }
-        })
 
         return middlewares
       },

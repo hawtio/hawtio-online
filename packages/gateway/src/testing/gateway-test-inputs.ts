@@ -1,46 +1,93 @@
 import * as fs from 'fs'
 
-export const NAMESPACE = 'hawtio'
-export const POD_NAME = 'camelapp-12345abc'
-export const JOLOKIA_PORT = 10001
-export const JOLOKIA_PATH = '/actuator/jolokia'
-export const JOLOKIA_PARAMS = 'maxDepth=7&maxCollectionSize=50000&ignoreErrors=true&canonicalNaming=false'
-export const JOLOKIA_URI = `http:${POD_NAME}:${JOLOKIA_PORT}${JOLOKIA_PATH}/?${JOLOKIA_PARAMS}`
-
 const mbeanRegisterListData = fs.readFileSync(`${__dirname}/test.listMBeanRegistry.json`, 'utf8')
 const mbeanRegisterList = JSON.parse(mbeanRegisterListData)
 
 export const testData = {
+  metadata: {
+    namespace: 'hawtio',
+    jolokia: {
+      port: 10001,
+      path: '/actuator/jolokia',
+      params: 'maxDepth=7&maxCollectionSize=50000&ignoreErrors=true&canonicalNaming=false',
+    },
+  },
   authorization: {
     forbidden: false,
     adminAllowed: true,
     viewerAllowed: true,
-    allowedResponse: {
-      kind: 'SubjectAccessReviewResponse',
-      apiVersion: 'authorization.openshift.io/v1',
-      namespace: NAMESPACE,
-      allowed: true,
-      reason: 'RBAC: allowed by ClusterRoleBinding "admin" of ClusterRole "cluster-admin" to User "admin"',
+
+    openshift: {
+      allowedResponse: {
+        kind: 'SubjectAccessReviewResponse',
+        apiVersion: 'authorization.openshift.io/v1',
+        get namespace() {
+          return testData.metadata.namespace
+        },
+        allowed: true,
+        reason: 'RBAC: allowed by ClusterRoleBinding "admin" of ClusterRole "cluster-admin" to User "admin"',
+      },
+      notAllowedResponse: {
+        kind: 'SubjectAccessReviewResponse',
+        apiVersion: 'authorization.openshift.io/v1',
+        get namespace() {
+          return testData.metadata.namespace
+        },
+        allowed: false,
+      },
+      rejectedResponse: {
+        message: 'Subject Access Review Result: { allowed: false }',
+      },
     },
-    notAllowedResponse: {
-      kind: 'SubjectAccessReviewResponse',
-      apiVersion: 'authorization.openshift.io/v1',
-      namespace: NAMESPACE,
-      allowed: false,
+    kubernetes: {
+      allowedResponse: {
+        kind: 'LocalSubjectAccessReview',
+        apiVersion: 'authorization.k8s.io/v1',
+        status: {
+          allowed: true,
+          reason: 'RBAC: allowed by RoleBinding "admin-binding" to User "admin"',
+        },
+      },
+      notAllowedResponse: {
+        kind: 'LocalSubjectAccessReview',
+        apiVersion: 'authorization.k8s.io/v1',
+        status: {
+          allowed: false,
+          reason: 'RBAC: denied by default',
+        },
+      },
+    },
+    rejectedResponse: {
+      message: 'Subject Access Review Result: { allowed: false }',
     },
   },
   pod: {
-    name: POD_NAME,
+    name: 'camelapp-12345abc',
     resource: {
       kind: 'Pod',
       apiVersion: 'v1',
       metadata: {
-        name: POD_NAME,
+        name: 'camelapp-12345abc',
       },
       status: {
         phase: 'Running',
         hostIP: '192.168.126.11',
         podIP: '10.217.1.209',
+      },
+    },
+  },
+  pod2: {
+    name: 'camelapp-67890def',
+    resource: {
+      kind: 'Pod',
+      apiVersion: 'v1',
+      metadata: {
+        name: 'camelapp-67890def',
+      },
+      status: {
+        phase: 'Running',
+        hostIP: '192.168.126.11',
+        podIP: '10.217.1.210',
       },
     },
   },
@@ -369,4 +416,12 @@ export const testData = {
       },
     },
   },
+}
+
+export function jolokiaUri(protocol: string) {
+  return `${protocol}:${testData.pod.resource.status.podIP}:${testData.metadata.jolokia.port}${testData.metadata.jolokia.path}/?${testData.metadata.jolokia.params}`
+}
+
+export function jolokiaUri2(protocol: string) {
+  return `${protocol}:${testData.pod2.resource.status.podIP}:${testData.metadata.jolokia.port}${testData.metadata.jolokia.path}/?${testData.metadata.jolokia.params}`
 }
