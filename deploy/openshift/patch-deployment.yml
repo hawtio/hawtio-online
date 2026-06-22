@@ -17,6 +17,7 @@ spec:
               value: ''
             - name: OPENSHIFT_CLUSTER_VERSION
               value: '4'
+        - name: hawtio-online-gateway
           volumeMounts:
             - name: hawtio-online-tls-proxying
               mountPath: /etc/tls/private/proxying

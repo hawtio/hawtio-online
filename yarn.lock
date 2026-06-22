@@ -2647,6 +2647,7 @@ __metadata:
     "@types/js-yaml": "npm:^4.0.9"
     "@types/method-override": "npm:^3.0.0"
     "@types/node": "npm:^25.3.3"
+    "@types/node-fetch": "npm:^2.6.12"
     "@types/pino-multi-stream": "npm:^5.1.6"
     "@types/supertest": "npm:^7.2.0"
     babel-jest: "npm:^30.2.0"
@@ -2663,6 +2664,7 @@ __metadata:
     jest-fetch-mock: "npm:^3.0.3"
     jolokia.js: "npm:^2.5.0"
     jwt-decode: "npm:^4.0.0"
+    lru-cache: "npm:^11.5.1"
     method-override: "npm:^3.0.0"
     pino: "npm:^10.3.1"
     pino-http: "npm:^11.0.0"
@@ -5275,6 +5277,16 @@ __metadata:
   version: 0.7.33
   resolution: "@types/ms@npm:0.7.33"
   checksum: 10/2cb5af611ace05ab2ae40422c8539850cf983197982bb04b83acf59e6e692e2faccf336a82ac4db97f7ea28f2baa0a8990fa5eb1cd72c5cab17b5b3609b0b650
+  languageName: node
+  linkType: hard
+
+"@types/node-fetch@npm:^2.6.12":
+  version: 2.6.13
+  resolution: "@types/node-fetch@npm:2.6.13"
+  dependencies:
+    "@types/node": "npm:*"
+    form-data: "npm:^4.0.4"
+  checksum: 10/944d52214791ebba482ca1393a4f0d62b0dbac5f7343ff42c128b75d5356d8bcefd4df77771b55c1acd19d118e16e9bd5d2792819c51bc13402d1c87c0975435
   languageName: node
   linkType: hard
 
@@ -10563,7 +10575,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:^4.0.5":
+"form-data@npm:^4.0.4, form-data@npm:^4.0.5":
   version: 4.0.6
   resolution: "form-data@npm:4.0.6"
   dependencies:
@@ -13494,6 +13506,13 @@ __metadata:
   version: 10.4.3
   resolution: "lru-cache@npm:10.4.3"
   checksum: 10/e6e90267360476720fa8e83cc168aa2bf0311f3f2eea20a6ba78b90a885ae72071d9db132f40fda4129c803e7dcec3a6b6a6fbb44ca90b081630b810b5d6a41a
+  languageName: node
+  linkType: hard
+
+"lru-cache@npm:^11.5.1":
+  version: 11.5.1
+  resolution: "lru-cache@npm:11.5.1"
+  checksum: 10/02c4f73967d91fb101f4accf8ebac9e0541e08e16d987bdb9e9737f13e5f2c4bc33c593b98ec30e4486bf899bc97edb36fbd133684b36087336559e41edafdea
   languageName: node
   linkType: hard
 

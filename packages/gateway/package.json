@@ -20,9 +20,10 @@
     "start:gateway-dev": "node --env-file .env.development proxy-dev-server.js",
     "start:gateway-server": "tsup --config tsup.config.dev.ts --watch",
     "build": "webpack --mode production --progress --config webpack.config.prod.js",
-    "test": "jest --detectOpenHandles",
-    "test:watch": "jest --detectOpenHandles --watch",
-    "test:coverage": "jest --coverage"
+    "test": "yarn create-test-certs && jest --detectOpenHandles",
+    "test:watch": "yarn create-test-certs && jest --detectOpenHandles --watch",
+    "test:coverage": "yarn create-test-certs && jest --coverage",
+    "create-test-certs": "cd test-tls && ./create-cert.sh"
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -33,6 +34,7 @@
     "https": "^1.0.0",
     "jolokia.js": "^2.5.0",
     "jwt-decode": "^4.0.0",
+    "lru-cache": "^11.5.1",
     "method-override": "^3.0.0",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
@@ -47,6 +49,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/method-override": "^3.0.0",
     "@types/node": "^25.3.3",
+    "@types/node-fetch": "^2.6.12",
     "@types/pino-multi-stream": "^5.1.6",
     "@types/supertest": "^7.2.0",
     "babel-jest": "^30.2.0",

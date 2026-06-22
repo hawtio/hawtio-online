@@ -119,10 +119,6 @@ separately on the CLI and have them correctly interface with one another in the 
 when installed in a cluster.
 
 * Create, if not already, a new .env.development file, in `packages/gateway` by copying the [example](packages/gateway/env.development.defaults);
-* Set the environment variable in `packages/gateway.env.development` to the value
-```
-HAWTIO_ONLINE_GATEWAY_WEB_SERVER=http://localhost:2772
-```
 * Create, if not already, a new .env file in `packages/online-shell` by copying the [example](packages/online-shell/.env.defaults);
 * Set the online shell environment variable in `packages/online-shell/.env` to the value
 ```
