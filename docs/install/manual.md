@@ -64,7 +64,7 @@ You can optionally pass `SECRET_NAME` and `CN` to customise the secret name and 
 
 Instead of running the scripts you can choose to perform everything manually.
 
-For manual steps, see [Generating Certificates Manually](docs/generate-certificates.md).
+For manual steps, see [Generating Certificates Manually](../generate-certificates.md).
 
 ## Deployment
 
