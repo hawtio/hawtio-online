@@ -2702,7 +2702,7 @@ __metadata:
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^9.0.0"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:^5.6.7"
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^30.4.2"
     mini-css-extract-plugin: "npm:2.10.0"
@@ -2795,7 +2795,7 @@ __metadata:
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^9.0.0"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:^5.6.7"
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^30.4.2"
     mini-css-extract-plugin: "npm:2.10.0"
@@ -2888,7 +2888,7 @@ __metadata:
     connect-history-api-fallback: "npm:^2.0.0"
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^9.0.0"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:^5.6.7"
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^30.4.2"
     mini-css-extract-plugin: "npm:2.10.0"
@@ -3016,7 +3016,7 @@ __metadata:
     css-loader: "npm:^7.1.2"
     dotenv-webpack: "npm:^9.0.0"
     file-loader: "npm:^6.2.0"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:^5.6.7"
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^30.4.2"
     jquery-match-height: "npm:^0.7.2"
@@ -11307,9 +11307,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-webpack-plugin@npm:^5.6.3":
-  version: 5.6.3
-  resolution: "html-webpack-plugin@npm:5.6.3"
+"html-webpack-plugin@npm:^5.6.7":
+  version: 5.6.7
+  resolution: "html-webpack-plugin@npm:5.6.7"
   dependencies:
     "@types/html-minifier-terser": "npm:^6.0.0"
     html-minifier-terser: "npm:^6.0.2"
@@ -11324,7 +11324,7 @@ __metadata:
       optional: true
     webpack:
       optional: true
-  checksum: 10/fd2bf1ac04823526c8b609555d027b38b9d61b4ba9f5c8116a37cc6b62d5b86cab1f478616e8c5344fee13663d2566f5c470c66265ecb1e9574dc38d0459889d
+  checksum: 10/fc81e1c2d3ef5d709b700b53bb31feef200a08d9b31a819d4623c80dcf412245939a9d6014e574dc5bed7388b3119e29d047d9e712c4889b8d7270dc25990a8d
   languageName: node
   linkType: hard
 
