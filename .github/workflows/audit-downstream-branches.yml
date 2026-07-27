@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        branch: [ 2.x-redhat, 2.3.x-redhat ]
+        branch: [ 2.x-redhat, 2.4.x-redhat ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
