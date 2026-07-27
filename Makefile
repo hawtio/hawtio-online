@@ -198,8 +198,8 @@ get-image:
 get-version:
 	@echo $(CUSTOM_VERSION)
 
-set-version:
-	./script/set_version.sh $(CUSTOM_VERSION) $(CUSTOM_IMAGE)
+list-images:
+	$(CONTAINER_BUILDER) images | grep hawtio
 
 git-tag:
 	./script/git_tag.sh $(CUSTOM_VERSION) $(RELEASE_GIT_REMOTE)
