@@ -47,25 +47,32 @@ generate_nginx_gateway_conf() {
   # Get the local IP (handle cases where hostname -i returns multiple IPs)
   LOCAL_IP=$(awk 'END{print $1}' /etc/hosts)
 
-  # Extract the first octet (e.g., 10, 172, 192)
-  FIRST_OCTET=$(echo "${LOCAL_IP}" | cut -d'.' -f1)
-  if [ "${FIRST_OCTET}" = "10" ]; then
-     # Class A Private Network
-     export REAL_IP_FROM="10.0.0.0/8"
-  elif [ "${FIRST_OCTET}" = "172" ]; then
-     # Class B Private Network
-     export REAL_IP_FROM="172.16.0.0/12"
-  elif [ "${FIRST_OCTET}" = "192" ]; then
-     # Class C Private Network
-     export REAL_IP_FROM="192.168.0.0/16"
+  # Secure Default: If HAWTIO_TRUSTED_NETWORK_SUBNET is not explicitly
+  # provided by the operator, limit trust strictly to the pod's /16
+  # network segment (or host IP).
+  if [ -n "${HAWTIO_TRUSTED_NETWORK_SUBNET:-}" ]; then
+    CUSTOM_POD_NETWORK="${HAWTIO_TRUSTED_NETWORK_SUBNET}"
+  elif echo "${LOCAL_IP}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'; then
+    # IPv4: Calculate the /16 subnet for this specific pod
+    # node/pod SDN subnets almost always allocate pod ranges
+    # within a /14 or /16 chunk per node or per cluster segment.
+    # Masking to /16 ensures that the Router pod/node IP and the
+    # hawtio-online pod IP share the trusted rule, even if not on
+    # the exact same .x third octet.
+    CUSTOM_POD_NETWORK=$(echo "${LOCAL_IP}" | awk -F. '{print $1"."$2".0.0/16"}')
+  elif echo "${LOCAL_IP}" | grep -q ':'; then
+    # IPv6: Trust only the local /64 subnet
+    CUSTOM_POD_NETWORK=$(echo "${LOCAL_IP}" | awk -F: '{print $1":"$2":"$3"::/64"}')
   else
-     # Fallback: If we can't determine the private net, we must default to 0.0.0.0/0
-     # to ensure the app works, though it reduces the precision of the rate limiting.
-     echo "WARNING: Could not determine private subnet from IP ${LOCAL_IP}. Defaulting 'set_real_ip_from' to 0.0.0.0/0"
-     export REAL_IP_FROM="0.0.0.0/0"
+    # Failsafe: Trust only the specific host IP (/32)
+    CUSTOM_POD_NETWORK="${LOCAL_IP}/32"
   fi
 
-  echo "Detected Local IP: ${LOCAL_IP}. Trusting subnet for Real IP: ${REAL_IP_FROM}"
+  # Export for use in nginx template
+  export CUSTOM_POD_NETWORK="${CUSTOM_POD_NETWORK}"
+
+  echo "Detected Local IP: ${LOCAL_IP}"
+  echo "Trusting pod subnet: ${CUSTOM_POD_NETWORK}"
 
   if [ -n "${HAWTIO_ONLINE_SSL_CERTIFICATE}" ]; then
     echo "Configurating nginx SSL protocol"
@@ -109,7 +116,7 @@ generate_nginx_gateway_conf() {
     $HAWTIO_ONLINE_GATEWAY_APP_PROTOCOL
     $HAWTIO_ONLINE_GATEWAY_APP_PORT
     $NGINX_LOG_LEVEL
-    $REAL_IP_FROM
+    $CUSTOM_POD_NETWORK
     ' < ${TEMPLATE} > /etc/nginx/conf.d/nginx.conf
 }
 

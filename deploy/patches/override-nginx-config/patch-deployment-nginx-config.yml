@@ -1,0 +1,22 @@
+#
+# Patch to update the deployment
+# to add a custom nginx config from
+# a configmap
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hawtio-online
+spec:
+  template:
+    spec:
+      containers:
+        - name: hawtio-online
+          volumeMounts:
+            - name: nginx-template-override
+              mountPath: /nginx-gateway.conf.template
+              subPath: nginx-gateway.conf.template
+      volumes:
+        - name: nginx-template-override
+          configMap:
+            name: hawtio-nginx-template-override
