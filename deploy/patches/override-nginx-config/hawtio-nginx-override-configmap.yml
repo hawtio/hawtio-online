@@ -1,0 +1,269 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hawtio-nginx-template-override
+data:
+  nginx-gateway.conf.template: |
+    # vim: set filetype=nginx:
+
+    error_log /dev/stderr ${NGINX_LOG_LEVEL};
+
+    # IP Resolution
+    real_ip_header X-Forwarded-For;
+
+    #
+    # Overridden hardcoded variable
+    # Set to the class of the IP address of the
+    # hawtio-online pod / nginx server, eg.
+    # if ip is identified as 10.217.0.137
+    # then set to 10.0.0.0/8
+    #
+    set_real_ip_from 10.0.0.0/8;
+
+    # Define Zones
+
+    # Zone A: Sensitive APIs (Login, Management)
+    # Strict: 10 reqs/sec. Good for brute-force protection.
+    limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
+
+    # Zone B: Static Assets (Files)
+    # Fast: 50 reqs/sec.
+    limit_req_zone $binary_remote_addr zone=static_limit:10m rate=50r/s;
+
+    # Zone C: Kubernetes Proxy (High Traffic) - NEW
+    # We allow a high rate (30r/s) because the dashboard is chatty.
+    limit_req_zone $binary_remote_addr zone=proxy_limit:10m rate=30r/s;
+
+    # Zone D: Connections
+    limit_conn_zone $binary_remote_addr zone=addr_conn:10m;
+
+    proxy_cache_path /var/cache/nginx/pods levels=1:2 keys_zone=pods:2m max_size=4m inactive=60m use_temp_path=off;
+    proxy_cache_path /var/cache/nginx/rbac levels=1:2 keys_zone=rbac:256k max_size=3m inactive=60m use_temp_path=off;
+    proxy_cache_path /var/cache/nginx/rbac2 levels=1:2 keys_zone=rbac2:256k max_size=3m inactive=60m use_temp_path=off;
+
+    map $uri $new {
+        / /online/;
+        /online /online/;
+    }
+
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
+
+    server {
+        listen              ${LISTEN_SERVER_PORT};
+        server_name         localhost;
+        ${SERVING_SSL_CERTIFICATE}
+        ${SERVING_SSL_KEY}
+        absolute_redirect   off;
+        gzip                on;
+        gzip_types text/plain application/javascript text/javascript;
+        root                /usr/share/nginx/html/;
+
+        # Keep the tunnel open for 1 hour even if silent
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+        # Limit the keepalive of connections (60s default)
+        keepalive_timeout 60s;
+
+        # Do not show server version
+        server_tokens off;
+
+        # Performance tuning
+        subrequest_output_buffer_size ${NGINX_SUBREQUEST_OUTPUT_BUFFER_SIZE};
+        client_body_buffer_size       ${NGINX_CLIENT_BODY_BUFFER_SIZE};
+        proxy_buffers                 ${NGINX_PROXY_BUFFERS};
+
+        # For debugging location rewrite
+        #rewrite_log on;
+
+        if ($request_method !~ ^(GET|HEAD|POST)$ ) {
+          return 444;
+        }
+
+        include /etc/nginx/includes/security-headers-common.conf;
+
+        # Only accept newer ssl protocols (if applicable)
+        ${SERVING_SSL_PROTOCOLS}
+
+        if ($new) {
+            rewrite ^ $new redirect;
+        }
+
+        error_page 403 /hawtio-403.html;
+        location = /hawtio-403.html {
+            internal;
+        }
+
+        error_page 404 /hawtio-404.html;
+        location = /hawtio-404.html {
+            internal;
+        }
+
+        error_page 500 502 503 504 /hawtio-50x.html;
+        location = /hawtio-50x.html {
+            internal;
+        }
+
+        location /auth/logout {
+            limit_req zone=api_limit burst=20 nodelay;
+
+            if ( $arg_redirect_uri = '') {
+              return 200 "Acknowledge logout but nothing further to do";
+            }
+
+            include /etc/nginx/includes/clear-storage-headers.conf;
+            include /etc/nginx/includes/security-headers-common.conf;
+
+            proxy_pass                    ${HAWTIO_ONLINE_GATEWAY_APP_PROTOCOL}://localhost:${HAWTIO_ONLINE_GATEWAY_APP_PORT}/logout;
+            proxy_pass_request_headers    on;
+            proxy_pass_request_body       on;
+            proxy_redirect                off;
+            proxy_ssl_verify              off;
+            proxy_ssl_trusted_certificate /var/run/secrets/kubernetes.io/serviceaccount/ca.crt;
+            proxy_ssl_session_reuse       on;
+            proxy_http_version            1.1;
+            proxy_set_header Upgrade      $http_upgrade;
+            proxy_set_header Connection   $connection_upgrade;
+        }
+
+        # Static content serving
+        location /online {
+            # Allow a big burst (100) and high rate (50r/s) for requests.
+            # This stops a dedicated DoS scripts not a browser.
+            limit_req zone=static_limit burst=100 nodelay;
+
+            add_header location-rule ONLINE always;
+            include /etc/nginx/includes/security-headers-online.conf;
+
+            alias     /usr/share/nginx/html/online;
+            try_files $uri$args $uri /online/index.html;
+            gzip_static on;
+        }
+
+        #
+        # External location that passes control to the gateway
+        # server which checks the URI is approved then proxies
+        # to the kubernetes api server
+        #
+        location ~ ^/master/(.*) {
+            # burst uses the injected value to allow the dashboard
+            # to fire an initial number of requests (default: 5000)
+            # instantly without error.
+            limit_req zone=proxy_limit burst=${NGINX_MASTER_BURST} nodelay;
+
+            add_header                    location-rule MASTER always;
+            include /etc/nginx/includes/security-headers-common.conf;
+
+            proxy_pass                    ${HAWTIO_ONLINE_GATEWAY_APP_PROTOCOL}://localhost:${HAWTIO_ONLINE_GATEWAY_APP_PORT}/master/$1$is_args$args;
+            proxy_pass_request_headers    on;
+            proxy_pass_request_body       on;
+            proxy_redirect                off;
+            proxy_ssl_verify              off;
+            proxy_ssl_trusted_certificate /var/run/secrets/kubernetes.io/serviceaccount/ca.crt;
+            proxy_ssl_session_reuse       on;
+            proxy_http_version            1.1;
+            proxy_set_header Upgrade      $http_upgrade;
+            proxy_set_header Connection   $connection_upgrade;
+        }
+
+        location /management {
+            limit_req zone=api_limit burst=50 nodelay;
+
+            add_header                    location-rule MANAGEMENT always;
+
+            include /etc/nginx/includes/security-headers-common.conf;
+
+            proxy_pass                    ${HAWTIO_ONLINE_GATEWAY_APP_PROTOCOL}://localhost:${HAWTIO_ONLINE_GATEWAY_APP_PORT}/management;
+            proxy_pass_request_headers    on;
+            proxy_pass_request_body       on;
+            proxy_redirect                off;
+            proxy_ssl_verify              off;
+            proxy_ssl_trusted_certificate /var/run/secrets/kubernetes.io/serviceaccount/ca.crt;
+            proxy_ssl_session_reuse       on;
+            proxy_http_version            1.1;
+            proxy_set_header Upgrade      $http_upgrade;
+            proxy_set_header Connection   $connection_upgrade;
+        }
+
+        # Self-LocalSubjectAccessReview requests cache
+        location /authorization {
+            allow 127.0.0.1;
+            allow ::1;
+            deny all;
+
+            proxy_pass                    https://kubernetes.default/;
+            rewrite                       /authorization/([^/]+)/(.*) /apis/$1/v1/$2 break;
+            proxy_set_header              Content-Type application/json;
+            proxy_pass_request_headers    on;
+            proxy_pass_request_body       on;
+            proxy_redirect                off;
+            proxy_ssl_verify              on;
+            proxy_ssl_trusted_certificate /var/run/secrets/kubernetes.io/serviceaccount/ca.crt;
+            proxy_ssl_session_reuse       on;
+            proxy_cache                   rbac;
+            proxy_cache_methods           POST;
+            proxy_cache_key               $uri$is_args$args|$http_authorization;
+            proxy_cache_valid             201 10s;
+            proxy_ignore_headers          Cache-Control;
+        }
+
+        # Duplicated location, as it seems caching does not handle multiple sub-requests calling the same location
+        # leading to different hash keys :(
+        location /authorization2 {
+            allow 127.0.0.1;
+            allow ::1;
+            deny all;
+
+            proxy_pass                    https://kubernetes.default/;
+            rewrite                       /authorization2/([^/]+)/(.*) /apis/$1/v1/$2 break;
+            proxy_set_header              Content-Type application/json;
+            proxy_pass_request_headers    on;
+            proxy_pass_request_body       on;
+            proxy_redirect                off;
+            proxy_ssl_verify              on;
+            proxy_ssl_trusted_certificate /var/run/secrets/kubernetes.io/serviceaccount/ca.crt;
+            proxy_ssl_session_reuse       on;
+            proxy_cache                   rbac2;
+            proxy_cache_methods           POST;
+            proxy_cache_key               $uri$is_args$args|$http_authorization;
+            proxy_cache_valid             201 10s;
+            proxy_ignore_headers          Cache-Control;
+        }
+
+        # Pod details requests cache
+        location /podIP {
+            allow 127.0.0.1;
+            allow ::1;
+            deny all;
+
+            add_header location-rule POD_IP always;
+
+            proxy_pass                    https://kubernetes.default/;
+            rewrite                       /podIP/(.+)/(.+) /api/v1/namespaces/$1/pods/$2 break;
+            proxy_pass_request_headers    on;
+            proxy_redirect                off;
+            proxy_ssl_verify              on;
+            proxy_ssl_trusted_certificate /var/run/secrets/kubernetes.io/serviceaccount/ca.crt;
+            proxy_ssl_session_reuse       on;
+            proxy_cache                   pods;
+            proxy_cache_valid             200 1m;
+            proxy_ignore_headers          Cache-Control;
+        }
+
+        # Proxy pod addressed by podIP
+        location ~ ^/proxy/(http|https):(.+):(\d+)/(.*)$ {
+            allow 127.0.0.1;
+            allow ::1;
+            deny all;
+
+            proxy_pass                $1://$2:$3/$4$is_args$args;
+            proxy_ssl_verify          off;
+            proxy_ssl_session_reuse   on;
+            ${PROXY_SSL_CERTIFICATE}
+            ${PROXY_SSL_KEY}
+            # Do not foward authorization header
+            proxy_set_header          Authorization "";
+        }
+    }
