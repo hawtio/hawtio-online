@@ -22,19 +22,19 @@
     <includeBaseDirectory>False</includeBaseDirectory>
     <files>
         <file>
-          <source>${project.basedir}/docker/gateway/env.product</source>
+          <source>${project.basedir}/packages/gateway/env.product</source>
           <outputDirectory>/</outputDirectory>
           <fileMode>0644</fileMode>
         </file>
         <file>
-          <source>${project.basedir}/docker/gateway/gateway.sh</source>
+          <source>${project.basedir}/packages/gateway/gateway.sh</source>
           <outputDirectory>/</outputDirectory>
           <fileMode>0755</fileMode>
         </file>
     </files>
     <fileSets>
         <fileSet>
-            <directory>${project.basedir}/docker/gateway/dist</directory>
+            <directory>${project.basedir}/packages/gateway/dist</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
                 <include>**</include>
