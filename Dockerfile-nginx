@@ -1,10 +1,10 @@
-# Regardless of arch being required (amd64 or arm64) this will
-# 'compile' the hawtio-online javascript package natively without
-# resorting to a foreign image that would have to be emulated and
-# so really sloooow!
-# The resulting javascript/assets are then copied into the final image
-# that conforms with the correct architecture.
-FROM --platform=${BUILDPLATFORM} docker.io/node:22-alpine as builder
+FROM registry.access.redhat.com/hi/nodejs:22 as staging
+
+#
+# Ensure that yarn is installed
+#
+USER root
+RUN command -v yarn || npm i -g yarn
 
 WORKDIR /hawtio-online
 
@@ -17,74 +17,153 @@ COPY .yarn/releases .yarn/releases
 RUN yarn install
 RUN yarn build
 
-# Build stage to extract envsubst
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4 as envsubst
+COPY Makefile ./
+RUN cat Makefile | grep ^VERSION.*[0-9] >> hawtio-online-version
 
-RUN microdnf -y install gettext
+#######################################################
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
+#
+# Final Image
+#
+FROM registry.access.redhat.com/ubi9-minimal:9.8
 
-ENV NGINX_VERSION 1.22.1-1.el9
+#
+# Args for population of labels and metadata
+#
+# The hawtio namespace for the build images
+ARG HAWTIO_NAMESPACE="rhbac-4"
+# Name of the application without the main registry (used in labels)
+ARG HAWTIO_ONLINE_IMAGE_LABEL_NAME=${HAWTIO_NAMESPACE}/hawtio-rhel9
 
-LABEL name="nginxinc/nginx" \
-    vendor="NGINX Inc." \
-    version="${NGINX_VERSION}" \
-    release="1" \
-    summary="NGINX" \
-    description="nginx will do ....."
-## Required labels above - recommended below
-LABEL url="https://www.nginx.com/" \
-    io.k8s.display-name="NGINX" \
+#
+# nginx environment
+#
+ARG NGINX_ETC=/etc/nginx
+ARG NGINX_CONFIG=${NGINX_ETC}/nginx.conf
+ARG NGINX_CACHE=/var/cache/nginx
+ARG NGINX_LOG=/var/log/nginx
+ARG NGINX_SHARE=/usr/share/nginx
+ARG NGINX_HTML=${NGINX_SHARE}/html
+ARG NGINX_ONLINE=${NGINX_HTML}/online
+
+# The user id for nginx on RHEL
+ARG NGINX_USER=999
+
+#
+# Version of nginx
+#
+ARG NGINX_MAJOR_VERSION=1
+ARG NGINX_MINOR_VERSION=22
+ARG NGINX_BUILD_VERSION=1
+
+#
+# Hawtio environment
+#
+# Location of hawtio-online in staging container (same as WORKDIR)
+ARG HAWTIO_ONLINE_STAGING_DIR=/hawtio-online
+ARG HAWTIO_ONLINE_STAGING_BUILD_DIR=${HAWTIO_ONLINE_STAGING_DIR}/packages/online-shell/build
+ARG HAWTIO_ONLINE_DOCKER_DIR=docker
+ARG HAWTIO_ONLINE_BRANDING_DIR=branding
+
+LABEL name="${HAWTIO_ONLINE_IMAGE_LABEL_NAME}" \
+    version="2" \
+    version.detail="see /opt/hawtio/hawtio-online-version" \
+    summary="The Red Hat build of HawtIO helps discovering and managing Jolokia-monitored applications deployed on OpenShift." \
+    description="The Red Hat build of HawtIO helps discovering and managing Jolokia-monitored applications deployed on OpenShift." \
+    com.redhat.component="hawtio-container" \
+    io.k8s.description="The Red Hat build of HawtIO helps discovering and managing Jolokia-monitored applications deployed on OpenShift." \
+    io.k8s.display-name="Red Hat build of HawtIO" \
     io.openshift.expose-services="8443:https" \
-    io.openshift.tags="nginx,nginxinc"
+    io.openshift.tags="hawtio,jolokia" \
+    maintainer="Paul Richardson <Paul.Richardson3@ibm.com>"
 
-COPY docker/nginx.repo /etc/yum.repos.d/nginx.repo
+#
+# Perform an upgrade of all packages to ensure
+# any outstanding packages are updates from the
+# base images
+#
+RUN microdnf upgrade -y
 
-RUN curl -sO https://nginx.org/keys/nginx_signing.key && \
-    rpm --import ./nginx_signing.key && \
-    microdnf -y install --setopt=tsflags=nodocs nginx-${NGINX_VERSION}.ngx && \
-    rm -f ./nginx_signing.key && \
+#
+# Install gettext for envsubst
+#
+RUN microdnf install -y gettext
+
+#
+# Install nginx and cleanup
+#
+RUN microdnf -y module enable nginx:${NGINX_MAJOR_VERSION}.${NGINX_MINOR_VERSION}
+RUN microdnf install -y nginx-${NGINX_MAJOR_VERSION}.${NGINX_MINOR_VERSION}.${NGINX_BUILD_VERSION} && \
     microdnf clean all
 
-# forward request and error logs to docker log collector
+#
+# Modify the nginx configuration
+#
+# Forward request and error logs to docker log collector
 # - Change pid file location & remove nginx user & change port to 8080
 # - modify perms for non-root runtime
-RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
-    ln -sf /dev/stderr /var/log/nginx/error.log && \
-    sed -i 's~/var/run/nginx.pid~/var/cache/nginx/nginx.pid~g' /etc/nginx/nginx.conf && \
-    sed -i -e '/user/!b' -e '/nginx/!b' -e '/nginx/d' /etc/nginx/nginx.conf && \
-    chown -R 998 /var/cache/nginx /etc/nginx && \
-    rm -f /etc/nginx/conf.d/default.conf && \
-    chmod -R g=u /var/cache/nginx /etc/nginx
+#
+RUN mkdir -p ${NGINX_CACHE}/pods ${NGINX_CACHE}/rbac ${NGINX_CACHE}/rbac2 && \
+    ln -sf /dev/stdout ${NGINX_LOG}/access.log && \
+    ln -sf /dev/stderr ${NGINX_LOG}/error.log && \
+    sed -i "s~pid.*~pid ${NGINX_CACHE}/nginx.pid;~g" ${NGINX_CONFIG} && \
+    sed -i '/listen/s%80%8000%' ${NGINX_CONFIG} && \
+    sed -i -e '/user/!b' -e '/nginx/!b' -e '/nginx/d' ${NGINX_CONFIG} && \
+    chown -R ${NGINX_USER} ${NGINX_CACHE} ${NGINX_ETC} ${NGINX_LOG} ${NGINX_SHARE} && \
+    chmod -R g=u ${NGINX_CACHE} ${NGINX_ETC} ${NGINX_LOG}
+
+#
+# Remove default installed boilerplate
+#
+RUN rm -f ${NGINX_ETC}/conf.d/default.conf \
+          ${NGINX_HTML}/index.html
+
+#
+# Update locations of osconsole config
+#
+RUN mkdir -p ${NGINX_ONLINE}/osconsole && \
+    touch ${NGINX_ONLINE}/osconsole/config.json && \
+    chown ${NGINX_USER} ${NGINX_ONLINE}/osconsole/config.json && \
+    chmod g=u ${NGINX_ONLINE}/osconsole/config.json
+
+#
+# Copy include directory
+#
+COPY ${HAWTIO_ONLINE_DOCKER_DIR}/includes ${NGINX_ETC}/includes
+
+#
+# Copy docker config files over
+#
+COPY ${HAWTIO_ONLINE_DOCKER_DIR}/nginx-gateway.conf.template \
+    ${HAWTIO_ONLINE_DOCKER_DIR}/osconsole/config.sh \
+    ${HAWTIO_ONLINE_DOCKER_DIR}/nginx.sh \
+    /
+
+#
+# Copy error pages
+#
+COPY ${HAWTIO_ONLINE_DOCKER_DIR}/hawtio-?0?.html ${NGINX_HTML}/
+
+#
+# Copy built hawtio-online app
+#
+COPY --from=staging ${HAWTIO_ONLINE_STAGING_BUILD_DIR} ${NGINX_ONLINE}/
+
+#
+# Copy custom product branding (overwrites existing brought from staging build)
+#
+COPY ${HAWTIO_ONLINE_BRANDING_DIR}/ ${NGINX_ONLINE}/
+
+#
+# Copy licenses and version file
+#
+RUN mkdir -p /opt/hawtio/licenses
+COPY --from=staging ${HAWTIO_ONLINE_STAGING_DIR}/docker/licenses \
+    ${HAWTIO_ONLINE_STAGING_DIR}/hawtio-online-version \
+    /opt/hawtio/
 
 EXPOSE 8443
-EXPOSE 8080
 
-## Add symbolic link to config.json to avoid mounting issues
-#RUN ln -sf /usr/share/nginx/html/config.json /usr/share/nginx/html/config.json
-
-RUN rm /usr/share/nginx/html/index.html
-
-RUN mkdir -p /usr/share/nginx/html/online/osconsole && \
-    touch /usr/share/nginx/html/online/osconsole/config.json && \
-    chown 998 /usr/share/nginx/html/online/osconsole/config.json && \
-    chmod g=u /usr/share/nginx/html/online/osconsole/config.json
-
-COPY docker/nginx-gateway.conf.template docker/osconsole/config.sh docker/nginx.sh /
-
-# Copy include directory
-COPY docker/includes /etc/nginx/includes
-
-# Copy error pages
-COPY docker/hawtio-?0?.html /usr/share/nginx/html/
-
-# Copy licenses
-RUN mkdir -p /opt/hawtio/licenses
-COPY --from=builder /hawtio-online/docker/licenses /opt/hawtio/licenses
-
-COPY --from=builder /hawtio-online/packages/online-shell/build /usr/share/nginx/html/online/
-COPY --from=envsubst /usr/bin/envsubst /usr/local/bin/
-
-USER 998
+USER ${NGINX_USER}
 
 CMD ["./nginx.sh"]

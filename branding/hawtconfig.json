@@ -1,0 +1,21 @@
+{
+  "about": {
+    "title": "Red Hat build of HawtIO",
+    "productInfo": [],
+    "additionalInfo": "The Red Hat build of HawtIO eases the discovery and management of hawtio-enabled applications deployed on OpenShift.",
+    "copyright": "© HawtIO project & Red Hat",
+    "imgSrc": "/online/hawtio-logo.svg"
+  },
+  "branding": {
+    "appName": "Red Hat build of HawtIO",
+    "showAppName": true,
+    "appLogoUrl": "/online/hawtio-logo.svg",
+    "companyLogoUrl": "/online/company-logo-RedHat-A-Reverse-RGB.png",
+    "css": "/online/branding-redhat.css",
+    "favicon": "/online/favicon.ico"
+  },
+  "login": {
+    "title": "Log in with your token"
+  },
+  "disabledRoutes": ["connect"]
+}

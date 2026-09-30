@@ -8,6 +8,8 @@
 !.yarnrc.yml
 !.yarn/plugins
 !.yarn/releases
+!Makefile
+!branding
 
 **/node_modules/
 **/site/
