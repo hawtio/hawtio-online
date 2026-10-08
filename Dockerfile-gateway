@@ -1,3 +1,13 @@
+#
+# Global ARGs required
+#
+# Version
+ARG HAWTIO_ONLINE_VERSION=2.5.0
+# The hawtio namespace for the build images
+ARG HAWTIO_NAMESPACE="rhbac-4"
+# Name of the gateway without the main registry (used in labels)
+ARG HAWTIO_GATEWAY_IMAGE_LABEL_NAME=${HAWTIO_NAMESPACE}/hawtio-gateway-rhel9
+
 FROM registry.access.redhat.com/hi/nodejs:22 as staging
 
 #
@@ -31,12 +41,11 @@ RUN cat Makefile | grep ^VERSION.*[0-9] >> hawtio-online-gateway-version
 FROM registry.access.redhat.com/ubi9-minimal:9.8
 
 #
-# Args for population of labels and metadata
+# From global variables
 #
-# The hawtio namespace for the build images
-ARG HAWTIO_NAMESPACE="rhbac-4"
-# Name of the gateway without the main registry (used in labels)
-ARG HAWTIO_GATEWAY_IMAGE_LABEL_NAME=${HAWTIO_NAMESPACE}/hawtio-gateway-rhel9
+ARG HAWTIO_ONLINE_VERSION
+ARG HAWTIO_NAMESPACE
+ARG HAWTIO_GATEWAY_IMAGE_LABEL_NAME
 
 # The user id for nginx on RHEL
 ARG NGINX_USER=999
@@ -62,6 +71,7 @@ ARG NGINX_BUILD_VERSION=1
 ARG GATEWAY_STAGING_DIR=/hawtio-online-gateway
 ARG GATEWAY_STAGING_BUILD_DIR=${GATEWAY_STAGING_DIR}/packages/gateway/dist
 ARG GATEWAY_DEST_DIR=/opt/hawtio-online-gateway
+ARG HAWTIO_DESCRIPTON="The Red Hat build of HawtIO Gateway providing extra function support for HawtIO on OpenShift."
 
 #
 # Perform an upgrade of all packages to ensure
@@ -87,16 +97,16 @@ RUN id ${NODE_USER} &>/dev/null || useradd -M -s /bin/bash -u ${NODE_USER} nodeu
 #
 # Label metadata
 #
-LABEL name="${HAWTIO_GATEWAY_IMAGE_LABEL_NAME}" \
-    version="2" \
-    version.detail="see /opt/hawtio/hawtio-online-version" \
-    summary="The Red Hat build of HawtIO Gateway providing extra function support for HawtIO on OpenShift." \
-    description="The Red Hat build of HawtIO Gateway providing extra function support for HawtIO on OpenShift." \
-    com.redhat.component="hawtio-gateway-container" \
-    io.k8s.description="The Red Hat build of HawtIO Gateway providing extra function support for HawtIO on OpenShift." \
+LABEL com.redhat.component="hawtio-gateway-container" \
+    description="${HAWTIO_DESCRIPTION}" \
+    io.k8s.description="${HAWTIO_DESCRIPTION}" \
     io.k8s.display-name="Red Hat build of HawtIO Gateway" \
     io.openshift.tags="hawtio,gateway,jolokia" \
-    maintainer="Paul Richardson <parichar@redhat.com>"
+    maintainer="Paul Richardson <parichar@redhat.com>" \
+    name="${HAWTIO_GATEWAY_IMAGE_LABEL_NAME}" \
+    summary="${HAWTIO_DESCRIPTION}" \
+    version="${HAWTIO_ONLINE_VERSION}" \
+    version.file="/opt/hawtio/hawtio-online-version"
 
 #
 # Copy build payload from staging
