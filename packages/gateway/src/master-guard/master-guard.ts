@@ -25,12 +25,11 @@ const masterUrlPatterns = [
 const excludeResources = ['secrets']
 
 export function proxyMasterGuard(url: string): { status: boolean; errorMsg: string } {
-  let masterPatternFound = false
   let exclude = false
 
   logger.trace(`(proxyMasterGuard) ... checking url path: ${url}`)
 
-  masterPatternFound = masterUrlPatterns.some(function (element) {
+  const masterPatternFound = masterUrlPatterns.some(function (element) {
     return url.match(element)
   })
 

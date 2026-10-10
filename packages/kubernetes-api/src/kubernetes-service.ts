@@ -1,5 +1,5 @@
 import { configManager, Hawtconfig } from '@hawtio/react'
-import EventEmitter from 'eventemitter3'
+import { EventEmitter } from 'eventemitter3'
 import {
   HawtioMode,
   HAWTIO_MODE_KEY,

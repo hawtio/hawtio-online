@@ -1,11 +1,8 @@
 import jsPlugin from '@eslint/js'
 import tsPlugin from 'typescript-eslint'
-import importPlugin from 'eslint-plugin-import'
-import react from 'eslint-plugin-react'
+import importPlugin from 'eslint-plugin-import-x'
 import configPrettier from 'eslint-config-prettier'
 
-// Plugins still requiring compat library as not yet fully v9 flat-config compliant
-import { fixupPluginRules } from '@eslint/compat'
 import reactHooks from 'eslint-plugin-react-hooks'
 import testingLibrary from 'eslint-plugin-testing-library'
 
@@ -39,14 +36,8 @@ export default [
 
   {
     plugins: {
-      // Re-enable when react plugin is working correctly with eslint v9
-      // react,
-      'react-hooks': fixupPluginRules({
-        rules: reactHooks.rules,
-      }),
-      'testing-library': fixupPluginRules({
-        rules: testingLibrary.rules,
-      }),
+      'react-hooks': reactHooks,
+      'testing-library': testingLibrary,
     },
 
     languageOptions: {
@@ -54,16 +45,19 @@ export default [
         ecmaFeatures: {
           jsx: true,
         },
-      }
+      },
     },
 
     rules: {
       ...testingLibrary.configs['flat/react'].rules,
       ...reactHooks.configs.recommended.rules,
 
-      // Re-enable when react plugin is working correctly with eslint v9
-      // 'react/jsx-uses-react': 'error',
-      // 'react/jsx-uses-vars': 'error',
+      // TODO
+      //
+      // Part of recommended as should be looked at
+      // but need to prioritise
+      //
+      'react-hooks/set-state-in-effect': 'off',
 
       semi: ['error', 'never'],
 
@@ -77,6 +71,8 @@ export default [
           ignoreRestSiblings: true,
         },
       ],
+
+      'preserve-caught-error': 'off',
 
       '@typescript-eslint/explicit-member-accessibility': [
         'warn',
@@ -94,12 +90,10 @@ export default [
 
       '@typescript-eslint/no-redeclare': 'off',
 
-      'import/no-default-export': 'error',
-      'import/no-unresolved': 'off',
-      'import/named': 'off',
-      'import/first': 'error',
-
-      'react/prop-types': 'off',
+      'import-x/no-default-export': 'error',
+      'import-x/no-unresolved': 'off',
+      'import-x/named': 'off',
+      'import-x/first': 'error',
 
       'no-template-curly-in-string': 'error',
       'no-console': 'error',

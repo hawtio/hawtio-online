@@ -758,7 +758,7 @@ export function proxyJolokiaAgent(req: ExpressRequest, res: ExpressResponse) {
         }
         simpleResponse = new SimpleResponse(502, JSON.stringify(errorPayload))
       } else {
-        let errorMessage = 'An unexpected and unknown error occurred.'
+        let errorMessage: string
         try {
           // Try to serialize the unknown error for better logging
           errorMessage = `Unknown error: ${JSON.stringify(error)}`
