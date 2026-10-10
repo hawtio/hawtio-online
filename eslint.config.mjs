@@ -1,7 +1,6 @@
 import jsPlugin from '@eslint/js'
 import tsPlugin from 'typescript-eslint'
-import importPlugin from 'eslint-plugin-import'
-import react from 'eslint-plugin-react'
+import importPlugin from 'eslint-plugin-import-x'
 import configPrettier from 'eslint-config-prettier'
 
 // Plugins still requiring compat library as not yet fully v9 flat-config compliant
@@ -39,14 +38,8 @@ export default [
 
   {
     plugins: {
-      // Re-enable when react plugin is working correctly with eslint v9
-      // react,
-      'react-hooks': fixupPluginRules({
-        rules: reactHooks.rules,
-      }),
-      'testing-library': fixupPluginRules({
-        rules: testingLibrary.rules,
-      }),
+      'react-hooks': reactHooks,
+      'testing-library': testingLibrary,
     },
 
     languageOptions: {
@@ -61,10 +54,6 @@ export default [
       ...testingLibrary.configs['flat/react'].rules,
       ...reactHooks.configs.recommended.rules,
 
-      // Re-enable when react plugin is working correctly with eslint v9
-      // 'react/jsx-uses-react': 'error',
-      // 'react/jsx-uses-vars': 'error',
-
       semi: ['error', 'never'],
 
       'no-undef': 'off',
@@ -77,6 +66,8 @@ export default [
           ignoreRestSiblings: true,
         },
       ],
+
+      'preserve-caught-error': 'off',
 
       '@typescript-eslint/explicit-member-accessibility': [
         'warn',
@@ -98,8 +89,6 @@ export default [
       'import/no-unresolved': 'off',
       'import/named': 'off',
       'import/first': 'error',
-
-      'react/prop-types': 'off',
 
       'no-template-curly-in-string': 'error',
       'no-console': 'error',
