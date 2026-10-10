@@ -1,4 +1,4 @@
-/* eslint-disable import/first */
+/* eslint-disable import-x/first */
 /*
  * Need to disable rule due to using mock class that needs to be undefined
  * before import command

@@ -1,4 +1,4 @@
-/* eslint-disable import/first */
+/* eslint-disable import-x/first */
 
 /*
  * Tell testing node environment to allow self-signed certificates

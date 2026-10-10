@@ -274,8 +274,8 @@ export class NamespaceClient implements Paging {
         const name1 = pod1.metadata?.name || ''
         const name2 = pod2.metadata?.name || ''
 
-        let value = name1.localeCompare(name2)
-        return this._sortOrder === SortOrder.DESC ? (value *= -1) : value
+        const value = name1.localeCompare(name2)
+        return this._sortOrder === SortOrder.DESC ? value * -1 : value
       }
 
       return pods.sort(sortFn)
