@@ -47,8 +47,6 @@
     "@patternfly/react-table": "^6.6.0",
     "@patternfly/react-tokens": "^6.5.1",
     "@patternfly/react-topology": "^6.4.0",
-    "jquery-match-height": "^0.7.2",
-    "moment": "^2.30.1",
     "monaco-editor": "^0.52.2",
     "openshift-logos-icon": "^1.7.1",
     "react": "^18.3.1",
