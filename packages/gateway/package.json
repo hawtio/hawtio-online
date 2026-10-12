@@ -77,5 +77,8 @@
   },
   "publishConfig": {
     "access": "private"
+  },
+  "resolutions": {
+    "@types/express-serve-static-core": "^4.19.9"
   }
 }
