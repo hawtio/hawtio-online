@@ -1807,9 +1807,7 @@ __metadata:
     html-webpack-plugin: "npm:^5.6.7"
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^30.4.2"
-    jquery-match-height: "npm:^0.7.2"
     mini-css-extract-plugin: "npm:^2.10.2"
-    moment: "npm:^2.30.1"
     monaco-editor: "npm:^0.52.2"
     openshift-logos-icon: "npm:^1.7.1"
     os-browserify: "npm:^0.3.0"
@@ -11152,13 +11150,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jquery-match-height@npm:^0.7.2":
-  version: 0.7.2
-  resolution: "jquery-match-height@npm:0.7.2"
-  checksum: 10/9c736a9e810681d3410720b2f384070199e60ec58514eaba75ea2d25694cb30fa612a3b7a8504ba7d4507e47b3bc834ce9fbe1477c0be4c0d88e9ad9a50fd4fa
-  languageName: node
-  linkType: hard
-
 "js-logger@npm:^1.6.1":
   version: 1.6.1
   resolution: "js-logger@npm:1.6.1"
@@ -12368,13 +12359,6 @@ __metadata:
   version: 6.15.0
   resolution: "mobx@npm:6.15.0"
   checksum: 10/cf7fd4f96d521962c87883a7d41d745ba35af6130265f619e22c2d1ddff875e7f766726984f53bf5d5e215074146e6b190bc0e8668eb675cca9cb5d5204987fa
-  languageName: node
-  linkType: hard
-
-"moment@npm:^2.30.1":
-  version: 2.30.1
-  resolution: "moment@npm:2.30.1"
-  checksum: 10/ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
   languageName: node
   linkType: hard
 
