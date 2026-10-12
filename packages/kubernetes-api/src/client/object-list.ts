@@ -1,4 +1,4 @@
-import EventEmitter from 'eventemitter3'
+import { EventEmitter } from 'eventemitter3'
 import { Logger } from '@hawtio/react'
 import { KubeObject } from '../globals'
 import { getName, getNamespace, toKindName } from '../helpers'

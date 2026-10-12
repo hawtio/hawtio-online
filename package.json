@@ -55,20 +55,21 @@
     "kustomize:image": "cd deploy/base && kustomize edit set image hawtio/online=quay.io/${ORG:-hawtio}/${PROJECT:-online}:${TAG:-latest}"
   },
   "devDependencies": {
-    "@eslint/compat": "^2.0.2",
-    "@eslint/js": "^9.38.0",
+    "@eslint/compat": "^2.1.1",
+    "@eslint/js": "^10.0.1",
     "compression-webpack-plugin": "^12.0.0",
     "concurrently": "^10.0.4",
     "cz-conventional-changelog": "3.3.0",
-    "eslint": "^9.1.0",
+    "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-import-resolver-node": "^0.4.0",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-testing-library": "^7.16.2",
     "prettier": "3.8.3",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.58.1",
+    "typescript-eslint": "^8.69.0",
     "webpack": "^5.106.2"
   },
   "config": {
@@ -83,6 +84,7 @@
     "node": ">=20"
   },
   "resolutions": {
-    "eslint-config-react-app/eslint-plugin-react-hooks": "^4.6.2"
+    "eslint-config-react-app/eslint-plugin-react-hooks": "^4.6.2",
+    "@hawtio/gateway/@types/express-serve-static-core": "^4.19.9"
   }
 }

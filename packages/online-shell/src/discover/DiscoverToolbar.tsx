@@ -188,8 +188,8 @@ export const DiscoverToolbar: React.FunctionComponent = () => {
         sortMeta.namespace.orderIcon = newSortOrderIcon.type === SortOrder.ASC ? ascending : descending
 
         sortedProjects.sort((ns1: DiscoverProject, ns2: DiscoverProject) => {
-          let value = ns1.name.localeCompare(ns2.name)
-          return newSortOrderIcon === descending ? (value *= -1) : value
+          const value = ns1.name.localeCompare(ns2.name)
+          return newSortOrderIcon === descending ? value * -1 : value
         })
 
         setDiscoverProjects(sortedProjects)

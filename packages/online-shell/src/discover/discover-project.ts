@@ -105,13 +105,13 @@ export class DiscoverProject {
         const name1 = pod1.mPod.metadata?.name || ''
         const name2 = pod2.mPod.metadata?.name || ''
 
-        let value = name1.localeCompare(name2)
-        return podOrder === SortOrder.DESC ? (value *= -1) : value
+        const value = name1.localeCompare(name2)
+        return podOrder === SortOrder.DESC ? value * -1 : value
       }
 
       this.discoverGroups = discoverGroups.sort((grp1: DiscoverGroup, grp2: DiscoverGroup) => {
-        let value = grp1.name.localeCompare(grp2.name)
-        return podOrder === SortOrder.DESC ? (value *= -1) : value
+        const value = grp1.name.localeCompare(grp2.name)
+        return podOrder === SortOrder.DESC ? value * -1 : value
       })
 
       this.discoverGroups.forEach(group => {
