@@ -1,3 +1,8 @@
+/***
+ * Development proxy server
+ * - provides endpoints used in Hawtio Console for calling the gateway
+ * - use for replicating http GET and POST calls
+ */
 const express = require('express')
 const { createProxyMiddleware } = require('http-proxy-middleware')
 const pino = require('pino')

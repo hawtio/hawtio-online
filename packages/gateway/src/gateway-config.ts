@@ -11,7 +11,6 @@ export class GatewayConfig {
   private isOpenShift = false
   private kubeClusterAddr = DEFAULT_KUBE_CLUSTER_ADDRESS
   private proxySSLOptions?: SSLOptions
-  private formAuth = true
   private rbacAcl?: string
   private rbacRegEnabled = true
   private maskIpAddr = false
@@ -64,17 +63,6 @@ export class GatewayConfig {
 
   setProxySSLOptions(options?: SSLOptions) {
     this.proxySSLOptions = options
-  }
-
-  /*
-   * Is form authentication being used
-   */
-  isFormAuthentication(): boolean {
-    return this.formAuth
-  }
-
-  setFormAuthentication(formAuth: boolean) {
-    this.formAuth = formAuth
   }
 
   /*

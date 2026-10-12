@@ -43,11 +43,6 @@ const isOpenShift = process.env.HAWTIO_ONLINE_GATEWAY_CLUSTER_IS_OPENSHIFT ?? 'f
 gatewayConfig.setIsOpenShiftCluster(isOpenShift.toLowerCase() === 'true')
 
 /*
- * Whether form authentication, as opposed to oauth is used
- */
-gatewayConfig.setFormAuthentication(process.env.HAWTIO_ONLINE_AUTH === 'form')
-
-/*
  * Is masking of IP Addresses required
  */
 const maskIpAddr = process.env.HAWTIO_ONLINE_MASK_IP_ADDRESSES ?? 'false'
@@ -130,7 +125,6 @@ logger.info(`* Cluster Address:      ${gatewayConfig.getClusterAddr()}`)
 logger.info(`* RBAC:                 ${gatewayConfig.getRbacAcl() ?? 'default'}`)
 logger.info(`* RBAC Registry:        ${gatewayConfig.isRbacRegistryEnabled()}`)
 logger.info(`* Mask IP Addresses:    ${gatewayConfig.isMaskIpAddrEnabled()}`)
-logger.info(`* Use Form Auth:        ${gatewayConfig.isFormAuthentication()}`)
 logger.info('*********************************************************')
 
 // Log middleware requests

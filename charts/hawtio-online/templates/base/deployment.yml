@@ -101,12 +101,8 @@ spec:
             name: {{ .Values.online.secrets.serving.name }}
 {{- end }}
         - env:
-          - name: HAWTIO_ONLINE_AUTH
-            value: {{ eq .Values.clusterType "openshift" | ternary "oauth" "form" }}
           - name: HAWTIO_ONLINE_RBAC_ACL
             value: /etc/hawtio/rbac/ACL.yaml
-          - name: HAWTIO_ONLINE_GATEWAY_WEB_SERVER
-            value: {{ (include "hawtio-online.deployment.scheme" .Values) | lower }}://localhost:{{ include "hawtio-online.deployment.port" .Values }}
           - name: HAWTIO_ONLINE_MASK_IP_ADDRESSES
             value: "{{ .Values.maskIPAddresses }}"
 {{- if include "hawtio-online.use.ssl" .Values }}
@@ -141,6 +137,10 @@ spec:
             periodSeconds: 30
             timeoutSeconds: 1
           volumeMounts:
+{{- if eq .Values.clusterType "openshift" }}
+          - mountPath: /etc/tls/private/proxying
+            name: {{ .Values.online.secrets.proxy.name }}
+{{- end }}
           - mountPath: /etc/hawtio/rbac
             name: {{ .Values.online.rbac.name }}
 {{- if include "hawtio-online.use.ssl" .Values }}
