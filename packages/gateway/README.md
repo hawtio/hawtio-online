@@ -50,13 +50,25 @@ The project file for the gateway provides the following commands that will aid i
 
 ### Changing properties of the development servers
 
-An `.env.development` file should be created in the [gateway](https://github.com/hawtio/hawtio-online/tree/main/packages/gateway) package directory. A [default](https://github.com/hawtio/hawtio-online/tree/main/packages/gateway/env.development.defaults) version is already provided in the directory and can be copied and modified to suit the individual install. The following are environment variables that can be updated:
+An `.env.development` file should be created in the [gateway](https://github.com/hawtio/hawtio-online/tree/main/packages/gateway) package directory. A [default](https://github.com/hawtio/hawtio-online/tree/main/packages/gateway/env.development.defaults) version is already provided in the directory and can be copied and modified to suit the individual install. The following are available environment variables:
+
+#### Common variables
 
 - HAWTIO_ONLINE_GATEWAY_APP_PORT: The port that the gateway server listens on. It has a default of 3000. Probably only if there is a conflict on the individual system should need to be changed;
 - LOG_LEVEL: This is the minimum level of logging to display. Should extra logging be displayed then other values are `debug` and `trace`;
 - NODE_TLS_REJECT_UNAUTHORIZED: Tells node to ignore verification of certificates. In some kubernetes installs, certificates might be self-signed and so prevents the gateway server connecting to the kubernetes api server. Therefore, by setting to '0', verification is disabled. Only if certain, should this probably be changed;
+- HAWTIO_ONLINE_GATEWAY_CLUSTER_IS_OPENSHIFT: Tells the gateway the kind of cluster to expect. Certain api calls, eg. SAR endpoints, are different between vanilla kubernetes and OpenShift so if the gateway is run external to a cluster then it has to be told the type of cluster;
+- HAWTIO_ONLINE_GATEWAY_IS_EXTERNAL: Tells the gateway whether it is running internal to a cluster or externally. Some calls to jolokia endpoints are different if the server is running internally to the cluster, ie. the external kubernetes API is not required since the target app can be accessed directly via internal ip addresses.
+- HAWTIO_ONLINE_GATEWAY_CLUSTER_MASTER: The URI of the kubenenetes cluster api server, eg. [https://api.crc.testing:6443](https://api.crc.testing:6443). This will be the default of [https://kubernetes.default] if running internally in a cluster but should be changed to the correct location for the kubernetes cluster, if running externally;
+- HAWTIO_ONLINE_GATEWAY_SSL_PROXY_KEY: Specifies an **SSL certificate key** to allow access to target apps secured with an SSL certificate. By default, OpenShift requires this for connection to any target app;
+- HAWTIO_ONLINE_GATEWAY_SSL_PROXY_CERTIFICATE: Specifies an **SSL certificate** to allow access to target apps secured with an SSL certificate. By default, OpenShift requires this for connection to any target app;
+- HAWTIO_ONLINE_GATEWAY_SSL_KEY: path to a valid **SSL certificate key** file for starting the gateway server in https mode;
+- HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE: path to a valid **SSL certificate** file for starting the gateway server in https mode;
+- HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE_CA: path to a valid **SSL certificate authority** file for starting the gateway server in https mode;
+- HAWTIO_ONLINE_MASK_IP_ADDRESSES: Can hide any ip addresses that are displayed in any responses returned from target app jolokia communication. Care should be taken as this can break certain responses (default is false).
+
+#### Variables used with development web server (proxy-dev-server.js)
 - HAWTIO_ONLINE_GATEWAY_DEV_WEB_PORT: The port that the development web server listens on (3001 by default). Modifying this will change both this server and the gateway server to ensure both can still contact one another. Probably only if there is a conflict on the individual system should need to be changed;
-- HAWTIO_ONLINE_GATEWAY_CLUSTER_MASTER: The URI of the kubenenetes cluster api server, eg. [https://api.crc.testing:6443](https://api.crc.testing:6443). This should be changed to the correct location for the installed kubernetes cluster;
 - HAWTIO_ONLINE_GATEWAY_CLUSTER_TOKEN: A token that allows connection to the kubernetes cluster. In production, this is obtained from the Hawtio Online authentication mechanisms. For development this should be provided. Note: this token can expire so should be updated if testing starts resulting in 403 errors;LOKIA_SERVICE=test-jolokia
 
 Since the development nginx server is external to the kubernetes cluster, it is unable to access internal application jolokia ports. Therefore, the jolokia server of this test app must be exposed using a service. This service can be created by populating and applying the template [file](https://github.com/hawtio/hawtio-online/tree/main/packages/gateway/jolokia-testing-service.yml) included in the project:
@@ -84,9 +96,3 @@ Once the service has been created then the following properties should be popula
 
 - TEST_JOLOKIA_PORT: The exposed port of the jolokia service;
 - TEST_JOLOKIA_PATH: The part of the jolokia service accessed on the test app, eg. `actuator/jolokia/?ignoreErrors=true&canonicalNaming=false`
-
-The following properties allow the gateway server to be started using the https protocol. This is the default for the production builds but populating these can start the development server also:
-
-- HAWTIO_ONLINE_GATEWAY_SSL_KEY: path to a valid ssl key file
-- HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE: path to a valid ssl certificate file
-- HAWTIO_ONLINE_GATEWAY_SSL_CERTIFICATE_CA: path to a valid ssl certificate authority file
