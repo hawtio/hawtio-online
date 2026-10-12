@@ -85,6 +85,6 @@
   },
   "resolutions": {
     "eslint-config-react-app/eslint-plugin-react-hooks": "^4.6.2",
-    "@hawtio/gateway/@types/express-serve-static-core": "^4.19.9"
+    "@types/express-serve-static-core": "^4.19.9"
   }
 }
