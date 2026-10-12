@@ -68,6 +68,7 @@ An `.env.development` file should be created in the [gateway](https://github.com
 - HAWTIO_ONLINE_MASK_IP_ADDRESSES: Can hide any ip addresses that are displayed in any responses returned from target app jolokia communication. Care should be taken as this can break certain responses (default is false).
 
 #### Variables used with development web server (proxy-dev-server.js)
+
 - HAWTIO_ONLINE_GATEWAY_DEV_WEB_PORT: The port that the development web server listens on (3001 by default). Modifying this will change both this server and the gateway server to ensure both can still contact one another. Probably only if there is a conflict on the individual system should need to be changed;
 - HAWTIO_ONLINE_GATEWAY_CLUSTER_TOKEN: A token that allows connection to the kubernetes cluster. In production, this is obtained from the Hawtio Online authentication mechanisms. For development this should be provided. Note: this token can expire so should be updated if testing starts resulting in 403 errors;LOKIA_SERVICE=test-jolokia
 
