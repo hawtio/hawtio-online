@@ -61,7 +61,7 @@ appServer.use(express.urlencoded())
  * Single route as provided by the gateway server
  */
 appServer
-  .route('/management/*')
+  .route('/management/*path')
   .get((req, res) => {
     proxyJolokiaAgent(req, res)
   })
