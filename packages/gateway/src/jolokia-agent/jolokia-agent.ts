@@ -1,5 +1,5 @@
 import yaml from 'yaml'
-import { Request as ExpressRequest, Response as ExpressResponse } from 'express-serve-static-core'
+import { Request as ExpressRequest, Response as ExpressResponse } from 'express'
 import fetch, { Response as FetchResponse } from 'node-fetch'
 import { jwtDecode } from 'jwt-decode'
 import { LRUCache } from 'lru-cache'

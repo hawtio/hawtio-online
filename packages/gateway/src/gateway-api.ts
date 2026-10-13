@@ -158,6 +158,23 @@ gatewayServer.use(
   }),
 )
 
+/*
+ * Body parsing support for json.
+ * - Raises limit due to bulk response payloads
+ * - Must use a wildcard for json Content-Type since jolokia
+ *   has request payloads with a Content-Type header value of
+ *   'text/json' whereas express, by default, only uses
+ *   'application/json'.
+ */
+gatewayServer.use(
+  express.json({
+    type: '*/json',
+    limit: '50mb',
+    strict: false,
+  }),
+)
+gatewayServer.use(express.urlencoded({ extended: false }))
+
 // override with the X-HTTP-Method-Override header in the request. simulate DELETE/PUT
 gatewayServer.use(methodOverride('X-HTTP-Method-Override'))
 
@@ -236,36 +253,22 @@ gatewayServer.use(
 
 /**
  * Manages the connection to the jolokia server in app
+ * - Matches bare /management and proxyJolokiaAgent will return a 404
+ *   rather than falling through to the default 502 catch-all
  */
-gatewayServer
-  .route('/management/*')
-  .get((req, res) => {
-    proxyJolokiaAgent(req, res)
-  })
-  .post(express.json({ type: '*/json', limit: '50mb', strict: false }), (req, res) => {
-    proxyJolokiaAgent(req, res)
-  })
+gatewayServer.route('/management{/*path}').all((req, res) => {
+  proxyJolokiaAgent(req, res)
+})
 
 /**
  * Default rule for anything else sent to the server
  */
-gatewayServer.route('*').all((req, res) => {
+gatewayServer.route('{/*splat}').all((req, res) => {
   res.setHeader('Content-Type', 'application/json')
   res.status(502).json({
     message: `Error (gateway-api): Access to ${req.url} is not permitted.`,
   })
 })
-
-/*
- * Must use a wildcard for json Content-Type since jolokia
- * has request payloads with a Content-Type header value of
- * 'text/json' whereas express, by default, only uses
- * 'application/json'.
- *
- * Needs to be added last to avoid being overwritten by the proxy middleware
- */
-gatewayServer.use(express.json({ type: '*/json', limit: '50mb', strict: false }))
-gatewayServer.use(express.urlencoded({ extended: false }))
 
 /*
  * Exports the running server for use in unit testing

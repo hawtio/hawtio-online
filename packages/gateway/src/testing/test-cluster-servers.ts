@@ -1,5 +1,4 @@
-import express from 'express'
-import { Response as ExpressResponse } from 'express-serve-static-core'
+import express, { Response as ExpressResponse } from 'express'
 import * as fs from 'fs'
 import * as http from 'http'
 import * as https from 'https'
@@ -30,14 +29,14 @@ function masterTestResponse(res: ExpressResponse) {
  * Route for getting the pod IP
  * Returns the Cluster hostname so the jolokia route can be tested
  */
-clusterServer.route('/api/v1/namespaces/*/pods/*').get((req, res) => {
+clusterServer.route('/api/v1/namespaces/:namespace/pods/:podname').get((req, res) => {
   res.status(201).json(JSON.stringify(testData.pod.resource))
 })
 
 /*
  * Route for getting subject access reviews
  */
-clusterServer.route('/apis/authorization*').post((req, res) => {
+clusterServer.route('/apis/authorization{*path}').post((req, res) => {
   if (testData.authorization.forbidden) {
     res.status(403).send()
     return
@@ -90,9 +89,10 @@ clusterServer.route('/apis/authorization*').post((req, res) => {
 /*
  * Direct the jolokia path back to this cluster
  * In reality, it would point to the real ip address of the pod
- * Will handle both jolokia urls where proxy/podname or pod ip is used.
+ * Using a RegExp, bypasses path-to-regexp and so handles both
+ * jolokia urls where proxy/podname or pod ip is used.
  */
-clusterServer.route(`*${testData.metadata.jolokia.path}*`).all((req, res) => {
+clusterServer.route(new RegExp(`${testData.metadata.jolokia.path}`)).all((req, res) => {
   const reqPayload = JSON.stringify(req.body)
 
   if (req.method === 'GET') {
@@ -129,22 +129,24 @@ clusterServer.route(`*${testData.metadata.jolokia.path}*`).all((req, res) => {
 
 /*
  * Route for getting testing api endpoints in masterguard tests
+ * - Matches bare /api as well as /api/...
  */
-clusterServer.route('/api/*').get((req, res) => {
+clusterServer.route('/api{/*path}').get((req, res) => {
   masterTestResponse(res)
 })
 
 /*
  * Route for getting testing apis endpoints in masterguard tests
+ * - Matches bare /apis as well as /apis/...
  */
-clusterServer.route('/apis/*').get((req, res) => {
+clusterServer.route('/apis{/*path}').get((req, res) => {
   masterTestResponse(res)
 })
 
 /*
  * Route for getting testing oauth endpoint in masterguard tests
  */
-clusterServer.route('/.well-known/*').get((req, res) => {
+clusterServer.route('/.well-known/{*path}').get((req, res) => {
   masterTestResponse(res)
 })
 
