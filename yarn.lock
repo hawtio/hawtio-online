@@ -1692,7 +1692,7 @@ __metadata:
     tsconfig-paths-webpack-plugin: "npm:^4.2.0"
     typescript: "npm:^5.9.3"
     url: "npm:^0.11.4"
-    web-vitals: "npm:^6.0.1"
+    web-vitals: "npm:^6.2.3"
     webpack: "npm:^5.106.2"
     webpack-cli: "npm:^7.2.2"
     webpack-dev-server: "npm:^6.0.0"
@@ -16047,10 +16047,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web-vitals@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "web-vitals@npm:6.0.1"
-  checksum: 10/d28415c9c4edf240e13e51564feec71fa101b5f28958ffbca3f4905c23fc32da99158ec1ff366c2fd2a45c0c69cd7a3010d35b16d204c4207010f74f0f58cb35
+"web-vitals@npm:^6.2.3":
+  version: 6.2.3
+  resolution: "web-vitals@npm:6.2.3"
+  checksum: 10/1dd6800c27ef725e5cd4f3e0d7902e017549813474024bd1ce00a3fb839f63109a71e168d4da740cb6c7ddfbfba2d5f2cc1be59dad176ea10732fbd34dbec974
   languageName: node
   linkType: hard
 
