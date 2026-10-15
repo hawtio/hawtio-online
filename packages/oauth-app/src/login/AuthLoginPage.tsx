@@ -4,7 +4,7 @@ import { background, hawtioLogo } from './img'
 import { ListItem, ListVariant, LoginFooterItem, LoginPage } from '@patternfly/react-core'
 import { log } from '@hawtio/online-oauth'
 import { AuthLoadingPage } from './AuthLoadingPage'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 export const AuthLoginPage: React.FunctionComponent = () => {
   const navigate = useNavigate()
