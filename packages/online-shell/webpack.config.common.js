@@ -122,9 +122,9 @@ const common = (mode, publicPath, packageVersion) => {
             requiredVersion: dependencies['react-dom'],
             eager: true,
           },
-          'react-router-dom': {
+          'react-router': {
             singleton: true,
-            requiredVersion: dependencies['react-router-dom'],
+            requiredVersion: dependencies['react-router'],
             eager: true,
           },
           '@hawtio/react': {

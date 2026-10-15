@@ -114,9 +114,9 @@ module.exports = () => {
             singleton: true,
             requiredVersion: dependencies['react-dom'],
           },
-          'react-router-dom': {
+          'react-router': {
             singleton: true,
-            requiredVersion: dependencies['react-router-dom'],
+            requiredVersion: dependencies['react-router'],
           },
           '@hawtio/react': {
             singleton: true,
