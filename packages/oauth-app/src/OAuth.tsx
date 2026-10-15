@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router'
 import { AuthLoginPage } from './login'
 import { OAuthStatus } from './OAuthStatus'
 

@@ -29,20 +29,20 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/react": "^2.2.2",
+    "@hawtio/react": "^2.3.0",
     "fetch-intercept": "^2.4.0",
     "jwt-decode": "^4.0.0",
     "whatwg-fetch": "^3.6.20"
   },
   "devDependencies": {
     "@babel/core": "^7.29.6",
-    "@patternfly/react-charts": "^8.4.0",
-    "@patternfly/react-code-editor": "^6.4.0",
-    "@patternfly/react-core": "^6.4.3",
-    "@patternfly/react-icons": "^6.5.1",
-    "@patternfly/react-styles": "^6.6.0",
-    "@patternfly/react-table": "^6.6.0",
-    "@patternfly/react-tokens": "^6.5.1",
+    "@patternfly/react-charts": "8.4.1",
+    "@patternfly/react-code-editor": "6.4.0",
+    "@patternfly/react-core": "6.4.0",
+    "@patternfly/react-icons": "6.4.0",
+    "@patternfly/react-styles": "6.4.0",
+    "@patternfly/react-table": "6.4.0",
+    "@patternfly/react-tokens": "6.4.0",
     "@types/babel__core": "^7",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.3.3",
@@ -55,7 +55,7 @@
     "monaco-editor": "^0.52.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.30.6",
+    "react-router": "^7.18.3",
     "replace": "^1.2.2",
     "ts-jest": "^29.4.11",
     "ts-node": "^10.9.2",
@@ -73,7 +73,7 @@
     "monaco-editor": "^0.52",
     "react": "^17 || ^18",
     "react-dom": "^17 || ^18",
-    "react-router-dom": "^6.30"
+    "react-router": "^7"
   },
   "packageManager": "yarn@4.16.0",
   "engines": {

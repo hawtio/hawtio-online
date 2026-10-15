@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router'
 import { configManager, HawtioInitialization, TaskState } from '@hawtio/react/init'
 import { bootstrapModules } from './bootstrap-modules'
 
