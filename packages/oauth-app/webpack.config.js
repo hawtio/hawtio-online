@@ -123,6 +123,13 @@ module.exports = () => {
             singleton: true,
             requiredVersion: dependencies['@hawtio/react'],
           },
+          '@patternfly/react-icons': {
+            singleton: true,
+            requiredVersion: dependencies['@patternfly/react-icons'],
+            // package has an embedded package.json which does not contain
+            // a version property hence webpack can find a version on its own
+            version: dependencies['@patternfly/react-icons'].replace(/^[\^~]/, ''),
+          },
           '@hawtio/online-oauth': {
             singleton: true,
             // Hardcoding needed because it cannot handle yarn 'workspace:*' version
