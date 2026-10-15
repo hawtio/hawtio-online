@@ -1493,6 +1493,7 @@ __metadata:
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^30.4.2"
     mini-css-extract-plugin: "npm:2.10.2"
+    monaco-editor: "npm:~0.52.2"
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     react: "npm:^18.3.1"
@@ -1537,7 +1538,7 @@ __metadata:
     jest-extended: "npm:^7.0.0"
     jest-fetch-mock: "npm:^3.0.3"
     kubernetes-types: "npm:^1.30.0"
-    monaco-editor: "npm:^0.52.2"
+    monaco-editor: "npm:~0.52.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-router: "npm:^7.18.3"
@@ -1555,7 +1556,7 @@ __metadata:
     "@patternfly/react-styles": ^6
     "@patternfly/react-table": ^6
     "@patternfly/react-tokens": ^6
-    monaco-editor: ^0.52
+    monaco-editor: ~0.52
     react: ^17 || ^18
     react-dom: ^17 || ^18
     react-router: ^7
@@ -1585,7 +1586,7 @@ __metadata:
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^30.4.2"
     mini-css-extract-plugin: "npm:2.10.2"
-    monaco-editor: "npm:^0.52.2"
+    monaco-editor: "npm:~0.52.2"
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     react: "npm:^18.3.1"
@@ -1630,7 +1631,7 @@ __metadata:
     jest-extended: "npm:^7.0.0"
     jest-fetch-mock: "npm:^3.0.3"
     jolokia.js: "npm:^2.6.0"
-    monaco-editor: "npm:^0.52.2"
+    monaco-editor: "npm:~0.52.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-router: "npm:^7.18.3"
@@ -1648,7 +1649,7 @@ __metadata:
     "@patternfly/react-styles": ^6
     "@patternfly/react-table": ^6
     "@patternfly/react-tokens": ^6
-    monaco-editor: ^0.52
+    monaco-editor: ~0.52
     react: ^17 || ^18
     react-dom: ^17 || ^18
     react-router: ^7
@@ -1678,7 +1679,7 @@ __metadata:
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^30.4.2"
     mini-css-extract-plugin: "npm:2.10.2"
-    monaco-editor: "npm:^0.52.2"
+    monaco-editor: "npm:~0.52.2"
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     process: "npm:^0.11.10"
@@ -1723,7 +1724,7 @@ __metadata:
     jest-extended: "npm:^7.0.0"
     jest-fetch-mock: "npm:^3.0.3"
     jwt-decode: "npm:^4.0.0"
-    monaco-editor: "npm:^0.52.2"
+    monaco-editor: "npm:~0.52.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-router: "npm:^7.18.3"
@@ -1741,7 +1742,7 @@ __metadata:
     "@patternfly/react-styles": ^6
     "@patternfly/react-table": ^6
     "@patternfly/react-tokens": ^6
-    monaco-editor: ^0.52
+    monaco-editor: ~0.52
     react: ^17 || ^18
     react-dom: ^17 || ^18
     react-router: ^7
@@ -1807,7 +1808,7 @@ __metadata:
     interpolate-html-plugin: "npm:^4.0.0"
     jest: "npm:^30.4.2"
     mini-css-extract-plugin: "npm:^2.10.2"
-    monaco-editor: "npm:^0.52.2"
+    monaco-editor: "npm:~0.52.2"
     openshift-logos-icon: "npm:^1.7.1"
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
@@ -11866,7 +11867,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:^0.52.2":
+"monaco-editor@npm:~0.52.2":
   version: 0.52.2
   resolution: "monaco-editor@npm:0.52.2"
   checksum: 10/0d4962d69ffa0a8df040faa9c582cef1893fa3fb617feca8f1425c5e670e74c2856104b9a2b01cbda0103a5e5f92f58843206bc9a0e070471c0c1270d7f52a96
