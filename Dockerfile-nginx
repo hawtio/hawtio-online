@@ -3,6 +3,7 @@
 #
 # Versions
 ARG HAWTIO_ONLINE_VERSION=2.5.0
+ARG ARTEMIS_VERSION="not installed"
 ARG JOLOKIA_VERSION=2.6.0
 ARG HAWTIO_REACT_VERSION=2.3.0
 # The hawtio namespace for the build images
@@ -45,6 +46,7 @@ FROM registry.access.redhat.com/ubi9-minimal:9.8
 ARG HAWTIO_ONLINE_VERSION
 ARG HAWTIO_NAMESPACE
 ARG HAWTIO_ONLINE_IMAGE_LABEL_NAME
+ARG ARTEMIS_VERSION
 ARG JOLOKIA_VERSION
 ARG HAWTIO_REACT_VERSION
 
@@ -81,6 +83,7 @@ ARG HAWTIO_DESCRIPTON="The Red Hat build of HawtIO helps discovering and managin
 
 LABEL com.redhat.component="hawtio-container" \
     description="${HAWTIO_DESCRIPTION}" \
+    io.hawt.artemis.version="${ARTEMIS_VERSION}" \
     io.hawt.jolokia.version="${JOLOKIA_VERSION}" \
     io.hawt.react.version="${HAWTIO_REACT_VERSION}" \
     io.k8s.description="${HAWTIO_DESCRIPTION}" \
