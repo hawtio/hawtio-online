@@ -57,7 +57,7 @@
     "react-dom": "^18.3.1",
     "react-router": "^7.18.3",
     "replace": "^1.2.2",
-    "ts-jest": "^29.4.11",
+    "ts-jest": "^29.4.14",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3"
