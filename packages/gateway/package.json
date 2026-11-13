@@ -18,7 +18,8 @@
   "scripts": {
     "start:gateway": "yarn start:gateway-dev & yarn start:gateway-server",
     "start:gateway-dev": "node --env-file .env.development proxy-dev-server.js",
-    "start:gateway-server": "tsup --config tsup.config.dev.ts --watch",
+    "start:gateway-server": "yarn gen:certs && tsup --config tsup.config.dev.ts --watch",
+    "gen:certs": "cd tls-certificates && ./generate-dev-certs.sh && cd ..",
     "build": "webpack --mode production --progress --config webpack.config.prod.js",
     "test": "yarn create-test-certs && jest --detectOpenHandles",
     "test:watch": "yarn create-test-certs && jest --detectOpenHandles --watch",

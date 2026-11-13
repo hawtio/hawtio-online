@@ -1,2 +1,6 @@
 *.log
 .env.development
+
+tls-certificates/*.crt
+tls-certificates/*.key
+tls-certificates/*.srl
