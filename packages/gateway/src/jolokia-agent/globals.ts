@@ -107,21 +107,6 @@ export class AgentInfo {
 
   getJolokiaUri() {
     const encodedPath = encodeURI(this.path)
-    if (!this.ip) {
-      // If no ip assigned then return named pod uri using proxy
-      return joinPaths(
-        gatewayConfig.getClusterAddr(),
-        'api',
-        'v1',
-        'namespaces',
-        this.namespace,
-        'pods',
-        `${this.protocol}:${this.pod}:${this.port}`,
-        'proxy',
-        encodedPath,
-      )
-    }
-
     return joinPaths(`${this.protocol}://`, `${this.ip}:${this.port}`, encodedPath)
   }
 }
