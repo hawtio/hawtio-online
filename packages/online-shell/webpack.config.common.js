@@ -20,6 +20,10 @@ try {
   console.log('No parent package.json found. Assuming standalone repository structure.')
 }
 
+// there's a problem with node_modules/@patternfly/react-icons/dist/esm/package.json which is almost empty
+// (a bug in Patternfly distro?)
+delete dependencies['@patternfly/react-icons']
+
 /**
  * Get the version of a dependency from the package.json file(s)
  * using a cascading strategy:
