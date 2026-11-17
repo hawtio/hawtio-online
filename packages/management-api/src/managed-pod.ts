@@ -180,8 +180,12 @@ export class ManagedPod {
 
   async probeJolokiaUrl(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      const path = `${this.jolokiaPath}version`
-      fetch(path)
+      const path = `${this.jolokiaPath}`
+      fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'version' }),
+      })
         .then(async (response: Response) => {
           if (!response.ok) {
             log.debug('Using URL:', path, 'assuming it could be an agent but got return code:', response.status)
