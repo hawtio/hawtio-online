@@ -1,7 +1,6 @@
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express'
 import { MBeanInfo, MBeanInfoError, MBeanAttribute, MBeanOperation, JolokiaRequest as MBeanRequest } from 'jolokia.js'
 import * as NodeFetch from 'node-fetch'
-import { gatewayConfig } from '../gateway-config'
 import { joinPaths } from '../utils'
 
 export interface BulkValue {
