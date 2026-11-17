@@ -2,7 +2,6 @@ import { spawn, ChildProcess, execFileSync } from 'child_process'
 import { LRUCache } from 'lru-cache'
 import * as net from 'net'
 import { AgentInfo } from './globals'
-import { gatewayConfig } from '../gateway-config'
 import { logger } from '../logger'
 
 interface PodTunnel {
@@ -74,7 +73,7 @@ function resolveKubeCli(): string {
 
 async function startPortForward(agentInfo: AgentInfo, cacheKey: string): Promise<PodTunnel> {
   const localPort = await allocateFreePort()
-  let binary = resolveKubeCli()
+  const binary = resolveKubeCli()
 
   const child = spawn(binary, [
     'port-forward',
@@ -105,7 +104,9 @@ async function startPortForward(agentInfo: AgentInfo, cacheKey: string): Promise
     }
 
     const timer = setTimeout(() => {
-      finish(new Error(`Timed out waiting for oc port-forward on ${agentInfo.namespace}/${agentInfo.pod}:${agentInfo.port}`))
+      finish(
+        new Error(`Timed out waiting for oc port-forward on ${agentInfo.namespace}/${agentInfo.pod}:${agentInfo.port}`),
+      )
     }, 10000)
 
     child.stdout.on('data', (chunk: Buffer) => {

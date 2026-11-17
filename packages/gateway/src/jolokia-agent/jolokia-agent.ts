@@ -125,7 +125,7 @@ const excludeHeaders = [
   'connection',
   'transfer-encoding',
   'referer',
-  'origin'
+  'origin',
 ]
 
 function response(agentInfo: AgentInfo, res: SimpleResponse) {
