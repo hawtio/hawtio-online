@@ -84,6 +84,7 @@
     "node": ">=20"
   },
   "resolutions": {
+    "@module-federation/utilities": "3.1.83",
     "eslint-config-react-app/eslint-plugin-react-hooks": "^4.6.2"
   }
 }
