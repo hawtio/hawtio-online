@@ -1476,13 +1476,13 @@ __metadata:
   dependencies:
     "@hawtio/online-kubernetes-api": "workspace:*"
     "@hawtio/react": "npm:^2.4.1"
-    "@patternfly/react-charts": "npm:~8.6.1"
-    "@patternfly/react-code-editor": "npm:~6.6.2"
-    "@patternfly/react-core": "npm:~6.6.2"
-    "@patternfly/react-icons": "npm:~6.6.1"
-    "@patternfly/react-styles": "npm:~6.6.1"
-    "@patternfly/react-table": "npm:~6.6.2"
-    "@patternfly/react-tokens": "npm:~6.6.1"
+    "@patternfly/react-charts": "npm:8.6.1"
+    "@patternfly/react-code-editor": "npm:6.6.2"
+    "@patternfly/react-core": "npm:6.6.2"
+    "@patternfly/react-icons": "npm:6.6.1"
+    "@patternfly/react-styles": "npm:6.6.1"
+    "@patternfly/react-table": "npm:6.6.2"
+    "@patternfly/react-tokens": "npm:6.6.1"
     "@types/node": "npm:^25.3.3"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
@@ -1519,13 +1519,13 @@ __metadata:
     "@hawtio/online-oauth": "workspace:*"
     "@hawtio/react": "npm:^2.4.1"
     "@jsonjoy.com/json-path": "npm:^18.24.0"
-    "@patternfly/react-charts": "npm:~8.6.1"
-    "@patternfly/react-code-editor": "npm:~6.6.2"
-    "@patternfly/react-core": "npm:~6.6.2"
-    "@patternfly/react-icons": "npm:~6.6.1"
-    "@patternfly/react-styles": "npm:~6.6.1"
-    "@patternfly/react-table": "npm:~6.6.2"
-    "@patternfly/react-tokens": "npm:~6.6.1"
+    "@patternfly/react-charts": "npm:8.6.1"
+    "@patternfly/react-code-editor": "npm:6.6.2"
+    "@patternfly/react-core": "npm:6.6.2"
+    "@patternfly/react-icons": "npm:6.6.1"
+    "@patternfly/react-styles": "npm:6.6.1"
+    "@patternfly/react-table": "npm:6.6.2"
+    "@patternfly/react-tokens": "npm:6.6.1"
     "@testing-library/jest-dom": "npm:~6.9.1"
     "@types/jest": "npm:^30.0.0"
     "@types/jsonpath": "npm:^0.2.4"
@@ -1569,13 +1569,13 @@ __metadata:
   dependencies:
     "@hawtio/online-management-api": "workspace:*"
     "@hawtio/react": "npm:^2.4.1"
-    "@patternfly/react-charts": "npm:~8.6.1"
-    "@patternfly/react-code-editor": "npm:~6.6.2"
-    "@patternfly/react-core": "npm:~6.6.2"
-    "@patternfly/react-icons": "npm:~6.6.1"
-    "@patternfly/react-styles": "npm:~6.6.1"
-    "@patternfly/react-table": "npm:~6.6.2"
-    "@patternfly/react-tokens": "npm:~6.6.1"
+    "@patternfly/react-charts": "npm:8.6.1"
+    "@patternfly/react-code-editor": "npm:6.6.2"
+    "@patternfly/react-core": "npm:6.6.2"
+    "@patternfly/react-icons": "npm:6.6.1"
+    "@patternfly/react-styles": "npm:6.6.1"
+    "@patternfly/react-table": "npm:6.6.2"
+    "@patternfly/react-tokens": "npm:6.6.1"
     "@types/node": "npm:^25.3.3"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
@@ -1613,13 +1613,13 @@ __metadata:
     "@hawtio/react": "npm:^2.4.1"
     "@jolokia.js/simple": "npm:^2.6.0"
     "@jsonjoy.com/json-path": "npm:^18.24.0"
-    "@patternfly/react-charts": "npm:~8.6.1"
-    "@patternfly/react-code-editor": "npm:~6.6.2"
-    "@patternfly/react-core": "npm:~6.6.2"
-    "@patternfly/react-icons": "npm:~6.6.1"
-    "@patternfly/react-styles": "npm:~6.6.1"
-    "@patternfly/react-table": "npm:~6.6.2"
-    "@patternfly/react-tokens": "npm:~6.6.1"
+    "@patternfly/react-charts": "npm:8.6.1"
+    "@patternfly/react-code-editor": "npm:6.6.2"
+    "@patternfly/react-core": "npm:6.6.2"
+    "@patternfly/react-icons": "npm:6.6.1"
+    "@patternfly/react-styles": "npm:6.6.1"
+    "@patternfly/react-table": "npm:6.6.2"
+    "@patternfly/react-tokens": "npm:6.6.1"
     "@types/jest": "npm:^30.0.0"
     "@types/jsonpath": "npm:^0.2.4"
     "@types/node": "npm:^25.3.3"
@@ -1662,13 +1662,13 @@ __metadata:
   dependencies:
     "@hawtio/online-oauth": "workspace:*"
     "@hawtio/react": "npm:^2.4.1"
-    "@patternfly/react-charts": "npm:~8.6.1"
-    "@patternfly/react-code-editor": "npm:~6.6.2"
-    "@patternfly/react-core": "npm:~6.6.2"
-    "@patternfly/react-icons": "npm:~6.6.1"
-    "@patternfly/react-styles": "npm:~6.6.1"
-    "@patternfly/react-table": "npm:~6.6.2"
-    "@patternfly/react-tokens": "npm:~6.6.1"
+    "@patternfly/react-charts": "npm:8.6.1"
+    "@patternfly/react-code-editor": "npm:6.6.2"
+    "@patternfly/react-core": "npm:6.6.2"
+    "@patternfly/react-icons": "npm:6.6.1"
+    "@patternfly/react-styles": "npm:6.6.1"
+    "@patternfly/react-table": "npm:6.6.2"
+    "@patternfly/react-tokens": "npm:6.6.1"
     "@types/node": "npm:^25.3.3"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
@@ -1706,13 +1706,13 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.29.6"
     "@hawtio/react": "npm:^2.4.1"
-    "@patternfly/react-charts": "npm:~8.6.1"
-    "@patternfly/react-code-editor": "npm:~6.6.2"
-    "@patternfly/react-core": "npm:~6.6.2"
-    "@patternfly/react-icons": "npm:~6.6.1"
-    "@patternfly/react-styles": "npm:~6.6.1"
-    "@patternfly/react-table": "npm:~6.6.2"
-    "@patternfly/react-tokens": "npm:~6.6.1"
+    "@patternfly/react-charts": "npm:8.6.1"
+    "@patternfly/react-code-editor": "npm:6.6.2"
+    "@patternfly/react-core": "npm:6.6.2"
+    "@patternfly/react-icons": "npm:6.6.1"
+    "@patternfly/react-styles": "npm:6.6.1"
+    "@patternfly/react-table": "npm:6.6.2"
+    "@patternfly/react-tokens": "npm:6.6.1"
     "@types/babel__core": "npm:^7"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^25.3.3"
@@ -1788,14 +1788,14 @@ __metadata:
     "@hawtio/react": "npm:^2.4.1"
     "@jsonjoy.com/json-path": "npm:^18.24.0"
     "@patternfly/patternfly": "npm:~6.6.1"
-    "@patternfly/react-charts": "npm:~8.6.1"
-    "@patternfly/react-code-editor": "npm:~6.6.2"
-    "@patternfly/react-core": "npm:~6.6.2"
-    "@patternfly/react-icons": "npm:~6.6.1"
-    "@patternfly/react-styles": "npm:~6.6.1"
-    "@patternfly/react-table": "npm:~6.6.2"
-    "@patternfly/react-tokens": "npm:~6.6.1"
-    "@patternfly/react-topology": "npm:~6.6.0"
+    "@patternfly/react-charts": "npm:8.6.1"
+    "@patternfly/react-code-editor": "npm:6.6.2"
+    "@patternfly/react-core": "npm:6.6.2"
+    "@patternfly/react-icons": "npm:6.6.1"
+    "@patternfly/react-styles": "npm:6.6.1"
+    "@patternfly/react-table": "npm:6.6.2"
+    "@patternfly/react-tokens": "npm:6.6.1"
+    "@patternfly/react-topology": "npm:6.6.0"
     "@types/node": "npm:^25.3.3"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
@@ -1833,7 +1833,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:^2.4.1":
+"@hawtio/react@npm:2.4.1, @hawtio/react@npm:^2.4.1":
   version: 2.4.1
   resolution: "@hawtio/react@npm:2.4.1"
   dependencies:
@@ -2860,7 +2860,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-charts@npm:~8.6.1":
+"@patternfly/react-charts@npm:8.6.1":
   version: 8.6.1
   resolution: "@patternfly/react-charts@npm:8.6.1"
   dependencies:
@@ -2931,7 +2931,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-code-editor@npm:~6.6.2":
+"@patternfly/react-code-editor@npm:6.6.2":
   version: 6.6.2
   resolution: "@patternfly/react-code-editor@npm:6.6.2"
   dependencies:
@@ -2948,24 +2948,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:^6.5.1, @patternfly/react-core@npm:^6.6.2":
-  version: 6.7.0
-  resolution: "@patternfly/react-core@npm:6.7.0"
-  dependencies:
-    "@patternfly/react-icons": "npm:^6.7.0"
-    "@patternfly/react-styles": "npm:^6.7.0"
-    "@patternfly/react-tokens": "npm:^6.7.0"
-    focus-trap: "npm:7.6.6"
-    react-dropzone: "npm:^14.3.5"
-    tslib: "npm:^2.8.1"
-  peerDependencies:
-    react: ^17 || ^18 || ^19
-    react-dom: ^17 || ^18 || ^19
-  checksum: 10/130b0a406162925a8bb7069ddef51d66fb5835d4b8e2cd97e3f69977c04fe4d682768a04b51539819a25426d691661fe6a4640299e92bc387d14d8696576f642
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-core@npm:~6.6.2":
+"@patternfly/react-core@npm:6.6.2":
   version: 6.6.2
   resolution: "@patternfly/react-core@npm:6.6.2"
   dependencies:
@@ -2982,19 +2965,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-icons@npm:^6.5.1, @patternfly/react-icons@npm:^6.7.0":
-  version: 6.7.0
-  resolution: "@patternfly/react-icons@npm:6.7.0"
-  dependencies:
-    tslib: "npm:^2.8.1"
-  peerDependencies:
-    react: ^17 || ^18 || ^19
-    react-dom: ^17 || ^18 || ^19
-  checksum: 10/cf91cf7de332f09e6f97c0fb59d62f6cf5e55e3541aaf5a2f08f8884ec8e48d2ef4f326bb62a6e837fb4cf44297b515f0f1f6088798cd0a269822147576be4aa
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-icons@npm:^6.6.1, @patternfly/react-icons@npm:~6.6.1":
+"@patternfly/react-icons@npm:6.6.1":
   version: 6.6.1
   resolution: "@patternfly/react-icons@npm:6.6.1"
   dependencies:
@@ -3006,21 +2977,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-styles@npm:^6.5.1, @patternfly/react-styles@npm:^6.7.0":
-  version: 6.7.0
-  resolution: "@patternfly/react-styles@npm:6.7.0"
-  checksum: 10/2481f7260ddbd5a26bd4e7f8ed121a78a3cede6a65a312a6e01f9887f61ffa224a8b794e7b661e67cc5dd96cd181f8ba0c8f19d91fa48aaf2b6782e4fb09c88c
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-styles@npm:^6.6.1, @patternfly/react-styles@npm:~6.6.1":
+"@patternfly/react-styles@npm:6.6.1":
   version: 6.6.1
   resolution: "@patternfly/react-styles@npm:6.6.1"
   checksum: 10/fb668ea4320bf4b042733fd9be757e1d383b29da635515756ea55f655820460145cc4dd67fb78b337b6c35e5c0dad75b5785ad72cb6a285d769669b82ada21f6
   languageName: node
   linkType: hard
 
-"@patternfly/react-table@npm:~6.6.2":
+"@patternfly/react-table@npm:6.6.2":
   version: 6.6.2
   resolution: "@patternfly/react-table@npm:6.6.2"
   dependencies:
@@ -3037,21 +3001,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-tokens@npm:^6.6.1, @patternfly/react-tokens@npm:~6.6.1":
+"@patternfly/react-tokens@npm:6.6.1":
   version: 6.6.1
   resolution: "@patternfly/react-tokens@npm:6.6.1"
   checksum: 10/67e3e7f51350f0b9f1476aedf61d3eab78cd0408ce5e13ef78540adb443026037683c1b061d61e322651b5e1a19a28cae77127937d5e9f57ec43caf5725220e6
   languageName: node
   linkType: hard
 
-"@patternfly/react-tokens@npm:^6.7.0":
-  version: 6.7.0
-  resolution: "@patternfly/react-tokens@npm:6.7.0"
-  checksum: 10/ed2e9db8b9b0bf1d4ea833737d2f82286b52e2efc27d7fd7c998601c49a60252f7dde88eb8ac9b3822ba3d708234c7ab6367336481b1792ef1795d8618245f17
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-topology@npm:~6.6.0":
+"@patternfly/react-topology@npm:6.6.0":
   version: 6.6.0
   resolution: "@patternfly/react-topology@npm:6.6.0"
   dependencies:
