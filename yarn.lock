@@ -1799,6 +1799,7 @@ __metadata:
     "@types/node": "npm:^25.3.3"
     "@types/react": "npm:^18.3.5"
     "@types/react-dom": "npm:^18.3.0"
+    artemis-console-plugin: "workspace:*"
     babel-loader: "npm:^10.1.1"
     connect-history-api-fallback: "npm:^2.0.0"
     copy-webpack-plugin: "npm:^14.0.0"
@@ -5502,6 +5503,49 @@ __metadata:
   checksum: 10/4821ebdfe7d699f910c7f09bc9fa996f09b96b80bccb4f5dd4b59deae582f6ad6e505ecef6376f8beac1eda06df2dbc89b70e82835d104d6fcabd33c1aed1ae9
   languageName: node
   linkType: hard
+
+"artemis-console-plugin@workspace:*, artemis-console-plugin@workspace:packages/artemis-console":
+  version: 0.0.0-use.local
+  resolution: "artemis-console-plugin@workspace:packages/artemis-console"
+  dependencies:
+    "@hawtio/react": "npm:2.4.1"
+    "@patternfly/react-charts": "npm:8.6.1"
+    "@patternfly/react-code-editor": "npm:6.6.2"
+    "@patternfly/react-core": "npm:6.6.2"
+    "@patternfly/react-icons": "npm:6.6.1"
+    "@patternfly/react-styles": "npm:6.6.1"
+    "@patternfly/react-table": "npm:6.6.2"
+    "@patternfly/react-tokens": "npm:6.6.1"
+    "@patternfly/react-topology": "npm:6.6.0"
+    "@types/node": "npm:^25.3.3"
+    "@types/react": "npm:^18.3.5"
+    "@types/react-dom": "npm:^18.3.0"
+    dompurify: "npm:^3.4.17"
+    monaco-editor: "npm:~0.56.0"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    react-router: "npm:^7.18.3"
+    react-split: "npm:^2.0.14"
+    ts-node: "npm:^10.9.2"
+    tsup: "npm:^8.5.0"
+    typescript: "npm:^5.9.3"
+    webpack: "npm:^5.106.2"
+    xml-formatter: "npm:^3.7.0"
+  peerDependencies:
+    "@patternfly/react-charts": ^8
+    "@patternfly/react-code-editor": ^6
+    "@patternfly/react-core": ^6
+    "@patternfly/react-icons": ^6
+    "@patternfly/react-styles": ^6
+    "@patternfly/react-table": ^6
+    "@patternfly/react-tokens": ^6
+    "@patternfly/react-topology": ^6
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
+    react-router: ^7
+    webpack: ^5
+  languageName: unknown
+  linkType: soft
 
 "asap@npm:^2.0.0":
   version: 2.0.6

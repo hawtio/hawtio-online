@@ -47,6 +47,7 @@
     "@patternfly/react-table": "6.6.2",
     "@patternfly/react-tokens": "6.6.1",
     "@patternfly/react-topology": "6.6.0",
+    "artemis-console-plugin": "workspace:*",
     "monaco-editor": "~0.56.0",
     "openshift-logos-icon": "^1.7.1",
     "react": "^18.3.1",

@@ -56,6 +56,13 @@ bootstrapModules().then(mods => {
     mods.hawtioreact.springboot()
     configManager.initItem('Hawtio Plugins', TaskState.finished, 'plugins')
 
+    // Register Artemis Console
+    configManager.initItem('Artemis Console', TaskState.started, 'plugins')
+    await import('artemis-console-plugin').then(async m => {
+      m.artemis()
+    })
+    configManager.initItem('Artemis Console', TaskState.finished, 'plugins')
+
     // ::hawtio-additional-modules:: // Build-time hook for sed/awk to add additional modules
 
     configManager.initItem('Hawtio UI', TaskState.started, 'plugins')

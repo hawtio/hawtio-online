@@ -76,6 +76,17 @@
   --pf-v6-c-toolbar--PaddingBlockEnd: 0;
 }
 
+#artemis-tabs-toolbar.pf-v6-c-toolbar, .broker-diagram {
+  /* Toolbar in ArtemisTabs has symmetrical vertical padding */
+  --pf-v6-c-toolbar--PaddingBlockEnd: 0;
+  /* Narrow gap between toolbar elements */
+  --pf-v6-c-toolbar__content-section--ColumnGap: 0.5rem;
+}
+.broker-diagram .pf-v6-c-toolbar {
+  /* less gap in topology/diagram toolbar */
+  --pf-v6-c-toolbar--RowGap: 0.25rem;
+}
+
 #hawtio-main-page .pf-v6-c-toolbar__content-section {
   /* Align toolbar buttons and three-dots menu vertically */
   align-items: center;
@@ -128,6 +139,7 @@
   --pf-v6-c-about-modal-box__content--MarginBlockEnd: var(--pf-t--global--spacer--md);
   --pf-v6-c-about-modal-box__content--MarginInlineStart: var(--pf-t--global--spacer--xl);
   --pf-v6-c-about-modal-box__content--MarginInlineEnd: var(--pf-t--global--spacer--lg);
+  --pf-v6-c-content--dl--GridTemplateColumns--dt: 25ch;
   --pf-v6-c-content--dl--RowGap: var(--pf-t--global--spacer--sm);
 }
 .pf-v6-c-modal-box.pf-m-lg .pf-v6-c-about-modal-box__close {
@@ -145,6 +157,113 @@
 }
 #hawtio-about-product-info dl {
   margin: var(--pf-t--global--spacer--sm);
+}
+
+#hawtio-preferences-content .pf-v6-c-slider__main {
+  max-width: 97%;
+}
+
+/* Customization of modal dialogs containing scrollable elements */
+
+#attributes-modal,
+#attributes-modal .pf-v6-c-modal-box__body,
+#attributes-modal .pf-v6-c-modal-box__body .pf-v6-c-page__main-section,
+#operations-modal,
+#operations-modal .pf-v6-c-modal-box__body,
+#operations-modal .pf-v6-c-modal-box__body .pf-v6-c-page__main-section,
+#filter-information,
+#filter-information .pf-v6-c-modal-box__body,
+#filter-information .pf-v6-c-modal-box__body .pf-v6-c-page__main-section {
+  /* Propagation of non-automatic height for proper vertical scrolling */
+  height: 100%;
+}
+
+#filter-information .pf-v6-c-modal-box__body .pf-v6-c-content--dl {
+  /* Better formatting of Filter Information modal definition list */
+  grid-template: var(--pf-v6-c-content--dl--GridTemplateColumns--dt) var(--pf-v6-c-content--dl--GridTemplateColumns--dd)
+}
+
+#jmx-operation-list .pf-v6-c-form {
+  /* More space for form labels (than default 8rem) */
+  --pf-v6-c-form--m-horizontal__group-label--md--GridColumnWidth: 12rem;
+}
+
+.pf-v6-c-modal-box__body>.pf-v6-c-form,
+.pf-v6-c-panel__main-body>.pf-v6-c-form {
+  /* Less gap between form rows, when in dialogs (create address, send message, ...) or under tabs */
+  --pf-v6-c-form--GridGap: 0.5rem;
+}
+
+/* Customization of grids and cards */
+
+#hawtio-main-container .pf-v6-l-grid {
+  /* Less padding between <GridItem>s */
+  --pf-v6-l-grid--m-gutter--GridGap: 0.5rem;
+}
+
+#hawtio-main-container .pf-v6-c-card,
+#modal-message-details .pf-v6-c-card {
+  /* Less padding within <Card>s */
+  --pf-v6-c-card--first-child--PaddingBlockStart: var(--pf-t--global--spacer--sm);
+  --pf-v6-c-card--c-divider--child--PaddingBlockStart: var(--pf-t--global--spacer--sm);
+  --pf-v6-c-card__title--not--last-child--PaddingBlockEnd: var(--pf-t--global--spacer--sm);
+  --pf-v6-c-card--child--PaddingBlockEnd: var(--pf-t--global--spacer--sm);
+  --pf-v6-c-card--child--PaddingInlineStart: var(--pf-t--global--spacer--md);
+  --pf-v6-c-card--child--PaddingInlineEnd: var(--pf-t--global--spacer--md);
+
+  overflow: hidden;
+}
+
+#broker-status-dashboard #broker-info.pf-v6-c-card {
+  /* Broker info card with a burger menu - no padding, as the icon has own padding */
+  --pf-v6-c-card--child--PaddingInlineEnd: 0;
+}
+
+#hawtio-main-container #broker-status-dashboard .pf-v6-c-card__body {
+  /* Proper scrolling for overflown content in <Card>s */
+  overflow: auto;
+}
+
+#broker-status-dashboard .pf-v6-c-description-list {
+  /* More compact description list in the Broker status page */
+  --pf-v6-c-description-list--RowGap: 0.125rem;
+}
+#broker-status-dashboard .pf-v6-c-description-list.pf-m-horizontal {
+  /* More space for labels in the Broker status page */
+  --pf-v6-c-description-list__group--GridTemplateColumns: 15ch minmax(15ch, auto);
+}
+
+#broker-status-dashboard .pf-v6-c-expandable-section {
+  /* Expandable section gap (between the expander and the section) to match section gap */
+  --pf-v6-c-expandable-section--Gap: 0.25rem;
+}
+
+#data-table.pf-v6-c-table {
+  /* More compact tables */
+  --pf-v6-c-table--m-compact--cell--PaddingBlockStart: 0.125rem;
+  --pf-v6-c-table--m-compact--cell--PaddingBlockEnd: 0.125rem;
+  --pf-v6-c-table--cell--PaddingInlineStart: 0.125rem;
+  --pf-v6-c-table--cell--PaddingInlineEnd: 0.125rem;
+  --pf-v6-c-table--cell--first-last-child--PaddingInline: 0.5rem;
+}
+
+#data-table .pf-v6-c-table__td {
+  /* Center-align vertically the items in rows */
+  vertical-align: middle;
+}
+
+.pf-v6-c-card.pf-m-secondary .table-transparent {
+  /* transparent tables for <Card>s with variant=secondary */
+  background-color: transparent;
+}
+.pf-v6-c-modal-box__body .pf-v6-c-data-list {
+  /* transparent data lists for better light/dark mode experience */
+  --pf-v6-c-data-list__item--BackgroundColor: transparent;
+}
+
+#hawtio-main-container .pf-v6-c-tree-view__node.pf-m-current {
+  /* Bolder font for current tree nodes */
+  font-weight: 700;
 }
 
 /* Customization of Hawtio variables */
