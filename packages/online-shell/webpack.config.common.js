@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const InterpolateHtmlPlugin = require('interpolate-html-plugin')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const path = require('path')
@@ -161,6 +162,13 @@ const common = (mode, publicPath, packageVersion) => {
       new webpack.DefinePlugin({
         'process.env': JSON.stringify(process.env),
         HAWTIO_ONLINE_PACKAGE_VERSION: JSON.stringify(packageVersion),
+      }),
+      new MonacoWebpackPlugin({
+        // 'html' is required as workaround for 'xml'
+        // https://github.com/microsoft/monaco-editor/issues/1509
+        languages: ['xml', 'json', 'html'],
+        globalAPI: true,
+        monacoEditorPath: path.resolve(__dirname, '../../node_modules/monaco-editor'),
       }),
     ],
     output: {
