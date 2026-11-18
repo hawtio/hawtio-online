@@ -1835,7 +1835,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:^2.4.1":
+"@hawtio/react@npm:2.4.1, @hawtio/react@npm:^2.4.1":
   version: 2.4.1
   resolution: "@hawtio/react@npm:2.4.1"
   dependencies:

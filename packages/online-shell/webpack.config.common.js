@@ -151,6 +151,11 @@ const common = (mode, publicPath, packageVersion) => {
             // Hardcoding needed because it cannot handle yarn 'workspace:*' version
             requiredVersion: '^0.0.0',
           },
+          'artemis-console-plugin': {
+            singleton: true,
+            // Hardcoding needed because it cannot handle yarn 'workspace:*' version
+            requiredVersion: '^0.0.0',
+          },
         },
       }),
       new HtmlWebpackPlugin({
