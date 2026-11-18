@@ -1811,6 +1811,7 @@ __metadata:
     jest: "npm:^30.4.2"
     mini-css-extract-plugin: "npm:^2.10.2"
     monaco-editor: "npm:~0.56.0"
+    monaco-editor-webpack-plugin: "npm:^7.1.1"
     openshift-logos-icon: "npm:^1.7.1"
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
@@ -1834,7 +1835,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hawtio/react@npm:2.4.1, @hawtio/react@npm:^2.4.1":
+"@hawtio/react@npm:^2.4.1":
   version: 2.4.1
   resolution: "@hawtio/react@npm:2.4.1"
   dependencies:
@@ -11013,7 +11014,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:^2.0.0":
+"loader-utils@npm:^2.0.0, loader-utils@npm:^2.0.2":
   version: 2.0.4
   resolution: "loader-utils@npm:2.0.4"
   dependencies:
@@ -11871,6 +11872,18 @@ __metadata:
   version: 6.15.0
   resolution: "mobx@npm:6.15.0"
   checksum: 10/cf7fd4f96d521962c87883a7d41d745ba35af6130265f619e22c2d1ddff875e7f766726984f53bf5d5e215074146e6b190bc0e8668eb675cca9cb5d5204987fa
+  languageName: node
+  linkType: hard
+
+"monaco-editor-webpack-plugin@npm:^7.1.1":
+  version: 7.1.1
+  resolution: "monaco-editor-webpack-plugin@npm:7.1.1"
+  dependencies:
+    loader-utils: "npm:^2.0.2"
+  peerDependencies:
+    monaco-editor: ">= 0.31.0"
+    webpack: ^4.5.0 || 5.x
+  checksum: 10/633ce250ac28008eb8fa0ce617655793fa014547f5b26f18210b5385365d96a967e799c3c16cf90ea01325fd8fd26d68d0b7995e6b1e5062984e72ee1bd3abd2
   languageName: node
   linkType: hard
 
