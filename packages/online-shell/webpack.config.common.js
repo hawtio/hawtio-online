@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const InterpolateHtmlPlugin = require('interpolate-html-plugin')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const path = require('path')
@@ -19,6 +20,10 @@ try {
 } catch (e) {
   console.log('No parent package.json found. Assuming standalone repository structure.')
 }
+
+// there's a problem with node_modules/@patternfly/react-icons/dist/esm/package.json which is almost empty
+// (a bug in Patternfly distro?)
+delete dependencies['@patternfly/react-icons']
 
 /**
  * Get the version of a dependency from the package.json file(s)
@@ -146,6 +151,11 @@ const common = (mode, publicPath, packageVersion) => {
             // Hardcoding needed because it cannot handle yarn 'workspace:*' version
             requiredVersion: '^0.0.0',
           },
+          'artemis-console-plugin': {
+            singleton: true,
+            // Hardcoding needed because it cannot handle yarn 'workspace:*' version
+            requiredVersion: '^0.0.0',
+          },
         },
       }),
       new HtmlWebpackPlugin({
@@ -157,6 +167,13 @@ const common = (mode, publicPath, packageVersion) => {
       new webpack.DefinePlugin({
         'process.env': JSON.stringify(process.env),
         HAWTIO_ONLINE_PACKAGE_VERSION: JSON.stringify(packageVersion),
+      }),
+      new MonacoWebpackPlugin({
+        // 'html' is required as workaround for 'xml'
+        // https://github.com/microsoft/monaco-editor/issues/1509
+        languages: ['xml', 'json', 'html'],
+        globalAPI: true,
+        monacoEditorPath: path.resolve(__dirname, '../../node_modules/monaco-editor'),
       }),
     ],
     output: {

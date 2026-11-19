@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "build": "yarn build:online && yarn license",
-    "start:online": "yarn build:mgmt && yarn start:shell",
+    "start:online": "yarn build:mgmt && yarn build:artemis-console && yarn start:shell",
     "analyze:online": "yarn build:online && yarn analyze:shell",
     "build:online": "yarn workspaces foreach -v -Aipt --exclude @hawtio/online-root --exclude \"@hawtio/*-app\" run build",
     "start:shell": "yarn workspace @hawtio/online-shell start",
@@ -37,6 +37,7 @@
     "build:oAuthApi": "yarn workspace @hawtio/online-oauth build",
     "start:gateway": "yarn workspace @hawtio/gateway start:gateway-server",
     "build:gateway": "yarn workspace @hawtio/gateway build",
+    "build:artemis-console": "yarn workspace artemis-console-plugin build",
     "lint": "yarn eslint packages/",
     "lint:fix": "yarn eslint packages/ --fix",
     "format:check": "yarn prettier --check packages/",
@@ -84,6 +85,14 @@
     "node": ">=20"
   },
   "resolutions": {
-    "eslint-config-react-app/eslint-plugin-react-hooks": "^4.6.2"
+    "@module-federation/utilities": "3.1.83",
+    "eslint-config-react-app/eslint-plugin-react-hooks": "^4.6.2",
+    "@patternfly/react-charts": "8.6.1",
+    "@patternfly/react-code-editor": "6.6.2",
+    "@patternfly/react-core": "6.6.2",
+    "@patternfly/react-icons": "6.6.1",
+    "@patternfly/react-styles": "6.6.1",
+    "@patternfly/react-table": "6.6.2",
+    "@patternfly/react-tokens": "6.6.1"
   }
 }

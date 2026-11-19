@@ -60,7 +60,7 @@ module.exports = (env, argv) => {
   const proxiedMaster = `http://localhost:${devPort}/master`
 
   return merge(common('development', publicPath, env.PACKAGE_VERSION), {
-    devtool: 'eval-source-map',
+    devtool: false,
     stats: 'errors-warnings',
 
     plugins: [
