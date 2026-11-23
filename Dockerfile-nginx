@@ -1,10 +1,25 @@
+#
+# Global ARGs required
+#
+# Versions
+ARG HAWTIO_ONLINE_VERSION=3.2.0
+ARG JOLOKIA_VERSION=2.6.0
+ARG HAWTIO_REACT_VERSION=2.4.1
+
+#
+# The user id for nginx
+#
+ARG NGINX_USER=65532
+
+##############################################################################
+
 # Regardless of arch being required (amd64 or arm64) this will
 # 'compile' the hawtio-online javascript package natively without
 # resorting to a foreign image that would have to be emulated and
 # so really sloooow!
 # The resulting javascript/assets are then copied into the final image
 # that conforms with the correct architecture.
-FROM --platform=${BUILDPLATFORM} docker.io/node:22-alpine as builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:26-alpine as staging
 
 WORKDIR /hawtio-online
 
@@ -14,77 +29,135 @@ COPY packages/ packages/
 COPY .yarn/plugins .yarn/plugins
 COPY .yarn/releases .yarn/releases
 
+RUN ln -s "$(pwd)/.yarn/releases/"yarn-*.cjs /usr/local/bin/yarn
 RUN yarn install
 RUN yarn build
 
-# Build stage to extract envsubst
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4 as envsubst
+##############################################################################
 
-RUN microdnf -y install gettext
+#
+# Standard hi/nginx:1.30.7 image is distroless (no shell)
+# Uses "-builder" tag:
+# - nginx.sh / config.sh require shell at container startup
+# - dnf required to install envsubst and update
+#
+# Final Image
+#
+FROM registry.access.redhat.com/hi/nginx:1.30.7-builder
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
+#
+# From global variables
+#
+ARG HAWTIO_ONLINE_VERSION
+ARG JOLOKIA_VERSION
+ARG HAWTIO_REACT_VERSION
 
-ENV NGINX_VERSION 1.22.1-1.el9
+#
+# nginx environment
+#
+ARG NGINX_ETC=/etc/nginx
+ARG NGINX_CONFIG=${NGINX_ETC}/nginx.conf
+ARG NGINX_CACHE=/var/cache/nginx
+ARG NGINX_LOG=/var/log/nginx
+ARG NGINX_SHARE=/usr/share/nginx
+ARG NGINX_HTML=${NGINX_SHARE}/html
+ARG NGINX_ONLINE=${NGINX_HTML}/online
+ARG NGINX_USER
 
-LABEL name="nginxinc/nginx" \
-    vendor="NGINX Inc." \
-    version="${NGINX_VERSION}" \
-    release="1" \
-    summary="NGINX" \
-    description="nginx will do ....."
-## Required labels above - recommended below
-LABEL url="https://www.nginx.com/" \
-    io.k8s.display-name="NGINX" \
+ARG HAWTIO_DESCRIPTION="The Hawtio Console eases the discovery and management of 'hawtio-enabled' applications deployed on OpenShift."
+
+LABEL description="${HAWTIO_DESCRIPTION}" \
+    io.hawt.jolokia.version="${JOLOKIA_VERSION}" \
+    io.hawt.react.version="${HAWTIO_REACT_VERSION}" \
+    io.k8s.description="${HAWTIO_DESCRIPTION}" \
+    io.k8s.display-name="Hawtio Console" \
     io.openshift.expose-services="8443:https" \
-    io.openshift.tags="nginx,nginxinc"
+    io.openshift.tags="hawtio,jolokia" \
+    maintainer="Paul Richardson <p.g.richardson@phantomjinx.co.uk>" \
+    name="Hawtio Online" \
+    summary="${HAWTIO_DESCRIPTION}" \
+    version="${HAWTIO_ONLINE_VERSION}"
 
-COPY docker/nginx.repo /etc/yum.repos.d/nginx.repo
+# Switch to root user
+USER 0
 
-RUN curl -sO https://nginx.org/keys/nginx_signing.key && \
-    rpm --import ./nginx_signing.key && \
-    microdnf -y install --setopt=tsflags=nodocs nginx-${NGINX_VERSION}.ngx && \
-    rm -f ./nginx_signing.key && \
-    microdnf clean all
+#
+# Perform an upgrade of all packages to ensure
+# any outstanding packages are updates from the
+# base images
+#
+RUN microdnf upgrade -y
 
-# forward request and error logs to docker log collector
+# Install envsubst for template and awk for nginx script
+RUN microdnf -y install --setopt=tsflags=nodocs gettext-envsubst gawk \
+    && microdnf clean all
+
+#
+# Modify the nginx configuration
+#
+# Forward request and error logs to docker log collector
 # - Change pid file location & remove nginx user & change port to 8080
 # - modify perms for non-root runtime
-RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
-    ln -sf /dev/stderr /var/log/nginx/error.log && \
-    sed -i 's~/var/run/nginx.pid~/var/cache/nginx/nginx.pid~g' /etc/nginx/nginx.conf && \
-    sed -i -e '/user/!b' -e '/nginx/!b' -e '/nginx/d' /etc/nginx/nginx.conf && \
-    chown -R 998 /var/cache/nginx /etc/nginx && \
-    rm -f /etc/nginx/conf.d/default.conf && \
-    chmod -R g=u /var/cache/nginx /etc/nginx
+#
+RUN mkdir -p ${NGINX_CACHE}/pods ${NGINX_CACHE}/rbac ${NGINX_CACHE}/rbac2 && \
+    ln -sf /dev/stdout ${NGINX_LOG}/access.log && \
+    ln -sf /dev/stderr ${NGINX_LOG}/error.log && \
+    chown -R ${NGINX_USER} ${NGINX_CACHE} ${NGINX_ETC} ${NGINX_LOG} ${NGINX_SHARE} && \
+    chmod -R g=u ${NGINX_CACHE} ${NGINX_ETC} ${NGINX_LOG}
+
+#
+# Remove default installed boilerplate
+#
+RUN rm -f ${NGINX_ETC}/conf.d/default.conf \
+          ${NGINX_HTML}/index.html
+
+#
+# Update locations of osconsole config
+#
+RUN mkdir -p ${NGINX_ONLINE}/osconsole && \
+    touch ${NGINX_ONLINE}/osconsole/config.json && \
+    chown ${NGINX_USER} ${NGINX_ONLINE}/osconsole/config.json && \
+    chmod g=u ${NGINX_ONLINE}/osconsole/config.json
+
+#
+# Copy include directory
+#
+COPY docker/includes /etc/nginx/includes
+
+#
+# Copy docker config files over
+#
+COPY docker/nginx-gateway.conf.template \
+    docker/osconsole/config.sh \
+    docker/nginx.sh \
+    /
+RUN chmod 0755 /nginx.sh /config.sh
+
+#
+# Copy error pages
+#
+COPY docker/hawtio-?0?.html ${NGINX_HTML}/
+
+#
+# Copy built hawtio-online app from staging container
+#
+COPY --from=staging /hawtio-online/packages/online-shell/build ${NGINX_ONLINE}/
+
+#
+# Copy licenses
+#
+RUN mkdir -p /opt/hawtio/licenses
+COPY --from=staging /hawtio-online/docker/licenses /opt/hawtio/licenses
+
+#
+# Finalize permissions for nginx files
+#
+RUN chown -R ${NGINX_USER} ${NGINX_SHARE}
 
 EXPOSE 8443
 EXPOSE 8080
 
-## Add symbolic link to config.json to avoid mounting issues
-#RUN ln -sf /usr/share/nginx/html/config.json /usr/share/nginx/html/config.json
+# Return to nginx user
+USER ${NGINX_USER}
 
-RUN rm /usr/share/nginx/html/index.html
-
-RUN mkdir -p /usr/share/nginx/html/online/osconsole && \
-    touch /usr/share/nginx/html/online/osconsole/config.json && \
-    chown 998 /usr/share/nginx/html/online/osconsole/config.json && \
-    chmod g=u /usr/share/nginx/html/online/osconsole/config.json
-
-COPY docker/nginx-gateway.conf.template docker/osconsole/config.sh docker/nginx.sh /
-
-# Copy include directory
-COPY docker/includes /etc/nginx/includes
-
-# Copy error pages
-COPY docker/hawtio-?0?.html /usr/share/nginx/html/
-
-# Copy licenses
-RUN mkdir -p /opt/hawtio/licenses
-COPY --from=builder /hawtio-online/docker/licenses /opt/hawtio/licenses
-
-COPY --from=builder /hawtio-online/packages/online-shell/build /usr/share/nginx/html/online/
-COPY --from=envsubst /usr/bin/envsubst /usr/local/bin/
-
-USER 998
-
-CMD ["./nginx.sh"]
+ENTRYPOINT ["/nginx.sh"]
