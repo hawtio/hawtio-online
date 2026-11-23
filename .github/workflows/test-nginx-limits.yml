@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 26
 
       # Build hawtio
       - name: Install Dependencies and Build Application
@@ -72,7 +72,7 @@ jobs:
             -e HAWTIO_ONLINE_MODE=namespace \
             -e HAWTIO_ONLINE_NAMESPACE=hawtio-dev \
             hawtio-nginx \
-            /bin/sh -x ./nginx.sh
+            /bin/sh -x /nginx.sh
 
           echo "Waiting for Nginx..."
           sleep 5
@@ -119,7 +119,7 @@ jobs:
             -e HAWTIO_ONLINE_MODE=namespace \
             -e HAWTIO_ONLINE_NAMESPACE=hawtio-dev \
             hawtio-nginx \
-            /bin/sh -x ./nginx.sh
+            /bin/sh -x /nginx.sh
 
           echo "Waiting for Nginx..."
           sleep 5
