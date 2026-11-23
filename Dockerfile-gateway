@@ -1,12 +1,23 @@
+#
+# Global ARGs required
+#
+# Version
+ARG HAWTIO_GATEWAY_VERSION=3.2.0
+
+#
+# The user id for node
+#
+ARG NODE_USER=65532
+
 # Regardless of arch being required (amd64 or arm64) this will
 # 'compile' the hawtio-online javascript package natively without
 # resorting to a foreign image that would have to be emulated and
 # so really sloooow!
 # The resulting javascript/assets are then copied into the final image
 # that conforms with the correct architecture.
-FROM --platform=${BUILDPLATFORM} docker.io/node:22-alpine as builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:26-alpine as staging
 
-WORKDIR /hawtio-online-gateway
+WORKDIR /hawtio-gateway
 
 COPY yarn.lock ./
 COPY .yarnrc.yml ./
@@ -18,41 +29,84 @@ COPY packages/gateway/tsconfig.json ./
 COPY packages/gateway/src ./src/
 COPY packages/gateway/public ./public/
 
+RUN ln -s "$(pwd)/.yarn/releases/"yarn-*.cjs /usr/local/bin/yarn
 RUN yarn install
 RUN yarn build
 
-#====================================================
+# Copy the run-scripts from source
+COPY packages/gateway/env.product packages/gateway/gateway.sh ./dist/
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
+##############################################################################
+
+# Standard hi/nodejs:26.13.0 image is distroless (no shell)
+# Uses "-builder" tag:
+# - dnf required to install envsubst and update
+#
+FROM registry.access.redhat.com/hi/nodejs:26.13.0-builder
 
 #
-# The user id
+# From global variables
 #
-ENV NODE_USER 9999
+ARG HAWTIO_GATEWAY_VERSION
+ARG NODE_USER
 
-ENV NODE_MAJOR_VERSION 22
-ENV GATEWAY_DIR=/opt/hawtio-online-gateway
+#
+# Hawtio Gateway environment
+#
+# Location of hawtio-online-gateway in staging container (same as WORKDIR)
+#
+ARG HAWTIO_GATEWAY_STAGING_BUILD_DIR=/hawtio-gateway/dist
 
-RUN microdnf -y module enable nodejs:22
-RUN microdnf repoquery nodejs
-RUN microdnf -y install --setopt=tsflags=nodocs nodejs && microdnf clean all
+#
+# Final destination directory of app
+#
+ARG GATEWAY_DEST_DIR=/opt/hawtio-online-gateway
 
-COPY --from=builder /hawtio-online-gateway/dist ${GATEWAY_DIR}/
-COPY packages/gateway/env.product ${GATEWAY_DIR}/
-COPY packages/gateway/gateway.sh ${GATEWAY_DIR}/
+#
+# Description used in labels
+#
+ARG HAWTIO_DESCRIPTION="The Hawtio Gateway providing extra function support for the Hawtio Console."
+
+#
+# The architecture labels
+#
+LABEL description="${HAWTIO_DESCRIPTION}" \
+    io.k8s.description="${HAWTIO_DESCRIPTION}" \
+    io.k8s.display-name="Hawtio Gateway" \
+    io.openshift.tags="hawtio,gateway,jolokia" \
+    maintainer="Paul Richardson <p.g.richardson@phantomjinx.co.uk>" \
+    name="Hawtio Online Gateway" \
+    summary="${HAWTIO_DESCRIPTION}" \
+    version="${HAWTIO_GATEWAY_VERSION}"
+
+# Switch to root user
+USER 0
+
+#
+# Perform an upgrade of all packages to ensure
+# any outstanding packages are updates from the
+# base images
+#
+RUN microdnf upgrade -y
+
+#
+# Copy built hawtio-online-gateway app from staging container
+# - Note: dist is the build directory after compilation in the staging
+#
+COPY --from=staging ${HAWTIO_GATEWAY_STAGING_BUILD_DIR} ${GATEWAY_DEST_DIR}/
 
 #
 # Finalize permissions for gateway files
 #
 RUN useradd -ms /bin/sh -u ${NODE_USER} gateway
-RUN chown -R ${NODE_USER} ${GATEWAY_DIR}
-RUN chmod 755 ${GATEWAY_DIR}/gateway.sh
+RUN chown -R ${NODE_USER} ${GATEWAY_DEST_DIR}
+RUN chmod 755 ${GATEWAY_DEST_DIR}/gateway.sh
 
 # Allow the environment to be updated by arbitrary image user
-RUN chmod 666 ${GATEWAY_DIR}/env.product
+RUN chmod 666 ${GATEWAY_DEST_DIR}/env.product
 
 USER ${NODE_USER}
 
 EXPOSE 3000
 
-CMD ["/opt/hawtio-online-gateway/gateway.sh"]
+ENTRYPOINT ["/opt/hawtio-online-gateway/gateway.sh"]

@@ -8,8 +8,22 @@ export OPENSHIFT=true
 check_openshift_api() {
   APISERVER="https://${CLUSTER_MASTER:-kubernetes.default.svc}"
   SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount
-  TOKEN=$(cat ${SERVICEACCOUNT}/token)
-  CACERT=${SERVICEACCOUNT}/ca.crt
+  TOKEN_FILE="${SERVICEACCOUNT}/token"
+  CACERT="${SERVICEACCOUNT}/ca.crt"
+
+  if [ ! -f "${TOKEN_FILE}" ]; then
+    echo "No ServiceAccount token detected!"
+    OPENSHIFT=false
+    return
+  fi
+
+  if [ ! -f "${CACERT}" ]; then
+    echo "No CA Certificate detected!"
+    OPENSHIFT=false
+    return
+  fi
+
+  TOKEN=$(cat "${TOKEN_FILE}")
 
   STATUS_CODE=$(curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET "${APISERVER}"/apis/apps.openshift.io/v1 --write-out '%{http_code}' --silent --output /dev/null || echo "000")
   if [ "${STATUS_CODE}" != "200" ]; then
@@ -34,6 +48,9 @@ if [ -f "${HAWTIO_ONLINE_GATEWAY_ENV_FILE}" ]; then
   fi
   cat /tmp/env.product > ${HAWTIO_ONLINE_GATEWAY_ENV_FILE}
 fi
+
+echo "=== ENV FILE ==="
+cat ${HAWTIO_ONLINE_GATEWAY_ENV_FILE}
 
 node \
   --enable-source-maps \
