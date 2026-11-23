@@ -22,8 +22,22 @@ export OPENSHIFT=true
 check_openshift_api() {
   APISERVER="https://${CLUSTER_MASTER:-kubernetes.default.svc}"
   SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount
-  TOKEN=$(cat ${SERVICEACCOUNT}/token)
-  CACERT=${SERVICEACCOUNT}/ca.crt
+  TOKEN_FILE="${SERVICEACCOUNT}/token"
+  CACERT="${SERVICEACCOUNT}/ca.crt"
+
+  if [ ! -f "${TOKEN_FILE}" ]; then
+    echo "No ServiceAccount token detected!"
+    OPENSHIFT=false
+    return
+  fi
+
+  if [ ! -f "${CACERT}" ]; then
+    echo "No CA Certificate detected!"
+    OPENSHIFT=false
+    return
+  fi
+
+  TOKEN=$(cat "${TOKEN_FILE}")
 
   STATUS_CODE=$(curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET "${APISERVER}"/apis/apps.openshift.io/v1 --write-out '%{http_code}' --silent --output /dev/null || echo "000")
   if [ "${STATUS_CODE}" != "200" ]; then
@@ -39,7 +53,7 @@ check_openshift_api
 # so that the OPENSHIFT flag can be provided to it
 #
 mkdir -p "${HAWTIO_HTML}/osconsole"
-./config.sh > "${HAWTIO_HTML}/osconsole/config.json"
+/config.sh > "${HAWTIO_HTML}/osconsole/config.json"
 
 generate_nginx_gateway_conf() {
   TEMPLATE=/nginx-gateway.conf.template

@@ -8,15 +8,19 @@ ARG HAWTIO_NAMESPACE="rhbac-4"
 # Name of the gateway without the main registry (used in labels)
 ARG HAWTIO_GATEWAY_IMAGE_LABEL_NAME=${HAWTIO_NAMESPACE}/hawtio-gateway-rhel9
 
-FROM registry.access.redhat.com/hi/nodejs:22 as staging
+#
+# The user id for node
+#
+ARG NODE_USER=65532
 
-#
-# Ensure that yarn is installed
-#
+FROM registry.access.redhat.com/hi/nodejs:26 as staging
+
 USER root
-RUN command -v yarn || npm i -g yarn
 
-WORKDIR /hawtio-online-gateway
+#
+# Copy all the source to a triage directory
+#
+WORKDIR /hawtio-source-gateway
 
 COPY package.json yarn.lock ./
 COPY .yarnrc.yml ./
@@ -24,21 +28,41 @@ COPY packages/ packages/
 COPY .yarn/plugins .yarn/plugins
 COPY .yarn/releases .yarn/releases
 
+RUN ln -s "$(pwd)/.yarn/releases/"yarn-*.cjs /usr/local/bin/yarn
 RUN yarn install
 RUN yarn build:gateway
 
 # Adds the licences to the docker directory
 RUN yarn license
 
+RUN find /hawtio-source-gateway
+
+RUN mkdir /hawtio-gateway
+
+# Move the built package to staging directory
+RUN mv packages/gateway/dist/* /hawtio-gateway
+
+# Copy the run-scripts from source
+RUN mv packages/gateway/env.product /hawtio-gateway
+RUN mv packages/gateway/gateway.sh /hawtio-gateway
+
+# Copy the licences directory
+RUN mv docker/licenses /hawtio-gateway/
+
 COPY Makefile ./
 RUN cat Makefile | grep ^VERSION.*[0-9] >> hawtio-online-gateway-version
 
-#######################################################
+
+##############################################################################
 
 #
 # Final Image
 #
-FROM registry.access.redhat.com/ubi9-minimal:9.8
+# Standard hi/nodejs:26.13.0 image is distroless (no shell)
+# Uses "-builder" tag:
+# - dnf required to install envsubst and update
+#
+FROM registry.access.redhat.com/hi/nodejs:26.13.0-builder
 
 #
 # From global variables
@@ -47,52 +71,27 @@ ARG HAWTIO_ONLINE_VERSION
 ARG HAWTIO_NAMESPACE
 ARG HAWTIO_GATEWAY_IMAGE_LABEL_NAME
 
-# The user id for nginx on RHEL
-ARG NGINX_USER=999
+#
 # The user id for node
-ARG NODE_USER=998
-
 #
-# Version of node
-#
-ARG NODE_MAJOR_VERSION=22
-
-#
-# Version of nginx
-#
-ARG NGINX_MAJOR_VERSION=1
-ARG NGINX_MINOR_VERSION=22
-ARG NGINX_BUILD_VERSION=1
+ARG NODE_USER
 
 #
 # Hawtio Gateway environment
 #
-# Location of hawtio-online in staging container (same as WORKDIR)
-ARG GATEWAY_STAGING_DIR=/hawtio-online-gateway
-ARG GATEWAY_STAGING_BUILD_DIR=${GATEWAY_STAGING_DIR}/packages/gateway/dist
+# Location of hawtio-gateway in staging container (same as WORKDIR)
+#
+ARG HAWTIO_GATEWAY_STAGING_BUILD_DIR=/hawtio-gateway
+
+#
+# Final destination directory of app
+#
 ARG GATEWAY_DEST_DIR=/opt/hawtio-online-gateway
+
+#
+# Description used in labels
+#
 ARG HAWTIO_DESCRIPTON="The Red Hat build of HawtIO Gateway providing extra function support for HawtIO on OpenShift."
-
-#
-# Perform an upgrade of all packages to ensure
-# any outstanding packages are updates from the
-# base images
-#
-RUN microdnf upgrade -y
-
-#
-# Install nodejs
-# Install shadow-utils - required for useradd
-#
-RUN microdnf -y module enable nodejs:${NODE_MAJOR_VERSION} && \
-    microdnf repoquery nodejs && \
-    microdnf -y install --setopt=tsflags=nodocs nodejs shadow-utils && \
-    microdnf clean all
-
-#
-# Create the user
-#
-RUN id ${NODE_USER} &>/dev/null || useradd -M -s /bin/bash -u ${NODE_USER} nodeuser
 
 #
 # Label metadata
@@ -108,20 +107,26 @@ LABEL com.redhat.component="hawtio-gateway-container" \
     version="${HAWTIO_ONLINE_VERSION}" \
     version.file="/opt/hawtio/hawtio-online-version"
 
-#
-# Copy build payload from staging
-#
-COPY --from=staging ${GATEWAY_STAGING_BUILD_DIR}/ ${GATEWAY_DEST_DIR}/
+# Switch to root user
+USER 0
 
 #
-# Copy product config file
+# Perform an upgrade of all packages to ensure
+# any outstanding packages are updates from the
+# base images
 #
-COPY packages/gateway/env.product ${GATEWAY_DEST_DIR}/
+RUN microdnf upgrade -y
 
 #
-# Copy entrypoint executable
+# Copy built hawtio-online-gateway app from staging container
+# - Note: dist is the build directory after compilation in the staging
 #
-COPY packages/gateway/gateway.sh ${GATEWAY_DEST_DIR}/
+COPY --from=staging ${HAWTIO_GATEWAY_STAGING_BUILD_DIR} ${GATEWAY_DEST_DIR}/
+
+#
+# Add link for licenses
+#
+RUN mkdir -p /opt/hawtio-gateway && ln -s ${GATEWAY_DEST_DIR}/licenses /opt/hawtio-gateway/licenses
 
 #
 # Finalize permissions for gateway files
@@ -135,16 +140,8 @@ RUN chown -R ${NODE_USER}:0 ${GATEWAY_DEST_DIR} && \
 #
 RUN chmod 666 ${GATEWAY_DEST_DIR}/env.product
 
-#
-# Copy licenses and version file
-#
-RUN mkdir -p /opt/hawtio/licenses
-COPY --from=staging ${GATEWAY_STAGING_DIR}/docker/licenses \
-    ${GATEWAY_STAGING_DIR}/hawtio-online-gateway-version \
-    ${GATEWAY_DEST_DIR}/
-
 USER ${NODE_USER}
 
 EXPOSE 3000
 
-CMD ["/opt/hawtio-online-gateway/gateway.sh"]
+ENTRYPOINT ["/opt/hawtio-online-gateway/gateway.sh"]

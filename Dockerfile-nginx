@@ -5,19 +5,19 @@
 ARG HAWTIO_ONLINE_VERSION=2.5.0
 ARG ARTEMIS_VERSION="not installed"
 ARG JOLOKIA_VERSION=2.6.0
-ARG HAWTIO_REACT_VERSION=2.3.0
+ARG HAWTIO_REACT_VERSION=2.4.1
 # The hawtio namespace for the build images
 ARG HAWTIO_NAMESPACE="rhbac-4"
 # Name of the application without the main registry (used in labels)
 ARG HAWTIO_ONLINE_IMAGE_LABEL_NAME=${HAWTIO_NAMESPACE}/hawtio-rhel9
-
-FROM registry.access.redhat.com/hi/nodejs:22 as staging
-
 #
-# Ensure that yarn is installed
+# The user id for nginx
 #
+ARG NGINX_USER=65532
+
+FROM registry.access.redhat.com/hi/nodejs:26 as staging
+
 USER root
-RUN command -v yarn || npm i -g yarn
 
 WORKDIR /hawtio-online
 
@@ -27,18 +27,24 @@ COPY packages/ packages/
 COPY .yarn/plugins .yarn/plugins
 COPY .yarn/releases .yarn/releases
 
+RUN ln -s "$(pwd)/.yarn/releases/"yarn-*.cjs /usr/local/bin/yarn
 RUN yarn install
 RUN yarn build
 
 COPY Makefile ./
 RUN cat Makefile | grep ^VERSION.*[0-9] >> hawtio-online-version
 
-#######################################################
+##############################################################################
 
+#
+# Standard hi/nginx:1.30.7 image is distroless (no shell)
+# Uses "-builder" tag:
+# - nginx.sh / config.sh require shell at container startup
+# - dnf required to install envsubst and update
 #
 # Final Image
 #
-FROM registry.access.redhat.com/ubi9-minimal:9.8
+FROM registry.access.redhat.com/hi/nginx:1.30.7-builder
 
 #
 # From global variables
@@ -60,16 +66,7 @@ ARG NGINX_LOG=/var/log/nginx
 ARG NGINX_SHARE=/usr/share/nginx
 ARG NGINX_HTML=${NGINX_SHARE}/html
 ARG NGINX_ONLINE=${NGINX_HTML}/online
-
-# The user id for nginx on RHEL
-ARG NGINX_USER=999
-
-#
-# Version of nginx
-#
-ARG NGINX_MAJOR_VERSION=1
-ARG NGINX_MINOR_VERSION=22
-ARG NGINX_BUILD_VERSION=1
+ARG NGINX_USER
 
 #
 # Hawtio environment
@@ -96,6 +93,8 @@ LABEL com.redhat.component="hawtio-container" \
     version="${HAWTIO_ONLINE_VERSION}" \
     version.file="/opt/hawtio/hawtio-online-version"
 
+# Switch to root user
+USER 0
 
 #
 # Perform an upgrade of all packages to ensure
@@ -104,17 +103,9 @@ LABEL com.redhat.component="hawtio-container" \
 #
 RUN microdnf upgrade -y
 
-#
-# Install gettext for envsubst
-#
-RUN microdnf install -y gettext
-
-#
-# Install nginx and cleanup
-#
-RUN microdnf -y module enable nginx:${NGINX_MAJOR_VERSION}.${NGINX_MINOR_VERSION}
-RUN microdnf install -y nginx-${NGINX_MAJOR_VERSION}.${NGINX_MINOR_VERSION}.${NGINX_BUILD_VERSION} && \
-    microdnf clean all
+# Install envsubst for template and awk for nginx script
+RUN microdnf -y install --setopt=tsflags=nodocs gettext-envsubst gawk \
+    && microdnf clean all
 
 #
 # Modify the nginx configuration
@@ -126,9 +117,6 @@ RUN microdnf install -y nginx-${NGINX_MAJOR_VERSION}.${NGINX_MINOR_VERSION}.${NG
 RUN mkdir -p ${NGINX_CACHE}/pods ${NGINX_CACHE}/rbac ${NGINX_CACHE}/rbac2 && \
     ln -sf /dev/stdout ${NGINX_LOG}/access.log && \
     ln -sf /dev/stderr ${NGINX_LOG}/error.log && \
-    sed -i "s~pid.*~pid ${NGINX_CACHE}/nginx.pid;~g" ${NGINX_CONFIG} && \
-    sed -i '/listen/s%80%8000%' ${NGINX_CONFIG} && \
-    sed -i -e '/user/!b' -e '/nginx/!b' -e '/nginx/d' ${NGINX_CONFIG} && \
     chown -R ${NGINX_USER} ${NGINX_CACHE} ${NGINX_ETC} ${NGINX_LOG} ${NGINX_SHARE} && \
     chmod -R g=u ${NGINX_CACHE} ${NGINX_ETC} ${NGINX_LOG}
 
@@ -158,6 +146,7 @@ COPY ${HAWTIO_ONLINE_DOCKER_DIR}/nginx-gateway.conf.template \
     ${HAWTIO_ONLINE_DOCKER_DIR}/osconsole/config.sh \
     ${HAWTIO_ONLINE_DOCKER_DIR}/nginx.sh \
     /
+RUN chmod 0755 /nginx.sh /config.sh
 
 #
 # Copy error pages
@@ -165,7 +154,7 @@ COPY ${HAWTIO_ONLINE_DOCKER_DIR}/nginx-gateway.conf.template \
 COPY ${HAWTIO_ONLINE_DOCKER_DIR}/hawtio-?0?.html ${NGINX_HTML}/
 
 #
-# Copy built hawtio-online app
+# Copy built hawtio-online app from staging container
 #
 COPY --from=staging ${HAWTIO_ONLINE_STAGING_BUILD_DIR} ${NGINX_ONLINE}/
 
@@ -182,8 +171,14 @@ COPY --from=staging ${HAWTIO_ONLINE_STAGING_DIR}/docker/licenses \
     ${HAWTIO_ONLINE_STAGING_DIR}/hawtio-online-version \
     /opt/hawtio/
 
+#
+# Finalize permissions for nginx files
+#
+RUN chown -R ${NGINX_USER} ${NGINX_SHARE}
+
 EXPOSE 8443
 
+# Return to nginx user
 USER ${NGINX_USER}
 
-CMD ["./nginx.sh"]
+ENTRYPOINT ["/nginx.sh"]
