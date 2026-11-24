@@ -2,7 +2,7 @@
 # Global ARGs required
 #
 # Version
-ARG HAWTIO_ONLINE_VERSION=2.5.0
+ARG HAWTIO_GATEWAY_VERSION=2.5.0
 # The hawtio namespace for the build images
 ARG HAWTIO_NAMESPACE="rhbac-4"
 # Name of the gateway without the main registry (used in labels)
@@ -58,17 +58,16 @@ RUN cat Makefile | grep ^VERSION.*[0-9] >> hawtio-online-gateway-version
 #
 # Final Image
 #
-# Standard hi/nodejs:26.13.0 image is distroless (no shell)
+# Standard hi/nodejs:26 image is distroless (no shell)
 # Uses "-builder" tag:
 # - dnf required to install envsubst and update
 #
-FROM registry.access.redhat.com/hi/nodejs:26.13.0-builder
+FROM registry.access.redhat.com/hi/nodejs:26-builder
 
 #
 # From global variables
 #
-ARG HAWTIO_ONLINE_VERSION
-ARG HAWTIO_NAMESPACE
+ARG HAWTIO_GATEWAY_VERSION
 ARG HAWTIO_GATEWAY_IMAGE_LABEL_NAME
 
 #
@@ -91,7 +90,7 @@ ARG GATEWAY_DEST_DIR=/opt/hawtio-online-gateway
 #
 # Description used in labels
 #
-ARG HAWTIO_DESCRIPTON="The Red Hat build of HawtIO Gateway providing extra function support for HawtIO on OpenShift."
+ARG HAWTIO_DESCRIPTION="The Red Hat build of HawtIO Gateway providing extra function support for HawtIO on OpenShift."
 
 #
 # Label metadata
@@ -101,11 +100,11 @@ LABEL com.redhat.component="hawtio-gateway-container" \
     io.k8s.description="${HAWTIO_DESCRIPTION}" \
     io.k8s.display-name="Red Hat build of HawtIO Gateway" \
     io.openshift.tags="hawtio,gateway,jolokia" \
-    maintainer="Paul Richardson <parichar@redhat.com>" \
+    maintainer="Paul Richardson <Paul.Richardson3@ibm.com>" \
     name="${HAWTIO_GATEWAY_IMAGE_LABEL_NAME}" \
     summary="${HAWTIO_DESCRIPTION}" \
-    version="${HAWTIO_ONLINE_VERSION}" \
-    version.file="/opt/hawtio/hawtio-online-version"
+    version="${HAWTIO_GATEWAY_VERSION}" \
+    version.file="/opt/hawtio-gateway/hawtio-online-gateway-version"
 
 # Switch to root user
 USER 0

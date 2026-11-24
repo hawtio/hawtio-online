@@ -15,6 +15,9 @@ ARG HAWTIO_ONLINE_IMAGE_LABEL_NAME=${HAWTIO_NAMESPACE}/hawtio-rhel9
 #
 ARG NGINX_USER=65532
 
+##############################################################################
+
+
 FROM registry.access.redhat.com/hi/nodejs:26 as staging
 
 USER root
@@ -37,20 +40,19 @@ RUN cat Makefile | grep ^VERSION.*[0-9] >> hawtio-online-version
 ##############################################################################
 
 #
-# Standard hi/nginx:1.30.7 image is distroless (no shell)
+# Standard hi/nginx:1.30 image is distroless (no shell)
 # Uses "-builder" tag:
 # - nginx.sh / config.sh require shell at container startup
 # - dnf required to install envsubst and update
 #
 # Final Image
 #
-FROM registry.access.redhat.com/hi/nginx:1.30.7-builder
+FROM registry.access.redhat.com/hi/nginx:1.30-builder
 
 #
 # From global variables
 #
 ARG HAWTIO_ONLINE_VERSION
-ARG HAWTIO_NAMESPACE
 ARG HAWTIO_ONLINE_IMAGE_LABEL_NAME
 ARG ARTEMIS_VERSION
 ARG JOLOKIA_VERSION
@@ -76,7 +78,11 @@ ARG HAWTIO_ONLINE_STAGING_DIR=/hawtio-online
 ARG HAWTIO_ONLINE_STAGING_BUILD_DIR=${HAWTIO_ONLINE_STAGING_DIR}/packages/online-shell/build
 ARG HAWTIO_ONLINE_DOCKER_DIR=docker
 ARG HAWTIO_ONLINE_BRANDING_DIR=branding
-ARG HAWTIO_DESCRIPTON="The Red Hat build of HawtIO helps discovering and managing Jolokia-monitored applications deployed on OpenShift."
+
+#
+# Description used in labels
+#
+ARG HAWTIO_DESCRIPTION="The Red Hat build of HawtIO helps discovering and managing Jolokia-monitored applications deployed on OpenShift."
 
 LABEL com.redhat.component="hawtio-container" \
     description="${HAWTIO_DESCRIPTION}" \
@@ -117,6 +123,9 @@ RUN microdnf -y install --setopt=tsflags=nodocs gettext-envsubst gawk \
 RUN mkdir -p ${NGINX_CACHE}/pods ${NGINX_CACHE}/rbac ${NGINX_CACHE}/rbac2 && \
     ln -sf /dev/stdout ${NGINX_LOG}/access.log && \
     ln -sf /dev/stderr ${NGINX_LOG}/error.log && \
+    sed -i "s~pid.*~pid ${NGINX_CACHE}/nginx.pid;~g" ${NGINX_CONFIG} && \
+    sed -i '/listen/s%80%8000%' ${NGINX_CONFIG} && \
+    sed -i -e '/user/!b' -e '/nginx/!b' -e '/nginx/d' ${NGINX_CONFIG} && \
     chown -R ${NGINX_USER} ${NGINX_CACHE} ${NGINX_ETC} ${NGINX_LOG} ${NGINX_SHARE} && \
     chmod -R g=u ${NGINX_CACHE} ${NGINX_ETC} ${NGINX_LOG}
 
