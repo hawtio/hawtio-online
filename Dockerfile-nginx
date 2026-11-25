@@ -13,12 +13,21 @@ ARG HAWTIO_ONLINE_IMAGE_LABEL_NAME=${HAWTIO_NAMESPACE}/hawtio-rhel9
 #
 # The user id for nginx
 #
-ARG NGINX_USER=65532
+# - 1001 for ubi9 images
+# - 65532 for hardened images
+#
+ARG NGINX_USER=1001
 
 ##############################################################################
 
 
-FROM registry.access.redhat.com/hi/nodejs:26 as staging
+#
+# Cannot use hardened image due to lack of support for s390 and ppc64le
+# FROM registry.access.redhat.com/hi/nodejs:26 as staging
+#
+# RHEL image supports s390, ppc64le, arm64 and amd64
+#
+FROM registry.redhat.io/rhel9/nodejs-24-minimal:latest as staging
 
 USER root
 
@@ -40,14 +49,14 @@ RUN cat Makefile | grep ^VERSION.*[0-9] >> hawtio-online-version
 ##############################################################################
 
 #
-# Standard hi/nginx:1.30 image is distroless (no shell)
-# Uses "-builder" tag:
-# - nginx.sh / config.sh require shell at container startup
-# - dnf required to install envsubst and update
-#
 # Final Image
 #
-FROM registry.access.redhat.com/hi/nginx:1.30-builder
+# Cannot use hardened image due to lack of support for s390 and ppc64le
+# FROM registry.access.redhat.com/hi/nginx:1.30.7-builder
+#
+# RHEL image supports s390, ppc64le, arm64 and amd64
+#
+FROM registry.access.redhat.com/ubi9/nginx-126:latest
 
 #
 # From global variables
@@ -107,26 +116,29 @@ USER 0
 # any outstanding packages are updates from the
 # base images
 #
-RUN microdnf upgrade -y
+# - dnf required in non-minimal images
+#
+RUN dnf upgrade -y
 
 # Install envsubst for template and awk for nginx script
-RUN microdnf -y install --setopt=tsflags=nodocs gettext-envsubst gawk \
-    && microdnf clean all
+RUN dnf -y install --setopt=tsflags=nodocs gettext gawk \
+    && dnf clean all
 
 #
 # Modify the nginx configuration
 #
 # Forward request and error logs to docker log collector
-# - Change pid file location & remove nginx user & change port to 8080
+# - Change pid file location
+# - No need to remove nginx user on this image
+# - No need to change the port as already 8080
 # - modify perms for non-root runtime
+# - :0 needed on chown so the NGINX_CACHE permissions permit the nginx.pid
 #
 RUN mkdir -p ${NGINX_CACHE}/pods ${NGINX_CACHE}/rbac ${NGINX_CACHE}/rbac2 && \
     ln -sf /dev/stdout ${NGINX_LOG}/access.log && \
     ln -sf /dev/stderr ${NGINX_LOG}/error.log && \
     sed -i "s~pid.*~pid ${NGINX_CACHE}/nginx.pid;~g" ${NGINX_CONFIG} && \
-    sed -i '/listen/s%80%8000%' ${NGINX_CONFIG} && \
-    sed -i -e '/user/!b' -e '/nginx/!b' -e '/nginx/d' ${NGINX_CONFIG} && \
-    chown -R ${NGINX_USER} ${NGINX_CACHE} ${NGINX_ETC} ${NGINX_LOG} ${NGINX_SHARE} && \
+    chown -R ${NGINX_USER}:0 ${NGINX_CACHE} ${NGINX_ETC} ${NGINX_LOG} ${NGINX_SHARE} && \
     chmod -R g=u ${NGINX_CACHE} ${NGINX_ETC} ${NGINX_LOG}
 
 #
@@ -134,6 +146,12 @@ RUN mkdir -p ${NGINX_CACHE}/pods ${NGINX_CACHE}/rbac ${NGINX_CACHE}/rbac2 && \
 #
 RUN rm -f ${NGINX_ETC}/conf.d/default.conf \
           ${NGINX_HTML}/index.html
+
+#
+# ubi9/nginx image removes default nginx include directory of /etc/nginx/conf.d
+# - note: hardened image does not have this issue
+#
+RUN sed -i '/http {/a \    include /etc/nginx/conf.d/*.conf;' /etc/nginx/nginx.conf
 
 #
 # Update locations of osconsole config
@@ -189,5 +207,9 @@ EXPOSE 8443
 
 # Return to nginx user
 USER ${NGINX_USER}
+
+# Check the configuration is valid
+# - Careful not to leave behind nginx.pid
+RUN nginx -t && rm -f ${NGINX_CACHE}/nginx.pid
 
 ENTRYPOINT ["/nginx.sh"]

@@ -11,9 +11,18 @@ ARG HAWTIO_GATEWAY_IMAGE_LABEL_NAME=${HAWTIO_NAMESPACE}/hawtio-gateway-rhel9
 #
 # The user id for node
 #
-ARG NODE_USER=65532
+# - 1001 for ubi9 images
+# - 65532 for hardened images
+#
+ARG NODE_USER=1001
 
-FROM registry.access.redhat.com/hi/nodejs:26 as staging
+#
+# Cannot use hardened image due to lack of support for s390 and ppc64le
+# FROM registry.access.redhat.com/hi/nodejs:26 as staging
+#
+# RHEL image supports s390, ppc64le, arm64 and amd64
+#
+FROM registry.redhat.io/rhel9/nodejs-24-minimal:latest as staging
 
 USER root
 
@@ -34,8 +43,6 @@ RUN yarn build:gateway
 
 # Adds the licences to the docker directory
 RUN yarn license
-
-RUN find /hawtio-source-gateway
 
 RUN mkdir /hawtio-gateway
 
@@ -58,11 +65,12 @@ RUN cat Makefile | grep ^VERSION.*[0-9] >> hawtio-online-gateway-version
 #
 # Final Image
 #
-# Standard hi/nodejs:26 image is distroless (no shell)
-# Uses "-builder" tag:
-# - dnf required to install envsubst and update
+# Cannot use hardened image due to lack of support for s390 and ppc64le
+# FROM registry.access.redhat.com/hi/nodejs:26.13.0-builder
 #
-FROM registry.access.redhat.com/hi/nodejs:26-builder
+# RHEL image supports s390, ppc64le, arm64 and amd64
+#
+FROM registry.redhat.io/rhel9/nodejs-24-minimal:latest
 
 #
 # From global variables
